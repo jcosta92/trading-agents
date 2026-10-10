@@ -214,13 +214,15 @@ def live_table(state: dict, settings: Settings) -> pd.DataFrame:
     rows = []
     gates = _backtest_gates()
     bench_ret = {}
+    if eq.empty:
+        eq = pd.DataFrame(columns=["ts", "agent", "equity_eur"])
     for aid in ("bench_sp500", "bench_btc"):
         e = eq[eq["agent"] == aid]
         bench_ret[aid] = float(e["equity_eur"].iloc[-1] / 1000.0 - 1) if len(e) else float("nan")
     for aid, spec in settings.agents.items():
         if not spec.paper:
             continue
-        e = eq[eq["agent"] == aid] if len(eq) else eq
+        e = eq[eq["agent"] == aid]
         led = state["ledgers"].get(aid, {})
         costs = led.get("costs", {})
         if len(e):
@@ -232,7 +234,8 @@ def live_table(state: dict, settings: Settings) -> pd.DataFrame:
         ret = cur / 1000.0 - 1 if math.isfinite(cur) else float("nan")
         bench = "bench_btc" if spec.calendar == "CRYPTO" else "bench_sp500"
         n_fills = int((state["fills"]["agent"] == aid).sum()) if len(state["fills"]) else 0
-        explicit = costs.get("commissions", 0) + costs.get("spread_slippage", 0) + costs.get("fx", 0)
+        explicit = (costs.get("commissions", 0) + costs.get("spread_slippage", 0) + costs.get("fx", 0)
+                    + costs.get("liquidation", 0))
         rows.append({
             "agent": aid, "name": spec.name, "equity": cur, "return": ret,
             "vs_bench": (ret - bench_ret[bench]) if aid not in BENCH else float("nan"), "max_dd": mdd,
@@ -433,6 +436,7 @@ def write_backtest_html(out_dir: Path, settings: Settings, docs_dir: Path | None
             f"<td class='num'>{r['sharpe']:.2f} <span class='muted'>({_n(r.get('sharpe_ci_lo'))} to {_n(r.get('sharpe_ci_hi'))})</span></td>"
             f"<td class='num'>{_pct(r['max_drawdown'], 1, False)}</td><td class='num'>{_pct(r['cost_drag_per_year'], 2, False)}</td>"
             f"<td class='num'>{_n(r.get('turnover_per_year'), 1)}x</td><td class='{_cls(r.get('rel_excess_cagr'))}'>{_pct(r.get('rel_excess_cagr'), 1)}</td>"
+            f"<td class='num'>{_pct(r.get('kill_switch_month_freq'), 0, False)}</td>"
             f"<td class='num'>{_n(r.get('dsr'))}</td><td class='l'>{_gate_badge(r.get('gate'))}</td></tr>")
     var = res[res["variant"] != "main"]
     var_rows = "".join(f"<tr><td>{_esc(r['agent'])}</td><td class='l'>{_esc(r['variant'])}</td><td class='{_cls(r.get('cagr'))}'>"
@@ -459,14 +463,17 @@ def write_backtest_html(out_dir: Path, settings: Settings, docs_dir: Path | None
 <button class='toggle' onclick='toggleTheme()'>Light / dark</button>
 <h1>Backtest report</h1>
 <p class='sub'>Pre-registered rules, run on daily data through {_esc(summary.get('data_end'))} (commit <code>{_esc(summary.get('git'))}</code>).
-Costs: x0 = gross, x1 = modelled fees + spread + slippage + FX + funding, x2 = every cost doubled. {summary.get('n_trials')} distinct
+Costs: x0 = no trading costs, x1 = modelled fees + spread + slippage + FX, x2 = those trading costs doubled (decisions are
+identical at every level; perp funding is market data and is never scaled). {summary.get('n_trials')} distinct
 configurations have been tested, which is what the Deflated Sharpe Ratio (DSR) corrects for.</p>
 {synth}
 <div class='tablewrap'><table><thead><tr><th>Agent and period</th><th>CAGR x0</th><th>CAGR x1</th><th>CAGR x2</th>
-<th>Sharpe x1 (90% CI)</th><th>Max DD</th><th>Cost drag / yr</th><th>Turnover / yr</th><th>Excess vs benchmark</th><th>DSR</th>
+<th>Sharpe x1 (90% CI)</th><th>Max DD</th><th>Cost drag / yr</th><th>Turnover / yr</th><th>Excess vs benchmark</th>
+<th>Kill switch, share of months</th><th>DSR</th>
 <th class='l'>Gate</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
 <p class='small muted'>Gate: FAIL if the Sharpe ratio at 2x costs is not positive or the profit disappears without the best calendar
-year; PASS needs DSR ≥ 0.95; otherwise WEAK. The paper run trades every agent anyway, so the month shows how each one behaves live.</p>
+year; PASS needs DSR ≥ 0.95; otherwise WEAK. "Kill switch, share of months": how often a one-month paper run starting on a
+random day of the backtest would have been halted by the agent's loss limit. The paper run trades every agent anyway.</p>
 <h2>Equity curves (€1,000 start, log scale)</h2>
 <div class='multiples' id='mult'></div>
 <h2>Robustness variants</h2>

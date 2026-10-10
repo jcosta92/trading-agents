@@ -13,10 +13,14 @@ from ..ledger import FxRates
 
 log = logging.getLogger(__name__)
 
+# a live quote this far from yesterday's close is treated as a bad print (marks fall back to the last good one)
+MAX_JUMP = {"etf": 0.20, "stock": 0.35, "index": 0.15, "crypto_spot": 0.40, "perp": 0.40, "fx": 0.05}
+
 
 class LiveQuotes:
     def __init__(self, resolved_symbols: dict[str, str] | None = None, option_chains=None,
-                 yahoo_fn=yahoo.live_quote, ccxt_fn=crypto.live_quote, fallback_eurusd: float | None = None):
+                 yahoo_fn=yahoo.live_quote, ccxt_fn=crypto.live_quote, fallback_eurusd: float | None = None,
+                 reference: dict[str, float] | None = None):
         self.resolved = resolved_symbols or {}
         self.options = option_chains
         self._yahoo = yahoo_fn
@@ -25,6 +29,8 @@ class LiveQuotes:
         self._fx: FxRates | None = None
         self.fallback_eurusd = fallback_eurusd
         self.fx_source = None
+        self.reference = reference or {}          # last daily close per instrument, for sanity checks
+        self.suspicious: list[str] = []
 
     def quote(self, inst: Instrument) -> Quote | None:
         if inst is None:
@@ -55,6 +61,13 @@ class LiveQuotes:
             q = None
         if q is not None and (not math.isfinite(q.mid) or q.mid <= 0):
             q = None
+        ref = self.reference.get(inst.id)
+        if q is not None and ref and not inst.is_option:
+            limit = MAX_JUMP.get(inst.kind, 0.25)
+            if abs(q.mid / ref - 1) > limit:
+                self.suspicious.append(f"{inst.id}: live {q.mid:.4g} vs last close {ref:.4g} (> {limit:.0%} move) - quote ignored")
+                log.warning(self.suspicious[-1])
+                q = None
         self._cache[inst.id] = q
         return q
 
@@ -84,6 +97,9 @@ class ExecutionQuotes:
     def quote(self, inst: Instrument) -> Quote | None:
         q = self.live.quote(inst)
         if q is None:
+            return None
+        if not q.ts:
+            self.stale.append(f"{inst.id}: quote has no timestamp - not traded")
             return None
         if q.ts:
             try:

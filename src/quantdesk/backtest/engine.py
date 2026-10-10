@@ -124,29 +124,26 @@ def run_backtest(agent: Agent, store: HistoryStore, registry: Registry, cm: Cost
     ledger = Ledger(agent.id, capital, ts=dates[0].isoformat())
     ex = Executor(cm, registry, agent.venue_override)
     pending: list[OrderIntent] = []
-    eq_rec, expo_rec, fills_all, rejects_all, kills = {}, {}, [], [], []
+    eq_rec, expo_rec, fills_all, rejects_all, dd_events, liquidations = {}, {}, [], [], [], []
     prev_eq = capital
     peak = capital
     in_dd_event = False
     fallback_days = 0
     max_dd = agent.spec.risk.get("max_drawdown")
+    max_gross = agent.spec.risk.get("max_gross")
+    fill_at = {"next_open": "open", "next_close": "close", "close": "close"}[agent.fill_timing]
 
     for d in dates:
         ts = d.isoformat()
         q_open = BacktestQuotes(d, opens, marks_ff, fx_series, registry, options, exact_only=True)
         q_close = BacktestQuotes(d, close, marks_ff, fx_series, registry, options, exact_only=False)
+        q_exec_close = BacktestQuotes(d, close, marks_ff, fx_series, registry, options, exact_only=True)
         fx = q_close.fx()
-        # 1. pending orders at the open
-        if pending:
-            f, r = ex.execute(ledger, pending, q_open, ts)
-            fills_all += f
-            # orders with no quote today (holiday for that instrument) wait one more day
-            retry = [o for o in pending if any(rj.inst == o.inst_id and rj.why == "no quote" for rj in r)
-                     and not o.meta.get("retried")]
-            for o in retry:
-                o.meta["retried"] = True
-            rejects_all += [rj for rj in r if rj.why != "no quote"]
-            pending = retry
+        # 1. orders from yesterday's decision: at today's open (or close for 'next_close' agents)
+        if pending and fill_at == "open":
+            pending = _execute_pending(ex, ledger, pending, q_open, ts, fills_all, rejects_all)
+        if pending and fill_at == "close":
+            pending = _execute_pending(ex, ledger, pending, q_exec_close, ts, fills_all, rejects_all)
         # 2. perp funding
         for iid, pos in list(ledger.positions.items()):
             if pos.kind != "perp":
@@ -167,20 +164,21 @@ def run_backtest(agent: Agent, store: HistoryStore, registry: Registry, cm: Cost
                 ledger.funding(ts, iid, pos.currency, amount, fx, rate)
         # 3. expired options
         _settle_expired(ledger, registry, d, store, fx, ts)
-        # 4. mark to market
-        marks = {}
-        for iid in ledger.positions:
-            q = q_close.quote(registry.get(iid))
-            if q is not None:
-                marks[iid] = q.mid
+        # 4. mark to market (+ margin call / liquidation check for perps)
+        marks = _marks(ledger, registry, q_close)
+        ms = riskmod.margin_state(ledger, fx, marks, cm.venues, registry)
+        if riskmod.needs_liquidation(ms):
+            fills_all += riskmod.liquidate(ledger, ex, q_close, fx, ms, ts)
+            liquidations.append({"date": ts, **{k: round(v, 2) for k, v in ms.items() if isinstance(v, float)}})
+            marks = _marks(ledger, registry, q_close)
         ledger.update_marks(marks)
         eq = ledger.equity(fx, marks)
         eq_rec[d] = eq
         expo_rec[d] = ledger.gross_exposure(fx, marks) / eq if eq > 0 else np.nan
-        # 5. risk
+        # 5. risk: drawdown events are recorded (peak-to-trough) for information only
         peak = max(peak, eq)
         if max_dd and eq <= peak * (1 - max_dd) and not in_dd_event:
-            kills.append({"date": ts, "equity": round(eq, 2), "drawdown": round(eq / peak - 1, 4)})
+            dd_events.append({"date": ts, "equity": round(eq, 2), "drawdown": round(eq / peak - 1, 4)})
             in_dd_event = True
         if in_dd_event and eq >= peak * (1 - max_dd / 2 if max_dd else 1):
             in_dd_event = False
@@ -189,10 +187,12 @@ def run_backtest(agent: Agent, store: HistoryStore, registry: Registry, cm: Cost
         if eq <= 0:
             log.warning("%s: equity wiped out on %s", agent.id, ts)
             break
-        # 6. decide
+        # 6. decide (data up to today's close)
         ctx = Context(d, store, registry, q_close, "backtest", now=d, extras=extras, options=options)
         orders = agent.decide(ctx, ledger)
         if enforce_daily_loss and rd.action == "block_entries":
+            orders = riskmod.filter_entries(orders, ledger)
+        if max_gross and orders and expo_rec[d] >= max_gross:
             orders = riskmod.filter_entries(orders, ledger)
         if not orders:
             continue
@@ -201,7 +201,7 @@ def run_backtest(agent: Agent, store: HistoryStore, registry: Registry, cm: Cost
             fills_all += f
             rejects_all += r
         else:
-            pending = orders
+            pending = pending + orders
 
     equity = pd.Series(eq_rec, name=agent.id).sort_index()
     fills = pd.DataFrame([f.__dict__ for f in fills_all])
@@ -211,8 +211,35 @@ def run_backtest(agent: Agent, store: HistoryStore, registry: Registry, cm: Cost
             "start": str(dates[0].date()), "end": str(dates[-1].date()), "n_days": len(dates)}
     if "coverage_log" in ledger.meta:
         diag["coverage_log"] = ledger.meta["coverage_log"]
+    diag["liquidations"] = liquidations
     return BacktestResult(agent.id, agent.spec.variant, cm.stress, equity, pd.Series(expo_rec).sort_index(),
-                          fills, rejects, dict(ledger.costs), ledger, kills, diag)
+                          fills, rejects, dict(ledger.costs), ledger, dd_events, diag)
+
+
+def _marks(ledger: Ledger, registry: Registry, quotes: BacktestQuotes) -> dict[str, float]:
+    out = {}
+    for iid in ledger.positions:
+        q = quotes.quote(registry.get(iid))
+        if q is not None:
+            out[iid] = q.mid
+    return out
+
+
+def _execute_pending(ex: Executor, ledger: Ledger, pending: list[OrderIntent], quotes, ts: str,
+                     fills_all: list, rejects_all: list) -> list[OrderIntent]:
+    """Fill pending orders; orders (or whole combos) with no quote today wait one more day."""
+    f, r = ex.execute(ledger, pending, quotes, ts)
+    fills_all += f
+    rejects_all += r
+    noquote_insts = {rj.inst for rj in r if rj.why == "no quote"}
+    noquote_combos = {o.combo for o in pending if o.combo and o.inst_id in noquote_insts}
+    retry = []
+    for o in pending:
+        hit = (o.combo in noquote_combos) if o.combo else (o.inst_id in noquote_insts)
+        if hit and not o.meta.get("retried"):
+            o.meta["retried"] = True
+            retry.append(o)
+    return retry
 
 
 def _settle_expired(ledger: Ledger, registry: Registry, d: pd.Timestamp, store: HistoryStore,

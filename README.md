@@ -46,6 +46,9 @@ Fee schedules live in [`config/venues.yaml`](config/venues.yaml) and were checke
 - **IBKR, XSP options:** USD 0.25 to 0.65 per contract (USD 1 minimum per order), plus OCC clearing, the CAT fee and
   a conservative exchange/ORF allowance. Fills cross the full bid-ask spread.
 - **Trading 212:** no commission, a 0.15% FX fee and an extra 5 bp execution allowance.
+- **Kraken perp margin:** the carry agent's spot coins sit at Bitvavo and do not back the short perp. When the perp
+  account goes above 2x, the agent sells spot and buys back perp to return to 1x (paying fees on both). Below 1%
+  collateral the position is liquidated, with an assumed 1% fee.
 - **Bitvavo spot:** 0.25% taker. **Kraken EEA perps:** 0.05% taker, plus real hourly funding.
 - **Every order:** fills at the ask when buying and the bid when selling (or mid ± a fallback half-spread),
   plus slippage. Backtests are also re-run with every cost doubled (`x2`).
@@ -64,7 +67,7 @@ Fee schedules live in [`config/venues.yaml`](config/venues.yaml) and were checke
    - Everything else is **WEAK**.
 
    All agents are paper-traded anyway, with their gate shown next to their results.
-3. **Paper month** (`paper` workflow, every day at 15:10 and 15:45 UTC). Each agent decides once per day, using data
+3. **Paper month** (`paper` workflow, every day at 14:50 and 15:20 UTC). Each agent decides once per day, using data
    up to yesterday's close. Orders fill against live quotes when the agent's market is open. Kill switches:
    - a loss of 10–30% from the start (set per agent) flattens the account and halts the agent;
    - a daily loss limit blocks new entries for the rest of the day.
@@ -116,6 +119,10 @@ python -m quantdesk.cli paper --force       # one paper cycle -> state/, docs/
 - **`vrp_spreads` backtests use modelled option prices.** These are Black-Scholes on VIX with a fixed skew and spread.
 - **Funding history before each venue's data starts is charged at a 10%/yr fallback rate.** The report shows how many
   days that affected.
+- **Backtests use total-return (dividend-adjusted) prices** with no withholding tax. The paper run credits real
+  dividends net of 15% US withholding, so US-stock backtests are about 0.2%/yr optimistic on that count.
+- **Daily data only.** Decisions use daily closes; the carry agent's perp collateral and liquidation checks run once
+  a day, so an intraday spike that would have liquidated the perp can be missed.
 - **Regulation is moving.** ESMA has said crypto perpetuals are probably CFDs, which would cap leverage at 2:1; the
   crypto agents never exceed 1x.
 

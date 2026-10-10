@@ -62,7 +62,12 @@ class FakeData:
         idx = pd.date_range(self.now - pd.Timedelta(days=5), self.now, freq="h")
         return pd.Series(0.00001, index=idx)
 
-    def live_quotes(self, resolved, option_chains, fallback_eurusd=None):
+    def dividends(self, inst, symbol=None):
+        if inst is not None and inst.id == "EUR_GOVT":
+            return pd.Series([0.5], index=[pd.Timestamp("2026-10-20")])
+        return pd.Series(dtype="float64")
+
+    def live_quotes(self, resolved, option_chains, fallback_eurusd=None, reference=None):
         def yq(sym):
             key = "EURUSD" if sym == "EURUSD=X" else sym
             if not self.store.has(key):
@@ -72,7 +77,8 @@ class FakeData:
 
         def cq(ex, sym):
             return yq(CCXT_MAP[sym])
-        return LiveQuotes(resolved, option_chains, yahoo_fn=yq, ccxt_fn=cq, fallback_eurusd=fallback_eurusd)
+        return LiveQuotes(resolved, option_chains, yahoo_fn=yq, ccxt_fn=cq, fallback_eurusd=fallback_eurusd,
+                          reference=reference)
 
     def option_chains(self, spot, rate):
         m = SyntheticOptionModel(self.store.close("XSP"), self.store.close("VIX"), self.store.close("TBILL"),
@@ -134,11 +140,11 @@ def test_kill_switch_flattens_and_halts(tmp_path, settings, instruments, venues,
     reg = Registry(instruments)
     ct = Ledger.from_dict(json.loads((tmp_path / "ledgers" / "crypto_trend.json").read_text()))
     px = float(store.close("BTC_PERP").loc[:"2026-10-12"].iloc[-1])
-    target = 900 * 1.1 / px                                   # ~EUR 900 notional long
+    target = 950 * 1.1 / px                                   # ~EUR 950 notional long
     ct.trade("2026-10-12T15:10:00+00:00", reg.get("BTC_PERP"), target - ct.qty("BTC_PERP"), px, {}, FxRates(1.1), px)
     (tmp_path / "ledgers" / "crypto_trend.json").write_text(json.dumps(ct.to_dict()))
     s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-13T15:10:00Z",
-                shock={"BTC_PERP": 0.4, "ETH_PERP": 0.4}).run()
+                shock={"BTC_PERP": 0.65, "ETH_PERP": 0.65}).run()
     a = s["agents"]["crypto_trend"]
     assert a["halted"] and a["risk"]["action"] == "halt"
     assert not a["positions"], "kill switch must flatten"
@@ -197,7 +203,54 @@ def test_daily_loss_blocks_new_entries(tmp_path, settings, instruments, venues, 
     ct.meta["last_equity"] = {"date": "2026-10-12", "equity": 1000.0}
     (tmp_path / "ledgers" / "crypto_trend.json").write_text(json.dumps(ct.to_dict()))
     s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-13T15:10:00Z",
-                shock={"BTC_PERP": 0.6, "ETH_PERP": 0.6}).run()
+                shock={"BTC_PERP": 0.7, "ETH_PERP": 0.7}).run()
     a = s["agents"]["crypto_trend"]
     assert a["risk"]["action"] == "block_entries"
     assert all(f["qty"] < 0 for f in a["fills"]), "no buys allowed after the daily loss limit"
+
+
+def test_kill_switch_reissued_until_flat(tmp_path, settings, instruments, venues, paper_store, monkeypatch):
+    """If the flatten order cannot fill (no quote), the next run must try again."""
+    store, extras = paper_store
+    from quantdesk.ledger import Ledger, FxRates
+    from quantdesk.registry import Registry
+    _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T15:10:00Z", agents=["crypto_trend"]).run()
+    reg = Registry(instruments)
+    ct = Ledger.from_dict(json.loads((tmp_path / "ledgers" / "crypto_trend.json").read_text()))
+    px = float(store.close("BTC_PERP").loc[:"2026-10-12"].iloc[-1])
+    ct.trade("2026-10-12T16:00:00+00:00", reg.get("BTC_PERP"), 950 * 1.1 / px - ct.qty("BTC_PERP"), px, {}, FxRates(1.1), px)
+    ct.halted, ct.halt_reason = True, "test"
+    (tmp_path / "ledgers" / "crypto_trend.json").write_text(json.dumps(ct.to_dict()))
+    r = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-13T15:10:00Z", agents=["crypto_trend"])
+    orig = FakeData.live_quotes
+
+    def no_btc(self, *a, **k):
+        lq = orig(self, *a, **k)
+        inner = lq._ccxt
+        lq._ccxt = lambda ex, sym: None if sym.startswith("BTC") else inner(ex, sym)
+        return lq
+    monkeypatch.setattr(FakeData, "live_quotes", no_btc)
+    s1 = r.run()
+    assert s1["agents"]["crypto_trend"]["positions"], "flatten could not fill without a quote"
+    monkeypatch.setattr(FakeData, "live_quotes", orig)
+    s2 = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-14T15:10:00Z", agents=["crypto_trend"]).run()
+    assert not s2["agents"]["crypto_trend"]["positions"], "kill switch must re-issue the flatten"
+
+
+def test_bad_print_is_ignored(tmp_path, settings, instruments, venues, paper_store):
+    store, extras = paper_store
+    _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T15:10:00Z", agents=["bench_btc"]).run()
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-13T15:10:00Z",
+                shock={"BTC_SPOT": 0.05}, agents=["bench_btc"]).run()     # a -95% print
+    a = s["agents"]["bench_btc"]
+    assert not a["halted"] and a["equity_eur"] > 500
+
+
+def test_dividends_credited_once(tmp_path, settings, instruments, venues, paper_store):
+    store, extras = paper_store
+    for d in ("2026-10-12", "2026-10-21", "2026-10-22"):
+        _runner(settings, instruments, venues, tmp_path, store, extras, f"{d}T15:10:00Z", agents=["trend_etf"]).run()
+    led = json.loads((tmp_path / "ledgers" / "trend_etf.json").read_text())
+    incomes = [e for e in led["journal"] if e["type"] == "income"]
+    held = "EUR_GOVT" in led["positions"]
+    assert len(incomes) == (1 if held else 0)

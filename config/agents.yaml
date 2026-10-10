@@ -114,7 +114,8 @@ agents:
     backtest_start: "2008-01-01"
     backtest_note: >
       Free data has no point-in-time fundamentals, so the backtest can only test the momentum leg,
-      on point-in-time S&P 500 membership. Delisted names are often missing from Yahoo, which biases
+      on point-in-time S&P 500 membership (no sector exclusion and no price floor in the backtest,
+      because only today's sectors and adjusted prices are available). Delisted names are often missing from Yahoo, which biases
       the backtest upward; coverage is reported. The UCITS factor-ETF proxy (factor_ucits_proxy) is
       the honest check on what a multi-factor tilt actually earned.
     variants:
@@ -170,8 +171,10 @@ agents:
       exit_negative_hours: 24   # ... or the last 24h average is negative
       avg_window_days: 7
       spot_fraction: 0.5       # half the equity buys spot; the perp short has the same coin quantity
+      max_perp_leverage: 2.0   # spot sits at Bitvavo and cannot back the perp: above 2x on the perp account,
+                               # sell spot + buy back perp so that the perp account is back at 1x
       min_trade_eur: 50
-    risk: {max_drawdown: 0.10, daily_loss: 0.05, max_gross: 1.05}
+    risk: {max_drawdown: 0.10, daily_loss: 0.05, max_gross: 1.10}
     backtest_start: "2020-01-01"
     variants:
       entry_8pct: {entry_annualised: 0.08}

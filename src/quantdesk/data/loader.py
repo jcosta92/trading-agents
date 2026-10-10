@@ -89,6 +89,16 @@ def add_funding(store: HistoryStore, instruments: dict[str, Instrument], since: 
                 break
         if best is not None:
             store.set_series("funding", iid, best)
+        # unit check: sources should agree on the size of daily funding where they overlap
+        daily = {src["source"]: store.series(f"funding_{src['source']}", iid) for src in inst.funding}
+        daily = {k: v for k, v in daily.items() if len(v)}
+        if len(daily) > 1:
+            common = None
+            for v in daily.values():
+                common = v.index if common is None else common.intersection(v.index)
+            if common is not None and len(common) > 30:
+                info["overlap_days"] = int(len(common))
+                info["mean_daily_annualised"] = {k: float(v.reindex(common).mean() * 365) for k, v in daily.items()}
         meta[iid] = {"chosen": best_src, "sources": info}
     return meta
 

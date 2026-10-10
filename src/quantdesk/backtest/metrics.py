@@ -42,7 +42,7 @@ def perf_stats(equity: pd.Series, ppy: float) -> dict:
         "psr_0": psr(sr_pp, len(r), sk, ku, 0.0),
         "best_year": float(yearly.max()) if len(yearly) else float("nan"),
         "worst_year": float(yearly.min()) if len(yearly) else float("nan"),
-        "ex_best_year_cagr": ex_best_year_cagr(yearly),
+        "ex_best_year_cagr": ex_best_year_cagr(yearly, year_fractions(equity)),
         "yearly": {str(k): float(v) for k, v in yearly.items()},
         "longest_dd_days": longest_drawdown_days(equity),
     }
@@ -56,14 +56,50 @@ def yearly_returns(equity: pd.Series) -> pd.Series:
     return out
 
 
-def ex_best_year_cagr(yearly: pd.Series) -> float:
+def ex_best_year_cagr(yearly: pd.Series, year_fraction: pd.Series | None = None) -> float:
+    """CAGR with the best calendar year removed; partial first/last years count by their length."""
     if len(yearly) < 3:
         return float("nan")
-    rest = yearly.drop(yearly.idxmax())
+    frac = year_fraction if year_fraction is not None else pd.Series(1.0, index=yearly.index)
+    best = yearly.idxmax()
+    rest = yearly.drop(best)
+    years = float(frac.drop(best).sum())
     growth = float(np.prod(1 + rest.values))
-    return growth ** (1 / len(rest)) - 1 if growth > 0 else -1.0
+    if years <= 0:
+        return float("nan")
+    return growth ** (1 / years) - 1 if growth > 0 else -1.0
 
 
+def year_fractions(equity: pd.Series) -> pd.Series:
+    """Length of each calendar year covered by the series, in years (first/last may be partial)."""
+    out = {}
+    start = equity.index[0]
+    for y, g in equity.groupby(equity.index.year):
+        lo = start if y == start.year else pd.Timestamp(f"{y - 1}-12-31")
+        out[y] = max((g.index[-1] - lo).days, 1) / 365.25
+    return pd.Series(out)
+
+
+def kill_switch_month_frequency(equity: pd.Series, max_loss: float | None, window_days: int = 31) -> float:
+    """Share of 31-day windows (one per start date) in which equity fell below (1 - max_loss) x the
+    window's starting equity at any point - i.e. how often the paper-run kill switch would have fired
+    had the one-month test started on that day."""
+    if not max_loss or len(equity) < 30:
+        return float("nan")
+    e = equity.dropna()
+    vals, idx = e.values, e.index
+    hits, n = 0, 0
+    j = 0
+    for i in range(len(e)):
+        end = idx[i] + pd.Timedelta(days=window_days)
+        if end > idx[-1]:
+            break
+        while j < len(e) and idx[j] <= end:
+            j += 1
+        n += 1
+        if vals[i:j].min() <= vals[i] * (1 - max_loss):
+            hits += 1
+    return hits / n if n else float("nan")
 def longest_drawdown_days(equity: pd.Series) -> int:
     peak_date = equity.index[0]
     peak = equity.iloc[0]
@@ -126,22 +162,24 @@ def bootstrap_sharpe_ci(equity: pd.Series, ppy: float, n_boot: int = 1000, block
 
 
 def relative_stats(equity: pd.Series, bench: pd.Series, ppy: float) -> dict:
+    """Agent vs benchmark. Beta/correlation/tracking error use WEEKLY returns, which removes most of
+    the bias from different closing times (e.g. Xetra-listed benchmark vs NYSE-traded agent)."""
     df = pd.concat([equity, bench], axis=1, join="inner").dropna()
     if len(df) < 30:
         return {}
-    r = df.pct_change().dropna()
+    w = df.resample("W-FRI").last().dropna()
+    r = w.pct_change().dropna()
     a, b = r.iloc[:, 0], r.iloc[:, 1]
     ex = a - b
     beta = float(np.cov(a, b)[0, 1] / np.var(b, ddof=1)) if np.var(b) > 0 else float("nan")
-    te = float(ex.std(ddof=1) * math.sqrt(ppy))
     bench_total = float(df.iloc[-1, 1] / df.iloc[0, 1] - 1)
     years = max((df.index[-1] - df.index[0]).days / 365.25, 1e-9)
     return {
         "bench_total_return": bench_total,
         "bench_cagr": float((1 + bench_total) ** (1 / years) - 1),
         "excess_cagr": float((df.iloc[-1, 0] / df.iloc[0, 0]) ** (1 / years) - (1 + bench_total) ** (1 / years)),
-        "info_ratio": float(ex.mean() / ex.std(ddof=1) * math.sqrt(ppy)) if ex.std() > 0 else float("nan"),
-        "tracking_error": te, "beta": beta, "correlation": float(a.corr(b)),
+        "info_ratio": float(ex.mean() / ex.std(ddof=1) * math.sqrt(52)) if ex.std() > 0 else float("nan"),
+        "tracking_error": float(ex.std(ddof=1) * math.sqrt(52)), "beta": beta, "correlation": float(a.corr(b)),
     }
 
 
@@ -151,7 +189,8 @@ def trade_stats(result) -> dict:
     avg_eq = float(eq.mean())
     traded = float(result.fills["value_eur"].sum()) if len(result.fills) else 0.0
     costs = result.costs
-    explicit = costs.get("commissions", 0.0) + costs.get("spread_slippage", 0.0) + costs.get("fx", 0.0)
+    explicit = (costs.get("commissions", 0.0) + costs.get("spread_slippage", 0.0) + costs.get("fx", 0.0)
+                + costs.get("liquidation", 0.0))
     real = [x["pnl_eur"] for x in result.ledger.realized]
     return {
         "n_fills": int(len(result.fills)), "n_rejects": int(len(result.rejects)),
@@ -159,7 +198,7 @@ def trade_stats(result) -> dict:
         "cost_drag_per_year": explicit / avg_eq / years if avg_eq > 0 else float("nan"),
         "commissions_eur": costs.get("commissions", 0.0), "spread_slippage_eur": costs.get("spread_slippage", 0.0),
         "fx_eur": costs.get("fx", 0.0), "funding_eur": costs.get("funding", 0.0),
-        "inference_eur": costs.get("inference", 0.0),
+        "inference_eur": costs.get("inference", 0.0), "liquidation_eur": costs.get("liquidation", 0.0),
         "closed_trades": len(real), "trade_hit_rate": float(np.mean([p > 0 for p in real])) if real else float("nan"),
         "avg_exposure": float(result.exposure.mean()) if len(result.exposure) else float("nan"),
     }

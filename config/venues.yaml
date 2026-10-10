@@ -91,6 +91,8 @@ kraken_eea_perp:
   auto_fx: false
   allow_negative_cash: true      # multi-collateral margin: USD P&L can go negative against EUR collateral
   margin: true
+  maintenance_margin: 0.01       # liquidation when collateral < 1% of notional (assumption; Kraken tiers vary)
+  liquidation_fee: 0.01          # charged on liquidated notional (conservative assumption)
 
 none:
   label: not tradable

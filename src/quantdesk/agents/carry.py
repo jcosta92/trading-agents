@@ -8,6 +8,7 @@ import pandas as pd
 from ..context import Context
 from ..execution import OrderIntent
 from ..ledger import Ledger
+from ..risk import margin_state
 from .base import Agent
 
 
@@ -31,6 +32,8 @@ class FundingCarry(Agent):
         return {"funding"}
 
     def funding_stats(self, ctx: Context, perp: str) -> tuple[float | None, float | None]:
+        """(7-day average, average over the last `exit_negative_hours`), both annualised.
+        The funding store holds daily sums, so the recent window is rounded up to whole days."""
         f = ctx.history(perp, field="funding")
         n = int(self.p.get("avg_window_days", 7))
         if len(f) < n:
@@ -38,8 +41,9 @@ class FundingCarry(Agent):
         # require the series to be current (last value within 2 days of asof)
         if (ctx.asof - f.index[-1]).days > 2:
             return None, None
+        recent_days = max(1, math.ceil(float(self.p.get("exit_negative_hours", 24)) / 24.0))
         avg = float(f.iloc[-n:].mean() * 365.0)
-        last = float(f.iloc[-1] * 365.0)
+        last = float(f.iloc[-recent_days:].mean() * 365.0)
         return avg, last
 
     def decide(self, ctx: Context, ledger: Ledger) -> list[OrderIntent]:
@@ -63,7 +67,7 @@ class FundingCarry(Agent):
             exit_now = (avg is None or avg < float(self.p["exit_annualised"])
                         or (last is not None and last < 0))
             if not exit_now:
-                return []
+                return self._rebalance_collateral(ctx, ledger, active, legs, day)
             combo = f"carry-exit-{day}"
             for iid in (legs["spot"], legs["perp"]):
                 q = ledger.qty(iid)
@@ -95,3 +99,31 @@ class FundingCarry(Agent):
         ledger.meta["entered"] = day
         return [OrderIntent(legs["spot"], qty, f"carry entry ({name}, 7d avg {avg:.1%})", combo=combo),
                 OrderIntent(legs["perp"], -qty, f"carry entry hedge ({name})", combo=combo)]
+
+    def _rebalance_collateral(self, ctx: Context, ledger: Ledger, name: str, legs: dict, day: str) -> list[OrderIntent]:
+        """Keep the perp venue solvent. The spot coins sit at another venue and cannot be used as perp
+        collateral, so a rally eats the perp account's collateral. When perp notional exceeds
+        `max_perp_leverage` x collateral, sell part of the spot (moving the cash to the perp venue) and
+        buy back the same quantity of perp, so the account is back at 1x and still delta-neutral:
+            f = (N - K) / (N + S)   (N = perp notional, K = collateral, S = spot value)"""
+        lev_cap = float(self.p.get("max_perp_leverage", 2.0))
+        marks = {legs["spot"]: ctx.mark(legs["spot"]), legs["perp"]: ctx.mark(legs["perp"])}
+        if not all(marks.values()):
+            return []
+        ms = margin_state(ledger, ctx.fx, marks, self.cm.venues, self.registry)
+        if ms is None:
+            return []
+        ledger.meta["perp_leverage"] = round(ms["leverage"], 3) if math.isfinite(ms["leverage"]) else None
+        if ms["leverage"] <= lev_cap:
+            return []
+        spot_qty = ledger.qty(legs["spot"])
+        spot_val = ctx.fx.to_eur(spot_qty * marks[legs["spot"]], ctx.inst(legs["spot"]).currency)
+        N, K = ms["notional_eur"], ms["collateral_eur"]
+        f = min(1.0, max(0.0, (N - K) / (N + spot_val))) if (N + spot_val) > 0 else 1.0
+        q = math.floor(spot_qty * f * 1e6) / 1e6
+        if q <= 0:
+            return []
+        ctx.note(f"perp leverage {ms['leverage']:.2f}x > {lev_cap}x: moving collateral, reducing both legs by {f:.0%}")
+        combo = f"carry-collateral-{day}"
+        return [OrderIntent(legs["spot"], -q, f"collateral top-up ({name})", combo=combo),
+                OrderIntent(legs["perp"], q, f"collateral top-up hedge ({name})", combo=combo)]

@@ -84,26 +84,36 @@ class CostModel:
         return out
 
     # ------------------------------------------------------------------ spread + slippage
-    def half_spread(self, inst: Instrument, mid: float, bid: float | None = None,
-                    ask: float | None = None, override: str | None = None) -> float:
-        """Half spread in price units (before stress)."""
-        v = self.venue(inst, override)
-        extra = mid * float(v.get("extra_half_spread_bps", 0.0)) / 1e4
-        if valid_quote(bid, ask, inst):
-            return (ask - bid) / 2.0 + extra
+    def _fallback_half_spread(self, inst: Instrument, mid: float) -> float:
         if inst.is_option:
-            return max(inst.half_spread_abs or 0.03, 0.0) + extra
-        return mid * inst.half_spread_bps / 1e4 + extra
+            return max(inst.half_spread_abs or 0.03, 0.0)
+        return mid * inst.half_spread_bps / 1e4
 
     def exec_price(self, inst: Instrument, side: str, mid: float, bid: float | None = None,
                    ask: float | None = None, override: str | None = None) -> float | None:
-        """Pessimistic fill price. Returns None if no sensible price exists (e.g. zero bid on a sell)."""
-        if valid_quote(bid, ask, inst):
-            mid = (bid + ask) / 2.0
-        if mid is None or not math.isfinite(mid) or mid <= 0:
+        """Pessimistic fill price, never better than the quoted side of the book.
+
+        * bid and ask both quoted: buy at the ask, sell at the bid (+ slippage), however wide the spread
+        * only the relevant side quoted: cross it
+        * a quoted bid of 0 on a sell: no fill (None)
+        * nothing quoted: mid +/- the instrument's fallback half-spread
+        `stress` scales the distance from mid (0 = mid, 2 = twice the spread + slippage)."""
+        has_bid, has_ask = _pos(bid), _pos(ask)
+        if side == "sell" and bid is not None and _finite(bid) and bid <= 0:
             return None
+        if has_bid and has_ask and ask >= bid:
+            mid = (bid + ask) / 2.0
+            hs = (ask - bid) / 2.0
+        elif side == "buy" and has_ask and _pos(mid) and ask >= mid:
+            hs = ask - mid
+        elif side == "sell" and has_bid and _pos(mid) and bid <= mid:
+            hs = mid - bid
+        else:
+            if not _pos(mid):
+                return None
+            hs = self._fallback_half_spread(inst, mid)
         v = self.venue(inst, override)
-        hs = self.half_spread(inst, mid, bid, ask, override)
+        hs += mid * float(v.get("extra_half_spread_bps", 0.0)) / 1e4
         slip = mid * float(v.get("slippage_bps", 0.0)) / 1e4
         sign = 1.0 if side == "buy" else -1.0
         px = mid + sign * self.stress * (hs + slip)
@@ -122,16 +132,17 @@ class CostModel:
         return impl + self.fees(inst, qty, px, side, override).total
 
 
-def valid_quote(bid: float | None, ask: float | None, inst: Instrument | None = None) -> bool:
-    if bid is None or ask is None:
-        return False
+def _finite(x) -> bool:
     try:
-        if not (math.isfinite(bid) and math.isfinite(ask)):
-            return False
-    except TypeError:
+        return x is not None and math.isfinite(float(x))
+    except (TypeError, ValueError):
         return False
-    if bid <= 0 or ask <= 0 or ask < bid:
-        return False
-    mid = (bid + ask) / 2.0
-    max_rel = 0.60 if (inst is not None and inst.is_option) else 0.05
-    return (ask - bid) / mid <= max_rel
+
+
+def _pos(x) -> bool:
+    return _finite(x) and float(x) > 0
+
+
+def valid_quote(bid: float | None, ask: float | None, inst: Instrument | None = None) -> bool:
+    """Both sides quoted, positive and not crossed."""
+    return _pos(bid) and _pos(ask) and ask >= bid

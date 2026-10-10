@@ -70,8 +70,11 @@ class NetworkData:
                 return ev
         return pd.Series(dtype="float64")
 
-    def live_quotes(self, resolved, option_chains, fallback_eurusd=None) -> LiveQuotes:
-        return LiveQuotes(resolved, option_chains, fallback_eurusd=fallback_eurusd)
+    def live_quotes(self, resolved, option_chains, fallback_eurusd=None, reference=None) -> LiveQuotes:
+        return LiveQuotes(resolved, option_chains, fallback_eurusd=fallback_eurusd, reference=reference)
+
+    def dividends(self, inst, symbol=None) -> pd.Series:
+        return yahoo.dividends(symbol or (inst.yf[0] if inst and inst.yf else None))
 
     def option_chains(self, spot, rate):
         from ..data.options import LiveOptionChains
@@ -206,8 +209,9 @@ class PaperRunner:
             option_chains = self.data.option_chains(float(spot.iloc[-1]) if len(spot) else float("nan"),
                                                     float(rate.iloc[-1]) / 100 if len(rate) else 0.0)
         fx_hist = self.store.close("EURUSD")
+        reference = {k: float(self.store.close(k).iloc[-1]) for k in self.store.keys() if len(self.store.close(k))}
         self.quotes = self.data.live_quotes(resolved, option_chains,
-                                            float(fx_hist.iloc[-1]) if len(fx_hist) else None)
+                                            float(fx_hist.iloc[-1]) if len(fx_hist) else None, reference)
         if option_chains is not None:
             xq = self.quotes.quote(self.registry.get("XSP"))
             if xq:
@@ -246,6 +250,7 @@ class PaperRunner:
         fx = self.fx
 
         self._accrue_funding(led, fx, out)
+        self._credit_dividends(led, fx, out)
         self._settle_expired_options(led, fx)
 
         marks = self._marks(led)
@@ -260,12 +265,26 @@ class PaperRunner:
         out["risk"] = asdict(rd)
 
         orders: list[OrderIntent] = []
+        ex = Executor(self.cm, self.registry, agent.venue_override)
+        # margined perps: liquidate if collateral is below maintenance (crypto venues are always open)
+        ms = riskmod.margin_state(led, fx, marks, self.cm.venues, self.registry)
+        if ms:
+            out["perp_leverage"] = round(ms["leverage"], 3) if math.isfinite(ms["leverage"]) else None
+        if riskmod.needs_liquidation(ms):
+            liq = riskmod.liquidate(led, ex, ExecutionQuotes(self.quotes, self.now), fx, ms, self.ts)
+            out["fills"] += [f.__dict__ for f in liq]
+            out["notes"].append(f"LIQUIDATED: collateral {ms['collateral_eur']:.2f} EUR vs notional {ms['notional_eur']:.2f} EUR")
+            marks = self._marks(led)
+
         if rd.action == "halt" and not led.halted:
             led.halted, led.halt_reason = True, rd.reason
-            orders = close_all(led, "kill switch: " + rd.reason)
             out["notes"].append(f"KILL SWITCH: {rd.reason}; flattening")
-        pending = [OrderIntent.from_dict(o) for o in led.meta.get("pending", [])]
-        if pending:
+        if led.halted and led.positions:
+            # re-issued on every run until the book is flat (never ages out, survives rejected fills)
+            orders = close_all(led, "kill switch: " + (led.halt_reason or ""))
+            pending = []
+        else:
+            pending = [OrderIntent.from_dict(o) for o in led.meta.get("pending", [])]
             age_limit = int(self.settings.paper.get("pending_order_max_age_days", 3))
             pending = [o for o in pending if (self.now - pd.Timestamp(o.created)).days <= age_limit]
 
@@ -284,6 +303,10 @@ class PaperRunner:
             if rd.action == "block_entries":
                 orders = riskmod.filter_entries(orders, led)
                 out["notes"].append(rd.reason + " - entries blocked")
+            max_gross = spec.risk.get("max_gross")
+            if max_gross and orders and riskmod.gross_ratio(led, fx, marks) >= max_gross:
+                orders = riskmod.filter_entries(orders, led)
+                out["notes"].append(f"gross exposure at/above {max_gross}x - entries blocked")
         orders = pending + orders
         max_n = int(self.settings.paper.get("max_orders_per_agent_per_run", 25))
         if len(orders) > max_n:
@@ -291,18 +314,19 @@ class PaperRunner:
             orders = orders[:max_n]
         if orders and is_open:
             exq = ExecutionQuotes(self.quotes, self.now)
-            ex = Executor(self.cm, self.registry, agent.venue_override)
             fills, rejects = ex.execute(led, orders, exq, self.ts)
-            out["fills"] = [f.__dict__ for f in fills]
+            out["fills"] += [f.__dict__ for f in fills]
             out["rejects"] = [r.__dict__ for r in rejects]
             if exq.stale:
                 out["notes"] += exq.stale
             led.meta["pending"] = []
-        elif orders:
+        elif orders and not led.halted:
             for o in orders:
                 o.created = o.created or self.ts
             led.meta["pending"] = [o.to_dict() for o in orders]
             out["notes"].append(f"market closed: {len(orders)} orders pending")
+        elif orders:
+            out["notes"].append("market closed: kill-switch flatten orders will be re-issued next run")
         out["decided"] = decided
 
         marks = self._marks(led)
@@ -362,6 +386,29 @@ class PaperRunner:
             if iid not in led.positions:
                 last.pop(iid)
         led.meta["funding_ts"] = last
+
+    def _credit_dividends(self, led: Ledger, fx, out: dict) -> None:
+        """Credit cash dividends (ex-date since the last check) on distributing ETFs and US stocks.
+        US stocks: 15% withholding (Portugal-US treaty rate with a W-8BEN). Irish UCITS: none."""
+        last = led.meta.get("div_checked", {})
+        today = self.now.tz_convert("UTC").tz_localize(None).normalize()
+        for iid, pos in list(led.positions.items()):
+            if pos.kind not in ("etf", "stock") or pos.qty <= 0:
+                continue
+            since = pd.Timestamp(last.get(iid) or pos.opened[:10])
+            divs = self.data.dividends(self.registry.get(iid), self.store.meta.get("resolved", {}).get(iid))
+            if divs is None or divs.empty:
+                last[iid] = str(today.date())
+                continue
+            d = divs[(divs.index > since) & (divs.index <= today)]
+            wht = 0.15 if pos.kind == "stock" and pos.currency == "USD" else 0.0
+            for ex_date, amt in d.items():
+                net = pos.qty * float(amt) * (1 - wht)
+                if net > 0:
+                    led.income(self.ts, iid, pos.currency, net, fx, note=f"dividend ex {ex_date.date()} x {pos.qty:g}, wht {wht:.0%}")
+                    out["notes"].append(f"{iid}: dividend {net:.2f} {pos.currency}")
+            last[iid] = str(today.date())
+        led.meta["div_checked"] = {k: v for k, v in last.items() if k in led.positions}
 
     def _settle_expired_options(self, led: Ledger, fx) -> None:
         today = self.now.tz_convert("UTC").tz_localize(None).normalize()

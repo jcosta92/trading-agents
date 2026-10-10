@@ -34,3 +34,44 @@ def is_entry(order_qty: float, held_qty: float) -> bool:
 
 def filter_entries(orders, ledger):
     return [o for o in orders if not is_entry(o.qty, ledger.qty(o.inst_id))]
+
+
+def margin_state(ledger, fx, marks: dict, venues: dict, registry) -> dict | None:
+    """Collateral view of a margined perp account (Kraken EEA).
+
+    Everything except spot/ETF/stock/option holdings is treated as collateral at the perp venue:
+    base and USD cash plus unrealised perp P&L. Spot coins bought for a carry trade sit at another
+    venue (Bitvavo) and do NOT back the perp."""
+    perps = [p for p in ledger.positions.values() if p.kind == "perp"]
+    if not perps:
+        return None
+    notional = sum(fx.to_eur(p.notional(ledger._mark(p, marks)), p.currency) for p in perps)
+    other = sum(fx.to_eur(p.market_value(ledger._mark(p, marks)), p.currency)
+                for p in ledger.positions.values() if p.kind != "perp")
+    collateral = ledger.equity(fx, marks) - other
+    inst = registry.get(perps[0].inst_id)
+    v = venues.get(inst.venue, {}) if inst else {}
+    return {"notional_eur": notional, "collateral_eur": collateral,
+            "leverage": notional / collateral if collateral > 0 else float("inf"),
+            "maintenance": float(v.get("maintenance_margin", 0.01)),
+            "liquidation_fee": float(v.get("liquidation_fee", 0.01))}
+
+
+def needs_liquidation(state: dict | None) -> bool:
+    return bool(state) and state["collateral_eur"] <= state["maintenance"] * state["notional_eur"]
+
+
+def liquidate(ledger, executor, quotes, fx, state: dict, ts: str) -> list:
+    """Force-close every perp at the quote (with normal costs) and charge the venue's liquidation fee."""
+    from .execution import OrderIntent
+    orders = [OrderIntent(iid, -p.qty, "LIQUIDATION: collateral below maintenance margin")
+              for iid, p in ledger.positions.items() if p.kind == "perp"]
+    fills, rejects = executor.execute(ledger, orders, quotes, ts)
+    fee_eur = state["liquidation_fee"] * state["notional_eur"]
+    ledger.charge(ts, "EUR", fee_eur, fx, "liquidation", note="venue liquidation fee")
+    return fills
+
+
+def gross_ratio(ledger, fx, marks) -> float:
+    eq = ledger.equity(fx, marks)
+    return ledger.gross_exposure(fx, marks) / eq if eq > 0 else float("inf")

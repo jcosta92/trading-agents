@@ -64,3 +64,55 @@ def test_run_all_on_synthetic_writes_gate(tmp_path, synth, settings, instruments
     assert gates["trend_etf"].split()[0] in {"PASS", "WEAK", "FAIL"}
     assert (tmp_path / "bt" / "summary.md").exists()
     assert t["ledger_verified"].all()
+
+
+def test_combo_retried_as_a_whole(instruments, venues):
+    from quantdesk.backtest.engine import _execute_pending
+    from quantdesk.execution import Executor, OrderIntent, Quote
+    from quantdesk.ledger import FxRates, Ledger
+
+    class Q:
+        def __init__(self, ok): self.ok = ok
+        def quote(self, inst):
+            if inst.id == "ETH_SPOT" and not self.ok:
+                return None
+            return Quote(2000.0)
+        def fx(self): return FxRates(1.1)
+    reg = Registry(instruments)
+    ex = Executor(CostModel(venues, 1.0), reg)
+    led = Ledger("t", 1000.0)
+    pending = [OrderIntent("ETH_SPOT", 0.2, "s", combo="c"), OrderIntent("ETH_PERP", -0.2, "p", combo="c")]
+    fills, rej = [], []
+    retry = _execute_pending(ex, led, pending, Q(False), "d1", fills, rej)
+    assert {o.inst_id for o in retry} == {"ETH_SPOT", "ETH_PERP"} and not led.positions
+    _execute_pending(ex, led, retry, Q(True), "d2", fills, rej)
+    assert led.qty("ETH_SPOT") > 0 and led.qty("ETH_SPOT") == pytest.approx(-led.qty("ETH_PERP"))
+
+
+def test_carry_collateral_rebalance(settings, instruments, venues):
+    from quantdesk.agents import build_agent
+    from quantdesk.context import Context
+    from quantdesk.execution import Quote
+    from quantdesk.ledger import FxRates, Ledger
+    reg = Registry(instruments)
+    cm = CostModel(venues, 1.0)
+    agent = build_agent(settings.agents["funding_carry"], reg, cm)
+    led = Ledger("funding_carry", 1000.0)
+    fx = FxRates(1.1)
+    led.trade("d", reg.get("BTC_SPOT"), 0.01, 50000.0, {}, fx, 50000.0)        # EUR 500 at Bitvavo
+    led.trade("d", reg.get("BTC_PERP"), -0.01, 55000.0, {}, fx, 55000.0)       # short at Kraken
+    idx = pd.date_range("2026-01-01", "2026-03-01")
+    st = HistoryStore()
+    st.set_series("funding", "BTC_PERP", pd.Series(0.0006, index=idx))       # ~22%/yr: stay in the trade
+    st.set_series("funding", "ETH_PERP", pd.Series(0.0, index=idx))
+
+    class Q:
+        def quote(self, inst):
+            return Quote({"BTC_SPOT": 120000.0, "BTC_PERP": 132000.0}.get(inst.id, 1.0))   # +140% rally
+        def fx(self): return fx
+    ctx = Context(pd.Timestamp("2026-03-01"), st, reg, Q(), "backtest")
+    orders = agent.decide(ctx, led)
+    assert orders and {o.inst_id for o in orders} == {"BTC_SPOT", "BTC_PERP"}
+    spot = next(o for o in orders if o.inst_id == "BTC_SPOT")
+    perp = next(o for o in orders if o.inst_id == "BTC_PERP")
+    assert spot.qty < 0 and perp.qty == pytest.approx(-spot.qty)

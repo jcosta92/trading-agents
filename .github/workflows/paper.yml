@@ -1,10 +1,11 @@
 name: paper
-# One paper-trading cycle for every agent. Runs twice a day during the Xetra/NYSE overlap; the
-# second run is a fallback (agents decide at most once per day, so it only re-marks positions).
+# One paper-trading cycle for every agent. Runs twice a day inside the Xetra/NYSE overlap
+# (Xetra closes 15:30 UTC in summer, 16:30 UTC in winter; NYSE opens 13:30/14:30 UTC). The second
+# run is a fallback for delayed/skipped cron runs: agents decide at most once per day.
 on:
   schedule:
-    - cron: "10 15 * * *"
-    - cron: "45 15 * * *"
+    - cron: "50 14 * * *"
+    - cron: "20 15 * * *"
   workflow_dispatch:
 permissions:
   contents: write

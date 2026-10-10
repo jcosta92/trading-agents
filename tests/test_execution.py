@@ -71,3 +71,15 @@ def test_closing_full_position_not_rounded(instruments, venues):
     q = led.qty("BTC_SPOT")
     ex.execute(led, [OrderIntent("BTC_SPOT", -q, "sell")], Q({"BTC_SPOT": 50000.0}), "d2")
     assert led.positions == {}
+
+
+def test_combo_scaled_together_keeps_hedge(instruments, venues):
+    reg = Registry(instruments)
+    ex = Executor(CostModel(venues, 1.0), reg)
+    led = Ledger("t", 300.0)                      # can only afford part of the spot leg
+    orders = [OrderIntent("BTC_SPOT", 0.01, "spot", combo="c"), OrderIntent("BTC_PERP", -0.01, "perp", combo="c")]
+    fills, rej = ex.execute(led, orders, Q({"BTC_SPOT": 50000.0, "BTC_PERP": 55000.0}), "d")
+    assert not rej and len(fills) == 2
+    assert led.qty("BTC_SPOT") == pytest.approx(-led.qty("BTC_PERP"))
+    assert led.qty("BTC_SPOT") < 0.01
+    assert led.cash["EUR"] >= -1e-9

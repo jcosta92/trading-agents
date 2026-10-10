@@ -73,3 +73,19 @@ def test_estimate_cost_includes_spread_and_fees(instruments, venues):
     spread = 110 * (5 + 2) / 1e4
     assert est == pytest.approx(spread + cm.fees(inst, 1, 110 + spread, "buy").total)
     assert math.isfinite(est)
+
+
+def test_wide_quotes_are_crossed_not_mid_filled(instruments, venues):
+    cm = CostModel(venues, 1.0)
+    opt = option_instrument(instruments["XSP"], "2026-11-20", "P", 640, half_spread_abs=0.025)
+    wide = cm.exec_price(opt, "buy", 0.45, 0.30, 0.60)
+    tight = cm.exec_price(opt, "buy", 0.50, 0.40, 0.60)
+    assert wide == pytest.approx(0.60) and tight == pytest.approx(0.60)
+    etf = cm.exec_price(instruments["WORLD_EQ"], "buy", 33.0, 32.0, 34.0)
+    assert etf >= 34.0
+
+
+def test_zero_bid_cannot_be_sold(instruments, venues):
+    cm = CostModel(venues, 1.0)
+    opt = option_instrument(instruments["XSP"], "2026-11-20", "P", 500)
+    assert cm.exec_price(opt, "sell", 0.02, 0.0, 0.05) is None

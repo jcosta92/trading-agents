@@ -193,6 +193,13 @@ class LiveOptionChains:
                                for k, iv, rt, good in zip(df["strike"], df["iv"], df["right"], ok)]
                 df["mid"] = np.where((df["bid"] > 0) & (df["ask"] >= df["bid"]), (df["bid"] + df["ask"]) / 2,
                                      df["lastPrice"])
+                if scale != 1.0:
+                    # SPX chain used as a stand-in for XSP: keep strikes XSP actually lists (whole points)
+                    # and never assume XSP is tighter than 0.03 either side of mid
+                    df = df[np.isclose(df["strike"], df["strike"].round())].copy()
+                    quoted = df["bid"] > 0
+                    df.loc[quoted, "bid"] = np.minimum(df.loc[quoted, "bid"], df.loc[quoted, "mid"] - 0.03).clip(lower=0)
+                    df["ask"] = np.where(df["ask"] > 0, np.maximum(df["ask"], df["mid"] + 0.03), df["ask"])
                 df["S"] = self.S
             self._chains[key] = df
             self.source = sym

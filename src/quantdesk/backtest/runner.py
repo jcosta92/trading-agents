@@ -56,8 +56,8 @@ def run_all(settings: Settings, store: HistoryStore, instruments: dict, venues: 
             sp = spec.with_variant(variant)
             for stress in (stresses if variant == "main" else [1.0]):
                 registry = Registry(instruments)
-                cm = CostModel(venues, stress)
-                agent = build_agent(sp, registry, cm)
+                cm = CostModel(venues, stress)                        # execution costs at this stress level
+                agent = build_agent(sp, registry, CostModel(venues, 1.0))  # decisions always use x1 costs
                 t0 = time.time()
                 try:
                     res = run_backtest(agent, store, registry, cm, start=sp.backtest_start, end=end,
@@ -77,8 +77,9 @@ def run_all(settings: Settings, store: HistoryStore, instruments: dict, venues: 
                 ci = M.bootstrap_sharpe_ci(res.equity, agent.ppy) if stress == 1.0 else (np.nan, np.nan)
                 row = {"agent": aid, "name": sp.name, "variant": variant, "stress": stress, "hash": config_hash(sp),
                        "calendar": sp.calendar, "ppy": agent.ppy, **st, **tr, **{f"rel_{k}": v for k, v in rel.items()},
-                       "sharpe_ci_lo": ci[0], "sharpe_ci_hi": ci[1], "kill_switch_events": len(res.kill_events),
-                       "first_kill_event": res.kill_events[0]["date"] if res.kill_events else None,
+                       "sharpe_ci_lo": ci[0], "sharpe_ci_hi": ci[1],
+                       "kill_switch_month_freq": M.kill_switch_month_frequency(res.equity, sp.risk.get("max_drawdown")),
+                       "drawdown_events": len(res.kill_events), "liquidations": len(res.diagnostics.get("liquidations", [])),
                        "ledger_verified": res.diagnostics["ledger_verified"],
                        "fallback_funding_days": res.diagnostics["fallback_funding_days"],
                        "runtime_s": round(time.time() - t0, 1)}
@@ -110,8 +111,9 @@ def run_all(settings: Settings, store: HistoryStore, instruments: dict, venues: 
 
 def _details(res: BacktestResult, spec: AgentSpec) -> dict:
     fills = res.fills.tail(40).to_dict("records") if len(res.fills) else []
-    return {"name": spec.name, "thesis": spec.thesis, "note": spec.backtest_note, "kill_events": res.kill_events,
-            "diagnostics": {k: v for k, v in res.diagnostics.items() if k != "coverage_log"},
+    return {"name": spec.name, "thesis": spec.thesis, "note": spec.backtest_note, "drawdown_events": res.kill_events,
+            "liquidations": res.diagnostics.get("liquidations", []),
+            "diagnostics": {k: v for k, v in res.diagnostics.items() if k not in ("coverage_log", "liquidations")},
             "coverage_tail": res.diagnostics.get("coverage_log", [])[-24:],
             "coverage_summary": _coverage_summary(res.diagnostics.get("coverage_log", [])),
             "costs": res.costs, "last_fills": fills, "final_positions": list(res.ledger.positions)}
@@ -197,6 +199,10 @@ def _pct(x, d=1):
     return "n/a" if x is None or (isinstance(x, float) and not math.isfinite(x)) else f"{100 * x:.{d}f}%"
 
 
+def _ks(x):
+    return "n/a" if x is None or (isinstance(x, float) and not math.isfinite(x)) else f"{100 * x:.0f}% of months"
+
+
 def _num(x, d=2):
     return "n/a" if x is None or (isinstance(x, float) and not math.isfinite(x)) else f"{x:.{d}f}"
 
@@ -207,10 +213,12 @@ def summary_markdown(table: pd.DataFrame, summary: dict, settings: Settings) -> 
         lines += ["> **SYNTHETIC DATA - these numbers mean nothing.** Generated only to test the code.", ""]
     lines += [f"Generated {summary['generated']} from commit `{summary['git']}`; data through {summary['data_end']}. "
               f"Distinct configurations tested so far (for the Deflated Sharpe Ratio): {summary['n_trials']}.", "",
-              "Costs: x0 = gross, x1 = modelled fees + spread + slippage + FX, x2 = all costs doubled.", "",
+              "Costs: x0 = no trading costs, x1 = modelled fees + spread + slippage + FX, x2 = those trading costs doubled. "
+              "Decisions are identical at every level (made with x1 costs); perp funding is market data and applies "
+              "unscaled at every level.", "",
               "| Agent | Period | CAGR x0 | CAGR x1 | CAGR x2 | Sharpe x1 (90% CI) | Max DD x1 | Cost drag/yr | "
-              "vs benchmark (excess CAGR) | DSR | Gate |",
-              "|---|---|---|---|---|---|---|---|---|---|---|"]
+              "vs benchmark (excess CAGR) | Kill switch would fire in | DSR | Gate |",
+              "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     if table.empty or "cagr" not in table:
         return "\n".join(lines + ["", "_no results_"])
     main = table[table["variant"] == "main"]
@@ -223,7 +231,8 @@ def summary_markdown(table: pd.DataFrame, summary: dict, settings: Settings) -> 
         ci = f"{_num(r1['sharpe'])} ({_num(r1.get('sharpe_ci_lo'))} to {_num(r1.get('sharpe_ci_hi'))})"
         lines.append(f"| {r1['name']} | {r1['start']} to {r1['end']} | {c(0.0)} | {c(1.0)} | {c(2.0)} | {ci} | "
                      f"{_pct(r1['max_drawdown'])} | {_pct(r1['cost_drag_per_year'], 2)} | "
-                     f"{_pct(r1.get('rel_excess_cagr'))} | {_num(r1.get('dsr'))} | {r1.get('gate', '')} |")
+                     f"{_pct(r1.get('rel_excess_cagr'))} | {_ks(r1.get('kill_switch_month_freq'))} | "
+                     f"{_num(r1.get('dsr'))} | {r1.get('gate', '')} |")
     var = table[table["variant"] != "main"]
     if len(var):
         lines += ["", "## Robustness variants (x1 costs, pre-registered; never used to pick the paper config)", "",

@@ -37,13 +37,14 @@ class FactorEquity(Agent):
 
     # ------------------------------------------------------------------ universe
     def candidates(self, ctx: Context) -> tuple[list[str], dict[str, str]]:
+        """Live: current members minus excluded sectors. Backtest: point-in-time members with NO sector
+        filter - only today's GICS sectors are available, and using them on old dates would leak
+        information (e.g. Visa/Mastercard moved to Financials in 2023)."""
         excl = set(self.p.get("exclude_sectors", []))
         sectors: dict[str, str] = dict(ctx.extras.get("sectors", {}))
         if ctx.mode == "backtest":
-            members = [t for t in members_on(ctx.extras["membership"], ctx.asof) if "~" not in t]
-        else:
-            members = list(sectors)
-        return [t for t in members if sectors.get(t) not in excl], sectors
+            return [t for t in members_on(ctx.extras["membership"], ctx.asof) if "~" not in t], sectors
+        return [t for t in sectors if sectors.get(t) not in excl], sectors
 
     def eligible(self, ctx: Context) -> pd.DataFrame:
         tickers, sectors = self.candidates(ctx)
@@ -63,7 +64,12 @@ class FactorEquity(Agent):
                          "sector": sectors.get(t)})
         df = pd.DataFrame(rows).set_index("ticker") if rows else pd.DataFrame(columns=["price", "mdv", "mom", "sector"])
         cov = {"members": len(tickers), "with_data": int(close.shape[1]), "with_history": len(df)}
-        df = df[(df["price"] >= float(self.p["min_price"])) & (df["mdv"] >= float(self.p["min_median_dollar_volume"]))]
+        # Yahoo history is split/dividend-adjusted, so a price floor on old dates would wrongly drop
+        # stocks that later split (AAPL, NVDA...): apply it only to live (current) prices.
+        keep = df["mdv"] >= float(self.p["min_median_dollar_volume"])
+        if ctx.mode == "live":
+            keep &= df["price"] >= float(self.p["min_price"])
+        df = df[keep]
         cov["eligible"] = len(df)
         ctx.extras.setdefault("_diag", {})["coverage"] = cov
         return df

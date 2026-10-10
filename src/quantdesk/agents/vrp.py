@@ -18,12 +18,16 @@ class PutCreditSpreads(Agent):
     Exits: 50% of credit captured, 21 DTE, or the index closing at/below the short strike.
     Size: total max loss of open spreads <= max_risk_frac x equity. Entries at most weekly and only
     when VIX is between vix_min and its trailing one-year 95th percentile.
-    Fills cross the full quoted spread (sell at bid, buy at ask) - the 'natural' price."""
+    Fills cross the full quoted spread (sell at bid, buy at ask) - the 'natural' price. In backtests the
+    orders decided on a close fill at the NEXT day's close (one day of delay, like a real end-of-day trader)."""
 
-    fill_timing = "close"
+    fill_timing = "next_close"      # backtest: decide on today's close, fill at tomorrow's close quotes
 
     def static_instruments(self) -> list[str]:
         return [self.p.get("underlying", "XSP"), "VIX", "TBILL", "EURUSD"]
+
+    def calendar_reference(self) -> list[str]:
+        return [self.p.get("underlying", "XSP")]          # US trading days only
 
     def lookback_days(self) -> int:
         return 300

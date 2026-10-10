@@ -99,6 +99,9 @@ class Ledger:
         elif t == "funding":
             self.cash[e["ccy"]] += e["amount"]
             self.costs["funding"] -= e.get("amount_eur", 0.0)
+        elif t == "income":
+            self.cash[e["ccy"]] += e["amount"]
+            self.costs["dividends_received"] -= e.get("amount_eur", 0.0)
         elif t == "charge":
             self.cash[e["ccy"]] += e["amount"]          # amount is negative
             self.costs[e.get("category", "other")] -= e.get("amount_eur", 0.0)
@@ -177,6 +180,11 @@ class Ledger:
     def funding(self, ts: str, inst_id: str, ccy: str, amount: float, fx: FxRates, rate: float) -> dict:
         return self.post({"type": "funding", "ts": ts, "inst": inst_id, "ccy": ccy, "amount": float(amount),
                           "amount_eur": fx.to_eur(amount, ccy), "rate": rate})
+
+    def income(self, ts: str, inst_id: str, ccy: str, amount: float, fx: FxRates, note: str = "") -> dict:
+        """Cash income such as dividends (net of withholding). `amount` is positive."""
+        return self.post({"type": "income", "ts": ts, "inst": inst_id, "ccy": ccy, "amount": abs(float(amount)),
+                          "amount_eur": fx.to_eur(abs(amount), ccy), "note": note})
 
     def charge(self, ts: str, ccy: str, amount: float, fx: FxRates, category: str, note: str = "") -> dict:
         """Debit an external cost (e.g. LLM inference). `amount` is positive."""
