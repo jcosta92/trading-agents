@@ -13,14 +13,15 @@ from ..ledger import FxRates
 
 log = logging.getLogger(__name__)
 
-# a live quote this far from yesterday's close is treated as a bad print (marks fall back to the last good one)
+# a Yahoo quote this far from the previous daily close is treated as a bad print: it is neither traded nor
+# used for marks (marks fall back to the last good price) and the run notes flag it
 MAX_JUMP = {"etf": 0.20, "stock": 0.35, "index": 0.15, "crypto_spot": 0.40, "perp": 0.40, "fx": 0.05}
 
 
 class LiveQuotes:
     def __init__(self, resolved_symbols: dict[str, str] | None = None, option_chains=None,
                  yahoo_fn=yahoo.live_quote, ccxt_fn=crypto.live_quote, fallback_eurusd: float | None = None,
-                 reference: dict[str, float] | None = None):
+                 reference=None):
         self.resolved = resolved_symbols or {}
         self.options = option_chains
         self._yahoo = yahoo_fn
@@ -29,7 +30,8 @@ class LiveQuotes:
         self._fx: FxRates | None = None
         self.fallback_eurusd = fallback_eurusd
         self.fx_source = None
-        self.reference = reference or {}          # last daily close per instrument, for sanity checks
+        # previous daily close per instrument (callable or dict), for bad-print checks on Yahoo quotes
+        self.reference = reference if callable(reference) else (lambda iid, d=dict(reference or {}): d.get(iid))
         self.suspicious: list[str] = []
 
     def quote(self, inst: Instrument) -> Quote | None:
@@ -61,8 +63,10 @@ class LiveQuotes:
             q = None
         if q is not None and (not math.isfinite(q.mid) or q.mid <= 0):
             q = None
-        ref = self.reference.get(inst.id)
-        if q is not None and ref and not inst.is_option:
+        # Yahoo can print garbage; an exchange order book (ccxt) is taken as authoritative, so real
+        # crypto crashes are never filtered out of the kill-switch / liquidation checks
+        ref = self.reference(inst.id) if (q is not None and not inst.is_option and not inst.ccxt) else None
+        if q is not None and ref:
             limit = MAX_JUMP.get(inst.kind, 0.25)
             if abs(q.mid / ref - 1) > limit:
                 self.suspicious.append(f"{inst.id}: live {q.mid:.4g} vs last close {ref:.4g} (> {limit:.0%} move) - quote ignored")

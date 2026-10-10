@@ -129,6 +129,13 @@ class PaperRunner:
         return Context(asof, self.store, self.registry, self.quotes, "live", now=self.now, extras=extras,
                        options=options)
 
+    def previous_close(self, iid: str) -> float | None:
+        """Last daily close on or before `asof` (yesterday) - the reference for bad-print checks."""
+        if self.store is None:
+            return None
+        s = self.store.close(iid).loc[:self.asof]
+        return float(s.iloc[-1]) if len(s) else None
+
     def ensure_sp500_panel(self) -> dict[str, str]:
         if not self._sp500_loaded:
             start = str((self.asof - pd.Timedelta(days=430)).date())
@@ -208,10 +215,9 @@ class PaperRunner:
             rate = self.store.close("TBILL")
             option_chains = self.data.option_chains(float(spot.iloc[-1]) if len(spot) else float("nan"),
                                                     float(rate.iloc[-1]) / 100 if len(rate) else 0.0)
-        fx_hist = self.store.close("EURUSD")
-        reference = {k: float(self.store.close(k).iloc[-1]) for k in self.store.keys() if len(self.store.close(k))}
+        fx_hist = self.store.close("EURUSD").loc[:self.asof]
         self.quotes = self.data.live_quotes(resolved, option_chains,
-                                            float(fx_hist.iloc[-1]) if len(fx_hist) else None, reference)
+                                            float(fx_hist.iloc[-1]) if len(fx_hist) else None, self.previous_close)
         if option_chains is not None:
             xq = self.quotes.quote(self.registry.get("XSP"))
             if xq:
@@ -307,7 +313,8 @@ class PaperRunner:
             if max_gross and orders and riskmod.gross_ratio(led, fx, marks) >= max_gross:
                 orders = riskmod.filter_entries(orders, led)
                 out["notes"].append(f"gross exposure at/above {max_gross}x - entries blocked")
-        orders = pending + orders
+        from ..backtest.engine import merge_pending
+        orders = merge_pending(pending, orders)
         max_n = int(self.settings.paper.get("max_orders_per_agent_per_run", 25))
         if len(orders) > max_n:
             out["notes"].append(f"{len(orders)} orders exceeds cap {max_n}; truncated")

@@ -85,6 +85,16 @@ def live_quote(symbol: str) -> dict | None:
                 ts = datetime.fromtimestamp(int(rmt), tz=timezone.utc).isoformat()
         except Exception as exc:
             log.info("info() failed for %s: %s", symbol, exc)
+        if ts is None:
+            # fallback: latest 1-minute bar gives both a price and a timestamp
+            try:
+                h = t.history(period="1d", interval="1m")
+                if h is not None and len(h):
+                    last = float(h["Close"].iloc[-1])
+                    tsv = pd.Timestamp(h.index[-1])
+                    ts = (tsv.tz_convert("UTC") if tsv.tzinfo else tsv.tz_localize("UTC")).isoformat()
+            except Exception as exc:
+                log.info("1m history failed for %s: %s", symbol, exc)
         if bid and ask and ask >= bid > 0 and last and abs((bid + ask) / 2 / last - 1) < 0.02:
             mid = (bid + ask) / 2
         else:

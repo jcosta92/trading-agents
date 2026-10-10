@@ -67,8 +67,9 @@ def liquidate(ledger, executor, quotes, fx, state: dict, ts: str) -> list:
     orders = [OrderIntent(iid, -p.qty, "LIQUIDATION: collateral below maintenance margin")
               for iid, p in ledger.positions.items() if p.kind == "perp"]
     fills, rejects = executor.execute(ledger, orders, quotes, ts)
-    fee_eur = state["liquidation_fee"] * state["notional_eur"]
-    ledger.charge(ts, "EUR", fee_eur, fx, "liquidation", note="venue liquidation fee")
+    filled_eur = sum(f.value_eur for f in fills)
+    if filled_eur > 0:
+        ledger.charge(ts, "EUR", state["liquidation_fee"] * filled_eur, fx, "liquidation", note="venue liquidation fee")
     return fills
 
 

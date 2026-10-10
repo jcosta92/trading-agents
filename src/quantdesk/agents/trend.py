@@ -95,6 +95,8 @@ class TrendETF(Agent):
         if missing:
             w2, diag2, still = self.signals(ctx, only=missing)
             if w2:
+                others = [k for k in ledger.positions if k not in w2]
+                w2 = self._cap(ctx, ledger, w2, others)
                 targets = dict(ledger.meta.get("targets") or {})
                 targets.update(w2)
                 ledger.meta["targets"] = targets

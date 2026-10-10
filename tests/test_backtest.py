@@ -116,3 +116,54 @@ def test_carry_collateral_rebalance(settings, instruments, venues):
     spot = next(o for o in orders if o.inst_id == "BTC_SPOT")
     perp = next(o for o in orders if o.inst_id == "BTC_PERP")
     assert spot.qty < 0 and perp.qty == pytest.approx(-spot.qty)
+
+
+def test_reissued_order_supersedes_retry():
+    from quantdesk.backtest.engine import merge_pending
+    from quantdesk.execution import OrderIntent
+    retry = [OrderIntent("COMMOD", 4, "r"), OrderIntent("BTC_SPOT", 0.1, "s", combo="c"),
+             OrderIntent("BTC_PERP", -0.1, "p", combo="c"), OrderIntent("GOLD", 2, "keep")]
+    new = [OrderIntent("COMMOD", 4, "again"), OrderIntent("BTC_PERP", -0.1, "again")]
+    out = merge_pending(retry, new)
+    ids = [(o.inst_id, o.reason) for o in out]
+    assert ("COMMOD", "r") not in ids and ("BTC_SPOT", "s") not in ids and ("GOLD", "keep") in ids
+    assert sum(1 for o in out if o.inst_id == "COMMOD") == 1
+
+
+def test_carry_closes_orphan_leg_after_liquidation(settings, instruments, venues):
+    from quantdesk.agents import build_agent
+    from quantdesk.context import Context
+    from quantdesk.execution import Quote
+    from quantdesk.ledger import FxRates, Ledger
+    reg = Registry(instruments)
+    agent = build_agent(settings.agents["funding_carry"], reg, CostModel(venues, 1.0))
+    led = Ledger("funding_carry", 1000.0)
+    fx = FxRates(1.1)
+    led.trade("d", reg.get("ETH_SPOT"), 0.2, 2000.0, {}, fx, 2000.0)          # spot left after a liquidation
+    idx = pd.date_range("2026-01-01", "2026-03-01")
+    st = HistoryStore()
+    st.set_series("funding", "ETH_PERP", pd.Series(0.0006, index=idx))
+    st.set_series("funding", "BTC_PERP", pd.Series(0.0, index=idx))
+
+    class Q:
+        def quote(self, inst): return Quote(2000.0)
+        def fx(self): return fx
+    orders = agent.decide(Context(pd.Timestamp("2026-03-01"), st, reg, Q(), "backtest"), led)
+    assert [(o.inst_id, o.qty) for o in orders] == [("ETH_SPOT", -0.2)]
+
+
+def test_liquidation_fee_only_on_filled_notional(instruments, venues):
+    from quantdesk import risk
+    from quantdesk.execution import Executor
+    from quantdesk.ledger import FxRates, Ledger
+    reg = Registry(instruments)
+    led = Ledger("t", 1000.0)
+    fx = FxRates(1.1)
+    led.trade("d", reg.get("BTC_PERP"), 0.02, 50000.0, {}, fx, 50000.0)
+    state = {"liquidation_fee": 0.01, "notional_eur": 1000.0}
+
+    class NoQuote:
+        def quote(self, inst): return None
+        def fx(self): return fx
+    risk.liquidate(led, Executor(CostModel(venues, 1.0), reg), NoQuote(), fx, state, "d2")
+    assert led.costs.get("liquidation", 0.0) == 0.0 and led.qty("BTC_PERP") == 0.02

@@ -201,7 +201,7 @@ def run_backtest(agent: Agent, store: HistoryStore, registry: Registry, cm: Cost
             fills_all += f
             rejects_all += r
         else:
-            pending = pending + orders
+            pending = merge_pending(pending, orders)
 
     equity = pd.Series(eq_rec, name=agent.id).sort_index()
     fills = pd.DataFrame([f.__dict__ for f in fills_all])
@@ -223,6 +223,17 @@ def _marks(ledger: Ledger, registry: Registry, quotes: BacktestQuotes) -> dict[s
         if q is not None:
             out[iid] = q.mid
     return out
+
+
+def merge_pending(retry: list[OrderIntent], new: list[OrderIntent]) -> list[OrderIntent]:
+    """New orders supersede retried ones: a retried order (or its whole combo) is dropped when the
+    agent has re-issued an order for any of its instruments, so nothing is ever filled twice."""
+    if not retry:
+        return list(new)
+    new_insts = {o.inst_id for o in new}
+    dead_combos = {o.combo for o in retry if o.combo and o.inst_id in new_insts}
+    keep = [o for o in retry if not ((o.combo and o.combo in dead_combos) or (not o.combo and o.inst_id in new_insts))]
+    return keep + list(new)
 
 
 def _execute_pending(ex: Executor, ledger: Ledger, pending: list[OrderIntent], quotes, ts: str,

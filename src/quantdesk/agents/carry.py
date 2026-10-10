@@ -63,6 +63,12 @@ class FundingCarry(Agent):
 
         if active:
             legs = self.p["pairs"][active]
+            s_q, p_q = ledger.qty(legs["spot"]), ledger.qty(legs["perp"])
+            if (abs(s_q) > 0) != (abs(p_q) > 0):
+                # one leg is gone (e.g. the perp was liquidated): the rest is an unhedged bet - close it
+                iid, q = (legs["spot"], s_q) if abs(s_q) > 0 else (legs["perp"], p_q)
+                ctx.note(f"{active}: hedge leg missing - closing the remaining {iid}")
+                return [OrderIntent(iid, -q, f"carry: hedge lost ({active})")]
             avg, last = stats.get(active, (None, None))
             exit_now = (avg is None or avg < float(self.p["exit_annualised"])
                         or (last is not None and last < 0))

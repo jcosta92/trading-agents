@@ -144,7 +144,7 @@ def test_kill_switch_flattens_and_halts(tmp_path, settings, instruments, venues,
     ct.trade("2026-10-12T15:10:00+00:00", reg.get("BTC_PERP"), target - ct.qty("BTC_PERP"), px, {}, FxRates(1.1), px)
     (tmp_path / "ledgers" / "crypto_trend.json").write_text(json.dumps(ct.to_dict()))
     s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-13T15:10:00Z",
-                shock={"BTC_PERP": 0.65, "ETH_PERP": 0.65}).run()
+                shock={"BTC_PERP": 0.4, "ETH_PERP": 0.4}).run()
     a = s["agents"]["crypto_trend"]
     assert a["halted"] and a["risk"]["action"] == "halt"
     assert not a["positions"], "kill switch must flatten"
@@ -237,13 +237,22 @@ def test_kill_switch_reissued_until_flat(tmp_path, settings, instruments, venues
     assert not s2["agents"]["crypto_trend"]["positions"], "kill switch must re-issue the flatten"
 
 
-def test_bad_print_is_ignored(tmp_path, settings, instruments, venues, paper_store):
+def test_bad_yahoo_print_is_ignored(tmp_path, settings, instruments, venues, paper_store):
+    store, extras = paper_store
+    _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T15:10:00Z", agents=["bench_sp500"]).run()
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-13T15:10:00Z",
+                shock={"SP500": 0.05}, agents=["bench_sp500"]).run()     # a -95% Yahoo print
+    a = s["agents"]["bench_sp500"]
+    assert not a["halted"] and a["equity_eur"] > 900
+
+
+def test_real_crypto_crash_is_not_filtered(tmp_path, settings, instruments, venues, paper_store):
+    """Exchange (ccxt) quotes are trusted: a 60% crash must reach the books."""
     store, extras = paper_store
     _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T15:10:00Z", agents=["bench_btc"]).run()
     s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-13T15:10:00Z",
-                shock={"BTC_SPOT": 0.05}, agents=["bench_btc"]).run()     # a -95% print
-    a = s["agents"]["bench_btc"]
-    assert not a["halted"] and a["equity_eur"] > 500
+                shock={"BTC_SPOT": 0.4}, agents=["bench_btc"]).run()
+    assert s["agents"]["bench_btc"]["equity_eur"] < 500
 
 
 def test_dividends_credited_once(tmp_path, settings, instruments, venues, paper_store):

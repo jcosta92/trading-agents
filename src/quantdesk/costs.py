@@ -111,6 +111,10 @@ class CostModel:
         else:
             if not _pos(mid):
                 return None
+            if side == "buy" and has_bid:
+                mid = max(mid, bid)          # never buy below a quoted bid
+            if side == "sell" and has_ask:
+                mid = min(mid, ask)          # never sell above a quoted ask
             hs = self._fallback_half_spread(inst, mid)
         v = self.venue(inst, override)
         hs += mid * float(v.get("extra_half_spread_bps", 0.0)) / 1e4

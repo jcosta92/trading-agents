@@ -42,6 +42,10 @@ class PutCreditSpreads(Agent):
         ledger.meta["last_decision"] = day
         und = self.p.get("underlying", "XSP")
         spreads = [s for s in ledger.meta.get("spreads", []) if ledger.qty(s["short"]) < 0]
+        for s in spreads:                    # use the credit actually received, not the decision-day estimate
+            sp, lp = ledger.positions.get(s["short"]), ledger.positions.get(s["long"])
+            if sp is not None and lp is not None:
+                s["credit"] = round(sp.avg_price - lp.avg_price, 4)
         S = ctx.mark(und)
         orders: list[OrderIntent] = []
         still_open = []
@@ -60,10 +64,15 @@ class PutCreditSpreads(Agent):
                 why = "short strike breached"
             if why:
                 combo = f"close-{s['short']}-{day}"
-                orders.append(OrderIntent(s["short"], -ledger.qty(s["short"]), f"spread exit: {why}", combo=combo))
                 lq = ledger.qty(s["long"])
-                if lq:
-                    orders.append(OrderIntent(s["long"], -lq, f"spread exit: {why}", combo=combo))
+                wing_bid = ql.bid if ql is not None else None
+                if lq and wing_bid is not None and wing_bid <= 0:
+                    # the wing is quoted at zero: buy back the short alone, let the wing expire
+                    orders.append(OrderIntent(s["short"], -ledger.qty(s["short"]), f"spread exit: {why} (wing worthless)"))
+                else:
+                    orders.append(OrderIntent(s["short"], -ledger.qty(s["short"]), f"spread exit: {why}", combo=combo))
+                    if lq:
+                        orders.append(OrderIntent(s["long"], -lq, f"spread exit: {why}", combo=combo))
             else:
                 still_open.append(s)
         ledger.meta["spreads"] = spreads           # positions are re-checked against the book next time
