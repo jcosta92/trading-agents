@@ -1,0 +1,241 @@
+# PRE-REGISTERED AGENT SPECIFICATIONS
+# ------------------------------------
+# Written and committed before any backtest on real data was run (see git history).
+# Rules: parameters below are literature defaults, not fitted. Every backtest of a
+# changed parameter set counts as a new trial and is appended to reports/trials.csv,
+# which feeds the Deflated Sharpe Ratio. The `main` configuration is the one that is
+# paper-traded, whatever the robustness variants show (no picking the best variant).
+#
+# Each agent starts with its own isolated EUR 1,000 account.
+
+version: 1
+base_currency: EUR
+initial_capital: 1000.0
+
+backtest:
+  stress_levels: [0.0, 1.0, 2.0]       # 0 = gross (no fees/spread/slippage), 1 = modelled costs, 2 = doubled costs
+  end: null                            # null = latest available data
+  gate:
+    min_sharpe_at_2x_costs: 0.0        # FAIL if net Sharpe at 2x costs <= 0
+    ex_best_year_cagr_min: 0.0         # FAIL if the result disappears once the best calendar year is removed
+    pass_dsr: 0.95                     # PASS needs Deflated Sharpe Ratio >= 0.95; otherwise WEAK
+
+paper:
+  enabled: false                       # switched on once the backtests have been run and reviewed
+  length_days: 31
+  pending_order_max_age_days: 3        # orders for a closed market wait at most this long
+  max_orders_per_agent_per_run: 25
+
+agents:
+
+  bench_sp500:
+    name: "B0 Benchmark: S&P 500 UCITS ETF, buy and hold"
+    class: BuyAndHold
+    calendar: XETR
+    params: {instrument: SP500, cash_buffer: 0.01}
+    risk: {}
+    backtest_start: "2011-01-01"
+
+  bench_btc:
+    name: "B1 Benchmark: Bitcoin spot, buy and hold"
+    class: BuyAndHold
+    calendar: CRYPTO
+    params: {instrument: BTC_SPOT, cash_buffer: 0.005}
+    risk: {}
+    backtest_start: "2018-03-01"
+
+  trend_etf:
+    name: "A1 Multi-asset trend (UCITS ETFs, IBKR)"
+    class: TrendETF
+    calendar: XETR
+    thesis: >
+      Time-series momentum across asset classes (Moskowitz, Ooi & Pedersen 2012; Hurst, Ooi &
+      Pedersen 2017). Long an asset when its 12-month return is positive, otherwise cash.
+    params:
+      instruments: [WORLD_EQ, EM_EQ, EUR_GOVT, GOLD, COMMOD]
+      signal: tsmom            # tsmom = 12-month total return > 0 ; sma = price above 210-day average
+      lookback_days: 252
+      vol_window: 60
+      target_vol: 0.10         # portfolio-level target, split equally across the universe
+      max_weight: 0.40
+      max_gross: 1.0
+      rebalance: monthly
+      drift_band: 0.30         # resize a held position only if it is >30% away from target
+      max_cost_frac: 0.02      # ...and only if the estimated cost is <= 2% of the trade value
+      min_trade_eur: 25
+    risk: {max_drawdown: 0.15, daily_loss: 0.05, max_gross: 1.0}
+    backtest_start: "2011-01-01"
+    variants:
+      sma_signal: {signal: sma, lookback_days: 210}
+
+  trend_etf_t212:
+    name: "A1b Same trend signals, Trading 212 cost model"
+    class: TrendETF
+    calendar: XETR
+    venue_override: t212
+    thesis: Identical rules to A1; isolates how much the broker's fee schedule matters at EUR 1,000.
+    params:
+      instruments: [WORLD_EQ, EM_EQ, EUR_GOVT, GOLD, COMMOD]
+      signal: tsmom
+      lookback_days: 252
+      vol_window: 60
+      target_vol: 0.10
+      max_weight: 0.40
+      max_gross: 1.0
+      rebalance: monthly
+      drift_band: 0.30
+      max_cost_frac: 0.02
+      min_trade_eur: 25
+    risk: {max_drawdown: 0.15, daily_loss: 0.05, max_gross: 1.0}
+    backtest_start: "2011-01-01"
+
+  factor_equity:
+    name: "A2 Equity factor tilt: momentum + value + quality (US large caps, IBKR)"
+    class: FactorEquity
+    calendar: XNYS
+    thesis: >
+      Long-only tilt toward stocks that rank well on 12-1 month momentum, EBITDA/EV and quality
+      (ROE, gross margin, low leverage). Expect heavy post-publication decay (McLean & Pontiff 2016).
+    params:
+      exclude_sectors: [Financials, Real Estate]
+      min_price: 10.0
+      min_median_dollar_volume: 50000000
+      adv_window: 60
+      momentum_lookback: 252
+      momentum_skip: 21
+      factors: [momentum, value, quality]
+      winsor: 0.05
+      n_holdings: 10
+      sell_rank_pct: 0.25       # sell a holding once it falls out of the top 25% of the ranked universe
+      quarterly_resize_band: 0.30
+      cash_buffer: 0.01
+      min_fundamentals_coverage: 0.70   # below this, fall back to momentum-only for that rebalance (logged)
+    risk: {max_drawdown: 0.20, daily_loss: 0.06, max_gross: 1.0}
+    backtest_start: "2008-01-01"
+    backtest_note: >
+      Free data has no point-in-time fundamentals, so the backtest can only test the momentum leg,
+      on point-in-time S&P 500 membership. Delisted names are often missing from Yahoo, which biases
+      the backtest upward; coverage is reported. The UCITS factor-ETF proxy (factor_ucits_proxy) is
+      the honest check on what a multi-factor tilt actually earned.
+    variants:
+      holdings_20: {n_holdings: 20}
+
+  factor_ucits_proxy:
+    name: "R1 Research only: UCITS factor ETFs (momentum/value/quality), equal weight"
+    class: StaticWeights
+    calendar: XETR
+    paper: false
+    params:
+      weights: {MOM_WORLD: 0.333, VAL_WORLD: 0.333, QUAL_WORLD: 0.333}
+      rebalance: quarterly
+      drift_band: 0.20
+      max_cost_frac: 0.02
+      min_trade_eur: 25
+    risk: {}
+    backtest_start: "2015-01-01"
+
+  crypto_trend:
+    name: "A3 Crypto trend: BTC/ETH long or flat (Kraken EEA perps, 1x)"
+    class: CryptoTrend
+    calendar: CRYPTO
+    thesis: >
+      Crypto shows strong time-series momentum. Long when price is above its 100-day average AND
+      the 30-day return is positive; flat otherwise. Perps at <=1x for low fees; funding is paid.
+    params:
+      instruments: {BTC_PERP: 0.5, ETH_PERP: 0.5}
+      sma_window: 100
+      momentum_window: 30
+      vol_window: 60
+      target_vol: 0.40          # per asset, annualised
+      max_leverage: 1.0
+      drift_band: 0.25
+      max_cost_frac: 0.01
+      min_trade_eur: 20
+    risk: {max_drawdown: 0.30, daily_loss: 0.12, max_gross: 1.0}
+    backtest_start: "2018-03-01"
+    variants:
+      sma50_no_mom: {sma_window: 50, momentum_window: 0}
+
+  funding_carry:
+    name: "A4 Conditional funding carry: long spot / short perp (Bitvavo + Kraken)"
+    class: FundingCarry
+    calendar: CRYPTO
+    thesis: >
+      Harvest positive perpetual funding with a delta-neutral position, but only when funding is
+      high enough to pay for entry and exit. Expected to sit in cash for long stretches in 2026.
+    params:
+      pairs: {BTC: {spot: BTC_SPOT, perp: BTC_PERP}, ETH: {spot: ETH_SPOT, perp: ETH_PERP}}
+      entry_annualised: 0.12    # enter when the 7-day average funding > 12%/yr
+      exit_annualised: 0.04     # exit when it falls below 4%/yr ...
+      exit_negative_hours: 24   # ... or the last 24h average is negative
+      avg_window_days: 7
+      spot_fraction: 0.5       # half the equity buys spot; the perp short has the same coin quantity
+      min_trade_eur: 50
+    risk: {max_drawdown: 0.10, daily_loss: 0.05, max_gross: 1.05}
+    backtest_start: "2020-01-01"
+    variants:
+      entry_8pct: {entry_annualised: 0.08}
+
+  vrp_spreads:
+    name: "A5 Volatility risk premium: XSP put credit spreads (IBKR)"
+    class: PutCreditSpreads
+    calendar: XNYS
+    thesis: >
+      Index implied volatility exceeds realised volatility on average, so selling index puts earns
+      a premium (Cboe PUT index). At EUR 1,000 only defined-risk spreads are acceptable.
+    params:
+      underlying: XSP
+      dte_min: 30
+      dte_max: 45
+      short_delta: 0.16
+      width_pct: 0.005          # strike gap = 0.5% of the index, rounded to whole points (~3 pts at XSP 670), min 1
+      take_profit: 0.50         # close when 50% of the credit has been captured
+      exit_dte: 21
+      close_on_breach: true     # close if the underlying closes at/below the short strike
+      max_risk_frac: 0.35       # total max loss across open spreads <= 35% of equity
+      max_open: 3
+      entry_gap_days: 5         # trading days between new entries
+      vix_min: 13.0
+      vix_max_pctile: 0.95      # skip when VIX is above its 1-year 95th percentile
+      min_credit_cost_multiple: 2.0   # natural credit must be >= 2x the spread's round-trip fees
+      # Backtest-only synthetic option model (no free historical option quotes exist):
+      model_atm_iv_ratio: 0.90  # ATM implied vol = 0.90 x VIX
+      model_skew_per_pct: 1.0   # +1.0 vol point per 1% out of the money
+      model_dividend_yield: 0.013
+      model_half_spread_min: 0.025
+      model_half_spread_frac: 0.015
+    risk: {max_drawdown: 0.25, daily_loss: 0.15}
+    backtest_start: "2008-01-01"
+    backtest_note: >
+      Option prices are SYNTHETIC (Black-Scholes on VIX with a fixed skew and a spread model).
+      Results are indicative of the mechanics and cost drag, not evidence of an edge.
+    variants:
+      delta_10: {short_delta: 0.10}
+
+  llm_news:
+    name: "A6 LLM news challenger (bounded, IBKR)"
+    class: LLMNews
+    calendar: XNYS
+    thesis: >
+      Controlled experiment: an LLM turns headlines into structured events; fixed rules decide.
+      Published bias-controlled studies (FINSABER, StockBench) say this probably does not beat
+      buy-and-hold. Inference cost is charged to this agent's account.
+    params:
+      universe_size: 100        # most liquid S&P 500 names by 60-day median dollar volume
+      lookback_hours: 24
+      model: claude-haiku-5-5   # platform.claude.com/docs/en/models/overview (checked 2026-10-10)
+      price_input_per_mtok: 0.10
+      price_output_per_mtok: 0.50
+      batch_size: 25
+      monthly_llm_budget_usd: 15.0
+      min_materiality: 2
+      momentum_window: 21
+      max_positions: 3
+      hold_days: 5
+      stop_loss: 0.07
+      cash_buffer: 0.01
+    risk: {max_drawdown: 0.20, daily_loss: 0.08, max_gross: 1.0}
+    backtest: false
+    backtest_note: >
+      Not backtestable honestly: no point-in-time news archive, and the model was trained on the
+      historical period. Forward (paper) test only.

@@ -1,0 +1,202 @@
+# Tradable and reference instruments.
+#
+# yf:         Yahoo Finance symbols, tried in order; the first one that returns data is used.
+# proxy:      older series whose daily returns are spliced in BEFORE the instrument's first
+#             trading day, to lengthen backtests. Never used in the live paper run.
+# lot_size:   1 = whole units only, 0 = fractional allowed.
+# half_spread_bps: fallback half bid-ask spread used when no live bid/ask is available.
+# venue:      key into venues.yaml (fee schedule).
+# calendar:   XETR (Xetra), XNYS (NYSE), CRYPTO (24/7).
+
+# ---------------------------------------------------------------- UCITS ETFs (EUR, Xetra)
+SP500:
+  kind: etf
+  description: Vanguard S&P 500 UCITS ETF (USD) Accumulating, Xetra, EUR
+  currency: EUR
+  venue: ibkr_xetra
+  calendar: XETR
+  lot_size: 1
+  half_spread_bps: 5
+  yf: [VUAA.DE]
+  proxy: {yf: SXR8.DE, currency: EUR}
+
+WORLD_EQ:
+  kind: etf
+  description: iShares Core MSCI World UCITS ETF (Acc), Xetra, EUR
+  currency: EUR
+  venue: ibkr_xetra
+  calendar: XETR
+  lot_size: 1
+  half_spread_bps: 5
+  yf: [EUNL.DE]
+  proxy: {yf: URTH, currency: USD}
+
+EM_EQ:
+  kind: etf
+  description: iShares Core MSCI EM IMI UCITS ETF (Acc), Xetra, EUR
+  currency: EUR
+  venue: ibkr_xetra
+  calendar: XETR
+  lot_size: 1
+  half_spread_bps: 8
+  yf: [IS3N.DE, EUNM.DE]
+  proxy: {yf: EEM, currency: USD}
+
+EUR_GOVT:
+  kind: etf
+  description: iShares Core EUR Govt Bond UCITS ETF (Dist), Xetra, EUR
+  currency: EUR
+  venue: ibkr_xetra
+  calendar: XETR
+  lot_size: 1
+  half_spread_bps: 5
+  yf: [EUNH.DE]
+
+GOLD:
+  kind: etf
+  description: Xetra-Gold ETC (1 g physical gold per unit), Xetra, EUR
+  currency: EUR
+  venue: ibkr_xetra
+  calendar: XETR
+  lot_size: 1
+  half_spread_bps: 5
+  yf: [4GLD.DE, PPFB.DE]
+  proxy: {yf: GLD, currency: USD}
+
+COMMOD:
+  kind: etf
+  description: iShares Diversified Commodity Swap UCITS ETF (DE), Xetra, EUR
+  currency: EUR
+  venue: ibkr_xetra
+  calendar: XETR
+  lot_size: 1
+  half_spread_bps: 10
+  yf: [EXXY.DE, SXRS.DE]
+  proxy: {yf: DBC, currency: USD}
+
+# UCITS factor ETFs: research-only proxy for the equity factor tilt (backtest only)
+MOM_WORLD:
+  kind: etf
+  description: iShares Edge MSCI World Momentum Factor UCITS ETF, Xetra, EUR
+  currency: EUR
+  venue: ibkr_xetra
+  calendar: XETR
+  lot_size: 1
+  half_spread_bps: 8
+  yf: [IS3R.DE]
+VAL_WORLD:
+  kind: etf
+  description: iShares Edge MSCI World Value Factor UCITS ETF, Xetra, EUR
+  currency: EUR
+  venue: ibkr_xetra
+  calendar: XETR
+  lot_size: 1
+  half_spread_bps: 8
+  yf: [IS3S.DE]
+QUAL_WORLD:
+  kind: etf
+  description: iShares Edge MSCI World Quality Factor UCITS ETF, Xetra, EUR
+  currency: EUR
+  venue: ibkr_xetra
+  calendar: XETR
+  lot_size: 1
+  half_spread_bps: 8
+  yf: [IS3Q.DE]
+
+# ---------------------------------------------------------------- Crypto
+# Spot: fees modelled on Bitvavo (MiCA-licensed, EUR markets); live prices from Kraken's EUR book.
+BTC_SPOT:
+  kind: crypto_spot
+  description: Bitcoin vs EUR (Bitvavo fee schedule, Kraken BTC/EUR quotes)
+  currency: EUR
+  venue: bitvavo_spot
+  calendar: CRYPTO
+  lot_size: 0
+  half_spread_bps: 3
+  yf: [BTC-EUR]
+  ccxt: {exchange: kraken, symbol: BTC/EUR}
+
+ETH_SPOT:
+  kind: crypto_spot
+  description: Ether vs EUR (Bitvavo fee schedule, Kraken ETH/EUR quotes)
+  currency: EUR
+  venue: bitvavo_spot
+  calendar: CRYPTO
+  lot_size: 0
+  half_spread_bps: 4
+  yf: [ETH-EUR]
+  ccxt: {exchange: kraken, symbol: ETH/EUR}
+
+# Perpetuals: Kraken Pro EEA multi-collateral perps, USD-quoted. Funding accrues to the holder.
+BTC_PERP:
+  kind: perp
+  description: Kraken EEA BTC/USD perpetual (PF_XBTUSD)
+  currency: USD
+  venue: kraken_eea_perp
+  calendar: CRYPTO
+  lot_size: 0
+  half_spread_bps: 1
+  yf: [BTC-USD]
+  ccxt: {exchange: krakenfutures, symbol: BTC/USD:USD}
+  funding:
+    - {source: krakenfutures, symbol: BTC/USD:USD}
+    - {source: hyperliquid, symbol: BTC/USDC:USDC}
+    - {source: binance_vision, symbol: BTCUSDT}
+
+ETH_PERP:
+  kind: perp
+  description: Kraken EEA ETH/USD perpetual (PF_ETHUSD)
+  currency: USD
+  venue: kraken_eea_perp
+  calendar: CRYPTO
+  lot_size: 0
+  half_spread_bps: 1
+  yf: [ETH-USD]
+  ccxt: {exchange: krakenfutures, symbol: ETH/USD:USD}
+  funding:
+    - {source: krakenfutures, symbol: ETH/USD:USD}
+    - {source: hyperliquid, symbol: ETH/USDC:USDC}
+    - {source: binance_vision, symbol: ETHUSDT}
+
+# ---------------------------------------------------------------- Reference series (not traded)
+XSP:
+  kind: index
+  description: Mini-SPX index level (S&P 500 / 10); underlying of the XSP options
+  currency: USD
+  venue: ibkr_us_option
+  calendar: XNYS
+  lot_size: 0
+  half_spread_bps: 0
+  yf: [^GSPC]
+  price_scale: 0.1
+  option_chain_yf: [^XSP, ^SPX]
+
+VIX:
+  kind: index
+  description: Cboe Volatility Index
+  currency: USD
+  venue: none
+  calendar: XNYS
+  lot_size: 0
+  half_spread_bps: 0
+  yf: [^VIX]
+
+TBILL:
+  kind: index
+  description: 13-week US T-bill yield (percent)
+  currency: USD
+  venue: none
+  calendar: XNYS
+  lot_size: 0
+  half_spread_bps: 0
+  yf: [^IRX]
+
+EURUSD:
+  kind: fx
+  description: EUR/USD spot (USD per EUR)
+  currency: USD
+  venue: none
+  calendar: CRYPTO
+  lot_size: 0
+  half_spread_bps: 0
+  yf: [EURUSD=X]

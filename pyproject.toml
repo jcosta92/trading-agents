@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quantdesk"
+version = "0.1.0"
+description = "Multi-agent paper-trading and backtesting system: EUR 1,000 per agent, full EU retail cost model"
+requires-python = ">=3.11"
+readme = "README.md"
+
+[project.scripts]
+quantdesk = "quantdesk.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

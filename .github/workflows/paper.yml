@@ -1,0 +1,47 @@
+name: paper
+# One paper-trading cycle for every agent. Runs twice a day during the Xetra/NYSE overlap; the
+# second run is a fallback (agents decide at most once per day, so it only re-marks positions).
+on:
+  schedule:
+    - cron: "10 15 * * *"
+    - cron: "45 15 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: repo-writes
+  cancel-in-progress: false
+jobs:
+  paper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt && pip install -e .
+      - name: Check paper.enabled
+        id: flag
+        run: python -c "import yaml;print('enabled=' + str(bool(yaml.safe_load(open('config/agents.yaml'))['paper'].get('enabled'))).lower())" >> "$GITHUB_OUTPUT"
+      - name: Paper-trading cycle
+        if: steps.flag.outputs.enabled == 'true'
+        shell: bash
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          mkdir -p state/logs
+          python -m quantdesk.cli -v paper 2>&1 | tee "state/logs/$(date -u +%Y-%m-%dT%H%M).log"
+      - name: Job summary
+        if: always() && steps.flag.outputs.enabled == 'true'
+        run: cat reports/STATUS.md >> "$GITHUB_STEP_SUMMARY" || true
+      - name: Commit state and dashboard
+        if: always() && steps.flag.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A state docs reports/STATUS.md
+          git commit -m "Paper cycle $(date -u +%Y-%m-%dT%H:%MZ)" || { echo "nothing to commit"; exit 0; }
+          for i in 1 2 3 4 5; do git pull --rebase && git push && break; sleep $((i*5)); done

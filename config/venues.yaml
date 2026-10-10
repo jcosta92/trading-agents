@@ -1,0 +1,101 @@
+# Fee schedules used by the cost model (backtest AND paper run).
+# Every order pays the sum of its fee components, plus the bid-ask spread and slippage.
+#
+# Fee component fields:
+#   basis:  value (qty*price*multiplier) | units (shares/contracts/coins) | order (flat per order)
+#   rate:   per unit of basis;   fixed: flat amount added;   min / max: clamps on the component
+#   max_pct_value: cap as a fraction of trade value;   sides: [buy, sell] (default both)
+#   rate_by_premium: options only, list of [premium_upper_bound, rate_per_contract]
+# Amounts are in the instrument's currency.
+#
+# Sources checked 2026-10-10 (verify again before trading real money):
+#   IBKR Ireland stocks Europe:  interactivebrokers.ie/en/pricing/commissions-stocks-europe.php
+#   IBKR Xetra pass-through:     interactivebrokers.ie/en/accounts/fees/IBIS-StkFees.php
+#   IBKR US stocks:              interactivebrokers.ie/en/pricing/commissions-stocks.php
+#   IBKR US options:             interactivebrokers.ie/en/pricing/commissions-options.php
+#   Kraken Pro:                  kraken.com/features/fee-schedule (spot 0.40%/0.80%, futures 0.02%/0.05%)
+#   Bitvavo:                     bitvavo.com/en/fees (EUR markets 0.15% maker / 0.25% taker)
+#   Trading 212:                 commission-free stocks/ETFs, 0.15% FX fee
+
+ibkr_xetra:
+  label: IBKR Ireland - Xetra, Tiered pricing
+  fees:
+    - {name: ibkr_commission, basis: value, rate: 0.0005, min: 1.25, max: 29.0}
+    - {name: xetra_exchange_fee, basis: value, rate: 0.000072, min: 0.90, max: 72.0}
+    - {name: clearing_fee, basis: value, rate: 0.000008, fixed: 0.02, max: 4.02}
+    - {name: regulatory_fee, basis: order, fixed: 0.01}
+  slippage_bps: 2
+  fx_conversion: 0.0003
+  auto_fx: true
+  allow_negative_cash: false
+
+t212:
+  label: Trading 212 Invest - commission-free, fractional
+  fees: []
+  extra_half_spread_bps: 5      # execution quality allowance vs. exchange book (assumption)
+  slippage_bps: 3
+  fx_conversion: 0.0015
+  auto_fx: true
+  allow_negative_cash: false
+  fractional: true              # overrides instrument lot_size
+
+ibkr_us_stock:
+  label: IBKR Ireland - US stocks, Tiered pricing
+  fees:
+    - {name: ibkr_commission, basis: units, rate: 0.0035, min: 0.35, max_pct_value: 0.01}
+    - {name: exchange_fee, basis: units, rate: 0.0030}
+    - {name: clearing_fee, basis: units, rate: 0.0002}
+    - {name: cat_fee, basis: units, rate: 0.000003}
+    - {name: sec_fee, basis: value, rate: 0.0000206, sides: [sell]}
+  slippage_bps: 2
+  fx_conversion: 0.0003
+  auto_fx: true
+  allow_negative_cash: false
+
+ibkr_us_option:
+  label: IBKR Ireland - US index options (XSP), Tiered
+  fees:
+    - {name: ibkr_commission, basis: units, rate_by_premium: [[0.05, 0.25], [0.10, 0.50], [.inf, 0.65]], min: 1.00}
+    - {name: occ_clearing, basis: units, rate: 0.025}
+    - {name: cat_fee, basis: units, rate: 0.0003}
+    - {name: exchange_and_orf, basis: units, rate: 0.30}   # conservative allowance; not itemised by IBKR
+  slippage_bps: 0                # options cross the full quoted spread instead
+  fx_conversion: 0.0003
+  auto_fx: true
+  allow_negative_cash: false
+
+bitvavo_spot:
+  label: Bitvavo spot, EUR markets, lowest tier (taker)
+  fees:
+    - {name: taker_fee, basis: value, rate: 0.0025}
+  slippage_bps: 3
+  fx_conversion: 0.0
+  auto_fx: false
+  allow_negative_cash: false
+
+kraken_spot:
+  label: Kraken Pro spot, lowest tier (taker)
+  fees:
+    - {name: taker_fee, basis: value, rate: 0.0080}
+  slippage_bps: 3
+  fx_conversion: 0.0
+  auto_fx: false
+  allow_negative_cash: false
+
+kraken_eea_perp:
+  label: Kraken Pro EEA perpetuals, lowest tier (taker)
+  fees:
+    - {name: taker_fee, basis: value, rate: 0.0005}
+  slippage_bps: 2
+  fx_conversion: 0.0
+  auto_fx: false
+  allow_negative_cash: true      # multi-collateral margin: USD P&L can go negative against EUR collateral
+  margin: true
+
+none:
+  label: not tradable
+  fees: []
+  slippage_bps: 0
+  fx_conversion: 0.0
+  auto_fx: false
+  allow_negative_cash: false
