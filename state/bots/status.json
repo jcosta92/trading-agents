@@ -1,5 +1,5 @@
 {
- "ts": "2026-10-12T17:02:00.951945+00:00",
+ "ts": "2026-10-12T17:17:00.779650+00:00",
  "start": "2026-10-12T17:00:00+00:00",
  "end": "2026-11-12T17:00:00+00:00",
  "bots": {
@@ -10,12 +10,170 @@
    "return": 0.0,
    "cash_eur": 1000.0,
    "positions": {},
-   "open_orders": [],
-   "last_candle": null,
+   "open_orders": [
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "market",
+     "price": null,
+     "qty": 0.005589206490666916,
+     "eur": null,
+     "tag": "grid:initial buy"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 75203.26825492262,
+     "qty": 0.0008226623532979128,
+     "eur": null,
+     "tag": "grid:sell:10"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 75960.70039497265,
+     "qty": 0.0008144592837691031,
+     "eur": null,
+     "tag": "grid:sell:11"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 76725.76123866938,
+     "qty": 0.0008063380100699248,
+     "eur": null,
+     "tag": "grid:sell:12"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 77498.52762077631,
+     "qty": 0.0007982977165840138,
+     "eur": null,
+     "tag": "grid:sell:13"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 78279.07714992113,
+     "qty": 0.0007903375958278168,
+     "eur": null,
+     "tag": "grid:sell:14"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 79067.48821638997,
+     "qty": 0.0007824568483694971,
+     "eur": null,
+     "tag": "grid:sell:15"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 79863.84000000013,
+     "qty": 0.0007746546827486475,
+     "eur": null,
+     "tag": "grid:sell:16"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 68032.16,
+     "qty": 0.0009003095006832062,
+     "eur": null,
+     "tag": "grid:buy:0"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 68717.36618500717,
+     "qty": 0.0008913321828298419,
+     "eur": null,
+     "tag": "grid:buy:1"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 69409.47362841878,
+     "qty": 0.0008824443811215132,
+     "eur": null,
+     "tag": "grid:buy:2"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 70108.55183831663,
+     "qty": 0.0008736452029597458,
+     "eur": null,
+     "tag": "grid:buy:3"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 70814.67102285392,
+     "qty": 0.0008649337646464936,
+     "eur": null,
+     "tag": "grid:buy:4"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 71527.90209730617,
+     "qty": 0.0008563091912953889,
+     "eur": null,
+     "tag": "grid:buy:5"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 72248.31669119325,
+     "qty": 0.0008477706167438791,
+     "eur": null,
+     "tag": "grid:buy:6"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 72975.98715547312,
+     "qty": 0.0008393171834662371,
+     "eur": null,
+     "tag": "grid:buy:7"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 73710.98656980797,
+     "qty": 0.0008309480424874413,
+     "eur": null,
+     "tag": "grid:buy:8"
+    }
+   ],
+   "last_candle": "2026-10-12T17:00:00+00:00",
    "finished": null,
    "costs_eur": {},
-   "notes": [],
-   "state": {}
+   "notes": [
+    "2026-10-12 17:00 grid built around 73,948.00: 68,032.16-79,863.84, 16 levels, EUR 61 per level"
+   ],
+   "state": {
+    "center": 73948.0
+   }
   },
   "dca_eth": {
    "name": "DCA bot with safety orders on ETH/EUR (3Commas-style)",
@@ -24,12 +182,27 @@
    "return": 0.0,
    "cash_eur": 1000.0,
    "positions": {},
-   "open_orders": [],
-   "last_candle": null,
+   "open_orders": [
+    {
+     "inst": "ETH_SPOT",
+     "side": "buy",
+     "type": "market",
+     "price": null,
+     "qty": null,
+     "eur": 70.0,
+     "tag": "dca:base"
+    }
+   ],
+   "last_candle": "2026-10-12T17:00:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
-   "state": {}
+   "state": {
+    "deal": {
+     "opened": "2026-10-12T17:00:00+00:00",
+     "safety_filled": 0
+    }
+   }
   },
   "bb_meanrev": {
    "name": "BinHV45 Bollinger mean reversion on 8 coins (Freqtrade community strategy)",
@@ -39,7 +212,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": null,
+   "last_candle": "2026-10-12T17:00:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -81,7 +254,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": null,
+   "last_candle": "2026-10-12T17:10:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -95,7 +268,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": null,
+   "last_candle": "2026-10-12T17:00:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -122,12 +295,51 @@
    "return": 0.0,
    "cash_eur": 1000.0,
    "positions": {},
-   "open_orders": [],
-   "last_candle": null,
+   "open_orders": [
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "market",
+     "price": null,
+     "qty": null,
+     "eur": 247.5,
+     "tag": "rb:initial buy"
+    },
+    {
+     "inst": "ETH_SPOT",
+     "side": "buy",
+     "type": "market",
+     "price": null,
+     "qty": null,
+     "eur": 247.5,
+     "tag": "rb:initial buy"
+    },
+    {
+     "inst": "SOL_SPOT",
+     "side": "buy",
+     "type": "market",
+     "price": null,
+     "qty": null,
+     "eur": 247.5,
+     "tag": "rb:initial buy"
+    },
+    {
+     "inst": "XRP_SPOT",
+     "side": "buy",
+     "type": "market",
+     "price": null,
+     "qty": null,
+     "eur": 247.5,
+     "tag": "rb:initial buy"
+    }
+   ],
+   "last_candle": "2026-10-12T17:00:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
-   "state": {}
+   "state": {
+    "rebalances": 0
+   }
   },
   "momentum_rotation": {
    "name": "Momentum rotation: all-in on the best coin of the last 24h (Pionex Momentum Rebalancing)",
@@ -151,7 +363,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": null,
+   "last_candle": "2026-10-12T17:10:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -159,7 +371,7 @@
   }
  },
  "errors": [],
- "eurusd": 1.1161960363388062,
+ "eurusd": 1.1163206100463867,
  "data_sources": {
   "BTC/EUR": "bitvavo",
   "ETH/EUR": "bitvavo",
