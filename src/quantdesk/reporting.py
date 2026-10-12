@@ -557,11 +557,13 @@ def write_backtest_html(out_dir: Path, settings: Settings, docs_dir: Path | None
     fm = dm.get("funding", {})
     for k, v in fm.items():
         data_notes.append(f"Funding for {k}: source {v.get('chosen')} " + ", ".join(
-            f"{s}: {i.get('events')} events from {str(i.get('first'))[:10]}" for s, i in v.get("sources", {}).items()))
+            f"{s}: {i.get('events')} events from {str(i.get('first'))[:10]}"
+            for s, i in v.get("sources", {}).items() if isinstance(i, dict)))
     cov = [(aid, d.get("coverage_summary")) for aid, d in details.items() if d.get("coverage_summary")]
     for aid, c in cov:
         data_notes.append(f"{aid}: on average {100 * c['avg_share_with_price_data']:.0f}% of index members had Yahoo price "
-                          f"data (minimum {100 * c['min_share_with_price_data']:.0f}%) — the rest are delisted names, a survivorship bias that flatters the result.")
+                          f"data (minimum {100 * c['min_share_with_price_data']:.0f}%). The missing members are mostly companies "
+                          f"that were later delisted, acquired or renamed: a survivorship bias that flatters the result.")
     synth = "<div class='warn'><b>Synthetic data.</b> These numbers only test the code.</div>" if summary.get("synthetic_data") else ""
     body = f"""
 <button class='toggle' onclick='toggleTheme()'>Light / dark</button>

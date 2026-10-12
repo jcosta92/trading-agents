@@ -64,7 +64,10 @@ class FactorEquity(Agent):
                          "mom": float(px.iloc[-1 - int(self.p.get("momentum_skip", 21))] / px.iloc[-1 - lb] - 1.0),
                          "sector": sectors.get(t)})
         df = pd.DataFrame(rows).set_index("ticker") if rows else pd.DataFrame(columns=["price", "mdv", "mom", "sector"])
-        cov = {"members": len(tickers), "with_data": int(close.shape[1]), "with_history": len(df)}
+        # coverage: members with a price in the last week (all-NaN columns are delisted names Yahoo lacks)
+        recent = close.iloc[-5:] if len(close) else close
+        with_data = int(recent.notna().any().sum()) if len(recent) else 0
+        cov = {"members": len(tickers), "with_data": with_data, "with_history": len(df)}
         # Yahoo history is split/dividend-adjusted, so a price floor on old dates would wrongly drop
         # stocks that later split (AAPL, NVDA...): apply it only to live (current) prices.
         keep = df["mdv"] >= float(self.p["min_median_dollar_volume"])
