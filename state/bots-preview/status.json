@@ -1,5 +1,5 @@
 {
- "ts": "2026-10-12T17:19:52.858988+00:00",
+ "ts": "2026-10-12T17:25:37.043789+00:00",
  "start": "2026-09-12T17:00:00+00:00",
  "end": "2026-10-12T17:00:00+00:00",
  "bots": {
@@ -442,30 +442,44 @@
   "overnight_spy": {
    "name": "Overnight anomaly: own SPY from the close to the next open, IBKR",
    "timeframe": "5m",
-   "equity_eur": 1000.0,
-   "return": 0.0,
-   "cash_eur": 1000.0,
+   "equity_eur": 991.1758,
+   "return": -0.008824,
+   "cash_eur": 991.1758,
    "positions": {},
    "open_orders": [],
-   "last_candle": null,
-   "finished": null,
-   "costs_eur": {},
+   "last_candle": "2026-10-12T17:00:00+00:00",
+   "finished": "2026-10-12T17:00:00+00:00",
+   "costs_eur": {
+    "fx": 0.2972,
+    "commissions": 13.1135,
+    "spread_slippage": 19.7777
+   },
    "notes": [],
    "state": {}
   },
   "turn_of_month": {
    "name": "Turn-of-the-month effect on SPY, IBKR",
    "timeframe": "5m",
-   "equity_eur": 1000.0,
-   "return": 0.0,
-   "cash_eur": 1000.0,
+   "equity_eur": 1006.2094,
+   "return": 0.006209,
+   "cash_eur": 1006.2094,
    "positions": {},
    "open_orders": [],
-   "last_candle": null,
-   "finished": null,
-   "costs_eur": {},
+   "last_candle": "2026-10-12T17:00:00+00:00",
+   "finished": "2026-10-12T17:00:00+00:00",
+   "costs_eur": {
+    "fx": 0.2972,
+    "commissions": 0.6559,
+    "spread_slippage": 0.9936
+   },
    "notes": [],
-   "state": {}
+   "state": {
+    "day_position": {
+     "day": "2026-10-09",
+     "nth": 7,
+     "left_in_month": 15
+    }
+   }
   },
   "leverage_rotation": {
    "name": "Leverage rotation: 2x S&P 500 (SSO) above the 200-day average, else cash (Gayed & Bilello)",
@@ -505,5 +519,5 @@
   "LINK/EUR": "bitvavo",
   "AVAX/EUR": "bitvavo"
  },
- "n_fills": 772
+ "n_fills": 814
 }

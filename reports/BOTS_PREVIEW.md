@@ -1,6 +1,6 @@
 # Trading bots: 12 Sep - 12 Oct 2026
 
-Last update: 2026-10-12 17:19 UTC. Each bot started with EUR 1,000.
+Last update: 2026-10-12 17:25 UTC. Each bot started with EUR 1,000.
 
 | Bot | Equity | Return | Buys | Sells | Realised P&L | Fees | Win rate | Max drawdown |
 |---|---|---|---|---|---|---|---|---|
@@ -21,8 +21,8 @@ Last update: 2026-10-12 17:19 UTC. Each bot started with EUR 1,000.
 | Turtle Traders System 1 breakout on BTC/ETH/SOL, 4-hour | €1,032.31 | +3.23% | 12 | 11 | €35.50 | €19.93 | 36% | -7.3% |
 | Squeeze Momentum (LazyBear) on BTC/ETH/SOL, 1-hour | €956.14 | -4.39% | 25 | 25 | −€43.86 | €41.15 | 16% | -7.5% |
 | RSI(14) 30/70 on BTC/ETH/SOL, 1-hour | €1,084.48 | +8.45% | 14 | 14 | €84.48 | €24.85 | 79% | -8.0% |
-| Overnight anomaly: own SPY from the close to the next open, IBKR | €1,000.00 | +0.00% | 0 | 0 | €0.00 | €0.00 | – | 0.0% |
-| Turn-of-the-month effect on SPY, IBKR | €1,000.00 | +0.00% | 0 | 0 | €0.00 | €0.00 | – | 0.0% |
+| Overnight anomaly: own SPY from the close to the next open, IBKR | €991.18 | -0.88% | 20 | 20 | −€8.53 | €13.11 | 40% | -1.9% |
+| Turn-of-the-month effect on SPY, IBKR | €1,006.21 | +0.62% | 1 | 1 | €6.51 | €0.66 | 100% | -1.4% |
 | Leverage rotation: 2x S&P 500 (SSO) above the 200-day average, else cash (Gayed & Bilello) | €1,039.21 | +3.92% | 1 | 1 | €39.51 | €0.74 | 100% | -3.8% |
 | BTC buy-and-hold (reference, no costs) | | +10.62% | | | | | | |
 | BTC/ETH/SOL buy-and-hold (reference, no costs) | | +7.75% | | | | | | |
