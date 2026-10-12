@@ -1,163 +1,144 @@
-"""A1: multi-asset time-series momentum on UCITS ETFs, and A3: crypto trend on perpetuals."""
+"""Indicator-driven trend agents.
+
+A1 TrendETF          UCITS ETFs: BUY when close > SMA(50) > SMA(200), 12-month ROC > 0 and the close
+                     is a new 20-day high (the breakout trigger stops instant re-entry after a stop);
+                     SELL when SMA(50) < SMA(200); 3xATR(20) chandelier trailing stop.
+A3 DonchianBreakout  BTC/ETH perps: BUY on a close above the 20-day high; SELL on a close below the
+                     10-day low; fixed 2xATR(20) stop (Turtle-style "2N").
+Sizing for both: risk a fixed fraction of equity between entry and stop, capped per position.
+Neither uses a fixed take-profit: trend systems earn their return from the few long trends, and a
+fixed target would cut exactly those. The trailing stop / channel exit locks in gains instead.
+"""
 from __future__ import annotations
 
 import math
 
-import numpy as np
-import pandas as pd
-
+from .. import indicators as ind
 from ..context import Context
-from ..data.store import annualised_vol
 from ..execution import OrderIntent
 from ..ledger import Ledger
-from ..portfolio import rebalance_to_weights
+from ..portfolio import sort_sells_first
 from .base import Agent
 
 
+def _fresh(ctx: Context, d, max_age_days: int) -> bool:
+    return len(d) > 0 and (ctx.asof - d.index[-1]).days <= max_age_days
+
+
 class TrendETF(Agent):
-    """Long an asset when its trend signal is positive, else cash; inverse-vol sized; monthly.
-
-    Weight_i = min(max_weight, (target_vol / N) / vol_i) for assets with a positive signal, where N is
-    the number of assets in the universe (so fewer positive signals = more cash). Gross capped at 1.
-    Between monthly rebalances the agent only retries entries/exits that failed to fill.
-    """
-
     def static_instruments(self) -> list[str]:
         return list(self.p["instruments"])
 
     def lookback_days(self) -> int:
-        return int(self.p.get("lookback_days", 252)) + int(self.p.get("vol_window", 60)) + 40
-
-    def decision_due(self, asof, ledger) -> bool:
-        return True   # cheap: daily retry of missed entries/exits; heavy work only monthly
-
-    def signals(self, ctx: Context, only: list[str] | None = None) -> tuple[dict[str, float], dict[str, dict], list[str]]:
-        """Target weights for instruments with usable data, diagnostics, and the list of instruments
-        whose history is missing/stale (those are left untouched - missing data is not a sell signal)."""
-        lb = int(self.p.get("lookback_days", 252))
-        vw = int(self.p.get("vol_window", 60))
-        universe = list(self.p["instruments"])
-        n = len(universe)
-        tv = float(self.p.get("target_vol", 0.10))
-        weights, diag, missing = {}, {}, []
-        for iid in (only or universe):
-            px = ctx.history(iid)
-            if len(px) < lb + 1 or (ctx.asof - px.index[-1]).days > 7:
-                diag[iid] = {"signal": None, "why": f"{len(px)} bars, last {px.index[-1].date() if len(px) else None}"}
-                missing.append(iid)
-                continue
-            if self.p.get("signal", "tsmom") == "sma":
-                sig = float(px.iloc[-1] / px.iloc[-lb:].mean() - 1.0)
-            else:
-                sig = float(px.iloc[-1] / px.iloc[-lb - 1] - 1.0)
-            vol = annualised_vol(px, vw, self.ppy)
-            w = 0.0
-            if sig > 0 and math.isfinite(vol) and vol > 0:
-                w = min(float(self.p.get("max_weight", 0.4)), (tv / n) / vol)
-            weights[iid] = w
-            diag[iid] = {"signal": round(sig, 4), "vol": round(vol, 4) if math.isfinite(vol) else None,
-                         "weight": round(w, 4)}
-        return weights, diag, missing
-
-    def _cap(self, ctx: Context, ledger: Ledger, weights: dict[str, float], untouched: list[str]) -> dict[str, float]:
-        """Scale weights so that they plus the current weight of untouched holdings stay <= max_gross."""
-        cap = float(self.p.get("max_gross", 1.0))
-        eq = ledger.equity(ctx.fx)
-        held_w = 0.0
-        for iid in untouched:
-            p = ledger.positions.get(iid)
-            if p is not None and eq > 0:
-                held_w += ctx.fx.to_eur(abs(p.qty) * (p.last_mark or p.avg_price) * p.multiplier, p.currency) / eq
-        room = max(0.0, cap - held_w)
-        gross = sum(weights.values())
-        if gross <= room or gross <= 0:
-            return weights
-        return {k: v * room / gross for k, v in weights.items()}
-
-    def _orders(self, ctx, ledger, targets, drift_band, reason):
-        return rebalance_to_weights(ctx, ledger, targets, self.cm, venue_override=self.venue_override,
-                                    drift_band=drift_band, max_cost_frac=float(self.p.get("max_cost_frac", 0.02)),
-                                    min_trade_eur=float(self.p.get("min_trade_eur", 25)),
-                                    manage=set(targets), reason=reason)
+        return int(self.p.get("roc_window", 252)) + 60
 
     def decide(self, ctx: Context, ledger: Ledger) -> list[OrderIntent]:
-        key = self.month_key(ctx.asof)
-        if ledger.meta.get("last_rebalance") != key:
-            weights, diag, missing = self.signals(ctx)
-            weights = self._cap(ctx, ledger, weights, missing)
-            ledger.meta.update({"last_rebalance": key, "targets": weights, "signals": diag, "missing": missing})
-            for iid in missing:
-                ctx.note(f"{iid}: no usable history - position left unchanged, will retry")
-            return self._orders(ctx, ledger, weights, float(self.p.get("drift_band", 0.3)), "monthly trend")
-        orders: list[OrderIntent] = []
-        # instruments whose data was missing at the monthly rebalance: retry them now
-        missing = ledger.meta.get("missing") or []
-        if missing:
-            w2, diag2, still = self.signals(ctx, only=missing)
-            if w2:
-                others = [k for k in ledger.positions if k not in w2]
-                w2 = self._cap(ctx, ledger, w2, others)
-                targets = dict(ledger.meta.get("targets") or {})
-                targets.update(w2)
-                ledger.meta["targets"] = targets
-                ledger.meta.setdefault("signals", {}).update(diag2)
-                orders += self._orders(ctx, ledger, w2, math.inf, "trend (late signal)")
-            ledger.meta["missing"] = still
-        # mid-month: only fix positions whose direction disagrees with the stored targets
-        targets = ledger.meta.get("targets") or {}
-        fix = {k: v for k, v in targets.items() if (v > 0) != (ledger.qty(k) > 0)
-               and not any(o.inst_id == k for o in orders)}
-        if fix:
-            orders += self._orders(ctx, ledger, fix, math.inf, "retry")
-        return orders
-
-
-class CryptoTrend(Agent):
-    """BTC/ETH perps, long or flat: long when close > SMA(n) and n-day return > 0; vol-scaled; daily."""
-
-    def static_instruments(self) -> list[str]:
-        return list(self.p["instruments"])
-
-    def lookback_days(self) -> int:
-        return max(int(self.p.get("sma_window", 100)), int(self.p.get("vol_window", 60))) + 40
-
-    def signals(self, ctx: Context) -> tuple[dict[str, float], dict[str, dict], list[str]]:
-        sma_n = int(self.p.get("sma_window", 100))
-        mom_n = int(self.p.get("momentum_window", 30))
-        vw = int(self.p.get("vol_window", 60))
-        tv = float(self.p.get("target_vol", 0.40))
-        weights, diag, missing = {}, {}, []
-        for iid, alloc in self.p["instruments"].items():
-            px = ctx.history(iid)
-            if len(px) < max(sma_n, mom_n, vw) + 1 or (ctx.asof - px.index[-1]).days > 3:
-                diag[iid] = {"signal": None, "why": f"{len(px)} bars, last {px.index[-1].date() if len(px) else None}"}
-                missing.append(iid)
-                continue
-            above = px.iloc[-1] > px.iloc[-sma_n:].mean()
-            mom_ok = True if mom_n <= 0 else px.iloc[-1] > px.iloc[-mom_n - 1]
-            vol = annualised_vol(px, vw, self.ppy)
-            w = 0.0
-            if above and mom_ok and math.isfinite(vol) and vol > 0:
-                w = float(alloc) * min(1.0, tv / vol)
-            weights[iid] = w
-            diag[iid] = {"above_sma": bool(above), "momentum_ok": bool(mom_ok),
-                         "vol": round(vol, 4) if math.isfinite(vol) else None, "weight": round(w, 4)}
-        cap = float(self.p.get("max_leverage", 1.0))
-        gross = sum(abs(v) for v in weights.values())
-        if gross > cap:
-            weights = {k: v * cap / gross for k, v in weights.items()}
-        return weights, diag, missing
-
-    def decide(self, ctx: Context, ledger: Ledger) -> list[OrderIntent]:
-        day = ctx.asof.date().isoformat()
-        if ledger.meta.get("last_decision") == day:
+        if not self.once_per_day(ctx, ledger):
             return []
-        weights, diag, missing = self.signals(ctx)
-        ledger.meta.update({"last_decision": day, "signals": diag, "targets": weights, "missing": missing})
-        for iid in missing:
-            ctx.note(f"{iid}: no usable history - position left unchanged")
-        return rebalance_to_weights(ctx, ledger, weights, self.cm, venue_override=self.venue_override,
-                                    drift_band=float(self.p.get("drift_band", 0.25)),
-                                    max_cost_frac=float(self.p.get("max_cost_frac", 0.01)),
-                                    min_trade_eur=float(self.p.get("min_trade_eur", 20)),
-                                    manage=set(weights), reason="crypto trend")
+        p = self.p
+        fast, slow, rw = int(p["sma_fast"]), int(p["sma_slow"]), int(p["roc_window"])
+        atr_n, stop_atr = int(p["atr_window"]), float(p["stop_atr"])
+        signals, orders = {}, []
+        for iid in p["instruments"]:
+            d = ctx.ohlc(iid, max(slow, rw) + 60)
+            held = ledger.qty(iid) > 0
+            if len(d) < max(slow, rw) + 1 or not _fresh(ctx, d, 7):
+                signals[iid] = {"state": "NO DATA", "bars": len(d)}
+                continue
+            c = d["close"]
+            close = float(c.iloc[-1])
+            s_fast, s_slow = ind.last(ind.sma(c, fast)), ind.last(ind.sma(c, slow))
+            r = ind.last(ind.roc(c, rw))
+            a = ind.last(ind.atr(d["high"], d["low"], c, atr_n))
+            bw = int(p["breakout_window"])
+            prior_high = float(c.iloc[-bw - 1:-1].max())
+            buy = close > s_fast > s_slow and r > 0 and close >= prior_high
+            sell = s_fast < s_slow
+            sig = {"close": round(close, 4), f"sma{fast}": round(s_fast, 4), f"sma{slow}": round(s_slow, 4),
+                   f"roc{rw}": round(r, 4), f"atr{atr_n}": round(a, 4), f"high_close{bw}": round(prior_high, 4),
+                   "buy_rule": f"close > SMA{fast} > SMA{slow}, ROC{rw} > 0 and a new {bw}-day closing high",
+                   "sell_rule": f"SMA{fast} < SMA{slow}"}
+            if held and sell:
+                sig["state"] = "SELL"
+                orders.append(OrderIntent(iid, -ledger.qty(iid),
+                                          f"SELL signal: SMA{fast} {s_fast:.2f} < SMA{slow} {s_slow:.2f} (death cross)"))
+            elif held:
+                sig["state"] = "HOLD"
+            elif buy and math.isfinite(a) and a > 0:
+                qty = self.risk_qty(ctx, ledger, iid, stop_atr * a, float(p["risk_per_trade"]), float(p["max_position"]))
+                inst = ctx.inst(iid)
+                val = ctx.fx.to_eur(qty * (ctx.mark(iid) or close) * inst.multiplier, inst.currency)
+                if qty > 0 and val >= float(p.get("min_trade_eur", 25)):
+                    sig["state"] = "BUY"
+                    orders.append(OrderIntent(
+                        iid, qty, f"BUY signal: close {close:.2f} > SMA{fast} {s_fast:.2f} > SMA{slow} {s_slow:.2f}, "
+                                  f"ROC{rw} {r:+.1%}, new {bw}-day high",
+                        meta={"protect": {"stop_atr": stop_atr, "atr": a, "trail_atr": stop_atr, "atr_n": atr_n,
+                                          "label": f"{stop_atr:g}xATR({atr_n}) chandelier trailing stop"}}))
+                else:
+                    sig["state"] = "BUY (too small)"
+                    ctx.note(f"{iid}: buy signal but position would be {val:.0f} EUR")
+            else:
+                sig["state"] = "FLAT"
+            signals[iid] = sig
+        ledger.meta["signals"] = signals
+        return sort_sells_first(orders, ledger)
+
+
+class DonchianBreakout(Agent):
+    def static_instruments(self) -> list[str]:
+        return list(self.p["instruments"])
+
+    def lookback_days(self) -> int:
+        return max(int(self.p["entry_window"]), int(self.p["atr_window"])) + 60
+
+    def decide(self, ctx: Context, ledger: Ledger) -> list[OrderIntent]:
+        if not self.once_per_day(ctx, ledger):
+            return []
+        p = self.p
+        ew, xw, atr_n, stop_atr = int(p["entry_window"]), int(p["exit_window"]), int(p["atr_window"]), float(p["stop_atr"])
+        signals, orders = {}, []
+        fx = ctx.fx
+        eq = ledger.equity(fx)
+        # current gross notional, to respect max_leverage when adding
+        gross = sum(fx.to_eur(abs(pos.qty) * (ctx.mark(i) or pos.last_mark or pos.avg_price) * pos.multiplier, pos.currency)
+                    for i, pos in ledger.positions.items() if pos.kind == "perp")
+        for iid in p["instruments"]:
+            d = ctx.ohlc(iid, max(ew, xw, atr_n) + 80)
+            held = ledger.qty(iid) > 0
+            if len(d) < max(ew, xw, atr_n) + 2 or not _fresh(ctx, d, 3):
+                signals[iid] = {"state": "NO DATA", "bars": len(d)}
+                continue
+            close = float(d["close"].iloc[-1])
+            hi = ind.last(ind.donchian_high(d["high"], ew))
+            lo = ind.last(ind.donchian_low(d["low"], xw))
+            n = ind.last(ind.atr(d["high"], d["low"], d["close"], atr_n))
+            sig = {"close": round(close, 2), f"high{ew}": round(hi, 2), f"low{xw}": round(lo, 2), f"atr{atr_n}": round(n, 2),
+                   "buy_rule": f"close > highest high of previous {ew} days", "sell_rule": f"close < lowest low of previous {xw} days"}
+            if held and close < lo:
+                sig["state"] = "SELL"
+                orders.append(OrderIntent(iid, -ledger.qty(iid), f"SELL signal: close {close:.2f} < {xw}-day low {lo:.2f}"))
+            elif held:
+                sig["state"] = "HOLD"
+            elif close > hi and math.isfinite(n) and n > 0:
+                qty = self.risk_qty(ctx, ledger, iid, stop_atr * n, float(p["risk_per_trade"]), float(p["max_position"]))
+                inst = ctx.inst(iid)
+                notional = fx.to_eur(qty * (ctx.mark(iid) or close) * inst.multiplier, inst.currency)
+                room = float(p.get("max_leverage", 1.0)) * eq - gross
+                if notional > room > 0:
+                    qty = math.floor(qty * room / notional * 1e6) / 1e6
+                    notional = room
+                if qty > 0 and notional >= float(p.get("min_trade_eur", 20)):
+                    gross += notional
+                    sig["state"] = "BUY"
+                    orders.append(OrderIntent(
+                        iid, qty, f"BUY signal: close {close:.2f} > {ew}-day high {hi:.2f} (breakout)",
+                        meta={"protect": {"stop_atr": stop_atr, "atr": n,
+                                          "label": f"{stop_atr:g}N stop, N = ATR({atr_n}) = {n:.2f}"}}))
+                else:
+                    sig["state"] = "BUY (no room)"
+            else:
+                sig["state"] = "FLAT"
+            signals[iid] = sig
+        ledger.meta["signals"] = signals
+        return sort_sells_first(orders, ledger)

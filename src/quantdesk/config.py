@@ -123,6 +123,7 @@ class AgentSpec:
     backtest_note: str = ""
     variants: dict = field(default_factory=dict)
     variant: str = "main"
+    rules: str = ""
 
     def with_variant(self, name: str) -> "AgentSpec":
         if name == "main":
@@ -151,7 +152,7 @@ def load_settings(path: str | Path | None = None) -> Settings:
             venue_override=a.get("venue_override"), backtest_start=a.get("backtest_start"),
             backtest=a.get("backtest", True), paper=a.get("paper", True),
             thesis=(a.get("thesis") or "").strip(), backtest_note=(a.get("backtest_note") or "").strip(),
-            variants=a.get("variants", {}) or {},
+            variants=a.get("variants", {}) or {}, rules=(a.get("rules") or "").strip(),
         )
     return Settings(
         base_currency=raw.get("base_currency", "EUR"), initial_capital=float(raw.get("initial_capital", 1000.0)),

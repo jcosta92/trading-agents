@@ -44,6 +44,11 @@ class Context:
         out = df.loc[:self.asof, cols].dropna(how="all")   # drop dates on which none of these trade
         return out.iloc[-lookback:] if lookback else out
 
+    def ohlc(self, key: str, lookback: int | None = None) -> pd.DataFrame:
+        """Daily open/high/low/close up to `asof` (missing O/H/L filled from the close)."""
+        df = self._store.ohlc_frame(key).loc[:self.asof]
+        return df.iloc[-lookback:] if lookback else df
+
     def has(self, key: str, field: str = "close") -> bool:
         return not self.history(key, field).empty
 

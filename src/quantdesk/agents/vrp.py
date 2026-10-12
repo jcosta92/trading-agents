@@ -15,7 +15,9 @@ from .base import Agent
 class PutCreditSpreads(Agent):
     """Sell a ~16-delta XSP put and buy a put ~0.5% of the index lower, 30-45 DTE.
 
-    Exits: 50% of credit captured, 21 DTE, or the index closing at/below the short strike.
+    Exits (checked every hourly cycle in the paper run): take-profit when 50% of the credit is captured,
+    stop-loss when the spread costs 2x the credit to close or the index trades at/below the short strike,
+    time exit at 21 DTE.
     Size: total max loss of open spreads <= max_risk_frac x equity. Entries at most weekly and only
     when VIX is between vix_min and its trailing one-year 95th percentile.
     Fills cross the full quoted spread (sell at bid, buy at ask) - the 'natural' price. In backtests the
@@ -35,56 +37,78 @@ class PutCreditSpreads(Agent):
     def extra_needs(self) -> set[str]:
         return {"options"}
 
-    def decide(self, ctx: Context, ledger: Ledger) -> list[OrderIntent]:
-        day = ctx.asof.date().isoformat()
-        if ledger.meta.get("last_decision") == day:
-            return []
-        ledger.meta["last_decision"] = day
-        und = self.p.get("underlying", "XSP")
+    # ------------------------------------------------------------------ exits (checked every cycle)
+    def _open_spreads(self, ledger: Ledger) -> list[dict]:
         spreads = [s for s in ledger.meta.get("spreads", []) if ledger.qty(s["short"]) < 0]
         for s in spreads:                    # use the credit actually received, not the decision-day estimate
             sp, lp = ledger.positions.get(s["short"]), ledger.positions.get(s["long"])
             if sp is not None and lp is not None:
                 s["credit"] = round(sp.avg_price - lp.avg_price, 4)
-        S = ctx.mark(und)
+        ledger.meta["spreads"] = spreads
+        return spreads
+
+    def _exit_reason(self, ctx: Context, s: dict, S: float | None) -> tuple[str | None, object, object]:
+        p = self.p
+        qs, ql = ctx.quote(s["short"]), ctx.quote(s["long"])
+        today = (ctx.now.tz_convert(None) if ctx.now.tzinfo else ctx.now).normalize()
+        dte = (pd.Timestamp(s["expiry"]) - today).days
+        if qs is not None and ql is not None and s["credit"] > 0:
+            debit = qs.mid - ql.mid
+            s["last_debit_mid"] = round(debit, 4)
+            if debit <= (1.0 - float(p["take_profit"])) * s["credit"]:
+                return f"TAKE-PROFIT: spread at {debit:.2f} <= {1 - float(p['take_profit']):.0%} of credit {s['credit']:.2f}", qs, ql
+            if debit >= float(p["stop_multiple"]) * s["credit"]:
+                return f"STOP-LOSS: spread at {debit:.2f} >= {p['stop_multiple']}x credit {s['credit']:.2f}", qs, ql
+        if dte <= int(p["exit_dte"]):
+            return f"TIME EXIT: {dte} days to expiry <= {p['exit_dte']}", qs, ql
+        if p.get("close_on_breach", True) and S is not None and S <= s["short_strike"]:
+            return f"STOP-LOSS: index {S:.2f} <= short strike {s['short_strike']:g}", qs, ql
+        return None, qs, ql
+
+    def intraday(self, ctx: Context, ledger: Ledger) -> list[OrderIntent]:
+        S = ctx.mark(self.p.get("underlying", "XSP"))
         orders: list[OrderIntent] = []
-        still_open = []
-        for s in spreads:
-            qs, ql = ctx.quote(s["short"]), ctx.quote(s["long"])
-            dte = (pd.Timestamp(s["expiry"]) - ctx.asof).days
-            why = None
-            if qs is not None and ql is not None:
-                debit = qs.mid - ql.mid
-                s["last_debit_mid"] = round(debit, 4)
-                if debit <= (1.0 - float(self.p["take_profit"])) * s["credit"]:
-                    why = "take profit"
-            if why is None and dte <= int(self.p["exit_dte"]):
-                why = "time exit"
-            if why is None and self.p.get("close_on_breach", True) and S is not None and S <= s["short_strike"]:
-                why = "short strike breached"
-            if why:
-                combo = f"close-{s['short']}-{day}"
-                lq = ledger.qty(s["long"])
-                wing_bid = ql.bid if ql is not None else None
-                if lq and wing_bid is not None and wing_bid <= 0:
-                    # the wing is quoted at zero: buy back the short alone, let the wing expire
-                    orders.append(OrderIntent(s["short"], -ledger.qty(s["short"]), f"spread exit: {why} (wing worthless)"))
-                else:
-                    orders.append(OrderIntent(s["short"], -ledger.qty(s["short"]), f"spread exit: {why}", combo=combo))
-                    if lq:
-                        orders.append(OrderIntent(s["long"], -lq, f"spread exit: {why}", combo=combo))
+        tag = ctx.now.strftime("%Y-%m-%dT%H")
+        for s in self._open_spreads(ledger):
+            why, qs, ql = self._exit_reason(ctx, s, S)
+            if not why:
+                continue
+            lq = ledger.qty(s["long"])
+            wing_bid = ql.bid if ql is not None else None
+            if lq and wing_bid is not None and wing_bid <= 0:
+                # the wing is quoted at zero: buy back the short alone, let the wing expire
+                orders.append(OrderIntent(s["short"], -ledger.qty(s["short"]), f"{why} (wing worthless, kept)"))
             else:
-                still_open.append(s)
-        ledger.meta["spreads"] = spreads           # positions are re-checked against the book next time
-        entry = self._entry(ctx, ledger, still_open, S, day)
-        if entry:
-            orders += entry
+                combo = f"close-{s['short']}-{tag}"
+                orders.append(OrderIntent(s["short"], -ledger.qty(s["short"]), why, combo=combo))
+                if lq:
+                    orders.append(OrderIntent(s["long"], -lq, why, combo=combo))
+        return orders
+
+    # ------------------------------------------------------------------ daily decision: entries only
+    def decide(self, ctx: Context, ledger: Ledger) -> list[OrderIntent]:
+        if not self.once_per_day(ctx, ledger):
+            return []
+        S = ctx.mark(self.p.get("underlying", "XSP"))
+        still_open = [s for s in self._open_spreads(ledger) if self._exit_reason(ctx, s, S)[0] is None]
+        p = self.p
+        self._sig = {"state": "WAIT", "index": round(S, 2) if S else None, "open_spreads": len(still_open),
+                     "buy_rule": f"VIX between {p['vix_min']} and its 1-year {float(p['vix_max_pctile']):.0%} percentile, "
+                                 f"at most {p['max_open']} open, {p['entry_gap_days']} business days apart",
+                     "sell_rule": f"take-profit at {float(p['take_profit']):.0%} of credit, stop at {p['stop_multiple']}x credit "
+                                  f"or index <= short strike, time exit at {p['exit_dte']} DTE"}
+        orders = self._entry(ctx, ledger, still_open, S, self.day_key(ctx)) or []
+        if orders:
+            self._sig["state"] = "ENTRY"
+        ledger.meta["signals"] = {f"{p.get('underlying', 'XSP')} put spread": self._sig}
         return orders
 
     # ------------------------------------------------------------------ entries
     def _entry(self, ctx: Context, ledger: Ledger, open_spreads: list[dict], S: float | None, day: str):
         p = self.p
+        sig = getattr(self, "_sig", {})
         if S is None or len(open_spreads) >= int(p["max_open"]):
+            sig["state"] = "NO DATA" if S is None else "FULL"
             return None
         last = ledger.meta.get("last_entry")
         if last and np.busday_count(pd.Timestamp(last).date(), ctx.asof.date()) < int(p["entry_gap_days"]):
@@ -95,6 +119,7 @@ class PutCreditSpreads(Agent):
             return None
         v = float(vix.iloc[-1])
         cap = float(vix.quantile(float(p["vix_max_pctile"])))
+        sig["vix"], sig["vix_cap"] = round(v, 2), round(cap, 2)
         if v < float(p["vix_min"]) or v > cap:
             ctx.note(f"VIX {v:.1f} outside [{p['vix_min']}, {cap:.1f}] - no entry")
             return None
@@ -140,5 +165,7 @@ class PutCreditSpreads(Agent):
         ledger.meta.setdefault("spreads", []).append(rec)
         ledger.meta["last_entry"] = day
         combo = f"open-{si.id}-{day}"
-        return [OrderIntent(si.id, -qty, f"sell {short_k:g}P ({sh['delta']:.2f} delta)", combo=combo),
-                OrderIntent(li.id, qty, f"buy {long_k:g}P wing", combo=combo)]
+        why = (f"ENTRY signal: VIX {v:.1f} within [{p['vix_min']:g}, {cap:.1f}], {exp} expiry, "
+               f"credit {credit:.2f} for {width:g} wide")
+        return [OrderIntent(si.id, -qty, f"{why} - SELL {short_k:g}P ({abs(sh['delta']):.2f} delta)", combo=combo),
+                OrderIntent(li.id, qty, f"{why} - BUY {long_k:g}P wing", combo=combo)]

@@ -53,6 +53,14 @@ class FundingCarry(Agent):
         ledger.meta["last_decision"] = day
         stats = {name: self.funding_stats(ctx, legs["perp"]) for name, legs in self.p["pairs"].items()}
         ledger.meta["funding"] = {k: {"avg7_ann": v[0], "last_ann": v[1]} for k, v in stats.items()}
+        ent, ext = float(self.p["entry_annualised"]), float(self.p["exit_annualised"])
+        ledger.meta["signals"] = {
+            k: {"state": "NO DATA" if v[0] is None else ("IN" if ledger.qty(self.p["pairs"][k]["perp"]) else "FLAT"),
+                "funding_7d_ann": round(v[0], 4) if v[0] is not None else None,
+                "funding_last_ann": round(v[1], 4) if v[1] is not None else None,
+                "buy_rule": f"7-day average funding > {ent:.0%}/yr and the last day's funding positive",
+                "sell_rule": f"7-day average < {ext:.0%}/yr or the last {self.p.get('exit_negative_hours', 24)}h negative"}
+            for k, v in stats.items()}
         # reconcile state with the book (an entry or exit may have failed to fill)
         active = None
         for name, legs in self.p["pairs"].items():
@@ -75,11 +83,18 @@ class FundingCarry(Agent):
             if not exit_now:
                 return self._rebalance_collateral(ctx, ledger, active, legs, day)
             combo = f"carry-exit-{day}"
+            if avg is None:
+                why = "funding data stale or missing"
+            elif avg < float(self.p["exit_annualised"]):
+                why = f"7-day avg funding {avg:.1%}/yr < {float(self.p['exit_annualised']):.0%}"
+            else:
+                why = f"last {self.p.get('exit_negative_hours', 24)}h funding negative ({last:.1%}/yr)"
             for iid in (legs["spot"], legs["perp"]):
                 q = ledger.qty(iid)
                 if abs(q) > 0:
-                    orders.append(OrderIntent(iid, -q, f"carry exit ({active}, avg {avg})", combo=combo))
+                    orders.append(OrderIntent(iid, -q, f"EXIT signal ({active}): {why}", combo=combo))
             ledger.meta["active"] = None
+            ledger.meta["signals"][active]["state"] = "EXIT"
             return orders
 
         # flat: pick the best pair above the entry threshold
@@ -100,11 +115,15 @@ class FundingCarry(Agent):
         if budget < float(self.p.get("min_trade_eur", 50)):
             return []
         qty = math.floor(budget / spot_eur * 1e6) / 1e6
+        if qty <= 0:
+            return []
         combo = f"carry-entry-{day}"
+        ledger.meta["signals"][name]["state"] = "ENTRY"
         ledger.meta["active"] = name
         ledger.meta["entered"] = day
-        return [OrderIntent(legs["spot"], qty, f"carry entry ({name}, 7d avg {avg:.1%})", combo=combo),
-                OrderIntent(legs["perp"], -qty, f"carry entry hedge ({name})", combo=combo)]
+        why = f"7-day avg funding {avg:.1%}/yr > {float(self.p['entry_annualised']):.0%}"
+        return [OrderIntent(legs["spot"], qty, f"ENTRY signal ({name}): {why} - buy spot", combo=combo),
+                OrderIntent(legs["perp"], -qty, f"ENTRY signal ({name}): {why} - short perp hedge", combo=combo)]
 
     def _rebalance_collateral(self, ctx: Context, ledger: Ledger, name: str, legs: dict, day: str) -> list[OrderIntent]:
         """Keep the perp venue solvent. The spot coins sit at another venue and cannot be used as perp
@@ -131,5 +150,6 @@ class FundingCarry(Agent):
             return []
         ctx.note(f"perp leverage {ms['leverage']:.2f}x > {lev_cap}x: moving collateral, reducing both legs by {f:.0%}")
         combo = f"carry-collateral-{day}"
-        return [OrderIntent(legs["spot"], -q, f"collateral top-up ({name})", combo=combo),
-                OrderIntent(legs["perp"], q, f"collateral top-up hedge ({name})", combo=combo)]
+        why = f"perp account at {ms['leverage']:.2f}x > {lev_cap:g}x"
+        return [OrderIntent(legs["spot"], -q, f"COLLATERAL rebalance ({name}): {why} - sell {f:.0%} of spot", combo=combo),
+                OrderIntent(legs["perp"], q, f"COLLATERAL rebalance ({name}): {why} - buy back perp", combo=combo)]

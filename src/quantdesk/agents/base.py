@@ -57,7 +57,47 @@ class Agent:
 
     # ------------------------------------------------------------------ decisions
     def decide(self, ctx: Context, ledger: Ledger) -> list[OrderIntent]:
+        """Daily decision on completed bars (once per `asof`)."""
         raise NotImplementedError
+
+    def intraday(self, ctx: Context, ledger: Ledger) -> list[OrderIntent]:
+        """Checks that run on every paper-run cycle (hourly) and once per day in backtests.
+        Generic stop-loss/take-profit levels are handled by quantdesk.protect; agents override this
+        only for exits that are not simple price levels (e.g. option spread value)."""
+        return []
+
+    # ------------------------------------------------------------------ sizing
+    def risk_qty(self, ctx: Context, ledger: Ledger, iid: str, stop_dist: float, risk_frac: float,
+                 max_frac: float) -> float:
+        """Units to buy so that hitting the stop loses `risk_frac` of equity, capped at `max_frac` of
+        equity in value and rounded down to whole lots where the venue requires it."""
+        import math as _m
+        inst = ctx.inst(iid)
+        px = ctx.mark(iid)
+        if inst is None or not px or not stop_dist or stop_dist <= 0:
+            return 0.0
+        fx = ctx.fx
+        eq = ledger.equity(fx)
+        unit_eur = fx.to_eur(px * inst.multiplier, inst.currency)
+        risk_unit_eur = fx.to_eur(stop_dist * inst.multiplier, inst.currency)
+        qty = min(risk_frac * eq / risk_unit_eur, max_frac * eq / unit_eur)
+        lot = self.cm.lot_size(inst, self.venue_override)
+        if lot > 0:
+            qty = _m.floor(qty / lot + 1e-9) * lot
+        else:
+            qty = _m.floor(qty * 1e6) / 1e6
+        return max(0.0, qty)
+
+    def day_key(self, ctx: Context) -> str:
+        return ctx.asof.date().isoformat()
+
+    def once_per_day(self, ctx: Context, ledger: Ledger) -> bool:
+        """True the first time it is called for a given `asof` (and records it)."""
+        k = self.day_key(ctx)
+        if ledger.meta.get("last_decision") == k:
+            return False
+        ledger.meta["last_decision"] = k
+        return True
 
     # ------------------------------------------------------------------ helpers
     @staticmethod

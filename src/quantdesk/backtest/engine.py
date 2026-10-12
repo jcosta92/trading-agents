@@ -17,6 +17,7 @@ from dataclasses import dataclass, field
 import numpy as np
 import pandas as pd
 
+from .. import protect
 from .. import risk as riskmod
 from ..agents.base import Agent
 from ..context import Context
@@ -113,6 +114,9 @@ def run_backtest(agent: Agent, store: HistoryStore, registry: Registry, cm: Cost
         raise ValueError(f"{agent.id}: no trading dates for {ref} from {start}")
     close = store.frame("close")
     opens = store.frame("open") if "open" in store.frames else close
+    f_open = opens
+    f_high = store.frame("high") if "high" in store.frames else close
+    f_low = store.frame("low") if "low" in store.frames else close
     marks_ff = close.ffill(limit=7)
     fx_series = store.close("EURUSD") if store.has("EURUSD") else pd.Series([1.1], index=[dates[0]])
     fx_series = fx_series.ffill()
@@ -144,6 +148,20 @@ def run_backtest(agent: Agent, store: HistoryStore, registry: Registry, cm: Cost
             pending = _execute_pending(ex, ledger, pending, q_open, ts, fills_all, rejects_all)
         if pending and fill_at == "close":
             pending = _execute_pending(ex, ledger, pending, q_exec_close, ts, fills_all, rejects_all)
+        # 1b. protective stop-loss / take-profit levels crossed inside today's bar
+        if ledger.meta.get("protect"):
+            bars = {}
+            for iid in list(ledger.meta["protect"]):
+                vals = [_at(f_open, d, iid), _at(f_high, d, iid), _at(f_low, d, iid)]
+                if all(v is not None for v in vals):
+                    bars[iid] = tuple(vals)
+            trig = protect.check_bar(ledger, bars)
+            if trig:
+                tq = protect.TriggerQuotes(q_close, {o.inst_id: px for o, px in trig})
+                f, r = ex.execute(ledger, [o for o, _ in trig], tq, ts)
+                fills_all += f
+                rejects_all += r
+                protect.cleanup(ledger)
         # 2. perp funding
         for iid, pos in list(ledger.positions.items()):
             if pos.kind != "perp":
@@ -189,7 +207,9 @@ def run_backtest(agent: Agent, store: HistoryStore, registry: Registry, cm: Cost
             break
         # 6. decide (data up to today's close)
         ctx = Context(d, store, registry, q_close, "backtest", now=d, extras=extras, options=options)
-        orders = agent.decide(ctx, ledger)
+        protect.update_daily(ledger, ctx)
+        orders = dedupe_exits(protect.time_exits(ledger, ctx) + agent.intraday(ctx, ledger)
+                              + agent.decide(ctx, ledger), ledger)
         if enforce_daily_loss and rd.action == "block_entries":
             orders = riskmod.filter_entries(orders, ledger)
         if max_gross and orders and expo_rec[d] >= max_gross:
@@ -200,6 +220,7 @@ def run_backtest(agent: Agent, store: HistoryStore, registry: Registry, cm: Cost
             f, r = ex.execute(ledger, orders, q_close, ts)
             fills_all += f
             rejects_all += r
+            protect.register(ledger, f)
         else:
             pending = merge_pending(pending, orders)
 
@@ -225,6 +246,32 @@ def _marks(ledger: Ledger, registry: Registry, quotes: BacktestQuotes) -> dict[s
     return out
 
 
+def _at(frame: pd.DataFrame, d: pd.Timestamp, iid: str) -> float | None:
+    if iid not in frame.columns:
+        return None
+    try:
+        v = frame.at[d, iid]
+    except KeyError:
+        return None
+    return float(v) if v is not None and math.isfinite(v) and v > 0 else None
+
+
+def dedupe_exits(orders: list[OrderIntent], ledger: Ledger) -> list[OrderIntent]:
+    """Keep only the first order that closes a given position (a stop, time exit and sell signal on
+    the same day must not sell the position twice)."""
+    out, closing = [], set()
+    for o in orders:
+        held = ledger.qty(o.inst_id)
+        if held and abs(o.qty + held) < 1e-9 and not o.combo:
+            if o.inst_id in closing:
+                continue
+            closing.add(o.inst_id)
+        elif o.inst_id in closing and not o.combo:
+            continue
+        out.append(o)
+    return out
+
+
 def merge_pending(retry: list[OrderIntent], new: list[OrderIntent]) -> list[OrderIntent]:
     """New orders supersede retried ones: a retried order (or its whole combo) is dropped when the
     agent has re-issued an order for any of its instruments, so nothing is ever filled twice."""
@@ -242,6 +289,8 @@ def _execute_pending(ex: Executor, ledger: Ledger, pending: list[OrderIntent], q
     f, r = ex.execute(ledger, pending, quotes, ts)
     fills_all += f
     rejects_all += r
+    protect.register(ledger, f)
+    protect.cleanup(ledger)
     noquote_insts = {rj.inst for rj in r if rj.why == "no quote"}
     noquote_combos = {o.combo for o in pending if o.combo and o.inst_id in noquote_insts}
     retry = []

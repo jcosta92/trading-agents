@@ -56,6 +56,7 @@ class Fill:
     value_eur: float
     reason: str
     combo: str | None = None
+    protect: dict | None = None        # protective-order spec carried from the entry order
 
 
 @dataclass
@@ -148,10 +149,21 @@ class Executor:
                 fills.append(self._post(ledger, o, inst, side, px, mid, q, fx, ts))
         return fills, rejects
 
+    @staticmethod
+    def _cash_instrument(inst: Instrument) -> bool:
+        """ETFs, stocks and spot crypto are bought with cash and cannot be sold short here."""
+        return inst.kind in ("etf", "stock", "crypto_spot")
+
     def _round_leg(self, ledger: Ledger, o: OrderIntent, inst: Instrument) -> float:
         held = ledger.qty(inst.id)
         if held != 0 and abs(o.qty + held) < EPS:
             return o.qty
+        if o.qty < 0 and self._cash_instrument(inst):
+            # never sell more than is held (a stale retried exit must not open a short)
+            if held <= EPS:
+                return 0.0
+            if -o.qty >= held - EPS:
+                return -held
         return round_qty(o.qty, self.cm.lot_size(inst, self.venue_override), "floor")
 
     def _cash_need_eur(self, ledger: Ledger, inst: Instrument, qty: float, px: float, side: str, fx: FxRates) -> float:
@@ -168,6 +180,8 @@ class Executor:
     def _fill_one(self, ledger: Ledger, o: OrderIntent, inst: Instrument, side: str, px: float, mid: float,
                   fx: FxRates, ts: str, in_combo: bool) -> Fill | Reject:
         lot = self.cm.lot_size(inst, self.venue_override)
+        if o.qty < 0 and self._cash_instrument(inst) and ledger.qty(inst.id) <= EPS:
+            return Reject(ts, ledger.agent_id, inst.id, o.qty, o.reason, "no position to sell")
         qty = self._round_leg(ledger, o, inst)
         if abs(qty) < EPS:
             return Reject(ts, ledger.agent_id, inst.id, o.qty, o.reason, "rounds to zero lots")
@@ -206,7 +220,8 @@ class Executor:
         ledger.trade(ts, inst, qty, px, {fb.currency: fb.total} if fb.total else {}, fx, mid,
                      reason=o.reason, combo=o.combo)
         return Fill(ts, ledger.agent_id, inst.id, qty, px, mid, fb.total, fb.currency,
-                    fx.to_eur(abs(qty) * px * inst.multiplier, inst.currency), o.reason, o.combo)
+                    fx.to_eur(abs(qty) * px * inst.multiplier, inst.currency), o.reason, o.combo,
+                    (o.meta or {}).get("protect"))
 
     @staticmethod
     def _available(ledger: Ledger, ccy: str, fx: FxRates, fx_fee: float, venue: dict) -> float:

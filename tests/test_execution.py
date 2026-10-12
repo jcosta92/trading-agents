@@ -83,3 +83,15 @@ def test_combo_scaled_together_keeps_hedge(instruments, venues):
     assert led.qty("BTC_SPOT") == pytest.approx(-led.qty("BTC_PERP"))
     assert led.qty("BTC_SPOT") < 0.01
     assert led.cash["EUR"] >= -1e-9
+
+
+def test_cash_instruments_cannot_be_sold_short(instruments, venues):
+    """A stale exit order for an ETF that is no longer held must not open a short."""
+    reg = Registry(instruments)
+    ex = Executor(CostModel(venues, 1.0), reg)
+    led = Ledger("t", 1000.0)
+    fills, rejects = ex.execute(led, [OrderIntent("GOLD", -3, "stale stop")], Q({"GOLD": 50.0}), "2024-01-02")
+    assert not fills and rejects[0].why == "no position to sell"
+    ex.execute(led, [OrderIntent("GOLD", 4, "buy")], Q({"GOLD": 50.0}), "2024-01-02")
+    fills, _ = ex.execute(led, [OrderIntent("GOLD", -10, "oversized sell")], Q({"GOLD": 50.0}), "2024-01-03")
+    assert fills[0].qty == -4 and led.qty("GOLD") == 0

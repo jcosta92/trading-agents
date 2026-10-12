@@ -12,7 +12,8 @@ from quantdesk.data.store import HistoryStore
 from quantdesk.ledger import Ledger
 from quantdesk.registry import Registry
 
-AGENTS = ["trend_etf", "factor_equity", "crypto_trend", "funding_carry", "vrp_spreads", "factor_ucits_proxy"]
+AGENTS = ["trend_etf", "factor_equity", "crypto_trend", "rsi2_meanrev", "funding_carry", "vrp_spreads",
+          "factor_ucits_proxy"]
 
 
 def _perturb_future(store: HistoryStore, t: pd.Timestamp, seed=9) -> HistoryStore:
@@ -37,7 +38,13 @@ def _decide(aid, store, extras, t, settings, instruments, venues):
     q = BacktestQuotes(t, close, close.ffill(limit=7), store.close("EURUSD"), reg, om, exact_only=False)
     ctx = Context(t, store, reg, q, "backtest", extras=extras, options=om)
     led = Ledger(aid, 1000.0)
-    return [(o.inst_id, round(o.qty, 8)) for o in agent.decide(ctx, led)]
+    out = []
+    for o in agent.decide(ctx, led):
+        pr = (o.meta or {}).get("protect") or {}
+        # protective levels are part of the decision too (ATR / SMA computed from history up to t)
+        out.append((o.inst_id, round(o.qty, 8), round(float(pr.get("atr", 0) or 0), 8),
+                    round(float(pr.get("sma_value", 0) or 0), 8)))
+    return out
 
 
 @pytest.mark.parametrize("aid", AGENTS)
@@ -56,3 +63,4 @@ def test_context_history_stops_at_asof(synth, instruments):
     assert ctx.history("SP500").index.max() <= t
     assert ctx.panel(["SP500", "GOLD"]).index.max() <= t
     assert ctx.history("BTC_PERP", field="funding").index.max() <= t
+    assert ctx.ohlc("WORLD_EQ", 300).index.max() <= t

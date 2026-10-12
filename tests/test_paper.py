@@ -68,11 +68,15 @@ class FakeData:
         return pd.Series(dtype="float64")
 
     def live_quotes(self, resolved, option_chains, fallback_eurusd=None, reference=None):
+        from quantdesk.config import load_instruments
+        scale = {k: v.price_scale for k, v in load_instruments().items()}
+
         def yq(sym):
             key = "EURUSD" if sym == "EURUSD=X" else sym
             if not self.store.has(key):
                 return None
-            mid = self._last(key)
+            # the store holds scaled prices (XSP = S&P 500 / 10); a live feed returns the raw symbol price
+            mid = self._last(key) / (scale.get(key) or 1.0)
             return {"mid": mid, "bid": mid * 0.9998, "ask": mid * 1.0002, "ts": self.now.isoformat(), "source": "fake"}
 
         def cq(ex, sym):
@@ -152,24 +156,57 @@ def test_kill_switch_flattens_and_halts(tmp_path, settings, instruments, venues,
     assert s2["agents"]["crypto_trend"]["halted"] and not s2["agents"]["crypto_trend"]["fills"]
 
 
-def test_llm_agent_charges_inference(tmp_path, settings, instruments, venues, paper_store, monkeypatch):
-    store, extras = paper_store
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "test")
+def _write_labels(state_dir, data, date, now, tickers, materiality=3, direction=1):
     from quantdesk import llm
+    inbox = llm.build_inbox(tickers, data.news, pd.Timestamp(now))
+    llm.inbox_path(state_dir, date).parent.mkdir(parents=True, exist_ok=True)
+    llm.inbox_path(state_dir, date).write_text(json.dumps(inbox))
+    labels = {"date": date, "prompt_version": llm.PROMPT_VERSION, "labelled_by": "test",
+              "labels": [{"id": it["id"], "ticker": it["ticker"], "event_type": "guidance", "direction": direction,
+                          "materiality": materiality, "confidence": 0.8, "rationale": "x"} for it in inbox["items"]]}
+    llm.labels_path(state_dir, date).parent.mkdir(parents=True, exist_ok=True)
+    llm.labels_path(state_dir, date).write_text(json.dumps(labels))
+    return inbox, labels
 
-    def fake_classify(self, items):
-        labels = [{"id": it["id"], "ticker": it["ticker"], "event_type": "guidance", "direction": 1,
-                   "materiality": 3, "confidence": 0.8, "rationale": "x"} for it in items]
-        return labels, {"input_tokens": 5000, "output_tokens": 1000, "cost_usd": 0.001, "model": "fake",
-                        "prompt_version": "t"}
-    monkeypatch.setattr(llm.NewsClassifier, "classify", fake_classify)
-    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T15:10:00Z", agents=["llm_news"]).run()
+
+def test_llm_agent_waits_for_labels_then_trades_with_protection(tmp_path, settings, instruments, venues, paper_store):
+    store, extras = paper_store
+    now = "2026-10-12T15:10:00Z"
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, now, agents=["llm_news"]).run()
     a = s["agents"]["llm_news"]
     assert not s["errors"], s["errors"]
-    assert a["llm_calls"] >= 1
-    assert a["costs_eur"]["inference"] > 0
+    assert not a["fills"] and "no headline inbox" in a["llm_status"]
+    led = json.loads((tmp_path / "ledgers" / "llm_news.json").read_text())
+    assert led["meta"].get("last_decision") is None, "no labels: the day's decision must be retried next run"
+
+    tickers = sorted(extras["sectors"])[:12]
+    _write_labels(tmp_path, FakeData(store, extras, pd.Timestamp(now)), "2026-10-12", now, tickers)
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T16:10:00Z", agents=["llm_news"]).run()
+    a = s["agents"]["llm_news"]
+    assert not s["errors"], s["errors"]
+    assert a["llm_status"].startswith("12 labels")
     assert 0 < len(a["fills"]) <= 3
-    assert (tmp_path / "llm").exists()
+    assert all(f["reason"].startswith("BUY signal: guidance news") for f in a["fills"])
+    led = json.loads((tmp_path / "ledgers" / "llm_news.json").read_text())
+    for f in a["fills"]:
+        pr = led["meta"]["protect"][f["inst"]]
+        assert pr["stop"] == pytest.approx(f["price"] * 0.93)
+        assert pr["target"] == pytest.approx(f["price"] * 1.10)
+        assert pr["spec"]["max_days"] == 5
+    assert {r["inst"] for r in a["resting"]} == {f["inst"] for f in a["fills"]}
+
+
+def test_invalid_labels_are_not_traded(tmp_path, settings, instruments, venues, paper_store):
+    store, extras = paper_store
+    now = "2026-10-12T15:10:00Z"
+    tickers = sorted(extras["sectors"])[:5]
+    inbox, labels = _write_labels(tmp_path, FakeData(store, extras, pd.Timestamp(now)), "2026-10-12", now, tickers)
+    from quantdesk import llm
+    labels["labels"] = labels["labels"][:-1]                  # one headline left unlabelled
+    llm.labels_path(tmp_path, "2026-10-12").write_text(json.dumps(labels))
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, now, agents=["llm_news"]).run()
+    a = s["agents"]["llm_news"]
+    assert not a["fills"] and a["llm_status"].startswith("labels file invalid")
 
 
 def test_paper_period_ends(tmp_path, settings, instruments, venues, paper_store):
@@ -255,11 +292,102 @@ def test_real_crypto_crash_is_not_filtered(tmp_path, settings, instruments, venu
     assert s["agents"]["bench_btc"]["equity_eur"] < 500
 
 
+def _give_position(tmp_path, aid, instruments, iid, qty, px, ts="2026-10-12T15:10:00+00:00", protect_spec=None):
+    from quantdesk import protect
+    from quantdesk.execution import Fill
+    from quantdesk.ledger import FxRates, Ledger
+    from quantdesk.registry import Registry
+    p = tmp_path / "ledgers" / f"{aid}.json"
+    led = Ledger.from_dict(json.loads(p.read_text())) if p.exists() else Ledger(aid, 1000.0, ts=ts)
+    led.trade(ts, Registry(instruments).get(iid), qty, px, {}, FxRates(1.1), px)
+    if protect_spec:
+        protect.register(led, [Fill(ts, aid, iid, qty, px, px, 0.0, "EUR", qty * px, "test", None, protect_spec)])
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(led.to_dict()))
+    return led
+
+
 def test_dividends_credited_once(tmp_path, settings, instruments, venues, paper_store):
     store, extras = paper_store
-    for d in ("2026-10-12", "2026-10-21", "2026-10-22"):
-        _runner(settings, instruments, venues, tmp_path, store, extras, f"{d}T15:10:00Z", agents=["trend_etf"]).run()
+    px = float(store.close("EUR_GOVT").loc[:"2026-10-12"].iloc[-1])
+    _give_position(tmp_path, "trend_etf", instruments, "EUR_GOVT", 2, px)
+    for d in ("2026-10-12T15:10", "2026-10-21T15:10", "2026-10-21T16:10", "2026-10-22T15:10"):
+        _runner(settings, instruments, venues, tmp_path, store, extras, f"{d}:00Z", agents=["trend_etf"]).run()
     led = json.loads((tmp_path / "ledgers" / "trend_etf.json").read_text())
     incomes = [e for e in led["journal"] if e["type"] == "income"]
-    held = "EUR_GOVT" in led["positions"]
-    assert len(incomes) == (1 if held else 0)
+    if "EUR_GOVT" in led["positions"]:
+        assert len(incomes) == 1
+    else:                                       # sold by a rule before the ex-date
+        assert len(incomes) <= 1
+
+
+def test_hourly_stop_loss_fires_and_is_not_doubled(tmp_path, settings, instruments, venues, paper_store):
+    """A resting stop is checked on every hourly run; when the live price falls through it the position
+    is sold once, at the bid, with a STOP-LOSS reason, and the protection is removed."""
+    store, extras = paper_store
+    px = float(store.close("GOLD").loc[:"2026-10-12"].iloc[-1])
+    led = _give_position(tmp_path, "trend_etf", instruments, "GOLD", 3, px,
+                         protect_spec={"stop_pct": 0.03, "label": "test stop"})
+    assert led.meta["protect"]["GOLD"]["stop"] == pytest.approx(px * 0.97)
+    led.meta["last_decision"] = "2026-10-11"            # today's indicator decision already made
+    (tmp_path / "ledgers" / "trend_etf.json").write_text(json.dumps(led.to_dict()))
+    # an hour later, price unchanged: nothing happens, the stop is shown as resting
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T16:10:00Z", agents=["trend_etf"]).run()
+    assert not s["errors"], s["errors"]
+    assert not s["agents"]["trend_etf"]["fills"]
+    assert [r["inst"] for r in s["agents"]["trend_etf"]["resting"]] == ["GOLD"]
+    # next hour GOLD trades 5% lower: the stop is hit
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T17:10:00Z",
+                shock={"GOLD": 0.95}, agents=["trend_etf"]).run()
+    fills = s["agents"]["trend_etf"]["fills"]
+    assert len(fills) == 1 and fills[0]["qty"] == pytest.approx(-3)
+    assert fills[0]["reason"].startswith("STOP-LOSS hit")
+    assert fills[0]["price"] < px * 0.95                       # sold at the bid, below the touched price
+    led = json.loads((tmp_path / "ledgers" / "trend_etf.json").read_text())
+    assert "GOLD" not in led["positions"] and "GOLD" not in led["meta"].get("protect", {})
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T18:10:00Z",
+                shock={"GOLD": 0.95}, agents=["trend_etf"]).run()
+    assert not s["agents"]["trend_etf"]["fills"], "a stop must not fire twice"
+
+
+def test_protection_ignored_while_market_closed(tmp_path, settings, instruments, venues, paper_store):
+    store, extras = paper_store
+    px = float(store.close("GOLD").loc[:"2026-10-12"].iloc[-1])
+    _give_position(tmp_path, "trend_etf", instruments, "GOLD", 3, px,
+                   protect_spec={"stop_pct": 0.03, "label": "test stop"})
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T22:10:00Z",
+                open_fn=lambda cal, now: cal == "CRYPTO", shock={"GOLD": 0.9}, agents=["trend_etf"]).run()
+    assert not s["agents"]["trend_etf"]["fills"]
+
+
+def test_no_quote_order_is_retried_next_run_then_expires(tmp_path, settings, instruments, venues, paper_store, monkeypatch):
+    store, extras = paper_store
+    orig = FakeData.live_quotes
+
+    def stale_sp500(self, *a, **k):
+        """SP500 quote is 3 hours old: usable as a mark, but not executable."""
+        lq = orig(self, *a, **k)
+        inner = lq._yahoo
+
+        def yq(sym):
+            d = inner(sym)
+            if sym == "SP500" and d:
+                d = {**d, "ts": (self.now - pd.Timedelta(hours=3)).isoformat()}
+            return d
+        lq._yahoo = yq
+        return lq
+    monkeypatch.setattr(FakeData, "live_quotes", stale_sp500)
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T09:10:00Z", agents=["bench_sp500"]).run()
+    assert not s["agents"]["bench_sp500"]["fills"] and s["agents"]["bench_sp500"]["rejects"]
+    led = json.loads((tmp_path / "ledgers" / "bench_sp500.json").read_text())
+    assert len(led["meta"]["pending"]) == 1
+    monkeypatch.setattr(FakeData, "live_quotes", orig)
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T10:10:00Z", agents=["bench_sp500"]).run()
+    assert len(s["agents"]["bench_sp500"]["fills"]) == 1, "retried order fills (BuyAndHold re-decides too, but only one fill)"
+    # a retried order older than the limit is dropped
+    led = json.loads((tmp_path / "ledgers" / "bench_sp500.json").read_text())
+    led["meta"]["pending"] = [{"inst_id": "SP500", "qty": -1.0, "reason": "old", "combo": None,
+                               "created": "2026-10-12T01:00:00+00:00", "meta": {}}]
+    (tmp_path / "ledgers" / "bench_sp500.json").write_text(json.dumps(led))
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T11:10:00Z", agents=["bench_sp500"]).run()
+    assert not s["agents"]["bench_sp500"]["fills"]

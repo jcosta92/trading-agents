@@ -1,11 +1,15 @@
-"""Paper-trading runner: one call = one cycle for every agent. Designed to run unattended on a schedule.
+"""Paper-trading runner: one call = one cycle for every agent. Runs unattended every hour.
 
 Per agent and run:
   1. load its ledger from state/ (or open a new EUR 1,000 account)
-  2. accrue perpetual funding since the last run; cash-settle expired options
-  3. mark to market with live quotes; daily-loss and loss-from-start kill switches
-  4. if its market is open: let the agent decide (with data up to yesterday's close) and fill the
-     orders against live quotes with the same cost model as the backtest
+  2. accrue perpetual funding since the last run; credit dividends; cash-settle expired options
+  3. mark to market with live quotes; margin liquidation; daily-loss and loss-from-start kill switches
+  4. if its market is open (and has been for 30 min):
+       a. protective orders - trailing stops / indicator targets are moved with the last completed
+          daily bar, and every stop-loss, take-profit and time exit is checked against the live price
+       b. the strategy's indicator rules on completed daily bars (each agent acts once per day)
+     and all resulting orders fill against live quotes with the same cost model as the backtest;
+     entries carry their protective levels, which are set from the actual fill price
   5. snapshot equity, append fills/rejects, save the ledger (journal replay is verified on save)
 """
 from __future__ import annotations
@@ -20,8 +24,10 @@ from pathlib import Path
 
 import pandas as pd
 
+from .. import protect
 from .. import risk as riskmod
 from ..agents import build_agent
+from ..backtest.engine import dedupe_exits, merge_pending
 from ..config import Settings
 from ..context import Context
 from ..costs import CostModel
@@ -81,7 +87,9 @@ class NetworkData:
         return LiveOptionChains(spot, rate)
 
 
-def market_open(calendar: str, now: pd.Timestamp, settle_minutes: int = 10) -> bool:
+def market_open(calendar: str, now: pd.Timestamp, settle_minutes: int = 30) -> bool:
+    """True when the exchange is open now and was already open `settle_minutes` ago (so the opening
+    auction is done and 15-minute-delayed quotes are from the current session)."""
     if calendar == "CRYPTO":
         return True
     import exchange_calendars as xcals
@@ -97,7 +105,7 @@ def market_open(calendar: str, now: pd.Timestamp, settle_minutes: int = 10) -> b
 class PaperRunner:
     def __init__(self, settings: Settings, instruments: dict, venues: dict, state_dir: str | Path = "state",
                  now: pd.Timestamp | None = None, data=None, agents: list[str] | None = None,
-                 fallback_funding_annual: float = 0.10, market_open_fn=market_open):
+                 fallback_funding_annual: float = 0.10, market_open_fn=None):
         self.settings = settings
         self.instruments = instruments
         self.state_dir = Path(state_dir)
@@ -111,7 +119,8 @@ class PaperRunner:
         self.data = data or NetworkData()
         self.only = agents
         self.fallback_funding_annual = fallback_funding_annual
-        self.market_open_fn = market_open_fn
+        settle = int(settings.paper.get("market_settle_minutes", 30))
+        self.market_open_fn = market_open_fn or (lambda cal, now: market_open(cal, now, settle))
         self.store: HistoryStore | None = None
         self.quotes: LiveQuotes | None = None
         self.sp500_sectors: dict[str, str] = {}
@@ -280,6 +289,7 @@ class PaperRunner:
             liq = riskmod.liquidate(led, ex, ExecutionQuotes(self.quotes, self.now), fx, ms, self.ts)
             out["fills"] += [f.__dict__ for f in liq]
             out["notes"].append(f"LIQUIDATED: collateral {ms['collateral_eur']:.2f} EUR vs notional {ms['notional_eur']:.2f} EUR")
+            protect.cleanup(led)
             marks = self._marks(led)
 
         if rd.action == "halt" and not led.halted:
@@ -291,8 +301,9 @@ class PaperRunner:
             pending = []
         else:
             pending = [OrderIntent.from_dict(o) for o in led.meta.get("pending", [])]
-            age_limit = int(self.settings.paper.get("pending_order_max_age_days", 3))
-            pending = [o for o in pending if (self.now - pd.Timestamp(o.created)).days <= age_limit]
+            max_h = float(self.settings.paper.get("pending_order_max_age_hours", 24))
+            pending = [o for o in pending
+                       if (self.now - _utc(o.created)).total_seconds() <= max_h * 3600]
 
         decided = False
         if is_open and trading_allowed and not led.halted:
@@ -302,9 +313,17 @@ class PaperRunner:
                 for k in ("llm_status", "llm_calls", "headlines"):
                     if k in extras:
                         out[k] = extras[k]
+            self._ensure_protect_history(led)
             ctx = self.context(self.asof, extras, option_chains)
-            orders = agent.decide(ctx, led)
+            # (a) protective orders, every run: move trailing stops / indicator targets with the last
+            #     completed daily bar, then compare stop-loss / take-profit levels with the live price
+            protect.update_daily(led, ctx)
+            exits = (protect.check_price(led, self._marks(led)) + protect.time_exits(led, ctx)
+                     + agent.intraday(ctx, led))
+            # (b) the strategy's indicator rules on completed daily bars (agents act once per day)
+            new = agent.decide(ctx, led)
             decided = True
+            orders = dedupe_exits(exits + new, led)
             out["notes"] += ctx.log
             if rd.action == "block_entries":
                 orders = riskmod.filter_entries(orders, led)
@@ -313,7 +332,6 @@ class PaperRunner:
             if max_gross and orders and riskmod.gross_ratio(led, fx, marks) >= max_gross:
                 orders = riskmod.filter_entries(orders, led)
                 out["notes"].append(f"gross exposure at/above {max_gross}x - entries blocked")
-        from ..backtest.engine import merge_pending
         orders = merge_pending(pending, orders)
         max_n = int(self.settings.paper.get("max_orders_per_agent_per_run", 25))
         if len(orders) > max_n:
@@ -322,11 +340,16 @@ class PaperRunner:
         if orders and is_open:
             exq = ExecutionQuotes(self.quotes, self.now)
             fills, rejects = ex.execute(led, orders, exq, self.ts)
+            protect.register(led, fills)
+            protect.cleanup(led)
             out["fills"] += [f.__dict__ for f in fills]
             out["rejects"] = [r.__dict__ for r in rejects]
             if exq.stale:
                 out["notes"] += exq.stale
-            led.meta["pending"] = []
+            retry = [] if led.halted else self._retry_orders(orders, rejects)
+            led.meta["pending"] = [o.to_dict() for o in retry]
+            if retry:
+                out["notes"].append(f"{len(retry)} orders without a usable quote - retried next run")
         elif orders and not led.halted:
             for o in orders:
                 o.created = o.created or self.ts
@@ -334,7 +357,11 @@ class PaperRunner:
             out["notes"].append(f"market closed: {len(orders)} orders pending")
         elif orders:
             out["notes"].append("market closed: kill-switch flatten orders will be re-issued next run")
+        else:
+            led.meta["pending"] = []
         out["decided"] = decided
+        out["signals"] = led.meta.get("signals")
+        out["resting"] = protect.resting_orders(led)
 
         marks = self._marks(led)
         led.update_marks(marks)
@@ -353,6 +380,31 @@ class PaperRunner:
         self._append_csv("fills.csv", out["fills"])
         self._append_csv("rejects.csv", out["rejects"])
         return out
+
+    RETRYABLE = ("no quote", "no executable price")
+
+    def _retry_orders(self, orders: list[OrderIntent], rejects) -> list[OrderIntent]:
+        """Orders rejected only because no usable quote was available (stale, missing, one-sided book)
+        are retried on the next run, like a day order that is still working. Whole combos are retried
+        together. Other rejects (cash, lot size) are final."""
+        bad = {(r.inst, r.qty) for r in rejects if r.why in self.RETRYABLE}
+        bad_insts = {i for i, _ in bad}
+        combos = {o.combo for o in orders if o.combo and o.inst_id in bad_insts}
+        out = []
+        for o in orders:
+            hit = (o.combo in combos) if o.combo else ((o.inst_id, o.qty) in bad)
+            if hit:
+                o.created = o.created or self.ts
+                out.append(o)
+        return out
+
+    def _ensure_protect_history(self, led: Ledger) -> None:
+        """Daily bars for protected single stocks (not in the core store) so trailing stops can move."""
+        day = str(self.asof.date())
+        need = [iid for iid, pr in led.meta.get("protect", {}).items()
+                if (pr.get("updated") or "") < day and not self.store.has(iid)]
+        if need:
+            self.ensure_history(need, days=150)
 
     def _marks(self, led: Ledger) -> dict[str, float]:
         marks = {}
@@ -402,6 +454,8 @@ class PaperRunner:
         for iid, pos in list(led.positions.items()):
             if pos.kind not in ("etf", "stock") or pos.qty <= 0:
                 continue
+            if last.get(iid) == str(today.date()):
+                continue                               # hourly runs: check each holding once a day
             since = pd.Timestamp(last.get(iid) or pos.opened[:10])
             divs = self.data.dividends(self.registry.get(iid), self.store.meta.get("resolved", {}).get(iid))
             if divs is None or divs.empty:
@@ -445,6 +499,11 @@ class PaperRunner:
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "a", encoding="utf-8") as fh:
             fh.write(json.dumps(record, default=str) + "\n")
+
+
+def _utc(ts) -> pd.Timestamp:
+    t = pd.Timestamp(ts)
+    return t.tz_localize("UTC") if t.tzinfo is None else t.tz_convert("UTC")
 
 
 def _slim_summary(s: dict) -> dict:

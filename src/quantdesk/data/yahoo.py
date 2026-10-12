@@ -24,7 +24,7 @@ def _yf():
 
 def download_history(symbols: list[str], start: str = "2000-01-01", end: str | None = None,
                      chunk: int = 40, retries: int = 3, pause: float = 1.0,
-                     fields: tuple[str, ...] = ("open", "close", "volume")) -> dict[str, pd.DataFrame]:
+                     fields: tuple[str, ...] = ("open", "high", "low", "close", "volume")) -> dict[str, pd.DataFrame]:
     """Adjusted (splits + dividends) daily bars. Returns {field: DataFrame[date x symbol]}."""
     yf = _yf()
     symbols = list(dict.fromkeys(s for s in symbols if s))

@@ -1,0 +1,46 @@
+name: news
+# Builds today's headline inbox for the LLM news agent (state/llm/inbox/<date>.json): headlines
+# since the previous inbox for the 100 most liquid S&P 500 names. A scheduled Claude task labels it
+# about an hour later (config/llm_prompt.md) - no paid API. The second cron is a fallback in case
+# GitHub skips the first run; the command does nothing if today's inbox already exists or if the
+# NYSE is closed today.
+on:
+  schedule:
+    - cron: "20 12 * * 1-5"
+    - cron: "50 12 * * 1-5"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: news
+  cancel-in-progress: false
+jobs:
+  inbox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Check paper.enabled
+        id: flag
+        run: |
+          pip install -q PyYAML==6.0.3
+          python -c "import yaml;print('enabled=' + str(bool(yaml.safe_load(open('config/agents.yaml'))['paper'].get('enabled'))).lower())" >> "$GITHUB_OUTPUT"
+      - name: Install
+        if: steps.flag.outputs.enabled == 'true'
+        run: pip install -r requirements.txt && pip install -e .
+      - name: Build inbox
+        if: steps.flag.outputs.enabled == 'true'
+        run: python -m quantdesk.cli -v news-inbox
+      - name: Commit inbox
+        if: steps.flag.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A state/llm
+          git commit -q -m "News inbox $(date -u +%Y-%m-%d)" || { echo "nothing to commit"; exit 0; }
+          for i in 1 2 3 4 5; do git pull -q --rebase && git push -q && break; sleep $((i*5)); done

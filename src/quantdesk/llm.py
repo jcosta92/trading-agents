@@ -1,106 +1,143 @@
-"""Minimal Anthropic Messages API client used by the LLM news agent, with token cost accounting.
+"""Headline inbox and label files for the LLM news agent.
 
-The LLM only labels headlines (event type, direction, materiality). It never sees prices, never
-sizes positions and never places orders; fixed rules in the agent do that.
+No paid API is used. Every weekday the `news` workflow writes the day's headlines to
+state/llm/inbox/<date>.json; a scheduled Claude task labels them with config/llm_prompt.md and
+commits state/llm/labels/<date>.json; the hourly paper run trades on the labels with fixed rules.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
-import os
-import re
-import time
+from datetime import timedelta
+from pathlib import Path
 
-import requests
+import pandas as pd
 
 log = logging.getLogger(__name__)
 
-API_URL = "https://api.anthropic.com/v1/messages"
-PROMPT_VERSION = "news-v1"
-
-SYSTEM = """You label financial news headlines for a systematic trading experiment.
-For each item, judge the likely effect of the news itself on the named company's stock over the
-next 5 trading days, relative to the market. You cannot see prices. Be conservative: most
-headlines (market recaps, opinion pieces, listicles, analyst chatter, old news) are immaterial.
-
-materiality: 0 = noise/opinion/recap, 1 = minor company news, 2 = material company-specific news
-(earnings or guidance surprise, major contract, regulatory decision, being acquired, large buyback),
-3 = major and unexpected (transformative deal, guidance shock, drug approval/rejection, fraud).
-direction: 1 positive, -1 negative, 0 unclear/neutral.
-event_type: one of earnings, guidance, m&a, product, regulatory_legal, management, capital_return,
-analyst, macro, other.
-
-Return ONLY a JSON array, one object per input item, in the same order:
-[{"id": "...", "ticker": "...", "event_type": "...", "direction": 0, "materiality": 0,
-  "confidence": 0.0, "rationale": "max 15 words"}]"""
+PROMPT_VERSION = "news-v2"
+EVENT_TYPES = {"earnings", "guidance", "m&a", "product", "regulatory_legal", "management", "capital_return",
+               "analyst", "macro", "other"}
 
 
-class NewsClassifier:
-    def __init__(self, model: str, price_in_per_mtok: float, price_out_per_mtok: float,
-                 api_key: str | None = None, max_tokens: int = 4000, timeout: int = 90):
-        self.model = model
-        self.price_in = price_in_per_mtok
-        self.price_out = price_out_per_mtok
-        self.api_key = api_key or os.environ.get("ANTHROPIC_API_KEY")
-        self.max_tokens = max_tokens
-        self.timeout = timeout
-
-    @property
-    def available(self) -> bool:
-        return bool(self.api_key)
-
-    def classify(self, items: list[dict]) -> tuple[list[dict], dict]:
-        """Returns (labels, usage) where usage = {input_tokens, output_tokens, cost_usd, raw}."""
-        payload_items = [{"id": str(it["id"])[:64], "ticker": it["ticker"], "title": it["title"][:300],
-                          "summary": (it.get("summary") or "")[:300], "publisher": it.get("publisher"),
-                          "published": it.get("published")} for it in items]
-        body = {
-            "model": self.model, "max_tokens": self.max_tokens, "temperature": 0, "system": SYSTEM,
-            "messages": [{"role": "user", "content": "Items:\n" + json.dumps(payload_items, ensure_ascii=False)}],
-        }
-        headers = {"x-api-key": self.api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"}
-        resp = None
-        for attempt in range(3):
-            try:
-                resp = requests.post(API_URL, headers=headers, json=body, timeout=self.timeout)
-                if resp.status_code in (429, 500, 502, 503, 529):
-                    time.sleep(5 * (attempt + 1))
-                    continue
-                break
-            except requests.RequestException as exc:
-                log.warning("LLM request failed (attempt %d): %s", attempt + 1, exc)
-                time.sleep(5 * (attempt + 1))
-        if resp is None or resp.status_code != 200:
-            raise RuntimeError(f"LLM call failed: {getattr(resp, 'status_code', None)} {getattr(resp, 'text', '')[:300]}")
-        data = resp.json()
-        usage = data.get("usage", {})
-        tin, tout = int(usage.get("input_tokens", 0)), int(usage.get("output_tokens", 0))
-        cost = tin / 1e6 * self.price_in + tout / 1e6 * self.price_out
-        text = "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text")
-        labels = parse_labels(text)
-        return labels, {"input_tokens": tin, "output_tokens": tout, "cost_usd": cost, "model": data.get("model"),
-                        "prompt_version": PROMPT_VERSION}
+def item_id(ticker: str, title: str, published: str | None) -> str:
+    return hashlib.sha1(f"{ticker}|{title}|{published}".encode()).hexdigest()[:12]
 
 
-def parse_labels(text: str) -> list[dict]:
-    m = re.search(r"\[.*\]", text, re.S)
-    if not m:
-        return []
-    try:
-        arr = json.loads(m.group(0))
-    except json.JSONDecodeError:
-        return []
-    out = []
-    for o in arr:
+def inbox_path(state_dir: Path, date: str) -> Path:
+    return Path(state_dir) / "llm" / "inbox" / f"{date}.json"
+
+
+def labels_path(state_dir: Path, date: str) -> Path:
+    return Path(state_dir) / "llm" / "labels" / f"{date}.json"
+
+
+def liquid_universe(close: pd.DataFrame, volume: pd.DataFrame, n: int = 100, window: int = 60) -> list[str]:
+    """The `n` names with the highest median daily dollar volume over the last `window` sessions."""
+    dv = (close * volume).iloc[-window:]
+    med = dv.median(skipna=True).dropna()
+    med = med[med > 0]
+    return list(med.sort_values(ascending=False).index[:n])
+
+
+def news_cutoff(state_dir: Path, now: pd.Timestamp, default_hours: int = 24, max_hours: int = 96) -> pd.Timestamp:
+    """Headlines are collected since the previous inbox was built (so Monday's inbox covers the
+    weekend and a day after a holiday covers the holiday), at least `default_hours` and at most
+    `max_hours` back."""
+    today = now.strftime("%Y-%m-%d")
+    prev = sorted(p for p in (Path(state_dir) / "llm" / "inbox").glob("*.json") if p.stem < today)
+    cutoff = now - timedelta(hours=default_hours)
+    if prev:
         try:
-            out.append({
-                "id": str(o["id"]), "ticker": str(o.get("ticker", "")),
-                "event_type": str(o.get("event_type", "other")),
-                "direction": int(max(-1, min(1, int(o.get("direction", 0))))),
-                "materiality": int(max(0, min(3, int(o.get("materiality", 0))))),
-                "confidence": float(max(0.0, min(1.0, float(o.get("confidence", 0.0))))),
-                "rationale": str(o.get("rationale", ""))[:200],
-            })
-        except (KeyError, TypeError, ValueError):
+            created = pd.Timestamp(json.loads(prev[-1].read_text())["created"])
+            created = created.tz_localize("UTC") if created.tzinfo is None else created.tz_convert("UTC")
+            cutoff = min(cutoff, created)
+        except Exception:                              # unreadable file: fall back to the default
+            pass
+    return max(cutoff, now - timedelta(hours=max_hours))
+
+
+def build_inbox(universe: list[str], fetch_news, now: pd.Timestamp, lookback_hours: int = 24,
+                cutoff: pd.Timestamp | None = None) -> dict:
+    """Headlines published since `cutoff` (default: the last `lookback_hours`) for every universe
+    ticker, de-duplicated."""
+    cutoff = cutoff if cutoff is not None else now - timedelta(hours=lookback_hours)
+    lookback_hours = round((now - cutoff).total_seconds() / 3600, 1)
+    items, seen = [], set()
+    for t in universe:
+        for it in fetch_news(t) or []:
+            pub = pd.Timestamp(it["published"]) if it.get("published") else None
+            if pub is None:
+                continue
+            pub = pub.tz_localize("UTC") if pub.tzinfo is None else pub.tz_convert("UTC")
+            if pub < cutoff or pub > now:
+                continue
+            key = (t, it["title"].strip().lower())
+            if key in seen:
+                continue
+            seen.add(key)
+            items.append({"id": item_id(t, it["title"], pub.isoformat()), "ticker": t, "title": it["title"][:300],
+                          "summary": (it.get("summary") or "")[:400], "publisher": it.get("publisher"),
+                          "published": pub.isoformat()})
+    return {"date": now.strftime("%Y-%m-%d"), "created": now.isoformat(), "prompt_version": PROMPT_VERSION,
+            "since": cutoff.isoformat(), "lookback_hours": lookback_hours, "universe": universe, "items": items}
+
+
+def validate_labels(inbox: dict, labels: dict) -> list[str]:
+    """Problems with a labels file (empty list = valid)."""
+    probs = []
+    if labels.get("date") != inbox.get("date"):
+        probs.append(f"date mismatch: labels {labels.get('date')} vs inbox {inbox.get('date')}")
+    if labels.get("prompt_version") != inbox.get("prompt_version", PROMPT_VERSION):
+        probs.append(f"prompt_version {labels.get('prompt_version')} != {inbox.get('prompt_version', PROMPT_VERSION)}")
+    if not isinstance(labels.get("labels"), list):
+        probs.append("'labels' must be a list")
+        return probs
+    ids = {it["id"]: it for it in inbox.get("items", [])}
+    seen = set()
+    for i, lab in enumerate(labels.get("labels", [])):
+        lid = lab.get("id")
+        if lid not in ids:
+            probs.append(f"label {i}: unknown id {lid}")
             continue
-    return out
+        if lid in seen:
+            probs.append(f"label {i}: duplicate id {lid}")
+        seen.add(lid)
+        if lab.get("ticker") != ids[lid]["ticker"]:
+            probs.append(f"label {lid}: ticker {lab.get('ticker')} != inbox {ids[lid]['ticker']}")
+        if lab.get("event_type") not in EVENT_TYPES:
+            probs.append(f"label {lid}: bad event_type {lab.get('event_type')}")
+        if lab.get("direction") not in (-1, 0, 1):
+            probs.append(f"label {lid}: bad direction {lab.get('direction')}")
+        if lab.get("materiality") not in (0, 1, 2, 3):
+            probs.append(f"label {lid}: bad materiality {lab.get('materiality')}")
+        try:
+            c = float(lab.get("confidence"))
+            if not 0 <= c <= 1:
+                raise ValueError
+        except (TypeError, ValueError):
+            probs.append(f"label {lid}: bad confidence {lab.get('confidence')}")
+    missing = set(ids) - seen
+    if missing:
+        probs.append(f"{len(missing)} inbox items have no label")
+    return probs
+
+
+def load_labels(state_dir: Path, date: str) -> tuple[list[dict] | None, str]:
+    """Valid labels for `date` joined with their headlines, or (None, reason)."""
+    ip, lp = inbox_path(state_dir, date), labels_path(state_dir, date)
+    if not ip.exists():
+        return None, f"no headline inbox for {date}"
+    if not lp.exists():
+        return None, f"no labels yet for {date}"
+    inbox, labels = json.loads(ip.read_text()), json.loads(lp.read_text())
+    probs = validate_labels(inbox, labels)
+    if probs:
+        return None, "labels file invalid: " + "; ".join(probs[:3])
+    by_id = {it["id"]: it for it in inbox["items"]}
+    out = []
+    for lab in labels["labels"]:
+        it = by_id[lab["id"]]
+        out.append({**lab, "title": it["title"], "published": it["published"]})
+    return out, f"{len(out)} labels from {labels.get('labelled_by', 'unknown')}"

@@ -24,8 +24,13 @@ def make_store(start="2006-01-02", end="2026-10-09", n_stocks=60, seed=42) -> tu
     def put(key, idx, close, vol=None, open_jitter=0.002):
         close = pd.Series(close, index=idx)
         opn = close.shift(1).fillna(close.iloc[0]) * (1 + open_jitter * rng.standard_normal(len(idx)))
+        rng_hi = np.abs(close.pct_change().fillna(0)).values * 0.6 + 0.004
+        hi = np.maximum(opn, close) * (1 + rng_hi * rng.uniform(0.2, 1.0, len(idx)))
+        lo = np.minimum(opn, close) * (1 - rng_hi * rng.uniform(0.2, 1.0, len(idx)))
         store.set_series("close", key, close)
         store.set_series("open", key, opn)
+        store.set_series("high", key, pd.Series(hi, index=idx))
+        store.set_series("low", key, pd.Series(lo, index=idx))
         if vol is not None:
             store.set_series("volume", key, pd.Series(vol, index=idx))
 

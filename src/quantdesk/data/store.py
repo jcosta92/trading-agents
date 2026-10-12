@@ -12,11 +12,13 @@ class HistoryStore:
     def __init__(self, frames: dict[str, pd.DataFrame] | None = None, meta: dict | None = None):
         self.frames: dict[str, pd.DataFrame] = {}
         self.meta: dict = dict(meta or {})
+        self._cache: dict[tuple[str, str], pd.Series] = {}
         for k, v in (frames or {}).items():
             self.frames[k] = _clean(v)
 
     # ------------------------------------------------------------------ building
     def set_series(self, field: str, key: str, s: pd.Series) -> None:
+        self._cache.clear()
         s = pd.Series(s).astype("float64")
         s.index = pd.DatetimeIndex(pd.to_datetime(s.index)).tz_localize(None).normalize()
         s = s[~s.index.duplicated(keep="last")].sort_index()
@@ -29,6 +31,7 @@ class HistoryStore:
 
     def set_frame(self, field: str, df: pd.DataFrame) -> None:
         """Add many columns at once (much faster than repeated set_series)."""
+        self._cache.clear()
         df = _clean(df)
         cur = self.frames.get(field)
         if cur is None:
@@ -43,13 +46,39 @@ class HistoryStore:
         return df is not None and key in df.columns and df[key].notna().any()
 
     def series(self, field: str, key: str) -> pd.Series:
+        ck = (field, key)
+        hit = self._cache.get(ck)
+        if hit is not None:
+            return hit
         df = self.frames.get(field)
         if df is None or key not in df.columns:
             return pd.Series(dtype="float64")
-        return df[key].dropna()
+        out = df[key].dropna()
+        self._cache[ck] = out
+        return out
 
     def close(self, key: str) -> pd.Series:
         return self.series("close", key)
+
+    def ohlc_frame(self, key: str) -> pd.DataFrame:
+        """Full-history open/high/low/close for one key on the close's dates (cached).
+        Missing open/high/low are filled from the close; high/low are widened to contain open/close."""
+        ck = ("__ohlc__", key)
+        hit = self._cache.get(ck)
+        if hit is not None:
+            return hit
+        c = self.series("close", key)
+        cv = c.to_numpy(dtype="float64")
+        cols = {}
+        for f in ("open", "high", "low"):
+            sr = self.series(f, key)
+            v = sr.reindex(c.index).to_numpy(dtype="float64") if len(sr) else np.full(len(cv), np.nan)
+            cols[f] = np.where(np.isfinite(v), v, cv)
+        hi = np.fmax(cols["high"], np.fmax(cols["open"], cv))
+        lo = np.fmin(cols["low"], np.fmin(cols["open"], cv))
+        out = pd.DataFrame({"open": cols["open"], "high": hi, "low": lo, "close": cv}, index=c.index)
+        self._cache[ck] = out
+        return out
 
     def frame(self, field: str) -> pd.DataFrame:
         return self.frames.get(field, pd.DataFrame())

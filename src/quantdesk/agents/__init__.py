@@ -5,12 +5,13 @@ from .base import Agent
 from .carry import FundingCarry
 from .factor import FactorEquity
 from .llmnews import LLMNews
+from .meanrev import RSI2MeanReversion
 from .simple import BuyAndHold, StaticWeights
-from .trend import CryptoTrend, TrendETF
+from .trend import DonchianBreakout, TrendETF
 from .vrp import PutCreditSpreads
 
-CLASSES = {c.__name__: c for c in (BuyAndHold, StaticWeights, TrendETF, CryptoTrend, FundingCarry,
-                                   FactorEquity, PutCreditSpreads, LLMNews)}
+CLASSES = {c.__name__: c for c in (BuyAndHold, StaticWeights, TrendETF, DonchianBreakout, RSI2MeanReversion,
+                                   FundingCarry, FactorEquity, PutCreditSpreads, LLMNews)}
 
 
 def build_agent(spec: AgentSpec, registry: Registry, cost_model: CostModel) -> Agent:

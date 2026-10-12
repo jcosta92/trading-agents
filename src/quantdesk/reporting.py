@@ -17,16 +17,18 @@ import pandas as pd
 from .config import Settings
 
 # fixed categorical slot per agent (colour follows the entity everywhere); benchmarks are neutral gray
+# (R1, a backtest-only research proxy, shares A2's colour: same factor idea, never on the live dashboard)
 SLOTS = {"trend_etf": 1, "trend_etf_t212": 2, "factor_equity": 3, "vrp_spreads": 4, "llm_news": 5,
-         "crypto_trend": 6, "funding_carry": 7, "factor_ucits_proxy": 8}
+         "crypto_trend": 6, "funding_carry": 7, "rsi2_meanrev": 8, "factor_ucits_proxy": 3}
 BENCH = {"bench_sp500", "bench_btc"}
 SHORT = {"bench_sp500": "B0 S&P 500 (benchmark)", "bench_btc": "B1 Bitcoin (benchmark)",
          "trend_etf": "A1 ETF trend, IBKR", "trend_etf_t212": "A1b ETF trend, Trading 212",
          "factor_equity": "A2 Factor tilt", "crypto_trend": "A3 Crypto trend", "funding_carry": "A4 Funding carry",
-         "vrp_spreads": "A5 XSP put spreads", "llm_news": "A6 LLM news", "factor_ucits_proxy": "R1 UCITS factor ETFs"}
+         "vrp_spreads": "A5 XSP put spreads", "llm_news": "A6 LLM news", "rsi2_meanrev": "A7 RSI(2) dip buying",
+         "factor_ucits_proxy": "R1 UCITS factor ETFs"}
 GROUPS = [
     ("EUR-funded market agents vs the S&P 500 UCITS benchmark", "bench_sp500",
-     ["trend_etf", "trend_etf_t212", "factor_equity", "vrp_spreads", "llm_news"]),
+     ["trend_etf", "trend_etf_t212", "factor_equity", "vrp_spreads", "llm_news", "rsi2_meanrev"]),
     ("Crypto agents vs Bitcoin buy-and-hold", "bench_btc", ["crypto_trend", "funding_carry"]),
 ]
 
@@ -68,13 +70,15 @@ padding:8px 10px;font-size:12.5px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-widt
 .tip .d{color:var(--ink2);margin-bottom:4px} .tip .row{display:flex;align-items:center;gap:6px;line-height:1.6}
 .tip .v{font-weight:620;font-variant-numeric:tabular-nums;min-width:62px} .tip .n{color:var(--ink2)}
 .multiples{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px}
-.badge{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;border:1px solid var(--ring);color:var(--ink2)}
+.badge{display:inline-block;white-space:nowrap;padding:1px 8px;border-radius:999px;font-size:12px;border:1px solid var(--ring);color:var(--ink2)}
 .badge.pass:before{content:"\\2713  ";color:var(--good)} .badge.fail:before{content:"\\2715  ";color:var(--bad)}
 .badge.weak:before{content:"\\25CB  "}
 .warn{border-left:3px solid var(--s4);padding:8px 12px;background:var(--surface);border-radius:6px;color:var(--ink2);margin:12px 0}
 a{color:var(--s1)} code{font-size:12.5px}
 @media (max-width:600px){td:first-child,th:first-child{min-width:150px} .tile .value{font-size:22px} h1{font-size:22px}}
 details{margin:6px 0} summary{cursor:pointer;color:var(--ink2)}
+pre.rules{white-space:pre-wrap;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin:4px 0 10px;color:var(--ink)}
+.state{display:inline-block;min-width:44px;font-weight:600} .state.buy{color:var(--good)} .state.sell{color:var(--bad)}
 .toggle{float:right;font-size:12.5px;background:var(--surface);color:var(--ink2);border:1px solid var(--ring);border-radius:8px;padding:4px 10px;cursor:pointer}
 """
 
@@ -87,8 +91,10 @@ function niceTicks(lo,hi,n){const span=hi-lo||1;const step0=span/n;const mag=Mat
 function logTicks(lo,hi){const out=[];const e0=Math.floor(Math.log10(lo)),e1=Math.ceil(Math.log10(hi));
  for(let e=e0;e<=e1;e++)for(const m of [1,2,5]){const v=m*Math.pow(10,e);if(v>=lo*0.98&&v<=hi*1.02)out.push(v);}return out;}
 function fmtNum(v){const a=Math.abs(v);if(a>=1e6)return (v/1e6).toFixed(1)+'M';if(a>=1e5)return (v/1e3).toFixed(0)+'K';return v.toLocaleString('en-GB',{maximumFractionDigits:a<10?2:0});}
-function fmtDate(t,span){const d=new Date(t);const mo=d.toLocaleString('en-GB',{month:'short'});
- return span>3*365*864e5? String(d.getUTCFullYear()) : (span>60*864e5? mo+' '+String(d.getUTCFullYear()).slice(2): d.getUTCDate()+' '+mo);}
+function fmtDate(t,span){const d=new Date(t);const mo=d.toLocaleString('en-GB',{month:'short',timeZone:'UTC'});
+ const hm=String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0');
+ return span>3*365*864e5? String(d.getUTCFullYear()) : (span>60*864e5? mo+' '+String(d.getUTCFullYear()).slice(2)
+  : (span>3*864e5? d.getUTCDate()+' '+mo : (span>864e5? d.getUTCDate()+' '+mo+' '+hm : hm)));}
 window.lineChart=function(host,cfg){
  const series=cfg.series.filter(s=>s.points&&s.points.length);
  const legend=document.createElement('div');legend.className='legend';
@@ -266,6 +272,86 @@ def _gate_badge(g: str) -> str:
     return f"<span class='badge {cls}'>{_esc(g or '–')}</span>"
 
 
+def _time_exit_date(opened: str, max_days) -> str:
+    if not max_days or not opened:
+        return "–"
+    try:
+        return str(np.busday_offset(pd.Timestamp(opened).date(), int(max_days), roll="forward"))
+    except Exception:
+        return "–"
+
+
+def _px(x) -> str:
+    try:
+        x = float(x)
+    except (TypeError, ValueError):
+        return "–"
+    return f"{x:,.5g}" if math.isfinite(x) and x else "–"
+
+
+def resting_rows(state: dict, settings: Settings) -> str:
+    """One row per protective order resting on an open position."""
+    rows = []
+    for aid, led in state["ledgers"].items():
+        name = SHORT.get(aid, aid)
+        for iid, pr in (led.get("meta", {}).get("protect") or {}).items():
+            pos = led.get("positions", {}).get(iid)
+            if not pos or pos.get("qty", 0) <= 0:
+                continue
+            mark = pos.get("last_mark")
+            stop, target = pr.get("stop"), pr.get("target")
+            dist = (mark / stop - 1) if (mark and stop) else None
+            spec = pr.get("spec", {})
+            rows.append(
+                f"<tr><td><span class='key' style='background:{_color(aid)}'></span>{_esc(name)}</td>"
+                f"<td class='l'>{_esc(iid)}</td><td class='num'>{pos['qty']:,.6g}</td><td class='num'>{_px(pr['entry'])}</td>"
+                f"<td class='num'>{_px(mark)}</td><td class='num'>{_px(stop)}</td>"
+                f"<td class='num'>{_pct(dist, 1, False) if dist is not None else '–'}</td>"
+                f"<td class='num'>{_px(target)}</td>"
+                f"<td class='num'>{_esc(_time_exit_date(pr.get('opened'), spec.get('max_days')))}</td>"
+                f"<td class='l small'>{_esc(spec.get('label', ''))}</td></tr>")
+    return "".join(rows)
+
+
+def _fmt_sig(k: str, v) -> str:
+    if isinstance(v, (int, float)) and not isinstance(v, bool):
+        if not math.isfinite(float(v)):
+            return "–"
+        return f"{float(v):+.1%}" if k.startswith(("roc", "funding")) else f"{float(v):,.5g}"
+    return str(v)
+
+
+def signal_rows(state: dict, settings: Settings) -> str:
+    """The indicator readings and resulting state from each agent's last daily decision."""
+    rows = []
+    for aid, spec in settings.agents.items():
+        led = state["ledgers"].get(aid)
+        if not spec.paper or not led:
+            continue
+        meta = led.get("meta", {})
+        sigs = meta.get("signals") or {}
+        day = meta.get("signals_asof") or meta.get("last_decision") or "–"
+        for iid, sg in sigs.items():
+            st = str(sg.get("state", ""))
+            cls = "buy" if st.startswith("BUY") else "sell" if st.startswith("SELL") else ""
+            vals = " · ".join(f"{k} {_fmt_sig(k, v)}" for k, v in sg.items()
+                              if k not in ("state", "buy_rule", "sell_rule") and v is not None)
+            rows.append(f"<tr><td><span class='key' style='background:{_color(aid)}'></span>{_esc(SHORT.get(aid, aid))}"
+                        f"<div class='small muted'>bars to {_esc(day)}</div></td><td class='l'>{_esc(iid)}</td>"
+                        f"<td class='l'><span class='state {cls}'>{_esc(st)}</span></td><td class='l small'>{_esc(vals)}</td></tr>")
+    return "".join(rows)
+
+
+def rules_html(settings: Settings) -> str:
+    out = []
+    for aid, spec in settings.agents.items():
+        if not spec.paper or not spec.rules:
+            continue
+        out.append(f"<details><summary><span class='key' style='background:{_color(aid)}'></span>{_esc(spec.name)}</summary>"
+                   f"<pre class='rules'>{_esc(spec.rules)}</pre></details>")
+    return "".join(out)
+
+
 def write_dashboard(state_dir: Path, settings: Settings, docs_dir: Path, reports_dir: Path) -> None:
     state = load_state(state_dir)
     table = live_table(state, settings)
@@ -305,13 +391,13 @@ def write_dashboard(state_dir: Path, settings: Settings, docs_dir: Path, reports
             f"<td class='num'>{_eur(r['equity'])}</td><td class='{_cls(r['return'])}'>{_pct(r['return'], 2)}</td>"
             f"<td class='{_cls(r['vs_bench'])}'>{_pct(r['vs_bench'], 2)}</td><td class='num'>{_pct(r['max_dd'], 1, False)}</td>"
             f"<td class='num'>{_eur(r['trading_costs'])}</td><td class='num'>{_eur(r['funding'])}</td>"
-            f"<td class='num'>{_eur(r['inference'])}</td><td class='num'>{r['fills']}</td><td class='l'>{_gate_badge(r['gate'])}</td></tr>")
+            f"<td class='num'>{r['fills']}</td><td class='l'>{_gate_badge(r['gate'])}</td></tr>")
     cost_rows = []
     for _, r in table.iterrows():
         cost_rows.append(f"<tr><td>{_esc(r['name'])}</td><td class='num'>{_eur(r['commissions'])}</td>"
                          f"<td class='num'>{_eur(r['spread'])}</td><td class='num'>{_eur(r['fx'])}</td>"
-                         f"<td class='num'>{_eur(r['funding'])}</td><td class='num'>{_eur(r['inference'])}</td>"
-                         f"<td class='num'>{_pct((r['trading_costs'] + r['inference']) / 1000.0, 2, False)}</td></tr>")
+                         f"<td class='num'>{_eur(r['funding'])}</td>"
+                         f"<td class='num'>{_pct(r['trading_costs'] / 1000.0, 2, False)}</td></tr>")
     notes_html = []
     for aid, a in (last_run.get("agents") or {}).items():
         notes = a.get("notes") or []
@@ -324,7 +410,9 @@ def write_dashboard(state_dir: Path, settings: Settings, docs_dir: Path, reports
         name = settings.agents[aid].name if aid in settings.agents else aid
         notes_html.append(f"<details><summary>{_esc(name)} — market {'open' if a.get('market_open') else 'closed'}, "
                           f"{a.get('n_fills', 0)} fills, {a.get('n_rejects', 0)} rejects</summary><ul class='small'>{items}</ul></details>")
-    fills = state["fills"].tail(30).iloc[::-1] if len(state["fills"]) else pd.DataFrame()
+    fills = state["fills"].tail(40).iloc[::-1] if len(state["fills"]) else pd.DataFrame()
+    resting = resting_rows(state, settings)
+    signals = signal_rows(state, settings)
     fill_rows = "".join(
         f"<tr><td class='l'>{_esc(str(f['ts'])[:16].replace('T', ' '))}</td><td class='l'>{_esc(f['agent'])}</td>"
         f"<td class='l'>{_esc(f['inst'])}</td><td class='num'>{f['qty']:+,.4g}</td><td class='num'>{f['price']:,.4f}</td>"
@@ -337,34 +425,50 @@ def write_dashboard(state_dir: Path, settings: Settings, docs_dir: Path, reports
     body = f"""
 <button class='toggle' onclick='toggleTheme()'>Light / dark</button>
 <h1>Trading agents — one-month paper run</h1>
-<p class='sub'>Each agent trades its own simulated €1,000 account. Orders fill against live quotes with the full cost model
-(IBKR, Trading 212, Bitvavo and Kraken fee schedules, the bid-ask spread, slippage, FX conversion, perp funding and LLM
-inference). Period: <b>{_esc(period)}</b> · status: <b>{_esc(status)}</b> · last update: {_esc(upd)}.</p>
+<p class='sub'>Each agent trades its own simulated €1,000 account with fixed indicator rules: it buys and sells when its
+indicators fire, and every entry carries a stop-loss and, where the strategy has one, a take-profit or time exit, checked
+every hour while the market is open. Orders fill against live quotes with the full cost model (IBKR, Trading 212, Bitvavo
+and Kraken fee schedules, the bid-ask spread, slippage, FX conversion and perp funding).
+Period: <b>{_esc(period)}</b> · status: <b>{_esc(status)}</b> · last update: {_esc(upd)}.</p>
 {err_html}
 <div class='tiles'>
  <div class='tile'><div class='label'>Days elapsed</div><div class='value'>{min(days, length)} / {length}</div><div class='note'>One month cannot separate skill from luck</div></div>
  <div class='tile'><div class='label'>Agents ahead of their benchmark</div><div class='value'>{len(beating)} of {n_agents}</div><div class='note'>Net of all costs, since the start</div></div>
- <div class='tile'><div class='label'>Costs paid, all agents</div><div class='value'>{_eur(total_costs)}</div><div class='note'>Fees, spread, slippage, FX, LLM</div></div>
+ <div class='tile'><div class='label'>Costs paid, all agents</div><div class='value'>{_eur(total_costs)}</div><div class='note'>Fees, spread, slippage, FX</div></div>
  <div class='tile'><div class='label'>EUR/USD used</div><div class='value'>{f"{last_run['fx_eurusd']:.4f}" if last_run.get('fx_eurusd') else '–'}</div><div class='note'>{_esc(last_run.get('fx_source') or '')}</div></div>
 </div>
 <h2>Equity</h2>
 <div id='charts'></div>
 <h2>Scoreboard</h2>
 <div class='tablewrap'><table><thead><tr><th>Agent</th><th>Equity</th><th>Return</th><th>vs benchmark</th><th>Max drawdown</th>
-<th>Trading costs</th><th>Funding paid</th><th>LLM cost</th><th>Fills</th><th class='l'>Backtest gate</th></tr></thead>
+<th>Trading costs</th><th>Funding paid</th><th>Fills</th><th class='l'>Backtest gate</th></tr></thead>
 <tbody>{''.join(rows_html)}</tbody></table></div>
 <p class='small muted'>Benchmarks: EUR-funded agents vs the S&amp;P 500 UCITS ETF; crypto agents vs Bitcoin buy-and-hold. "Funding paid"
 is negative when an agent received funding. Gate = verdict of the pre-registered multi-year backtest (reports/backtest).</p>
+<h2>Stop-loss and take-profit orders resting now</h2>
+<div class='tablewrap'><table><thead><tr><th>Agent</th><th class='l'>Instrument</th><th>Qty</th><th>Entry</th><th>Last price</th>
+<th>Stop-loss</th><th>Room to stop</th><th>Take-profit</th><th>Time exit on</th><th class='l'>Rule</th></tr></thead>
+<tbody>{resting or "<tr><td class='l muted' colspan='10'>No open positions with protective orders</td></tr>"}</tbody></table></div>
+<p class='small muted'>Levels are set from the actual fill price; trailing stops only ever move up, once a day, from the last
+completed daily bar. A level is treated as hit when the live price touches it at an hourly check, and the position is
+then sold at the bid (so a fast move can fill beyond the level, as a real stop order would).</p>
+<h2>Indicator signals at the last daily decision</h2>
+<div class='tablewrap'><table><thead><tr><th>Agent</th><th class='l'>Instrument</th><th class='l'>State</th>
+<th class='l'>Indicators</th></tr></thead>
+<tbody>{signals or "<tr><td class='l muted' colspan='4'>No decisions yet</td></tr>"}</tbody></table></div>
+<h2>Trading rules (pre-registered)</h2>
+<div class='card'>{rules_html(settings) or "<p class='muted'>–</p>"}</div>
 <h2>Where the costs went</h2>
 <div class='tablewrap'><table><thead><tr><th>Agent</th><th>Commissions &amp; fees</th><th>Spread &amp; slippage</th><th>FX</th>
-<th>Funding</th><th>LLM</th><th>Total as % of €1,000</th></tr></thead><tbody>{''.join(cost_rows)}</tbody></table></div>
+<th>Funding</th><th>Trading costs as % of €1,000</th></tr></thead><tbody>{''.join(cost_rows)}</tbody></table></div>
 <h2>Latest run</h2>
 <div class='card'>{''.join(notes_html) or "<p class='muted'>No runs yet.</p>"}</div>
 <h2>Recent fills</h2>
 <div class='tablewrap'><table><thead><tr><th class='l'>Time (UTC)</th><th class='l'>Agent</th><th class='l'>Instrument</th><th>Qty</th>
 <th>Price</th><th>Fees</th><th>Value</th><th class='l'>Reason</th></tr></thead><tbody>{fill_rows or "<tr><td class='l muted' colspan='8'>No fills yet</td></tr>"}</tbody></table></div>
 <p class='small muted' style='margin-top:28px'>Paper trading with simulated fills against (often 15-minute delayed) public quotes.
-Simulated fills are not real executions. Not investment advice. <a href='backtest.html'>Backtest report</a></p>
+Simulated fills are not real executions. The LLM agent's headline labels come from a scheduled Claude task, not a paid API.
+Not investment advice. <a href='backtest.html'>Backtest report</a></p>
 """
     page = _page("Trading agents dashboard", body, {"groups": groups}).replace(
         "(window.__init||function(){})(D);",
@@ -381,12 +485,12 @@ Simulated fills are not real executions. Not investment advice. <a href='backtes
 def status_markdown(table: pd.DataFrame, paper: dict, last_run: dict, upd: str) -> str:
     lines = ["# Paper run status", "", f"Last update: {upd} · status: **{paper.get('status', 'not started')}** · "
              f"period: {paper.get('start', '–')[:10]} → {paper.get('end', '–')[:10]}", "",
-             "| Agent | Equity | Return | vs benchmark | Max DD | Trading costs | Funding | LLM | Fills | Backtest gate |",
-             "|---|---|---|---|---|---|---|---|---|---|"]
+             "| Agent | Equity | Return | vs benchmark | Max DD | Trading costs | Funding | Fills | Backtest gate |",
+             "|---|---|---|---|---|---|---|---|---|"]
     for _, r in table.iterrows():
         lines.append(f"| {r['name']}{' (HALTED)' if r['halted'] else ''} | {_eur(r['equity'])} | {_pct(r['return'], 2)} | "
                      f"{_pct(r['vs_bench'], 2)} | {_pct(r['max_dd'], 1, False)} | {_eur(r['trading_costs'])} | "
-                     f"{_eur(r['funding'])} | {_eur(r['inference'])} | {r['fills']} | {r['gate']} |")
+                     f"{_eur(r['funding'])} | {r['fills']} | {r['gate']} |")
     if last_run.get("errors"):
         lines += ["", "## Errors in the last run", ""] + [f"- {e}" for e in last_run["errors"]]
     lines += ["", "Simulated fills against public quotes; not investment advice. Full dashboard: docs/index.html (GitHub Pages)."]

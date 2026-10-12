@@ -2,7 +2,9 @@
 
   python -m quantdesk.cli fetch-history            # download history for backtests -> data/history/
   python -m quantdesk.cli backtest                 # run all pre-registered agents -> reports/backtest/
-  python -m quantdesk.cli paper                    # one paper-trading cycle -> state/
+  python -m quantdesk.cli paper                    # one paper-trading cycle -> state/ (run hourly)
+  python -m quantdesk.cli news-inbox               # today's headlines for the LLM agent -> state/llm/inbox/
+  python -m quantdesk.cli validate-labels          # check Claude's labels file before it is committed
   python -m quantdesk.cli dashboard                # rebuild docs/index.html and reports/STATUS.md
   python -m quantdesk.cli selftest                 # quick end-to-end run on synthetic data
 """
@@ -101,6 +103,82 @@ def cmd_paper(args) -> int:
     return 1 if summary["errors"] else 0
 
 
+def _now(args) -> pd.Timestamp:
+    now = pd.Timestamp(args.now) if getattr(args, "now", None) else pd.Timestamp.now(tz="UTC")
+    return now.tz_localize("UTC") if now.tzinfo is None else now.tz_convert("UTC")
+
+
+def cmd_news_inbox(args) -> int:
+    """Write state/llm/inbox/<date>.json: headlines since the previous inbox for the most liquid
+    S&P 500 names (top N by 60-day median dollar volume, recomputed once a month)."""
+    import exchange_calendars as xcals
+
+    from . import llm
+    from .data import loader, yahoo
+    settings = load_settings()
+    spec = settings.agents.get("llm_news")
+    p = spec.params if spec else {}
+    now = _now(args)
+    state = Path(args.state)
+    date = now.strftime("%Y-%m-%d")
+    ny_day = pd.Timestamp(now.tz_convert("America/New_York").date())
+    if not args.force and not xcals.get_calendar("XNYS").is_session(ny_day):
+        print(f"{ny_day.date()} is not a NYSE trading day - no inbox")
+        return 0
+    out = llm.inbox_path(state, date)
+    if out.exists() and not args.force:
+        print(f"inbox for {date} already exists")
+        return 0
+    uni_p = state / "llm" / "universe.json"
+    month = now.strftime("%Y-%m")
+    uni = None
+    if uni_p.exists():
+        u = json.loads(uni_p.read_text())
+        if u.get("month") == month and u.get("tickers"):
+            uni = u["tickers"]
+    if uni is None:
+        st, _ = loader.build_sp500_store(start=str((now - pd.Timedelta(days=120)).date()), current_only=True)
+        uni = llm.liquid_universe(st.frames["close"], st.frames["volume"], n=int(p.get("universe_size", 100)))
+        if len(uni) < 50:
+            print(f"universe too small ({len(uni)} names) - price download failed?")
+            return 1
+        uni_p.parent.mkdir(parents=True, exist_ok=True)
+        uni_p.write_text(json.dumps({"month": month, "created": now.isoformat(), "rule":
+                                     "top N S&P 500 members by 60-day median dollar volume", "tickers": uni}, indent=0))
+    cutoff = llm.news_cutoff(state, now, int(p.get("lookback_hours", 24)))
+    inbox = llm.build_inbox(uni, yahoo.news, now, cutoff=cutoff)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(inbox, indent=1))
+    print(f"inbox {date}: {len(inbox['items'])} headlines for {len(uni)} tickers since {cutoff.isoformat()}")
+    return 0
+
+
+def cmd_validate_labels(args) -> int:
+    from . import llm
+    state = Path(args.state)
+    date = args.date or _now(args).strftime("%Y-%m-%d")
+    ip, lp = llm.inbox_path(state, date), llm.labels_path(state, date)
+    if not ip.exists():
+        print(f"no inbox for {date} ({ip})")
+        return 1
+    if not lp.exists():
+        print(f"no labels file for {date} ({lp})")
+        return 1
+    try:
+        labels = json.loads(lp.read_text())
+    except json.JSONDecodeError as exc:
+        print(f"INVALID: {lp} is not valid JSON ({exc})")
+        return 1
+    probs = llm.validate_labels(json.loads(ip.read_text()), labels)
+    if probs:
+        print(f"INVALID: {len(probs)} problems")
+        for pr in probs[:50]:
+            print(" -", pr)
+        return 1
+    print(f"OK: {len(labels['labels'])} labels for {date}")
+    return 0
+
+
 def cmd_dashboard(args) -> int:
     from .reporting import write_backtest_html, write_dashboard
     settings = load_settings()
@@ -155,10 +233,18 @@ def main(argv=None) -> int:
     d.add_argument("--docs", default=str(ROOT / "docs"))
     d.add_argument("--reports", default=str(ROOT / "reports"))
     sub.add_parser("selftest")
+    n = sub.add_parser("news-inbox")
+    n.add_argument("--state", default=str(ROOT / "state"))
+    n.add_argument("--now")
+    n.add_argument("--force", action="store_true", help="rebuild even if it exists / not a trading day")
+    v = sub.add_parser("validate-labels")
+    v.add_argument("--state", default=str(ROOT / "state"))
+    v.add_argument("--date", help="YYYY-MM-DD (default: today UTC)")
     args = p.parse_args(argv)
     _setup_logging(args.verbose)
     return {"fetch-history": cmd_fetch_history, "backtest": cmd_backtest, "paper": cmd_paper,
-            "dashboard": cmd_dashboard, "selftest": cmd_selftest}[args.cmd](args)
+            "dashboard": cmd_dashboard, "selftest": cmd_selftest, "news-inbox": cmd_news_inbox,
+            "validate-labels": cmd_validate_labels}[args.cmd](args)
 
 
 if __name__ == "__main__":

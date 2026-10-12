@@ -6,6 +6,7 @@ import math
 import numpy as np
 import pandas as pd
 
+from .. import indicators as ind
 from ..context import Context
 from ..data.universe import members_on
 from ..execution import OrderIntent
@@ -132,7 +133,12 @@ class FactorEquity(Agent):
         sell_pct = float(self.p.get("sell_rank_pct", 0.25))
         keep = [t for t in held if t in ranks.index and ranks[t] <= sell_pct]
         n = int(self.p["n_holdings"])
-        buys = [t for t in scores.index if t not in keep][: max(0, n - len(keep))]
+        # entry filter: only buy names trading above their trend line (close > SMA(trend_sma))
+        trend_n = int(self.p.get("trend_sma", 200))
+        closes = ctx.panel(list(scores.index[: 4 * n]), "close", lookback=trend_n)
+        above = {t for t in closes.columns
+                 if closes[t].dropna().shape[0] >= trend_n and closes[t].iloc[-1] > closes[t].mean()}
+        buys = [t for t in scores.index if t not in keep and t in above][: max(0, n - len(keep))]
         w = (1.0 - float(self.p.get("cash_buffer", 0.01))) / n
         targets = {t: w for t in keep + buys}
         sectors = ctx.extras.get("sectors", {})
@@ -147,7 +153,28 @@ class FactorEquity(Agent):
         ledger.meta.setdefault("coverage_log", []).append({"month": key, **diag.get("coverage", {}),
                                                            "mode": mode})
         ledger.meta["coverage_log"] = ledger.meta["coverage_log"][-400:]
-        return rebalance_to_weights(ctx, ledger, targets, self.cm, venue_override=self.venue_override,
-                                    drift_band=float(self.p.get("quarterly_resize_band", 0.3)) if quarterly else math.inf,
-                                    max_cost_frac=0.02, min_trade_eur=20.0, manage=set(held),
-                                    reason=f"factor rebalance ({mode})")
+        orders = rebalance_to_weights(ctx, ledger, targets, self.cm, venue_override=self.venue_override,
+                                      drift_band=float(self.p.get("quarterly_resize_band", 0.3)) if quarterly else math.inf,
+                                      max_cost_frac=0.02, min_trade_eur=20.0, manage=set(held),
+                                      reason=f"factor rebalance ({mode})")
+        stop_atr, atr_n = float(self.p.get("stop_atr", 3.0)), int(self.p.get("atr_window", 20))
+        ledger.meta["signals_asof"] = ctx.asof.date().isoformat()
+        ledger.meta["signals"] = {
+            t: {"state": ("BUY" if t in buys else "HOLD") if t in targets else "SELL",
+                "rank": int(scores.index.get_loc(t)) + 1 if t in scores.index else None,
+                "score": round(float(scores[t]), 3) if t in scores.index else None}
+            for t in list(targets) + [h for h in held if h not in targets]}
+        for o in orders:
+            if o.qty > 0 and ledger.qty(o.inst_id) == 0:
+                rank = int(scores.index.get_loc(o.inst_id)) + 1
+                o.reason = (f"BUY signal: ranked #{rank} of {len(scores)} on {mode} and close > SMA{trend_n}")
+                d = ctx.ohlc(o.inst_id, atr_n * 6)
+                a = ind.last(ind.atr(d["high"], d["low"], d["close"], atr_n)) if len(d) > atr_n else float("nan")
+                if math.isfinite(a) and a > 0:
+                    o.meta["protect"] = {"stop_atr": stop_atr, "atr": a, "trail_atr": stop_atr, "atr_n": atr_n,
+                                         "label": f"{stop_atr:g}xATR({atr_n}) chandelier trailing stop"}
+            elif o.qty < 0 and abs(o.qty + ledger.qty(o.inst_id)) < 1e-9:
+                r = ranks.get(o.inst_id)
+                o.reason = (f"SELL signal: rank fell to the {r:.0%} percentile (outside the top {sell_pct:.0%})"
+                            if r is not None and r == r else "SELL signal: no longer eligible (liquidity/data)")
+        return orders

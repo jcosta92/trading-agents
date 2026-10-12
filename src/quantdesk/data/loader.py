@@ -28,8 +28,9 @@ def build_core_store(instruments: dict[str, Instrument], ids: list[str] | None =
         symbols += list(inst.yf)
         if use_proxies and inst.proxy:
             symbols.append(inst.proxy["yf"])
-    raw = yahoo.download_history(symbols, start=start)
-    close, opn, vol = raw.get("close", pd.DataFrame()), raw.get("open", pd.DataFrame()), raw.get("volume", pd.DataFrame())
+    raw = yahoo.download_history(symbols, start=start, fields=("open", "high", "low", "close", "volume"))
+    empty = pd.DataFrame()
+    close = raw.get("close", empty)
     store = HistoryStore()
     meta = {"resolved": {}, "inception": {}, "proxy": {}, "missing": []}
     eurusd = close["EURUSD=X"].dropna() if "EURUSD=X" in close else pd.Series(dtype=float)
@@ -41,22 +42,29 @@ def build_core_store(instruments: dict[str, Instrument], ids: list[str] | None =
             log.warning("no Yahoo data for %s (%s)", iid, inst.yf)
             continue
         c = close[sym].dropna() * inst.price_scale
-        o = (opn[sym].dropna() * inst.price_scale) if sym in opn else c
-        v = vol[sym].dropna() if sym in vol else None
+        series = {"close": c}
+        for f in ("open", "high", "low"):
+            fr = raw.get(f, empty)
+            series[f] = (fr[sym].dropna() * inst.price_scale) if sym in fr else c
+        v = raw.get("volume", empty)[sym].dropna() if sym in raw.get("volume", empty) else None
         meta["resolved"][iid] = sym
         meta["inception"][iid] = str(c.index[0].date())
-        if use_proxies and inst.proxy and inst.proxy["yf"] in close:
-            pc = close[inst.proxy["yf"]].dropna()
-            po = opn[inst.proxy["yf"]].dropna() if inst.proxy["yf"] in opn else pc
+        psym = inst.proxy["yf"] if (use_proxies and inst.proxy) else None
+        if psym and psym in close:
+            pser = {f: (raw.get(f, empty)[psym].dropna() if psym in raw.get(f, empty) else close[psym].dropna())
+                    for f in ("open", "high", "low", "close")}
             if inst.proxy.get("currency", inst.currency) == "USD" and inst.currency == "EUR" and len(eurusd):
-                pc, po = to_eur(pc, eurusd), to_eur(po, eurusd)
+                pser = {f: to_eur(x, eurusd) for f, x in pser.items()}
+            pc = pser["close"]
             if len(pc) and pc.index[0] < c.index[0]:
                 scale = c.iloc[0] / pc.loc[:c.index[0]].iloc[-1]
-                c = splice_with_proxy(c, pc)
-                o = pd.concat([po[po.index < o.index[0]] * scale, o]).sort_index()
-                meta["proxy"][iid] = {"symbol": inst.proxy["yf"], "until": meta["inception"][iid]}
-        store.set_series("close", iid, c)
-        store.set_series("open", iid, o)
+                series["close"] = splice_with_proxy(c, pc)
+                for f in ("open", "high", "low"):
+                    cur = series[f]
+                    series[f] = pd.concat([pser[f][pser[f].index < cur.index[0]] * scale, cur]).sort_index()
+                meta["proxy"][iid] = {"symbol": psym, "until": meta["inception"][iid]}
+        for f, x in series.items():
+            store.set_series(f, iid, x)
         if v is not None:
             store.set_series("volume", iid, v)
     if funding:
@@ -118,7 +126,7 @@ def build_sp500_store(start: str = "2006-06-01", end: str | None = None, current
             tickers = [t for t in universe.all_symbols(hist, start) if "~" not in t]
     raw = yahoo.download_history(tickers, start=start, end=end, chunk=60)
     store = HistoryStore()
-    for field in ("close", "open", "volume"):
+    for field in ("close", "open", "high", "low", "volume"):
         if field in raw:
             store.set_frame(field, raw[field])
     got = set(raw.get("close", pd.DataFrame()).columns[raw.get("close", pd.DataFrame()).notna().any()]) \

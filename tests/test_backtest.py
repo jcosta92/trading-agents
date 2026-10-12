@@ -167,3 +167,55 @@ def test_liquidation_fee_only_on_filled_notional(instruments, venues):
         def fx(self): return fx
     risk.liquidate(led, Executor(CostModel(venues, 1.0), reg), NoQuote(), fx, state, "d2")
     assert led.costs.get("liquidation", 0.0) == 0.0 and led.qty("BTC_PERP") == 0.02
+
+
+def _breakout_store(gap_open: float):
+    """BTC_PERP flat around 100 for 120 days, a breakout close at 110, one quiet day, then a gap open."""
+    idx = pd.date_range("2020-01-01", periods=124, freq="D")
+    c = np.array([100.0 + (0.5 if i % 2 else -0.5) for i in range(120)] + [110.0, 110.0, gap_open, gap_open])
+    o = np.r_[c[:1], c[:-1]]
+    o[-2] = gap_open                                     # the gap day opens at gap_open
+    o[121] = 110.0
+    store = HistoryStore()
+    store.set_series("close", "BTC_PERP", pd.Series(c, index=idx))
+    store.set_series("open", "BTC_PERP", pd.Series(o, index=idx))
+    store.set_series("high", "BTC_PERP", pd.Series(np.maximum(o, c) + 1, index=idx))
+    store.set_series("low", "BTC_PERP", pd.Series(np.minimum(o, c) - 1, index=idx))
+    store.set_series("close", "EURUSD", pd.Series(1.1, index=idx))
+    store.set_series("funding", "BTC_PERP", pd.Series(0.0, index=idx))
+    return store
+
+
+def _breakout_agent(settings, reg, cm):
+    spec = settings.agents["crypto_trend"]
+    spec.params = {**spec.params, "instruments": ["BTC_PERP"]}
+    return build_agent(spec, reg, cm)
+
+
+def test_backtest_stop_loss_gap_fills_at_open(settings, instruments, venues):
+    store = _breakout_store(gap_open=95.0)
+    reg, cm = Registry(instruments), CostModel(venues, 0.0)
+    res = run_backtest(_breakout_agent(settings, reg, cm), store, reg, cm, start="2020-02-15", capital=1000)
+    f = res.fills
+    buys, sells = f[f["qty"] > 0], f[f["qty"] < 0]
+    assert len(buys) == 1 and buys.iloc[0]["reason"].startswith("BUY signal")
+    assert str(buys.iloc[0]["ts"])[:10] == "2020-05-01"          # decided on the 04-30 close, filled at the next open
+    assert len(sells) == 1 and sells.iloc[0]["reason"].startswith("STOP-LOSS hit")
+    assert str(sells.iloc[0]["ts"])[:10] == "2020-05-02"
+    assert sells.iloc[0]["price"] == pytest.approx(95.0)          # gap through the stop: filled at the open
+    assert sells.iloc[0]["qty"] == pytest.approx(-buys.iloc[0]["qty"])
+    assert res.diagnostics["ledger_verified"]
+
+
+def test_backtest_stop_loss_intrabar_fills_at_stop(settings, instruments, venues):
+    store = _breakout_store(gap_open=110.0)
+    # day 122 trades down through the stop without gapping: open 110, low 99
+    lo = store.frame("low")["BTC_PERP"].copy()
+    lo.iloc[122] = 99.0
+    store.set_series("low", "BTC_PERP", lo)
+    reg, cm = Registry(instruments), CostModel(venues, 0.0)
+    res = run_backtest(_breakout_agent(settings, reg, cm), store, reg, cm, start="2020-02-15", capital=1000)
+    sells = res.fills[res.fills["qty"] < 0]
+    stop = res.fills.iloc[0]["price"]                                # entry
+    assert len(sells) == 1 and sells.iloc[0]["reason"].startswith("STOP-LOSS hit")
+    assert 99.0 < sells.iloc[0]["price"] < stop                     # at the stop level, not the low
