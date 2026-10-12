@@ -1,0 +1,375 @@
+{
+ "ts": "2026-10-12T15:55:02.450331+00:00",
+ "start": "2026-09-12T17:00:00+00:00",
+ "end": "2026-10-12T17:00:00+00:00",
+ "bots": {
+  "grid_btc": {
+   "name": "Grid bot on BTC/EUR (Pionex / Binance / Bybit spot grid)",
+   "timeframe": "15m",
+   "equity_eur": 1024.9443,
+   "return": 0.024944,
+   "cash_eur": 484.6188,
+   "positions": {
+    "BTC_SPOT": {
+     "qty": 0.0072989343877644655,
+     "avg": 74359.35906214283,
+     "mark": 74028.0
+    }
+   },
+   "open_orders": [
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 78037.24176830749,
+     "qty": 0.0008107212838072328,
+     "eur": null,
+     "tag": "grid:sell:12"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 78823.21711762088,
+     "qty": 0.0008026372830833683,
+     "eur": null,
+     "tag": "grid:sell:13"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 79617.10865202396,
+     "qty": 0.0007946338909101963,
+     "eur": null,
+     "tag": "grid:sell:14"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 80418.9961017353,
+     "qty": 0.0007867103035101488,
+     "eur": null,
+     "tag": "grid:sell:15"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 81228.96000000014,
+     "qty": 0.0007788657251204197,
+     "eur": null,
+     "tag": "grid:sell:16"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 69195.04000000001,
+     "qty": 0.0009052036058109694,
+     "eur": null,
+     "tag": "grid:buy:0"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 69891.95847767025,
+     "qty": 0.000896177487031583,
+     "eur": null,
+     "tag": "grid:buy:1"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 70595.89617759282,
+     "qty": 0.0008872413710092521,
+     "eur": null,
+     "tag": "grid:buy:2"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 71306.92379595757,
+     "qty": 0.0008783943602933144,
+     "eur": null,
+     "tag": "grid:buy:3"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 77259.10366888467,
+     "qty": 0.000818886704954844,
+     "eur": null,
+     "tag": "grid:sell:11"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 76488.7246712452,
+     "qty": 0.0008271343665762773,
+     "eur": null,
+     "tag": "grid:sell:10"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 75726.02740652548,
+     "qty": 0.0008354650969809866,
+     "eur": null,
+     "tag": "grid:sell:9"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 72025.11274099218,
+     "qty": 0.0008696355663819186,
+     "eur": null,
+     "tag": "grid:buy:4"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 72750.5351401335,
+     "qty": 0.0008609641096327931,
+     "eur": null,
+     "tag": "grid:buy:5"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "limit",
+     "price": 73483.26384727142,
+     "qty": 0.0008523791191749039,
+     "eur": null,
+     "tag": "grid:buy:6"
+    },
+    {
+     "inst": "BTC_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 74970.93527733537,
+     "qty": 0.0008438797328209919,
+     "eur": null,
+     "tag": "grid:sell:8"
+    }
+   ],
+   "last_candle": "2026-10-12T15:30:00+00:00",
+   "finished": null,
+   "costs_eur": {
+    "commissions": 9.8704,
+    "spread_slippage": 0.418
+   },
+   "notes": [
+    "2026-09-12 17:00 grid built around 66,738.00: 61,398.96-72,077.04, 16 levels, EUR 61 per level",
+    "2026-09-22 08:30 price 75,225 outside the grid 61,399-72,077 for 24h: reset",
+    "2026-09-22 08:45 grid built around 75,212.00: 69,195.04-81,228.96, 16 levels, EUR 63 per level"
+   ],
+   "state": {
+    "center": 75212.0,
+    "resets": 1
+   }
+  },
+  "dca_eth": {
+   "name": "DCA bot with safety orders on ETH/EUR (3Commas-style)",
+   "timeframe": "15m",
+   "equity_eur": 1017.3344,
+   "return": 0.017334,
+   "cash_eur": 28.7544,
+   "positions": {
+    "ETH_SPOT": {
+     "qty": 0.43658248312446873,
+     "avg": 2274.7706066733376,
+     "mark": 2264.36
+    }
+   },
+   "open_orders": [
+    {
+     "inst": "ETH_SPOT",
+     "side": "sell",
+     "type": "limit",
+     "price": 2308.8921657734377,
+     "qty": 0.43658248312446873,
+     "eur": null,
+     "tag": "dca:tp"
+    }
+   ],
+   "last_candle": "2026-10-12T15:30:00+00:00",
+   "finished": null,
+   "costs_eur": {
+    "commissions": 8.7018,
+    "spread_slippage": 0.6296
+   },
+   "notes": [],
+   "state": {
+    "deal": {
+     "opened": "2026-10-02T08:15:00+00:00",
+     "safety_filled": 5
+    },
+    "completed_deals": 14
+   }
+  },
+  "bb_meanrev": {
+   "name": "BinHV45 Bollinger mean reversion on 8 coins (Freqtrade community strategy)",
+   "timeframe": "15m",
+   "equity_eur": 952.5658,
+   "return": -0.047434,
+   "cash_eur": 952.5658,
+   "positions": {},
+   "open_orders": [],
+   "last_candle": "2026-10-12T15:30:00+00:00",
+   "finished": null,
+   "costs_eur": {
+    "commissions": 8.7973,
+    "spread_slippage": 4.5294
+   },
+   "notes": [
+    "2026-09-15 18:30 SOL_SPOT: BinHV45 buy signal at 84.89",
+    "2026-09-20 02:30 ADA_SPOT: BinHV45 buy signal at 0.19",
+    "2026-10-07 01:45 AVAX_SPOT: BinHV45 buy signal at 10.08",
+    "2026-10-08 15:00 XRP_SPOT: BinHV45 buy signal at 1.23",
+    "2026-10-08 15:00 ADA_SPOT: BinHV45 buy signal at 0.22",
+    "2026-10-08 15:00 LINK_SPOT: BinHV45 buy signal at 11.38"
+   ],
+   "state": {}
+  },
+  "supertrend": {
+   "name": "Supertrend (10, 3) trend following on BTC/ETH/SOL, 1-hour",
+   "timeframe": "1h",
+   "equity_eur": 1027.9526,
+   "return": 0.027953,
+   "cash_eur": 344.814,
+   "positions": {
+    "ETH_SPOT": {
+     "qty": 0.15381571343872993,
+     "avg": 2227.5757439999998,
+     "mark": 2256.06
+    },
+    "SOL_SPOT": {
+     "qty": 3.4562942292755268,
+     "avg": 99.29519599999999,
+     "mark": 97.249
+    }
+   },
+   "open_orders": [
+    {
+     "inst": "SOL_SPOT",
+     "side": "sell",
+     "type": "market",
+     "price": null,
+     "qty": 3.4562942292755268,
+     "eur": null,
+     "tag": "st:sell (flip down)"
+    }
+   ],
+   "last_candle": "2026-10-12T14:00:00+00:00",
+   "finished": null,
+   "costs_eur": {
+    "commissions": 42.6752,
+    "spread_slippage": 12.0141
+   },
+   "notes": [],
+   "state": {}
+  },
+  "ema_macd": {
+   "name": "EMA 9/21 crossover + MACD confirmation, EMA200 filter, ATR stop (1-hour)",
+   "timeframe": "1h",
+   "equity_eur": 929.742,
+   "return": -0.070258,
+   "cash_eur": 929.742,
+   "positions": {},
+   "open_orders": [],
+   "last_candle": "2026-10-12T14:00:00+00:00",
+   "finished": null,
+   "costs_eur": {
+    "commissions": 47.0723,
+    "spread_slippage": 13.2796
+   },
+   "notes": [],
+   "state": {}
+  },
+  "orb_stocks": {
+   "name": "Opening Range Breakout on US 'stocks in play' (Zarattini, Barbon & Aziz 2024), IBKR",
+   "timeframe": "5m",
+   "equity_eur": 923.6249,
+   "return": -0.076375,
+   "cash_eur": 923.6249,
+   "positions": {},
+   "open_orders": [],
+   "last_candle": "2026-10-12T15:50:00+00:00",
+   "finished": null,
+   "costs_eur": {
+    "fx": 0.2978,
+    "commissions": 53.6141,
+    "spread_slippage": 16.1634
+   },
+   "notes": [
+    "2026-09-15 13:30 ORB 2026-09-15: watching MS, ACN, WFC, COHR, VLO",
+    "2026-09-16 13:30 ORB 2026-09-16: watching UNH, IBM, INTC, DELL, HPE",
+    "2026-09-17 13:30 ORB 2026-09-17: watching HD, TJX, AMZN, VLO, BSX",
+    "2026-09-18 13:30 ORB 2026-09-18: watching CSCO, NEE, AMGN, PM, HD",
+    "2026-09-21 13:30 ORB 2026-09-21: watching ACN, CRWD, AMD, META, AMAT",
+    "2026-09-22 13:30 ORB 2026-09-22: watching MPWR, META, AMD, AMZN, MCD",
+    "2026-09-23 13:30 ORB 2026-09-23: watching BA, VLO, TMO, IBM, MRNA",
+    "2026-09-24 13:30 ORB 2026-09-24: watching MCD, CRM, META, TMO, BKNG",
+    "2026-09-25 13:30 ORB 2026-09-25: watching DDOG, COST, NKE, MSFT, ANET",
+    "2026-09-28 13:30 ORB 2026-09-28: watching NVDA, DDOG, NKE, JNJ, ORCL",
+    "2026-09-29 13:30 ORB 2026-09-29: watching AMGN, BA, BE, AMAT, NFLX",
+    "2026-09-30 13:30 ORB 2026-09-30: watching MRNA, GOOG, LIN, QCOM",
+    "2026-10-01 13:30 ORB 2026-10-01: watching ACN, IBM, MU, INTU, WFC",
+    "2026-10-02 13:30 ORB 2026-10-02: watching NKE, APP, MS, HOOD, TSLA",
+    "2026-10-05 13:30 ORB 2026-10-05: watching WDC, STX, UBER, MSFT, APP",
+    "2026-10-06 13:30 ORB 2026-10-06: watching MRVL, CSCO, PG, MS, PANW",
+    "2026-10-07 13:30 ORB 2026-10-07: watching TJX, CIEN, KLAC, PM, INTC",
+    "2026-10-08 13:30 ORB 2026-10-08: watching PLTR, PEP, ADBE, DDOG, GOOGL",
+    "2026-10-09 13:30 ORB 2026-10-09: watching T, COHR, APH, AAPL, PM",
+    "2026-10-12 13:30 ORB 2026-10-12: watching INTU, ADBE, JNJ, CRM, CVX"
+   ],
+   "state": {
+    "last_selection": {
+     "day": "2026-10-12",
+     "picks": [
+      "INTU",
+      "ADBE",
+      "JNJ",
+      "CRM",
+      "CVX"
+     ],
+     "rel_volume": {
+      "INTU": 4.3,
+      "ADBE": 3.11,
+      "JNJ": 2.94,
+      "CRM": 2.49,
+      "CVX": 2.28,
+      "MRK": 1.93,
+      "VZ": 1.73,
+      "GE": 1.67,
+      "NOW": 1.65,
+      "JPM": 1.48
+     }
+    }
+   }
+  }
+ },
+ "errors": [],
+ "eurusd": 1.1161960363388062,
+ "data_sources": {
+  "BTC/EUR": "bitvavo",
+  "ETH/EUR": "bitvavo",
+  "SOL/EUR": "bitvavo",
+  "XRP/EUR": "bitvavo",
+  "DOGE/EUR": "bitvavo",
+  "ADA/EUR": "bitvavo",
+  "LINK/EUR": "bitvavo",
+  "AVAX/EUR": "bitvavo"
+ },
+ "n_fills": 417
+}
