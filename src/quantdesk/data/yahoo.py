@@ -63,6 +63,23 @@ def download_history(symbols: list[str], start: str = "2000-01-01", end: str | N
     return out
 
 
+MAX_BOOK_SPREAD = 0.01   # Yahoo bid/ask wider than 1% of mid on an exchange-listed stock/ETF is treated as junk
+
+
+def usable_book(bid, ask, last, max_spread: float = MAX_BOOK_SPREAD) -> bool:
+    """Yahoo's bid/ask are often stale or from another session (pre-market, a different venue). Use
+    them only when they are consistent: positive, not crossed, at most `max_spread` wide, and the
+    last trade sits inside them (0.1% tolerance). Otherwise the cost model falls back to the last
+    price +/- the instrument's normal half-spread."""
+    if not (bid and ask and last) or not (ask >= bid > 0):
+        return False
+    mid = (bid + ask) / 2
+    if (ask - bid) / mid > max_spread:
+        return False
+    tol = 0.001 * mid
+    return bid - tol <= last <= ask + tol
+
+
 def live_quote(symbol: str) -> dict | None:
     """Best-effort current quote: {'mid','bid','ask','last','ts','source'}."""
     yf = _yf()
@@ -95,7 +112,7 @@ def live_quote(symbol: str) -> dict | None:
                     ts = (tsv.tz_convert("UTC") if tsv.tzinfo else tsv.tz_localize("UTC")).isoformat()
             except Exception as exc:
                 log.info("1m history failed for %s: %s", symbol, exc)
-        if bid and ask and ask >= bid > 0 and last and abs((bid + ask) / 2 / last - 1) < 0.02:
+        if usable_book(bid, ask, last):
             mid = (bid + ask) / 2
         else:
             bid = ask = None

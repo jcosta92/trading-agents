@@ -48,3 +48,28 @@ def test_factor_coverage_counts_members_without_prices(settings, instruments, ve
     agent.eligible(ctx)
     cov = ctx.extras["_diag"]["coverage"]
     assert cov["members"] == 42 and cov["with_data"] == 30
+
+
+def test_yahoo_junk_book_is_ignored():
+    """First paper cycle: APA ask 48.78 vs bid 43.57 (last ~48.7) made the fill 5.6% above mid."""
+    from quantdesk.data.yahoo import usable_book
+    assert not usable_book(43.57, 48.78, 48.70)          # 11% wide
+    assert not usable_book(100.0, 100.2, 101.0)          # last outside the book
+    assert usable_book(100.0, 100.04, 100.02)
+    assert not usable_book(None, 100.0, 100.0)
+
+
+def test_live_quote_falls_back_to_last_on_junk_book(monkeypatch):
+    from quantdesk.data import yahoo
+
+    class T:
+        fast_info = {"last_price": 48.70}
+        info = {"bid": 43.57, "ask": 48.78, "regularMarketTime": 1791817056}
+
+    class YF:
+        @staticmethod
+        def Ticker(sym):
+            return T()
+    monkeypatch.setattr(yahoo, "_yf", lambda: YF)
+    q = yahoo.live_quote("APA")
+    assert q["bid"] is None and q["ask"] is None and q["mid"] == 48.70
