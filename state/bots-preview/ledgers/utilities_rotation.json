@@ -1,0 +1,115 @@
+{
+"agent_id": "utilities_rotation",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 14.383282625382549,
+"USD": 118.10024093781992
+},
+"positions": {
+"VTI": {
+"inst_id": "VTI",
+"qty": 2.624746262415107,
+"avg_price": 375.03743110656734,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-09-14T19:55:00+00:00",
+"last_mark": 381.3999938964844
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-09-14T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 985.6167173746175,
+"amount_to": 1103.1360022714998,
+"rate": 1.1195701360702515,
+"fee_rate": 0.0003,
+"fee_eur": 0.29568501521237067,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-14T19:55:00+00:00",
+"inst": "VTI",
+"kind": "stock",
+"qty": 2.940444053211964,
+"price": 375.03743110656734,
+"mid": 374.8500061035156,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3594182423024379
+},
+"fees_eur": 0.32103235940538244,
+"spread_cost_eur": 0.4922538730633548,
+"value_eur": 984.9999999999998,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-09-18T19:55:00+00:00",
+"inst": "VTI",
+"kind": "stock",
+"qty": -0.3156977907968569,
+"price": 375.2122938995362,
+"mid": 375.3999938964844,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.35345132608455876
+},
+"fees_eur": 0.3157027100822741,
+"spread_cost_eur": 0.05292788049627323,
+"value_eur": 105.80283311207558,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 0.29568501521237067,
+"commissions": 0.6367350694876566,
+"spread_slippage": 0.545181753559628
+},
+"realized": [
+{
+"ts": "2026-09-18T19:55:00+00:00",
+"inst": "VTI",
+"qty": 0.3156977907968569,
+"pnl": 0.05520379743283039,
+"ccy": "USD",
+"pnl_eur": 0.04930802962161759
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-09",
+"last_target": {
+"VTI": 0.985
+},
+"started": true
+},
+"last_ts": "2026-10-12T16:55:00+00:00",
+"order_seq": 2,
+"orders": [],
+"open_buy_fees": {
+"VTI": 0.3208296675791664
+}
+},
+"halted": false,
+"halt_reason": null
+}

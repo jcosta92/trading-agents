@@ -1,0 +1,205 @@
+{
+"agent_id": "etf_tps.EEM",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 47.012525749164524,
+"USD": 5531.1806067025
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-14T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 495.48687663184546,
+"amount_to": 552.771157368258,
+"rate": 1.115946888923645,
+"fee_rate": 0.0003,
+"fee_eur": 0.14864606298954186,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-14T19:55:00+00:00",
+"inst": "EEM",
+"kind": "stock",
+"qty": 8.569263519734236,
+"price": 64.46221530532837,
+"mid": 64.43000030517578,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.37744735105370875
+},
+"fees_eur": 0.33823056885598285,
+"spread_cost_eur": 0.24737631184409278,
+"value_eur": 495.0,
+"eur_rate": 1.115946888923645,
+"reason": "sbe:buy",
+"seq": 2
+},
+{
+"type": "fx",
+"ts": "2026-10-15T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 990.6587634997591,
+"amount_to": 1111.0181285645162,
+"rate": 1.1218308210372925,
+"fee_rate": 0.0003,
+"fee_eur": 0.29719762904994695,
+"reason": "FX for stock purchase",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-15T19:55:00+00:00",
+"inst": "EEM",
+"kind": "stock",
+"qty": 17.363639586828015,
+"price": 63.96196530532836,
+"mid": 63.93000030517578,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4056157375966101
+},
+"fees_eur": 0.3615658707090616,
+"spread_cost_eur": 0.49475262368805745,
+"value_eur": 990.0,
+"eur_rate": 1.1218308210372925,
+"reason": "sbe:tps add",
+"seq": 4
+},
+{
+"type": "fx",
+"ts": "2026-10-16T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1485.8327827560836,
+"amount_to": 1669.9122776234742,
+"rate": 1.1242270469665527,
+"fee_rate": 0.0003,
+"fee_eur": 0.44574983482675634,
+"reason": "FX for stock purchase",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-10-16T19:55:00+00:00",
+"inst": "EEM",
+"kind": "stock",
+"qty": 26.57286236133503,
+"price": 62.82639566802978,
+"mid": 62.79499816894531,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4351128781433561
+},
+"fees_eur": 0.38703292125678707,
+"spread_cost_eur": 0.7421289355321681,
+"value_eur": 1485.0,
+"eur_rate": 1.1242270469665527,
+"reason": "sbe:tps add",
+"seq": 6
+},
+{
+"type": "fx",
+"ts": "2026-10-22T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1981.0090513631478,
+"amount_to": 2221.9396079998296,
+"rate": 1.121956706047058,
+"fee_rate": 0.0003,
+"fee_eur": 0.5943027154089577,
+"reason": "FX for stock purchase",
+"seq": 7
+},
+{
+"type": "trade",
+"ts": "2026-10-22T19:55:00+00:00",
+"inst": "EEM",
+"kind": "stock",
+"qty": 36.00687688250924,
+"price": 61.695833415985106,
+"mid": 61.665000915527344,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4653300266546771
+},
+"fees_eur": 0.4147486477389617,
+"spread_cost_eur": 0.9895052473762753,
+"value_eur": 1980.0,
+"eur_rate": 1.121956706047058,
+"reason": "sbe:tps add",
+"seq": 8
+},
+{
+"type": "trade",
+"ts": "2026-10-27T19:55:00+00:00",
+"inst": "EEM",
+"kind": "stock",
+"qty": -88.51264235040651,
+"price": 62.498733779907234,
+"mid": 62.529998779296875,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.7474637116988845
+},
+"fees_eur": 0.6717456541518748,
+"spread_cost_eur": 2.4870154470291665,
+"value_eur": 4971.543878612417,
+"eur_rate": 1.1127183437347412,
+"reason": "sbx:exit (exit)",
+"seq": 9
+}
+],
+"costs": {
+"fx": 1.485896242275203,
+"commissions": 2.173323662712668,
+"spread_slippage": 4.96077856546976
+},
+"realized": [
+{
+"ts": "2026-10-27T19:55:00+00:00",
+"inst": "EEM",
+"qty": 88.51264235040651,
+"pnl": -22.029595148430595,
+"ccy": "USD",
+"pnl_eur": -19.79799764466019
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-30",
+"pos": {},
+"tps": {
+"plan": 4950.0,
+"tranche": 4,
+"last": 61.665000915527344
+}
+},
+"last_ts": "2026-10-30T19:55:00+00:00",
+"orders": [],
+"order_seq": 5,
+"open_buy_fees": {
+"EEM": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

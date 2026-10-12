@@ -1,0 +1,85 @@
+{
+"agent_id": "hlhb.SOL",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4846.473911528051
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-16T12:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 52.290996373561306,
+"price": 94.662568,
+"mid": 94.568,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 4.945054945054701,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-16T16:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -52.290996373561306,
+"price": 92.193714,
+"mid": 92.286,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.052252911097872
+},
+"fees_eur": 12.052252911097872,
+"spread_cost_eur": 4.825726891330553,
+"value_eur": 4820.9011644391485,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.427252911097874,
+"spread_slippage": 9.770781836385254
+},
+"realized": [
+{
+"ts": "2026-10-16T16:00:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 52.290996373561306,
+"pnl": -129.09883556085197,
+"ccy": "EUR",
+"pnl_eur": -129.09883556085197
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-31T04:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"SOL_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

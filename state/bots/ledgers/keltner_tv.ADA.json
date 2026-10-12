@@ -1,0 +1,85 @@
+{
+"agent_id": "keltner_tv.ADA",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4856.775070376161
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-21T18:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": 24147.764327150107,
+"price": 0.2049879207424,
+"mid": 0.204660464,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 7.907348242811655,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-22T00:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": -24147.764327150107,
+"price": 0.200069376,
+"mid": 0.20039,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.078070351819955
+},
+"fees_eur": 12.078070351819955,
+"spread_cost_eur": 7.742352789628643,
+"value_eur": 4831.228140727982,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.453070351819953,
+"spread_slippage": 15.649701032440298
+},
+"realized": [
+{
+"ts": "2026-10-22T00:00:00+00:00",
+"inst": "ADA_SPOT",
+"qty": 24147.764327150107,
+"pnl": -118.77185927201842,
+"ccy": "EUR",
+"pnl_eur": -118.77185927201842
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-31T10:00:00+00:00",
+"order_seq": 3,
+"open_buy_fees": {
+"ADA_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

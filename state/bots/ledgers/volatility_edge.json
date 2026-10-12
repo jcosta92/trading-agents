@@ -1,0 +1,311 @@
+{
+"agent_id": "volatility_edge",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 3101.798817959883,
+"USD": 405.9043695635481
+},
+"positions": {
+"SVXY": {
+"inst_id": "SVXY",
+"qty": 26.506019743281094,
+"avg_price": 64.21565705656342,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 60.380001068115234
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1524.8445118539173,
+"amount_to": 1707.4229088903917,
+"rate": 1.1200717687606812,
+"fee_rate": 0.0003,
+"fee_eur": 0.45745335355604766,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "SVXY",
+"kind": "stock",
+"qty": 26.087710122435418,
+"price": 65.43270152664184,
+"mid": 65.4000015258789,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4335589355221606
+},
+"fees_eur": 0.3870813885451982,
+"spread_cost_eur": 0.761619178966192,
+"value_eur": 1523.9999771118162,
+"eur_rate": 1.1200717687606812,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-13T19:55:00+00:00",
+"inst": "SVXY",
+"kind": "stock",
+"qty": -2.6598534185704517,
+"price": 65.39229055023193,
+"mid": 65.42500305175781,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3621025489955858
+},
+"fees_eur": 0.3232851314485313,
+"spread_cost_eur": 0.07768293196950535,
+"value_eur": 155.28818100704225,
+"eur_rate": 1.1200717687606812,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+},
+{
+"type": "fx",
+"ts": "2026-10-14T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 16.770121362061946,
+"amount_to": 18.70895039143673,
+"rate": 1.115946888923645,
+"fee_rate": 0.0003,
+"fee_eur": 0.00503103640861724,
+"reason": "FX for stock purchase",
+"seq": 4
+},
+{
+"type": "trade",
+"ts": "2026-10-14T19:55:00+00:00",
+"inst": "SVXY",
+"kind": "stock",
+"qty": 2.9811996323266006,
+"price": 64.37717372131347,
+"mid": 64.34500122070312,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.35954878242234206
+},
+"fees_eur": 0.32219166162032553,
+"spread_cost_eur": 0.08594732235249401,
+"value_eur": 171.98059202738364,
+"eur_rate": 1.115946888923645,
+"reason": "wb:buy (rebalance)",
+"seq": 5
+},
+{
+"type": "fx",
+"ts": "2026-10-16T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 356.58654882413737,
+"amount_to": 400.7639774997227,
+"rate": 1.1242270469665527,
+"fee_rate": 0.0003,
+"fee_eur": 0.10697596464717662,
+"reason": "FX for stock purchase",
+"seq": 6
+},
+{
+"type": "trade",
+"ts": "2026-10-16T19:55:00+00:00",
+"inst": "SVXY",
+"kind": "stock",
+"qty": 6.466200898692251,
+"price": 61.920944389343255,
+"mid": 61.88999938964844,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.37071124147851126
+},
+"fees_eur": 0.3297476630532804,
+"spread_cost_eur": 0.17798591963836038,
+"value_eur": 356.14982519643695,
+"eur_rate": 1.1242270469665527,
+"reason": "wb:buy (rebalance)",
+"seq": 7
+},
+{
+"type": "trade",
+"ts": "2026-10-19T19:55:00+00:00",
+"inst": "SVXY",
+"kind": "stock",
+"qty": -4.030809975440983,
+"price": 63.24835877990723,
+"mid": 63.279998779296875,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.36816249193064404
+},
+"fees_eur": 0.3283273142020591,
+"spread_cost_eur": 0.11373555843053713,
+"value_eur": 227.3573813026556,
+"eur_rate": 1.1213276386260986,
+"reason": "wb:sell (rebalance)",
+"seq": 8
+},
+{
+"type": "trade",
+"ts": "2026-10-21T19:55:00+00:00",
+"inst": "SVXY",
+"kind": "stock",
+"qty": -2.9316474307071805,
+"price": 63.91302719497681,
+"mid": 63.94499969482422,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.36324989823703147
+},
+"fees_eur": 0.32325609816349404,
+"spread_cost_eur": 0.08341219668871067,
+"value_eur": 166.74098118076554,
+"eur_rate": 1.123721718788147,
+"reason": "wb:sell (rebalance)",
+"seq": 9
+},
+{
+"type": "trade",
+"ts": "2026-10-22T19:55:00+00:00",
+"inst": "SVXY",
+"kind": "stock",
+"qty": 5.636691918746425,
+"price": 62.23610433197021,
+"mid": 62.20500183105469,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3680543242157448
+},
+"fees_eur": 0.3280468152042112,
+"spread_cost_eur": 0.15625844974091066,
+"value_eur": 312.6731579316056,
+"eur_rate": 1.121956706047058,
+"reason": "wb:buy (rebalance)",
+"seq": 10
+},
+{
+"type": "trade",
+"ts": "2026-10-26T19:55:00+00:00",
+"inst": "SVXY",
+"kind": "stock",
+"qty": -2.4253831520098585,
+"price": 62.218875000000004,
+"mid": 62.25,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.36087713722582493
+},
+"fees_eur": 0.32276851116539856,
+"spread_cost_eur": 0.06751830118500328,
+"value_eur": 134.96908406883955,
+"eur_rate": 1.118067979812622,
+"reason": "wb:sell (rebalance)",
+"seq": 11
+},
+{
+"type": "trade",
+"ts": "2026-10-28T19:55:00+00:00",
+"inst": "SVXY",
+"kind": "stock",
+"qty": -2.6180888521911334,
+"price": 63.14341173744202,
+"mid": 63.17499923706055,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3617912288781659
+},
+"fees_eur": 0.32402023056262447,
+"spread_cost_eur": 0.07406511884990587,
+"value_eur": 148.05617258098954,
+"eur_rate": 1.1165698766708374,
+"reason": "wb:sell (rebalance)",
+"seq": 12
+}
+],
+"costs": {
+"fx": 0.5694603546118415,
+"commissions": 2.988724813965123,
+"spread_slippage": 1.5982249778216195
+},
+"realized": [
+{
+"ts": "2026-10-13T19:55:00+00:00",
+"inst": "SVXY",
+"qty": 2.6598534185704517,
+"pnl": -0.10748727375164739,
+"ccy": "USD",
+"pnl_eur": -0.0959646307937733
+},
+{
+"ts": "2026-10-19T19:55:00+00:00",
+"inst": "SVXY",
+"qty": 4.030809975440983,
+"pnl": -5.634674332974533,
+"ccy": "USD",
+"pnl_eur": -5.0250026298097765
+},
+{
+"ts": "2026-10-21T19:55:00+00:00",
+"inst": "SVXY",
+"qty": 2.9316474307071805,
+"pnl": -2.149580178302716,
+"ccy": "USD",
+"pnl_eur": -1.9129114818754982
+},
+{
+"ts": "2026-10-26T19:55:00+00:00",
+"inst": "SVXY",
+"qty": 2.4253831520098585,
+"pnl": -4.842961558224494,
+"ccy": "USD",
+"pnl_eur": -4.331544812718928
+},
+{
+"ts": "2026-10-28T19:55:00+00:00",
+"inst": "SVXY",
+"qty": 2.6180888521911334,
+"pnl": -2.807233516805843,
+"ccy": "USD",
+"pnl_eur": -2.5141583840465813
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-30",
+"last_target": {},
+"started": true
+},
+"last_ts": "2026-10-30T19:55:00+00:00",
+"order_seq": 9,
+"orders": [],
+"open_buy_fees": {
+"SVXY": 1.0506398928637841
+}
+},
+"halted": false,
+"halt_reason": null
+}

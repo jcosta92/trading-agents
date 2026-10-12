@@ -1,0 +1,107 @@
+{
+"agent_id": "wyckoff_spring.AVAX",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 7.525
+},
+"positions": {
+"AVAX_SPOT": {
+"inst_id": "AVAX_SPOT",
+"qty": 109.14491074184946,
+"avg_price": 9.0705099603,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-08T20:00:00+00:00",
+"last_mark": 9.5851
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-08T20:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": 109.14491074184946,
+"price": 9.0705099603,
+"mid": 9.05240515,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.9760479041916768,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+}
+],
+"costs": {
+"commissions": 2.475,
+"spread_slippage": 1.9760479041916768
+},
+"realized": [],
+"meta": {
+"state": {
+"pos": {
+"AVAX_SPOT": {
+"sig": {
+"sl_dist": 0.40459626104775737,
+"tp_dist": 1.3684000009999995,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 9.07050996,
+"entry_ts": "2026-10-08T20:00:00+00:00",
+"hi": 9.9289,
+"bars": 23,
+"fixed_sl": 8.665913698952243,
+"fixed_tp": 10.438909961,
+"hic": 9.8385
+}
+}
+},
+"orders": [
+{
+"id": 46,
+"inst": "AVAX_SPOT",
+"side": "sell",
+"type": "stop",
+"price": 8.665913698952243,
+"qty": 109.14491074184946,
+"eur": null,
+"tag": "sbx:stop",
+"placed": "2026-10-12T12:00:00+00:00"
+},
+{
+"id": 47,
+"inst": "AVAX_SPOT",
+"side": "sell",
+"type": "limit",
+"price": 10.438909961,
+"qty": 109.14491074184946,
+"eur": null,
+"tag": "sbx:take profit",
+"placed": "2026-10-12T12:00:00+00:00"
+}
+],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 47,
+"open_buy_fees": {
+"AVAX_SPOT": 2.475
+}
+},
+"halted": false,
+"halt_reason": null
+}

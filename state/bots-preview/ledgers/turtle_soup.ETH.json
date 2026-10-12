@@ -1,0 +1,85 @@
+{
+"agent_id": "turtle_soup.ETH",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 952.9938652866596
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-08T12:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 0.4361115864531619,
+"price": 2270.0612199999996,
+"mid": 2268.7,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 0.5936438137116752,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-08T16:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -0.4361115864531619,
+"price": 2173.385186,
+"mid": 2174.69,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.369596153600651
+},
+"fees_eur": 2.369596153600651,
+"spread_cost_eur": 0.5690445035663302,
+"value_eur": 947.8384614402603,
+"eur_rate": 1.0,
+"reason": "sbx:stop (through the price)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 4.844596153600651,
+"spread_slippage": 1.1626883172780054
+},
+"realized": [
+{
+"ts": "2026-10-08T16:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 0.4361115864531619,
+"pnl": -42.161538559739654,
+"ccy": "EUR",
+"pnl_eur": -42.161538559739654
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 5,
+"open_buy_fees": {
+"ETH_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

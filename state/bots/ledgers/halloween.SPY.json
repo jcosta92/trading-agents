@@ -1,0 +1,86 @@
+{
+"agent_id": "halloween.SPY",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 73.18771338486567,
+"USD": 3.452793606584237e-14
+},
+"positions": {
+"SPY": {
+"inst_id": "SPY",
+"qty": 7.270977717645485,
+"avg_price": 756.4780255737304,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-30T19:55:00+00:00",
+"last_mark": 755.7100219726562
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-30T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4926.812286615134,
+"amount_to": 5500.7081567766745,
+"rate": 1.1168192625045776,
+"fee_rate": 0.0003,
+"fee_eur": 1.47804368598554,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "SPY",
+"kind": "stock",
+"qty": 7.270977717645485,
+"price": 756.4780255737304,
+"mid": 756.0999755859375,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.37328894162961845
+},
+"fees_eur": 0.33424292914905596,
+"spread_cost_eur": 2.4612693653169333,
+"value_eur": 4925.0,
+"eur_rate": 1.1168192625045776,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+}
+],
+"costs": {
+"fx": 1.47804368598554,
+"commissions": 0.33424292914905596,
+"spread_slippage": 2.4612693653169333
+},
+"realized": [],
+"meta": {
+"state": {
+"done_day": "2026-10-30",
+"last_target": {
+"SPY": 0.985
+},
+"started": true
+},
+"last_ts": "2026-10-30T19:55:00+00:00",
+"order_seq": 1,
+"orders": [],
+"open_buy_fees": {
+"SPY": 0.37328894162961845
+}
+},
+"halted": false,
+"halt_reason": null
+}

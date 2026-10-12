@@ -1,0 +1,181 @@
+{
+"agent_id": "adxmomentum.AVAX",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4901.899531578503
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-15T20:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": 551.4942184354289,
+"price": 8.9756154,
+"mid": 8.9577,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 9.880239520957915,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-16T09:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": -551.4942184354289,
+"price": 9.10146278668002,
+"mid": 9.10146278668002,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 7.529106159238858
+},
+"fees_eur": 7.529106159238858,
+"spread_cost_eur": 0.0,
+"value_eur": 5019.404106159239,
+"eur_rate": 1.0,
+"reason": "sbx:take profit",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-16T11:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": 543.5498819109433,
+"price": 9.1969572,
+"mid": 9.1786,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.497512500000001
+},
+"fees_eur": 12.497512500000001,
+"spread_cost_eur": 9.97805389221585,
+"value_eur": 4999.005,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-16T18:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": -543.5498819109433,
+"price": 8.882200000000001,
+"mid": 8.9,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.069796902773453
+},
+"fees_eur": 12.069796902773453,
+"spread_cost_eur": 9.67518789801445,
+"value_eur": 4827.918761109381,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 4
+},
+{
+"type": "trade",
+"ts": "2026-10-20T23:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": 551.9995112836679,
+"price": 8.7052758,
+"mid": 8.6879,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.013269967973855
+},
+"fees_eur": 12.013269967973855,
+"spread_cost_eur": 9.591433108162724,
+"value_eur": 4805.307987189542,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-10-21T15:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": -551.9995112836679,
+"price": 8.82733274661993,
+"mid": 8.82733274661993,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 7.309025043108779
+},
+"fees_eur": 7.309025043108779,
+"spread_cost_eur": 0.0,
+"value_eur": 4872.683362072519,
+"eur_rate": 1.0,
+"reason": "sbx:take profit",
+"seq": 6
+}
+],
+"costs": {
+"commissions": 63.79371057309494,
+"spread_slippage": 39.12491441935094
+},
+"realized": [
+{
+"ts": "2026-10-16T09:00:00+00:00",
+"inst": "AVAX_SPOT",
+"qty": 551.4942184354289,
+"pnl": 69.40410615923874,
+"ccy": "EUR",
+"pnl_eur": 69.40410615923874
+},
+{
+"ts": "2026-10-16T18:00:00+00:00",
+"inst": "AVAX_SPOT",
+"qty": 543.5498819109433,
+"pnl": -171.0862388906186,
+"ccy": "EUR",
+"pnl_eur": -171.0862388906186
+},
+{
+"ts": "2026-10-21T15:00:00+00:00",
+"inst": "AVAX_SPOT",
+"qty": 551.9995112836679,
+"pnl": 67.37537488297794,
+"ccy": "EUR",
+"pnl_eur": 67.37537488297794
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-31T10:00:00+00:00",
+"order_seq": 74,
+"open_buy_fees": {
+"AVAX_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

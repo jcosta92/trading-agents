@@ -1,0 +1,86 @@
+{
+"agent_id": "halloween.QQQ",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 73.18589753482502,
+"USD": 1.9539925233402755e-13
+},
+"positions": {
+"QQQ": {
+"inst_id": "QQQ",
+"qty": 7.956317862230488,
+"avg_price": 691.6256693115234,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-30T19:55:00+00:00",
+"last_mark": 690.5499877929688
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-30T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4926.814102465175,
+"amount_to": 5503.169150806503,
+"rate": 1.1173185110092163,
+"fee_rate": 0.0003,
+"fee_eur": 1.4780442307383055,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "QQQ",
+"kind": "stock",
+"qty": 7.956317862230488,
+"price": 691.6256693115234,
+"mid": 691.280029296875,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3754840861127242
+},
+"fees_eur": 0.33605823443627436,
+"spread_cost_eur": 2.461269365317348,
+"value_eur": 4925.0,
+"eur_rate": 1.1173185110092163,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+}
+],
+"costs": {
+"fx": 1.4780442307383055,
+"commissions": 0.33605823443627436,
+"spread_slippage": 2.461269365317348
+},
+"realized": [],
+"meta": {
+"state": {
+"done_day": "2026-10-30",
+"last_target": {
+"QQQ": 0.985
+},
+"started": true
+},
+"last_ts": "2026-10-30T19:55:00+00:00",
+"order_seq": 1,
+"orders": [],
+"open_buy_fees": {
+"QQQ": 0.3754840861127242
+}
+},
+"halted": false,
+"halt_reason": null
+}

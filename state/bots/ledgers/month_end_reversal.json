@@ -1,0 +1,130 @@
+{
+"agent_id": "month_end_reversal",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 73.16713758794322,
+"USD": 5494.47803197777
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-23T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4926.832862412057,
+"amount_to": 5515.514930029526,
+"rate": 1.1198208332061768,
+"fee_rate": 0.0003,
+"fee_eur": 1.4780498587233524,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-23T19:55:00+00:00",
+"inst": "VTI",
+"kind": "stock",
+"qty": 14.775675649633383,
+"price": 373.2565423278808,
+"mid": 373.07000732421875,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3973264891057757
+},
+"fees_eur": 0.35481255333336137,
+"spread_cost_eur": 2.461269365316856,
+"value_eur": 4925.0,
+"eur_rate": 1.1198208332061768,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-26T19:55:00+00:00",
+"inst": "VTI",
+"kind": "stock",
+"qty": -1.5666117410124882,
+"price": 375.3222547607422,
+"mid": 375.510009765625,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.367130332976475
+},
+"fees_eur": 0.3283613694383795,
+"spread_cost_eur": 0.2630780957813552,
+"value_eur": 525.8931134670361,
+"eur_rate": 1.118067979812622,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "VTI",
+"kind": "stock",
+"qty": -13.209063908620895,
+"price": 371.51416220092773,
+"mid": 371.70001220703125,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4934001305155906
+},
+"fees_eur": 0.44159308706872463,
+"spread_cost_eur": 2.197139476210423,
+"value_eur": 4392.081812944496,
+"eur_rate": 1.1173185110092163,
+"reason": "wb:sell (rebalance)",
+"seq": 4
+}
+],
+"costs": {
+"fx": 1.4780498587233524,
+"commissions": 1.1247670098404654,
+"spread_slippage": 4.921486937308634
+},
+"realized": [
+{
+"ts": "2026-10-26T19:55:00+00:00",
+"inst": "VTI",
+"qty": 1.5666117410124882,
+"pnl": 3.2361693508761453,
+"ccy": "USD",
+"pnl_eur": 2.894429864111212
+},
+{
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "VTI",
+"qty": 13.209063908620895,
+"pnl": -23.015210450034406,
+"ccy": "USD",
+"pnl_eur": -20.59861196539736
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-30",
+"last_target": {},
+"started": true
+},
+"last_ts": "2026-10-30T19:55:00+00:00",
+"order_seq": 3,
+"orders": [],
+"open_buy_fees": {
+"VTI": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

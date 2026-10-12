@@ -1,0 +1,85 @@
+{
+"agent_id": "regression_slope.ETH",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4765.265242404543
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-14T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 2.219664015350195,
+"price": 2230.067238,
+"mid": 2228.73,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 2.96821906855902,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-18T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -2.219664015350195,
+"price": 2135.228094,
+"mid": 2136.51,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.848722412041461
+},
+"fees_eur": 11.848722412041461,
+"spread_cost_eur": 2.8454006192618686,
+"value_eur": 4739.4889648165845,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.22372241204146,
+"spread_slippage": 5.813619687820889
+},
+"realized": [
+{
+"ts": "2026-10-18T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 2.219664015350195,
+"pnl": -210.51103518341546,
+"ccy": "EUR",
+"pnl_eur": -210.51103518341546
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"order_seq": 2,
+"last_ts": "2026-10-30T00:00:00+00:00",
+"open_buy_fees": {
+"ETH_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,82 @@
+{
+"agent_id": "buy_and_hold.VGK",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 14.470272268359622,
+"USD": 4.0123460109953157e-13
+},
+"positions": {
+"VGK": {
+"inst_id": "VGK",
+"qty": 64.6299247423171,
+"avg_price": 85.96295816802979,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T17:05:00+00:00",
+"last_mark": 87.54000091552734
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T17:05:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4985.52972773164,
+"amount_to": 5556.336526675668,
+"rate": 1.1148271560668945,
+"fee_rate": 0.0003,
+"fee_eur": 1.4956589183184406,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T17:05:00+00:00",
+"inst": "VGK",
+"kind": "stock",
+"qty": 64.6299247423171,
+"price": 85.96295816802979,
+"mid": 85.91999816894531,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5570096489496417
+},
+"fees_eur": 0.4996376755969682,
+"spread_cost_eur": 2.490521954591619,
+"value_eur": 4983.534431137724,
+"eur_rate": 1.1148271560668945,
+"reason": "bench:buy and hold",
+"seq": 2
+}
+],
+"costs": {
+"fx": 1.4956589183184406,
+"commissions": 0.4996376755969682,
+"spread_slippage": 2.490521954591619
+},
+"realized": [],
+"meta": {
+"state": {
+"bought": "2026-10-12T17:00:00+00:00"
+},
+"order_seq": 1,
+"orders": [],
+"last_ts": "2026-10-30T19:55:00+00:00",
+"open_buy_fees": {
+"VGK": 0.5570096489496417
+}
+},
+"halted": false,
+"halt_reason": null
+}

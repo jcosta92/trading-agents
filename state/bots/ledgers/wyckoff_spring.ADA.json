@@ -1,0 +1,107 @@
+{
+"agent_id": "wyckoff_spring.ADA",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 37.625
+},
+"positions": {
+"ADA_SPOT": {
+"inst_id": "ADA_SPOT",
+"qty": 28710.193422658598,
+"avg_price": 0.1724126315392,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-30T04:00:00+00:00",
+"last_mark": 0.17299
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-30T04:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": 28710.193422658598,
+"price": 0.1724126315392,
+"mid": 0.17213721199999998,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 7.907348242811988,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+}
+],
+"costs": {
+"commissions": 12.375,
+"spread_slippage": 7.907348242811988
+},
+"realized": [],
+"meta": {
+"state": {
+"pos": {
+"ADA_SPOT": {
+"sig": {
+"sl_dist": 0.01058402009688747,
+"tp_dist": 0.023200000999999998,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 0.17241263,
+"entry_ts": "2026-10-30T04:00:00+00:00",
+"hi": 0.1763,
+"bars": 7,
+"fixed_sl": 0.16182860990311254,
+"fixed_tp": 0.195612631,
+"hic": 0.17474
+}
+}
+},
+"orders": [
+{
+"id": 16,
+"inst": "ADA_SPOT",
+"side": "sell",
+"type": "stop",
+"price": 0.16182860990311254,
+"qty": 28710.193422658598,
+"eur": null,
+"tag": "sbx:stop",
+"placed": "2026-10-31T04:00:00+00:00"
+},
+{
+"id": 17,
+"inst": "ADA_SPOT",
+"side": "sell",
+"type": "limit",
+"price": 0.195612631,
+"qty": 28710.193422658598,
+"eur": null,
+"tag": "sbx:take profit",
+"placed": "2026-10-31T04:00:00+00:00"
+}
+],
+"last_ts": "2026-10-31T04:00:00+00:00",
+"order_seq": 17,
+"open_buy_fees": {
+"ADA_SPOT": 12.375
+}
+},
+"halted": false,
+"halt_reason": null
+}

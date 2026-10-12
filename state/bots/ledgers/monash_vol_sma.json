@@ -1,0 +1,106 @@
+{
+"agent_id": "monash_vol_sma",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4862.028880724857
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-14T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": 0.024503084659217866,
+"price": 74263.113,
+"mid": 74226.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 4.549188362240157
+},
+"fees_eur": 4.549188362240157,
+"spread_cost_eur": 0.9093829809574927,
+"value_eur": 1819.6753448960628,
+"eur_rate": 1.0,
+"reason": "wb:buy (rebalance)",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-26T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": 0.006091403733004214,
+"price": 71393.67899999999,
+"mid": 71358.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.0872193069337612
+},
+"fees_eur": 1.0872193069337612,
+"spread_cost_eur": 0.2173351937897914,
+"value_eur": 434.8877227735045,
+"eur_rate": 1.0,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-30T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": -0.03059448839222208,
+"price": 69540.21250000001,
+"mid": 69575.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 5.318868060309768
+},
+"fees_eur": 5.318868060309768,
+"spread_cost_eur": 1.0643057649441585,
+"value_eur": 2127.547224123907,
+"eur_rate": 1.0,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+}
+],
+"costs": {
+"commissions": 10.955275729483686,
+"spread_slippage": 2.1910239396914424
+},
+"realized": [
+{
+"ts": "2026-10-30T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"qty": 0.03059448839222208,
+"pnl": -127.01584354566039,
+"ccy": "EUR",
+"pnl_eur": -127.01584354566039
+}
+],
+"meta": {
+"state": {
+"last_target": {},
+"started": true
+},
+"order_seq": 3,
+"orders": [],
+"last_ts": "2026-10-30T00:00:00+00:00",
+"open_buy_fees": {
+"BTC_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

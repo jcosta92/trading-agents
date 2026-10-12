@@ -1,0 +1,82 @@
+{
+"agent_id": "buy_and_hold.QQQ",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 14.634622222933103,
+"USD": 2.0000667788622195e-13
+},
+"positions": {
+"QQQ": {
+"inst_id": "QQQ",
+"qty": 7.4439035375046245,
+"avg_price": 746.3529704589844,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T17:05:00+00:00",
+"last_mark": 690.5499877929688
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T17:05:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4985.365377777067,
+"amount_to": 5556.153359849749,
+"rate": 1.1148271560668945,
+"fee_rate": 0.0003,
+"fee_eur": 1.4956096133328174,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T17:05:00+00:00",
+"inst": "QQQ",
+"kind": "stock",
+"qty": 7.4439035375046245,
+"price": 746.3529704589844,
+"mid": 745.97998046875,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.37384282303062727
+},
+"fees_eur": 0.33533702600997195,
+"spread_cost_eur": 2.490521954591554,
+"value_eur": 4983.534431137724,
+"eur_rate": 1.1148271560668945,
+"reason": "bench:buy and hold",
+"seq": 2
+}
+],
+"costs": {
+"fx": 1.4956096133328174,
+"commissions": 0.33533702600997195,
+"spread_slippage": 2.490521954591554
+},
+"realized": [],
+"meta": {
+"state": {
+"bought": "2026-10-12T17:00:00+00:00"
+},
+"order_seq": 1,
+"orders": [],
+"last_ts": "2026-10-30T19:55:00+00:00",
+"open_buy_fees": {
+"QQQ": 0.37384282303062727
+}
+},
+"halted": false,
+"halt_reason": null
+}

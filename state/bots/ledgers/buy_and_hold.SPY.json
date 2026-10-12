@@ -1,0 +1,82 @@
+{
+"agent_id": "buy_and_hold.SPY",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 14.63549506041727,
+"USD": -2.930988785010413e-14
+},
+"positions": {
+"SPY": {
+"inst_id": "SPY",
+"qty": 7.140197321147803,
+"avg_price": 778.0988769836425,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T17:05:00+00:00",
+"last_mark": 755.7100219726562
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T17:05:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4985.364504939583,
+"amount_to": 5556.152387078738,
+"rate": 1.1148271560668945,
+"fee_rate": 0.0003,
+"fee_eur": 1.4956093514811073,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T17:05:00+00:00",
+"inst": "SPY",
+"kind": "stock",
+"qty": 7.140197321147803,
+"price": 778.0988769836425,
+"mid": 777.7100219726562,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3728700520196364
+},
+"fees_eur": 0.3344644503773306,
+"spread_cost_eur": 2.4905219545912347,
+"value_eur": 4983.534431137724,
+"eur_rate": 1.1148271560668945,
+"reason": "bench:buy and hold",
+"seq": 2
+}
+],
+"costs": {
+"fx": 1.4956093514811073,
+"commissions": 0.3344644503773306,
+"spread_slippage": 2.4905219545912347
+},
+"realized": [],
+"meta": {
+"state": {
+"bought": "2026-10-12T17:00:00+00:00"
+},
+"order_seq": 1,
+"orders": [],
+"last_ts": "2026-10-30T19:55:00+00:00",
+"open_buy_fees": {
+"SPY": 0.3728700520196364
+}
+},
+"halted": false,
+"halt_reason": null
+}

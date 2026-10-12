@@ -1,0 +1,85 @@
+{
+"agent_id": "ichimoku_chikou.XRP",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4716.115894812719
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-19T00:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 4251.250812461267,
+"price": 1.1643632,
+"mid": 1.1632,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 4.945054945054605,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-30T00:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": -4251.250812461267,
+"price": 1.10325564,
+"mid": 1.10436,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.725541089756186
+},
+"fees_eur": 11.725541089756186,
+"spread_cost_eur": 4.694911347249837,
+"value_eur": 4690.216435902475,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.100541089756184,
+"spread_slippage": 9.639966292304443
+},
+"realized": [
+{
+"ts": "2026-10-30T00:00:00+00:00",
+"inst": "XRP_SPOT",
+"qty": 4251.250812461267,
+"pnl": -259.7835640975254,
+"ccy": "EUR",
+"pnl_eur": -259.7835640975254
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-30T00:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"XRP_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

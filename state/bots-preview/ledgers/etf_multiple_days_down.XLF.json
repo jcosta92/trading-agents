@@ -1,0 +1,101 @@
+{
+"agent_id": "etf_multiple_days_down.XLF",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 9.334567378413453,
+"USD": 1045.6290608750364
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-09-14T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 990.6654326215865,
+"amount_to": 1108.7866973702842,
+"rate": 1.1195701360702515,
+"fee_rate": 0.0003,
+"fee_eur": 0.29719962978640524,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-14T19:55:00+00:00",
+"inst": "XLF",
+"kind": "stock",
+"qty": 19.438857550795724,
+"price": 57.018496679306025,
+"mid": 56.9900016784668,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4122626607351987
+},
+"fees_eur": 0.3682329918001044,
+"spread_cost_eur": 0.49475262368807305,
+"value_eur": 990.0,
+"eur_rate": 1.1195701360702515,
+"reason": "sbe:buy",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-05T19:55:00+00:00",
+"inst": "XLF",
+"kind": "stock",
+"qty": -19.438857550795724,
+"price": 53.812981019973755,
+"mid": 53.839900970458984,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4338115559072761
+},
+"fees_eur": 0.38748046409131354,
+"spread_cost_eur": 0.46740536023373846,
+"value_eur": 934.3433151072411,
+"eur_rate": 1.1195701360702515,
+"reason": "sbx:exit (exit)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 0.29719962978640524,
+"commissions": 0.7557134558914179,
+"spread_slippage": 0.9621579839218115
+},
+"realized": [
+{
+"ts": "2026-10-05T19:55:00+00:00",
+"inst": "XLF",
+"qty": 19.438857550795724,
+"pnl": -62.311562278605045,
+"ccy": "USD",
+"pnl_eur": -55.65668489275877
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-09",
+"pos": {}
+},
+"last_ts": "2026-10-12T16:55:00+00:00",
+"orders": [],
+"order_seq": 2,
+"open_buy_fees": {
+"XLF": 5.551115123125783e-17
+}
+},
+"halted": false,
+"halt_reason": null
+}
