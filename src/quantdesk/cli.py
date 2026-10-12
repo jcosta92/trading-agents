@@ -147,6 +147,13 @@ def cmd_news_inbox(args) -> int:
                                      "top N S&P 500 members by 60-day median dollar volume", "tickers": uni}, indent=0))
     cutoff = llm.news_cutoff(state, now, int(p.get("lookback_hours", 24)))
     inbox = llm.build_inbox(uni, yahoo.news, now, cutoff=cutoff)
+    print(f"news sources: {yahoo.NEWS_STATS} (tickers served by each source; errors)")
+    if not inbox["items"]:
+        # 100 large caps never have zero headlines in a trading day: the feed is broken. Write
+        # nothing, so the labelling task waits and a re-run (or the fallback cron) can retry.
+        print(f"::error::0 headlines for {len(uni)} tickers since {cutoff.isoformat()} - news feed failure")
+        return 1
+    inbox["sources"] = dict(yahoo.NEWS_STATS)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(inbox, indent=1))
     print(f"inbox {date}: {len(inbox['items'])} headlines for {len(uni)} tickers since {cutoff.isoformat()}")

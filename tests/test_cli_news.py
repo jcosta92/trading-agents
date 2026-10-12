@@ -30,7 +30,9 @@ def offline(monkeypatch):
         return [{"title": f"{t} beats estimates", "summary": "s", "publisher": "P",
                  "published": (now - pd.Timedelta(hours=3)).isoformat()},
                 {"title": f"{t} old story", "summary": "", "publisher": "P",
-                 "published": (now - pd.Timedelta(days=9)).isoformat()}]
+                 "published": (now - pd.Timedelta(days=9)).isoformat()},
+                {"title": f"{t} Friday story", "summary": "", "publisher": "P",
+                 "published": "2026-10-09T10:00:00+00:00"}]
     monkeypatch.setattr("quantdesk.data.loader.build_sp500_store", fake_sp500)
     monkeypatch.setattr("quantdesk.data.yahoo.news", fake_news)
     return calls

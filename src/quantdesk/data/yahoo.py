@@ -183,11 +183,57 @@ def option_chain(symbol: str, expiry: str) -> pd.DataFrame:
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
 
+NEWS_STATS: dict[str, int] = {"yfinance": 0, "rss": 0, "errors": 0}
+RSS_URL = "https://feeds.finance.yahoo.com/rss/2.0/headline?s={symbol}&region=US&lang=en-US"
+
+
 def news(symbol: str) -> list[dict]:
-    """Recent headlines: [{'id','title','summary','publisher','published','ticker'}]."""
+    """Recent headlines: [{'id','title','summary','publisher','published','ticker'}].
+    yfinance first; if it returns nothing, Yahoo Finance's public RSS feed (free, no key)."""
+    out = _news_yfinance(symbol)
+    if out:
+        NEWS_STATS["yfinance"] += 1
+        return out
+    out = news_rss(symbol)
+    if out:
+        NEWS_STATS["rss"] += 1
+    return out
+
+
+def news_rss(symbol: str, fetch=None) -> list[dict]:
+    import email.utils
+    import xml.etree.ElementTree as ET
+
+    import requests
+    try:
+        text = fetch(symbol) if fetch else requests.get(
+            RSS_URL.format(symbol=symbol), timeout=20, headers={"User-Agent": "Mozilla/5.0 (trading-agents research)"}).text
+        root = ET.fromstring(text)
+    except Exception as exc:
+        NEWS_STATS["errors"] += 1
+        log.info("rss news failed for %s: %s", symbol, exc)
+        return []
+    out = []
+    for item in root.iter("item"):
+        title = (item.findtext("title") or "").strip()
+        pub = item.findtext("pubDate")
+        if not title or not pub:
+            continue
+        try:
+            published = email.utils.parsedate_to_datetime(pub).astimezone(timezone.utc).isoformat()
+        except Exception:
+            continue
+        out.append({"id": item.findtext("guid") or item.findtext("link") or title, "title": title,
+                    "summary": (item.findtext("description") or "")[:400], "publisher": "Yahoo Finance RSS",
+                    "published": published, "ticker": symbol})
+    return out
+
+
+def _news_yfinance(symbol: str) -> list[dict]:
     try:
         items = _yf().Ticker(symbol).news or []
     except Exception as exc:
+        NEWS_STATS["errors"] += 1
         log.info("news failed for %s: %s", symbol, exc)
         return []
     out = []

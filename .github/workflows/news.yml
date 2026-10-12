@@ -10,6 +10,11 @@ on:
     - cron: "13 12 * * 1-5"
     - cron: "43 12 * * 1-5"
   workflow_dispatch:
+    inputs:
+      force:
+        description: "Rebuild today's inbox even if it exists"
+        type: boolean
+        default: false
 permissions:
   contents: write
 concurrency:
@@ -35,7 +40,7 @@ jobs:
         run: pip install -r requirements.txt && pip install -e .
       - name: Build inbox
         if: steps.flag.outputs.enabled == 'true'
-        run: python -m quantdesk.cli -v news-inbox
+        run: python -m quantdesk.cli -v news-inbox ${{ inputs.force && '--force' || '' }}
       - name: Commit inbox
         if: steps.flag.outputs.enabled == 'true'
         shell: bash

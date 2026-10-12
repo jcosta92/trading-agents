@@ -73,3 +73,26 @@ def test_live_quote_falls_back_to_last_on_junk_book(monkeypatch):
     monkeypatch.setattr(yahoo, "_yf", lambda: YF)
     q = yahoo.live_quote("APA")
     assert q["bid"] is None and q["ask"] is None and q["mid"] == 48.70
+
+
+def test_rss_news_fallback_parses_items():
+    from quantdesk.data import yahoo
+    xml = """<?xml version="1.0"?><rss version="2.0"><channel><title>Yahoo</title>
+    <item><title>Acme beats estimates, raises guidance</title><link>https://x/1</link><guid>g1</guid>
+    <description>Acme reported...</description><pubDate>Mon, 12 Oct 2026 11:30:00 +0000</pubDate></item>
+    <item><title>No date item</title><guid>g2</guid></item></channel></rss>"""
+    out = yahoo.news_rss("ACME", fetch=lambda s: xml)
+    assert len(out) == 1
+    assert out[0]["id"] == "g1" and out[0]["published"].startswith("2026-10-12T11:30:00")
+
+
+def test_news_inbox_fails_loudly_when_no_headlines(tmp_path, monkeypatch):
+    import json as _json
+    from quantdesk import cli
+    from quantdesk.data import yahoo
+    monkeypatch.setattr(yahoo, "news", lambda t: [])
+    uni = tmp_path / "llm" / "universe.json"
+    uni.parent.mkdir(parents=True)
+    uni.write_text(_json.dumps({"month": "2026-10", "tickers": ["AAA", "BBB"]}))
+    rc = cli.main(["news-inbox", "--state", str(tmp_path), "--now", "2026-10-12T12:13:00Z"])
+    assert rc == 1 and not (tmp_path / "llm" / "inbox" / "2026-10-12.json").exists()
