@@ -1,0 +1,85 @@
+{
+"agent_id": "chaikin_money_flow.LINK",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 920.7240808995737
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-29T00:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 72.76611553365757,
+"price": 13.605233600000002,
+"mid": 13.5835,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.5814696485623743,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-30T08:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -72.76611553365757,
+"price": 12.581237759999999,
+"mid": 12.6014,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.2887195010014376
+},
+"fees_eur": 2.2887195010014376,
+"spread_cost_eur": 1.4671278852574208,
+"value_eur": 915.4878004005751,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 4.763719501001438,
+"spread_slippage": 3.048597533819795
+},
+"realized": [
+{
+"ts": "2026-09-30T08:00:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 72.76611553365757,
+"pnl": -74.51219959942496,
+"ccy": "EUR",
+"pnl_eur": -74.51219959942496
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"LINK_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

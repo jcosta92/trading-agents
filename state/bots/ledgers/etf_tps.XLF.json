@@ -1,0 +1,171 @@
+{
+"agent_id": "etf_tps.XLF",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 2027.9795548682855,
+"USD": -1.9984014443252818e-14
+},
+"positions": {
+"XLF": {
+"inst_id": "XLF",
+"qty": 58.96410719928444,
+"avg_price": 55.27127727408358,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-11-18T20:55:00+00:00",
+"last_mark": 54.46500015258789
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-11-18T20:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 495.49548249932093,
+"amount_to": 543.8590792671458,
+"rate": 1.0979359149932861,
+"fee_rate": 0.0003,
+"fee_eur": 0.14864864474981232,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-18T20:55:00+00:00",
+"inst": "XLF",
+"kind": "stock",
+"qty": 9.616405079373655,
+"price": 56.51574298667907,
+"mid": 56.48749923706055,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3808013454692338
+},
+"fees_eur": 0.346833854571159,
+"spread_cost_eur": 0.24737631184403416,
+"value_eur": 495.0,
+"eur_rate": 1.0979359149932861,
+"reason": "sbe:buy",
+"seq": 2
+},
+{
+"type": "fx",
+"ts": "2026-11-19T20:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 990.6730091270758,
+"amount_to": 1087.1304467354125,
+"rate": 1.0976948738098145,
+"fee_rate": 0.0003,
+"fee_eur": 0.29720190273815206,
+"reason": "FX for stock purchase",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-11-19T20:55:00+00:00",
+"inst": "XLF",
+"kind": "stock",
+"qty": 19.519720167444895,
+"price": 55.67282295799255,
+"mid": 55.64500045776367,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.412521663696326
+},
+"fees_eur": 0.3758072243378255,
+"spread_cost_eur": 0.4947526236881094,
+"value_eur": 990.0,
+"eur_rate": 1.0976948738098145,
+"reason": "sbe:tps add",
+"seq": 4
+},
+{
+"type": "fx",
+"ts": "2026-11-20T20:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1485.8519535053179,
+"amount_to": 1629.270854263239,
+"rate": 1.0968520641326904,
+"fee_rate": 0.0003,
+"fee_eur": 0.44575558605151855,
+"reason": "FX for stock purchase",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-11-20T20:55:00+00:00",
+"inst": "XLF",
+"kind": "stock",
+"qty": 29.827981952465887,
+"price": 54.60729183197021,
+"mid": 54.58000183105469,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4455390261937482
+},
+"fees_eur": 0.406197919266394,
+"spread_cost_eur": 0.7421289355320562,
+"value_eur": 1485.0,
+"eur_rate": 1.0968520641326904,
+"reason": "sbe:tps add",
+"seq": 6
+}
+],
+"costs": {
+"fx": 0.8916061335394829,
+"commissions": 1.1288389981753786,
+"spread_slippage": 1.4842578710641998
+},
+"realized": [],
+"meta": {
+"state": {
+"done_day": "2026-11-20",
+"pos": {
+"XLF": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 55.27127727408358,
+"entry_ts": "2026-11-18T20:55:00+00:00",
+"hi": 56.6349983215332,
+"bars": 2,
+"hic": 56.51574299,
+"entries": 3,
+"last_entry_ts": "2026-11-20T20:55:00+00:00"
+}
+},
+"tps": {
+"plan": 4950.0,
+"tranche": 3,
+"last": 54.584999084472656
+}
+},
+"last_ts": "2026-11-20T20:55:00+00:00",
+"orders": [],
+"order_seq": 3,
+"open_buy_fees": {
+"XLF": 1.238862035359308
+}
+},
+"halted": false,
+"halt_reason": null
+}

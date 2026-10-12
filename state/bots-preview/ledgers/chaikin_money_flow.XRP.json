@@ -1,0 +1,229 @@
+{
+"agent_id": "chaikin_money_flow.XRP",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 972.5512538716006
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-14T16:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 813.8400554713382,
+"price": 1.21645524,
+"mid": 1.21524,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 0.9890109890108587,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-15T16:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": -813.8400554713382,
+"price": 1.2024763200000002,
+"mid": 1.20368,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.446558487429427
+},
+"fees_eur": 2.446558487429427,
+"spread_cost_eur": 0.9796029979696829,
+"value_eur": 978.6233949717708,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-09-19T04:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 788.8590081759398,
+"price": 1.2345232899999998,
+"mid": 1.23329,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.434662045298745
+},
+"fees_eur": 2.434662045298745,
+"spread_cost_eur": 0.9728919261931719,
+"value_eur": 973.864818119498,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-09-25T16:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": -788.8590081759398,
+"price": 1.38174687,
+"mid": 1.38313,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.725008663546023
+},
+"fees_eur": 2.725008663546023,
+"spread_cost_eur": 1.0910945599783957,
+"value_eur": 1090.0034654184092,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 4
+},
+{
+"type": "trade",
+"ts": "2026-09-27T08:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 800.9316537130467,
+"price": 1.3530917399999998,
+"mid": 1.35174,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.7093350123591593
+},
+"fees_eur": 2.7093350123591593,
+"spread_cost_eur": 1.0826513535899325,
+"value_eur": 1083.7340049436636,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-09-28T08:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": -800.9316537130467,
+"price": 1.29148722,
+"mid": 1.29278,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.5859824871596637
+},
+"fees_eur": 2.5859824871596637,
+"spread_cost_eur": 1.0354284232871471,
+"value_eur": 1034.3929948638654,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 6
+},
+{
+"type": "trade",
+"ts": "2026-10-06T00:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 765.4926400504007,
+"price": 1.34507373,
+"mid": 1.34373,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.5741101016003496
+},
+"fees_eur": 2.5741101016003496,
+"spread_cost_eur": 1.0286154252148303,
+"value_eur": 1029.6440406401398,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 7
+},
+{
+"type": "trade",
+"ts": "2026-10-08T04:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": -765.4926400504007,
+"price": 1.2634253100000001,
+"mid": 1.26469,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.4178569401459904
+},
+"fees_eur": 2.4178569401459904,
+"spread_cost_eur": 0.9681108869453086,
+"value_eur": 967.1427760583961,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 8
+}
+],
+"costs": {
+"commissions": 20.36851373753936,
+"spread_slippage": 8.147406562189328
+},
+"realized": [
+{
+"ts": "2026-09-15T16:00:00+00:00",
+"inst": "XRP_SPOT",
+"qty": 813.8400554713382,
+"pnl": -11.376605028229223,
+"ccy": "EUR",
+"pnl_eur": -11.376605028229223
+},
+{
+"ts": "2026-09-25T16:00:00+00:00",
+"inst": "XRP_SPOT",
+"qty": 788.8590081759398,
+"pnl": 116.13864729891124,
+"ccy": "EUR",
+"pnl_eur": 116.13864729891124
+},
+{
+"ts": "2026-09-28T08:00:00+00:00",
+"inst": "XRP_SPOT",
+"qty": 800.9316537130467,
+"pnl": -49.34101007979823,
+"ccy": "EUR",
+"pnl_eur": -49.34101007979823
+},
+{
+"ts": "2026-10-08T04:00:00+00:00",
+"inst": "XRP_SPOT",
+"qty": 765.4926400504007,
+"pnl": -62.50126458174381,
+"ccy": "EUR",
+"pnl_eur": -62.50126458174381
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 8,
+"open_buy_fees": {
+"XRP_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

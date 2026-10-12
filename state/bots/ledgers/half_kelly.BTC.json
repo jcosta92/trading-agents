@@ -1,0 +1,114 @@
+{
+"agent_id": "half_kelly.BTC",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 3892.607604357983
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-14T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": 0.06631825412435916,
+"price": 74263.113,
+"mid": 74226.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.3125
+},
+"fees_eur": 12.3125,
+"spread_cost_eur": 2.4612693653171793,
+"value_eur": 4925.0,
+"eur_rate": 1.0,
+"reason": "wb:buy (rebalance)",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-15T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": -0.03746888897650191,
+"price": 58278.846000000005,
+"mid": 58308.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 5.459109026131633
+},
+"fees_eur": 5.459109026131633,
+"spread_cost_eur": 1.0923679892207492,
+"value_eur": 2183.643610452653,
+"eur_rate": 1.0,
+"reason": "wb:sell (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-11-19T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": -0.028849365147857242,
+"price": 57397.287000000004,
+"mid": 57426.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 4.139688227898399
+},
+"fees_eur": 4.139688227898399,
+"spread_cost_eur": 0.8283518214903125,
+"value_eur": 1655.8752911593597,
+"eur_rate": 1.0,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+}
+],
+"costs": {
+"commissions": 21.911297254030032,
+"spread_slippage": 4.381989176028241
+},
+"realized": [
+{
+"ts": "2026-11-15T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"qty": 0.03746888897650191,
+"pnl": -598.9127255937631,
+"ccy": "EUR",
+"pnl_eur": -598.9127255937631
+},
+{
+"ts": "2026-11-19T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"qty": 0.028849365147857242,
+"pnl": -486.56837279422433,
+"ccy": "EUR",
+"pnl_eur": -486.56837279422433
+}
+],
+"meta": {
+"state": {
+"last_target": {},
+"started": true
+},
+"order_seq": 3,
+"orders": [],
+"last_ts": "2026-11-20T00:00:00+00:00",
+"open_buy_fees": {
+"BTC_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,85 @@
+{
+"agent_id": "gekko_uo.LINK",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1070.920834785417
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-08T17:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 89.60127368047624,
+"price": 11.048950080000001,
+"mid": 11.0313,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.4749999999999996
+},
+"fees_eur": 2.4749999999999996,
+"spread_cost_eur": 1.5814696485623907,
+"value_eur": 989.9999999999999,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-11T16:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -89.60127368047624,
+"price": 11.897832959999999,
+"mid": 11.9169,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.6651524681338765
+},
+"fees_eur": 2.6651524681338765,
+"spread_cost_eur": 1.7084310693167002,
+"value_eur": 1066.0609872535506,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 5.140152468133876,
+"spread_slippage": 3.2899007178790907
+},
+"realized": [
+{
+"ts": "2026-10-11T16:00:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 89.60127368047624,
+"pnl": 76.06098725355068,
+"ccy": "EUR",
+"pnl_eur": 76.06098725355068
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T16:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"LINK_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

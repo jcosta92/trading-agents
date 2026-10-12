@@ -1,0 +1,85 @@
+{
+"agent_id": "clucmay72018.LINK",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4935.921941760653
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-11-20T15:20:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 644.4078458975106,
+"price": 7.68147072,
+"mid": 7.6692,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 7.907348242811545,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-20T16:55:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -644.4078458975106,
+"price": 7.6202879999999995,
+"mid": 7.6325,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.276433437996623
+},
+"fees_eur": 12.276433437996623,
+"spread_cost_eur": 7.8695086141009005,
+"value_eur": 4910.573375198649,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.651433437996623,
+"spread_slippage": 15.776856856912445
+},
+"realized": [
+{
+"ts": "2026-11-20T16:55:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 644.4078458975106,
+"pnl": -39.42662480135091,
+"ccy": "EUR",
+"pnl_eur": -39.42662480135091
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-21T13:40:00+00:00",
+"order_seq": 38,
+"open_buy_fees": {
+"LINK_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,85 @@
+{
+"agent_id": "gekko_uo.XRP",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1078.0543309735963
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-12T23:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 840.8169938456869,
+"price": 1.17742625,
+"mid": 1.17625,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.4750000000000005
+},
+"fees_eur": 2.4750000000000005,
+"spread_cost_eur": 0.9890109890108872,
+"value_eur": 990.0000000000001,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-14T19:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": -840.8169938456869,
+"price": 1.2763923300000002,
+"mid": 1.27767,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.6830309046957304
+},
+"fees_eur": 2.6830309046957304,
+"spread_cost_eur": 1.0742866485267326,
+"value_eur": 1073.212361878292,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 5.158030904695731,
+"spread_slippage": 2.06329763753762
+},
+"realized": [
+{
+"ts": "2026-09-14T19:00:00+00:00",
+"inst": "XRP_SPOT",
+"qty": 840.8169938456869,
+"pnl": 83.212361878292,
+"ccy": "EUR",
+"pnl_eur": 83.212361878292
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T16:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"XRP_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

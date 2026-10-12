@@ -1,0 +1,107 @@
+{
+"agent_id": "holy_grail.SOL",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 7.525
+},
+"positions": {
+"SOL_SPOT": {
+"inst_id": "SOL_SPOT",
+"qty": 10.131154253119105,
+"avg_price": 97.7183818611,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-08T20:00:00+00:00",
+"last_mark": 97.53
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-08T20:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 10.131154253119105,
+"price": 97.7183818611,
+"mid": 97.62076110000001,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 0.9890109890108806,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+}
+],
+"costs": {
+"commissions": 2.475,
+"spread_slippage": 0.9890109890108806
+},
+"realized": [],
+"meta": {
+"state": {
+"pos": {
+"SOL_SPOT": {
+"sig": {
+"sl_dist": 3.4540000000000077,
+"tp_dist": 11.369000001,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 97.71838186,
+"entry_ts": "2026-10-08T20:00:00+00:00",
+"hi": 101.078,
+"bars": 23,
+"fixed_sl": 94.26438185999999,
+"fixed_tp": 109.087381861,
+"hic": 100.428
+}
+}
+},
+"orders": [
+{
+"id": 47,
+"inst": "SOL_SPOT",
+"side": "sell",
+"type": "stop",
+"price": 94.26438185999999,
+"qty": 10.131154253119105,
+"eur": null,
+"tag": "sbx:stop",
+"placed": "2026-10-12T12:00:00+00:00"
+},
+{
+"id": 48,
+"inst": "SOL_SPOT",
+"side": "sell",
+"type": "limit",
+"price": 109.087381861,
+"qty": 10.131154253119105,
+"eur": null,
+"tag": "sbx:take profit",
+"placed": "2026-10-12T12:00:00+00:00"
+}
+],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 48,
+"open_buy_fees": {
+"SOL_SPOT": 2.475
+}
+},
+"halted": false,
+"halt_reason": null
+}

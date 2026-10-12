@@ -1,0 +1,85 @@
+{
+"agent_id": "holy_grail.AVAX",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1057.310291289458
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-26T00:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": 105.2888372140947,
+"price": 9.402706176599999,
+"mid": 9.383938299999999,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.97604790419163,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-29T04:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": -105.2888372140947,
+"price": 9.985506181,
+"mid": 9.985506181,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.5770435021874682
+},
+"fees_eur": 1.5770435021874682,
+"spread_cost_eur": 0.0,
+"value_eur": 1051.3623347916455,
+"eur_rate": 1.0,
+"reason": "sbx:take profit",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 4.052043502187468,
+"spread_slippage": 1.97604790419163
+},
+"realized": [
+{
+"ts": "2026-09-29T04:00:00+00:00",
+"inst": "AVAX_SPOT",
+"qty": 105.2888372140947,
+"pnl": 61.36233479164538,
+"ccy": "EUR",
+"pnl_eur": 61.36233479164538
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 39,
+"open_buy_fees": {
+"AVAX_SPOT": 4.440892098500626e-16
+}
+},
+"halted": false,
+"halt_reason": null
+}

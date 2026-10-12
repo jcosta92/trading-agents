@@ -1,0 +1,90 @@
+{
+"agent_id": "half_kelly.BTC",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 118.48482509818213
+},
+"positions": {
+"BTC_SPOT": {
+"inst_id": "BTC_SPOT",
+"qty": 0.012474617452999008,
+"avg_price": 70488.48479787928,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-09-19T00:00:00+00:00",
+"last_mark": 74702.0
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-19T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": 0.007774776558752579,
+"price": 70379.17199999999,
+"mid": 70344.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.3679558417250395
+},
+"fees_eur": 1.3679558417250395,
+"spread_cost_eur": 0.2734544411243787,
+"value_eur": 547.1823366900157,
+"eur_rate": 1.0,
+"reason": "wb:buy (rebalance)",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-20T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": 0.00469984089424643,
+"price": 70669.317,
+"mid": 70634.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 0.8303363650126611
+},
+"fees_eur": 0.8303363650126611,
+"spread_cost_eur": 0.16598428086207984,
+"value_eur": 332.1345460050644,
+"eur_rate": 1.0,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 2.1982922067377006,
+"spread_slippage": 0.43943872198645856
+},
+"realized": [],
+"meta": {
+"state": {
+"last_target": {
+"BTC_SPOT": 0.985
+},
+"started": true
+},
+"last_ts": "2026-10-11T00:00:00+00:00",
+"order_seq": 2,
+"orders": [],
+"open_buy_fees": {
+"BTC_SPOT": 2.1982922067377006
+}
+},
+"halted": false,
+"halt_reason": null
+}

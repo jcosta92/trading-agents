@@ -1,0 +1,131 @@
+{
+"agent_id": "volatility_system.SOL",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 497.5594687737875
+},
+"positions": {
+"SOL_SPOT": {
+"inst_id": "SOL_SPOT",
+"qty": 4.87509680522796,
+"avg_price": 100.286186,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-11T18:00:00+00:00",
+"last_mark": 96.524
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-18T15:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 5.1198465047263015,
+"price": 96.68258599999999,
+"mid": 96.586,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.2375
+},
+"fees_eur": 1.2375,
+"spread_cost_eur": 0.49450549450543235,
+"value_eur": 495.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-08T18:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -5.1198465047263015,
+"price": 94.756149,
+"mid": 94.851,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.2128423456474366
+},
+"fees_eur": 1.2128423456474366,
+"spread_cost_eur": 0.48562256081982297,
+"value_eur": 485.1369382589746,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-11T18:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 4.87509680522796,
+"price": 100.286186,
+"mid": 100.186,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.2222621624427423
+},
+"fees_eur": 1.2222621624427423,
+"spread_cost_eur": 0.48841644852853755,
+"value_eur": 488.90486497709696,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 3
+}
+],
+"costs": {
+"commissions": 3.6726045080901795,
+"spread_slippage": 1.468544503853793
+},
+"realized": [
+{
+"ts": "2026-10-08T18:00:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 5.1198465047263015,
+"pnl": -9.863061741025385,
+"ccy": "EUR",
+"pnl_eur": -9.863061741025385
+}
+],
+"meta": {
+"state": {
+"pos": {
+"SOL_SPOT": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 100.286186,
+"entry_ts": "2026-10-11T18:00:00+00:00",
+"hi": 101.078,
+"bars": 23,
+"hic": 100.887
+}
+}
+},
+"orders": [],
+"last_ts": "2026-10-12T16:00:00+00:00",
+"order_seq": 3,
+"open_buy_fees": {
+"SOL_SPOT": 1.2222621624427423
+}
+},
+"halted": false,
+"halt_reason": null
+}

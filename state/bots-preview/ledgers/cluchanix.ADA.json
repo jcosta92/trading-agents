@@ -1,0 +1,133 @@
+{
+"agent_id": "cluchanix.ADA",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1014.1935598137625
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-23T14:20:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": 4751.326877620717,
+"price": 0.208362848,
+"mid": 0.20803,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.5814696485622848,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-23T22:25:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": -4751.326877620717,
+"price": 0.20961407999999998,
+"mid": 0.20995,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.4898625305793476
+},
+"fees_eur": 2.4898625305793476,
+"spread_cost_eur": 1.5960657247304335,
+"value_eur": 995.945012231739,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-02T18:45:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": 4665.380904788901,
+"price": 0.21240931200000002,
+"mid": 0.21207,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.4774258705103698
+},
+"fees_eur": 2.4774258705103698,
+"spread_cost_eur": 1.58301972556577,
+"value_eur": 990.970348204148,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-02T23:35:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": -4665.380904788901,
+"price": 0.216313344,
+"mid": 0.21666,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.522960361371582
+},
+"fees_eur": 2.522960361371582,
+"spread_cost_eur": 1.6172822829305047,
+"value_eur": 1009.1841445486327,
+"eur_rate": 1.0,
+"reason": "sbx:stop (through the price)",
+"seq": 4
+}
+],
+"costs": {
+"commissions": 9.9652487624613,
+"spread_slippage": 6.377837381788993
+},
+"realized": [
+{
+"ts": "2026-09-23T22:25:00+00:00",
+"inst": "ADA_SPOT",
+"qty": 4751.326877620717,
+"pnl": 5.945012231739082,
+"ccy": "EUR",
+"pnl_eur": 5.945012231739082
+},
+{
+"ts": "2026-10-02T23:35:00+00:00",
+"inst": "ADA_SPOT",
+"qty": 4665.380904788901,
+"pnl": 18.2137963444847,
+"ccy": "EUR",
+"pnl_eur": 18.2137963444847
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T16:55:00+00:00",
+"order_seq": 157,
+"open_buy_fees": {
+"ADA_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

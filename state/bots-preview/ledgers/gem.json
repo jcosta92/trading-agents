@@ -1,0 +1,115 @@
+{
+"agent_id": "gem",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 14.354221882803586,
+"USD": 116.04249005515597
+},
+"positions": {
+"VEU": {
+"inst_id": "VEU",
+"qty": 11.69161876253128,
+"avg_price": 84.21208316802978,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-09-14T19:55:00+00:00",
+"last_mark": 82.51499938964844
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-09-14T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 985.6457781171964,
+"amount_to": 1103.1685280503614,
+"rate": 1.1195701360702515,
+"fee_rate": 0.0003,
+"fee_eur": 0.29569373343508687,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-14T19:55:00+00:00",
+"inst": "VEU",
+"kind": "stock",
+"qty": 13.095229835709077,
+"price": 84.21208316802978,
+"mid": 84.16999816894531,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.39194402116377614
+},
+"fees_eur": 0.35008438376136014,
+"spread_cost_eur": 0.4922538730633885,
+"value_eur": 985.0,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-09-30T19:55:00+00:00",
+"inst": "VEU",
+"kind": "stock",
+"qty": -1.403611073177795,
+"price": 82.92851622009277,
+"mid": 82.97000122070312,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3568935935705522
+},
+"fees_eur": 0.31877734326075097,
+"spread_cost_eur": 0.05200996735395413,
+"value_eur": 103.9679247405566,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 0.29569373343508687,
+"commissions": 0.6688617270221111,
+"spread_slippage": 0.5442638404173427
+},
+"realized": [
+{
+"ts": "2026-09-30T19:55:00+00:00",
+"inst": "VEU",
+"qty": 1.403611073177795,
+"pnl": -1.8016287812894052,
+"ccy": "USD",
+"pnl_eur": -1.609214754167358
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-09",
+"last_target": {
+"VEU": 0.985
+},
+"started": true
+},
+"last_ts": "2026-10-12T16:55:00+00:00",
+"order_seq": 2,
+"orders": [],
+"open_buy_fees": {
+"VEU": 0.3499335352789731
+}
+},
+"halted": false,
+"halt_reason": null
+}

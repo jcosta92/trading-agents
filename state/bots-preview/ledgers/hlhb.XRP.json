@@ -1,0 +1,105 @@
+{
+"agent_id": "hlhb.XRP",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 7.525
+},
+"positions": {
+"XRP_SPOT": {
+"inst_id": "XRP_SPOT",
+"qty": 777.3776873946654,
+"avg_price": 1.2735122399999999,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-11T16:00:00+00:00",
+"last_mark": 1.23325
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-11T16:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 777.3776873946654,
+"price": 1.2735122399999999,
+"mid": 1.27224,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 0.989010989010844,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+}
+],
+"costs": {
+"commissions": 2.475,
+"spread_slippage": 0.989010989010844
+},
+"realized": [],
+"meta": {
+"state": {
+"pos": {
+"XRP_SPOT": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 1.27351224,
+"entry_ts": "2026-10-11T16:00:00+00:00",
+"hi": 1.27351224,
+"bars": 6,
+"hic": 1.27351224
+}
+}
+},
+"orders": [
+{
+"id": 12,
+"inst": "XRP_SPOT",
+"side": "sell",
+"type": "stop",
+"price": 0.8645874597360002,
+"qty": 777.3776873946654,
+"eur": null,
+"tag": "sbx:stop",
+"placed": "2026-10-12T12:00:00+00:00"
+},
+{
+"id": 13,
+"inst": "XRP_SPOT",
+"side": "sell",
+"type": "limit",
+"price": 1.5575494716955434,
+"qty": 777.3776873946654,
+"eur": null,
+"tag": "sbx:take profit",
+"placed": "2026-10-12T12:00:00+00:00"
+}
+],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 13,
+"open_buy_fees": {
+"XRP_SPOT": 2.475
+}
+},
+"halted": false,
+"halt_reason": null
+}

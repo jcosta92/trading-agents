@@ -1,0 +1,101 @@
+{
+"agent_id": "etf_vix_stretch.IWM",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 9.379098398490328,
+"USD": 1107.0752647289144
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-09-17T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 990.6209016015097,
+"amount_to": 1108.7368567267574,
+"rate": 1.1195701360702515,
+"fee_rate": 0.0003,
+"fee_eur": 0.297186270480438,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-17T19:55:00+00:00",
+"inst": "IWM",
+"kind": "stock",
+"qty": 3.8782445234316523,
+"price": 285.7928188934326,
+"mid": 285.6499938964844,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.36242201720855155
+},
+"fees_eur": 0.32371533102934613,
+"spread_cost_eur": 0.4947526236880331,
+"value_eur": 990.0,
+"eur_rate": 1.1195701360702515,
+"reason": "sbe:buy",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-09-21T19:55:00+00:00",
+"inst": "IWM",
+"kind": "stock",
+"qty": -3.8782445234316523,
+"price": 285.55716220092773,
+"mid": 285.70001220703125,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.38523570351745967
+},
+"fees_eur": 0.3440925147125277,
+"spread_cost_eur": 0.49483925659872424,
+"value_eur": 989.1836739408528,
+"eur_rate": 1.1195701360702515,
+"reason": "sbx:exit (exit)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 0.297186270480438,
+"commissions": 0.6678078457418739,
+"spread_slippage": 0.9895918802867574
+},
+"realized": [
+{
+"ts": "2026-09-21T19:55:00+00:00",
+"inst": "IWM",
+"qty": 3.8782445234316523,
+"pnl": -0.9139342771169393,
+"ccy": "USD",
+"pnl_eur": -0.816326059147036
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-09",
+"pos": {}
+},
+"last_ts": "2026-10-12T16:55:00+00:00",
+"orders": [],
+"order_seq": 2,
+"open_buy_fees": {
+"IWM": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}
