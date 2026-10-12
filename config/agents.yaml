@@ -22,7 +22,7 @@ backtest:
     pass_dsr: 0.95                     # PASS needs Deflated Sharpe Ratio >= 0.95; otherwise WEAK
 
 paper:
-  enabled: false                       # switched on once the backtests have been run and reviewed
+  enabled: true                        # switched on 2026-10-12 after the first real-data backtest
   length_days: 31
   # Daily signals use completed daily bars and act on the first cycle >= 30 min after the market opens.
   # Stop-loss / take-profit levels are checked on EVERY cycle (hourly) while the market is open.
