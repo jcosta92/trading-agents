@@ -1,19 +1,19 @@
 {
- "ts": "2026-10-12T18:47:01.124753+00:00",
+ "ts": "2026-10-12T19:02:01.549169+00:00",
  "start": "2026-10-12T17:00:00+00:00",
  "end": "2026-11-12T17:00:00+00:00",
  "bots": {
   "grid_btc": {
    "name": "Grid bot on BTC/EUR (Pionex / Binance / Bybit spot grid)",
    "timeframe": "15m",
-   "equity_eur": 998.195,
-   "return": -0.001805,
-   "cash_eur": 585.4489,
+   "equity_eur": 997.9851,
+   "return": -0.002015,
+   "cash_eur": 524.107,
    "positions": {
     "BTC_SPOT": {
-     "qty": 0.005589206490666916,
-     "avg": 73984.974,
-     "mark": 73847.0
+     "qty": 0.006420154533154357,
+     "avg": 73949.51234286877,
+     "mark": 73811.0
     }
    },
    "open_orders": [
@@ -154,18 +154,18 @@
     },
     {
      "inst": "BTC_SPOT",
-     "side": "buy",
+     "side": "sell",
      "type": "limit",
-     "price": 73710.98656980797,
+     "price": 74453.38874990355,
      "qty": 0.0008309480424874413,
      "eur": null,
-     "tag": "grid:buy:8"
+     "tag": "grid:sell:9"
     }
    ],
-   "last_candle": "2026-10-12T18:30:00+00:00",
+   "last_candle": "2026-10-12T18:45:00+00:00",
    "finished": null,
    "costs_eur": {
-    "commissions": 1.0338,
+    "commissions": 1.1257,
     "spread_slippage": 0.2067
    },
    "notes": [],
@@ -176,14 +176,14 @@
   "dca_eth": {
    "name": "DCA bot with safety orders on ETH/EUR (3Commas-style)",
    "timeframe": "15m",
-   "equity_eur": 999.6694,
-   "return": -0.000331,
+   "equity_eur": 999.6806,
+   "return": -0.000319,
    "cash_eur": 929.825,
    "positions": {
     "ETH_SPOT": {
      "qty": 0.03103438685166381,
      "avg": 2255.5625259999997,
-     "mark": 2250.55
+     "mark": 2250.91
     }
    },
    "open_orders": [
@@ -242,7 +242,7 @@
      "tag": "dca:tp"
     }
    ],
-   "last_candle": "2026-10-12T18:30:00+00:00",
+   "last_candle": "2026-10-12T18:45:00+00:00",
    "finished": null,
    "costs_eur": {
     "commissions": 0.175,
@@ -264,7 +264,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T18:30:00+00:00",
+   "last_candle": "2026-10-12T18:45:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -278,7 +278,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T17:00:00+00:00",
+   "last_candle": "2026-10-12T18:00:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -292,7 +292,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T17:00:00+00:00",
+   "last_candle": "2026-10-12T18:00:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -306,7 +306,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T18:40:00+00:00",
+   "last_candle": "2026-10-12T18:55:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -320,7 +320,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T18:30:00+00:00",
+   "last_candle": "2026-10-12T18:45:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -334,7 +334,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T17:00:00+00:00",
+   "last_candle": "2026-10-12T18:00:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -343,33 +343,33 @@
   "rebalance": {
    "name": "Rebalancing bot, equal-weight BTC/ETH/SOL/XRP (Pionex / Shrimpy style)",
    "timeframe": "15m",
-   "equity_eur": 994.5732,
-   "return": -0.005427,
+   "equity_eur": 993.7584,
+   "return": -0.006242,
    "cash_eur": 7.525,
    "positions": {
     "BTC_SPOT": {
      "qty": 0.00334527386601501,
      "avg": 73984.974,
-     "mark": 73847.0
+     "mark": 73811.0
     },
     "ETH_SPOT": {
      "qty": 0.10972872493981133,
      "avg": 2255.5625259999997,
-     "mark": 2250.55
+     "mark": 2250.91
     },
     "SOL_SPOT": {
      "qty": 2.555240611109073,
      "avg": 96.859763,
-     "mark": 96.464
+     "mark": 96.305
     },
     "XRP_SPOT": {
      "qty": 202.27159087415308,
      "avg": 1.22360238,
-     "mark": 1.21901
+     "mark": 1.21739
     }
    },
    "open_orders": [],
-   "last_candle": "2026-10-12T18:30:00+00:00",
+   "last_candle": "2026-10-12T18:45:00+00:00",
    "finished": null,
    "costs_eur": {
     "commissions": 2.475,
@@ -388,7 +388,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T17:00:00+00:00",
+   "last_candle": "2026-10-12T18:00:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -402,7 +402,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T18:40:00+00:00",
+   "last_candle": "2026-10-12T18:55:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -430,7 +430,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T17:00:00+00:00",
+   "last_candle": "2026-10-12T18:00:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -443,8 +443,18 @@
    "return": 0.0,
    "cash_eur": 1000.0,
    "positions": {},
-   "open_orders": [],
-   "last_candle": "2026-10-12T17:00:00+00:00",
+   "open_orders": [
+    {
+     "inst": "SOL_SPOT",
+     "side": "buy",
+     "type": "market",
+     "price": null,
+     "qty": null,
+     "eur": 331.66666666666663,
+     "tag": "rsi:buy (RSI 29.6)"
+    }
+   ],
+   "last_candle": "2026-10-12T18:00:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -458,7 +468,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T18:40:00+00:00",
+   "last_candle": "2026-10-12T18:55:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -472,7 +482,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T18:40:00+00:00",
+   "last_candle": "2026-10-12T18:55:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -486,7 +496,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T18:40:00+00:00",
+   "last_candle": "2026-10-12T18:55:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -505,5 +515,5 @@
   "LINK/EUR": "bitvavo",
   "AVAX/EUR": "bitvavo"
  },
- "n_fills": 0
+ "n_fills": 1
 }
