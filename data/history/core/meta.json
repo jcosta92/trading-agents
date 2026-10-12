@@ -1,0 +1,113 @@
+{
+  "resolved": {
+    "SP500": "VUAA.DE",
+    "WORLD_EQ": "EUNL.DE",
+    "EM_EQ": "IS3N.DE",
+    "EUR_GOVT": "EUNH.DE",
+    "GOLD": "4GLD.DE",
+    "COMMOD": "EXXY.DE",
+    "MOM_WORLD": "IS3R.DE",
+    "VAL_WORLD": "IS3S.DE",
+    "QUAL_WORLD": "IS3Q.DE",
+    "BTC_SPOT": "BTC-EUR",
+    "ETH_SPOT": "ETH-EUR",
+    "BTC_PERP": "BTC-USD",
+    "ETH_PERP": "ETH-USD",
+    "XSP": "^GSPC",
+    "VIX": "^VIX",
+    "TBILL": "^IRX",
+    "EURUSD": "EURUSD=X"
+  },
+  "inception": {
+    "SP500": "2024-12-30",
+    "WORLD_EQ": "2009-09-25",
+    "EM_EQ": "2014-06-11",
+    "EUR_GOVT": "2009-04-17",
+    "GOLD": "2009-11-13",
+    "COMMOD": "2008-01-02",
+    "MOM_WORLD": "2014-10-06",
+    "VAL_WORLD": "2014-10-06",
+    "QUAL_WORLD": "2014-10-06",
+    "BTC_SPOT": "2014-09-17",
+    "ETH_SPOT": "2017-11-11",
+    "BTC_PERP": "2014-09-17",
+    "ETH_PERP": "2017-11-09",
+    "XSP": "2003-01-02",
+    "VIX": "2003-01-02",
+    "TBILL": "2003-01-02",
+    "EURUSD": "2003-12-01"
+  },
+  "proxy": {
+    "SP500": {
+      "symbol": "SXR8.DE",
+      "until": "2024-12-30"
+    },
+    "EM_EQ": {
+      "symbol": "EEM",
+      "until": "2014-06-11"
+    },
+    "GOLD": {
+      "symbol": "GLD",
+      "until": "2009-11-13"
+    },
+    "COMMOD": {
+      "symbol": "DBC",
+      "until": "2008-01-02"
+    }
+  },
+  "missing": [],
+  "funding": {
+    "BTC_PERP": {
+      "chosen": "binance_vision",
+      "sources": {
+        "krakenfutures": {
+          "events": 8903,
+          "first": "2025-10-06 08:00:00+00:00",
+          "last": "2026-10-12 14:00:00+00:00"
+        },
+        "hyperliquid": {
+          "events": 29421,
+          "first": "2023-05-12 00:00:00.048000+00:00",
+          "last": "2026-10-12 14:00:00.055000+00:00"
+        },
+        "binance_vision": {
+          "events": 7395,
+          "first": "2020-01-01 00:00:00+00:00",
+          "last": "2026-09-30 16:00:00.002000+00:00"
+        },
+        "overlap_days": 360,
+        "mean_daily_annualised": {
+          "krakenfutures": 0.030557023549016207,
+          "hyperliquid": 0.05866827053888889,
+          "binance_vision": 0.0328865
+        }
+      }
+    },
+    "ETH_PERP": {
+      "chosen": "binance_vision",
+      "sources": {
+        "krakenfutures": {
+          "events": 8903,
+          "first": "2025-10-06 08:00:00+00:00",
+          "last": "2026-10-12 14:00:00+00:00"
+        },
+        "hyperliquid": {
+          "events": 29421,
+          "first": "2023-05-12 00:00:00.048000+00:00",
+          "last": "2026-10-12 14:00:00.055000+00:00"
+        },
+        "binance_vision": {
+          "events": 7395,
+          "first": "2020-01-01 00:00:00+00:00",
+          "last": "2026-09-30 16:00:00.002000+00:00"
+        },
+        "overlap_days": 360,
+        "mean_daily_annualised": {
+          "krakenfutures": 0.03190736574733337,
+          "hyperliquid": 0.0628271023375,
+          "binance_vision": 0.02498088388888889
+        }
+      }
+    }
+  }
+}
