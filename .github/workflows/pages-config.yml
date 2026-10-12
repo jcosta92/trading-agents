@@ -13,7 +13,9 @@ jobs:
       - env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh api repos/${{ github.repository }}/pages --jq '{source, build_type}' || true
-          gh api -X PUT repos/${{ github.repository }}/pages -f "source[branch]=bot-state" -f "source[path]=/docs" \
-            -f build_type=legacy && echo "::notice::Pages now served from bot-state:/docs"
-          gh api repos/${{ github.repository }}/pages --jq '{source, build_type}'
+          before=$(gh api repos/${{ github.repository }}/pages --jq '.source' 2>&1 | tr '\n' ' ')
+          echo "::notice::before: $before"
+          out=$(gh api -X PUT repos/${{ github.repository }}/pages -f "source[branch]=bot-state" -f "source[path]=/docs" 2>&1 | tr '\n' ' ')
+          echo "::notice::update: $out"
+          after=$(gh api repos/${{ github.repository }}/pages --jq '.source' 2>&1 | tr '\n' ' ')
+          echo "::notice::after: $after"
