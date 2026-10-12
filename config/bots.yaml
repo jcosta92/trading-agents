@@ -1,0 +1,137 @@
+# TRADING BOTS: one-month demo of the strategies most used and recommended online
+# ---------------------------------------------------------------------------------
+# Each bot trades its own simulated EUR 1,000 account for one month, buying and selling on its
+# own rules. The engine replays every real market candle in order as it arrives (15-minute,
+# 1-hour or 5-minute candles from Bitvavo / Kraken / Yahoo), so a bot's decision on a candle
+# only ever sees data up to that candle, and resting orders (grid levels, take-profits, stops)
+# fill when a later candle trades through them - the same thing an exchange would do.
+#
+# Costs charged on every fill:
+#   crypto (Bitvavo EUR markets, lowest tier): 0.15% maker (resting limit orders), 0.25% taker
+#     (market and stop orders) + half the bid-ask spread + slippage on taker orders
+#   US stocks (IBKR Tiered): USD 0.0035/share, USD 0.35 minimum, exchange/clearing/SEC fees,
+#     0.03% EUR->USD conversion, spread + slippage on market and stop orders
+# At the end of the month every bot sells what it holds at market, so the result is realised.
+
+start: "2026-10-12T17:00:00Z"
+end: "2026-11-12T17:00:00Z"
+initial_capital: 1000.0
+
+markets:
+  BTC_SPOT: {symbol: BTC/EUR, half_spread_bps: 2, slippage_bps: 3}
+  ETH_SPOT: {symbol: ETH/EUR, half_spread_bps: 3, slippage_bps: 3}
+  SOL_SPOT: {symbol: SOL/EUR, half_spread_bps: 5, slippage_bps: 5}
+  XRP_SPOT: {symbol: XRP/EUR, half_spread_bps: 5, slippage_bps: 5}
+  DOGE_SPOT: {symbol: DOGE/EUR, half_spread_bps: 8, slippage_bps: 8}
+  ADA_SPOT: {symbol: ADA/EUR, half_spread_bps: 8, slippage_bps: 8}
+  LINK_SPOT: {symbol: LINK/EUR, half_spread_bps: 8, slippage_bps: 8}
+  AVAX_SPOT: {symbol: AVAX/EUR, half_spread_bps: 10, slippage_bps: 10}
+
+crypto_fees: {maker: 0.0015, taker: 0.0025}     # Bitvavo, checked 2026-10-10
+stock_costs: {half_spread_bps: 3, slippage_bps: 2}
+
+bots:
+
+  grid_btc:
+    name: "Grid bot on BTC/EUR (Pionex / Binance / Bybit spot grid)"
+    class: GridBot
+    timeframe: 15m
+    source: >
+      The spot grid is the most widely used bot type on Pionex, Binance and Bybit, and the first
+      item in most "best crypto bot" lists (e.g. gainium.io/best/grid, bingx.com "Top 10 crypto
+      trading bots of 2026"). It profits from price oscillation inside a range.
+    rules: |
+      SETUP  16 geometric grid levels from -8% to +8% around the starting price (~1% apart);
+             equal EUR amount per level; buys the BTC needed for the sell levels above the price
+      BUY    resting limit order at each level below the price
+      SELL   every filled buy gets a resting limit sell one level higher (+~1%)
+      RESET  if the price stays outside the range for 24 hours, sell everything and rebuild the
+             grid around the current price (a "trailing" grid)
+    params: {instrument: BTC_SPOT, levels: 16, range_pct: 0.08, reset_hours: 24, invest: 0.98}
+
+  dca_eth:
+    name: "DCA bot with safety orders on ETH/EUR (3Commas-style)"
+    class: DCABot
+    timeframe: 15m
+    source: >
+      The DCA bot with safety orders is the signature bot of 3Commas and is offered by Pionex,
+      Bitsgap and Gainium (gainium.io/best/dca). Settings below are the common community template:
+      1.5% take-profit, safety orders 1.5% apart with volume scale 1.5 and step scale 1.2.
+    rules: |
+      BUY    base order of EUR 70 at market as soon as no deal is open ("start ASAP")
+      BUY    up to 5 safety orders below the entry: first at -1.5%, each next step 1.2x wider,
+             each order 1.5x larger (70, 70, 105, 158, 236, 354 EUR; covers a ~11% drop)
+      SELL   take-profit limit order at +1.5% above the average entry price, moved after every
+             safety order; when it fills, a new deal starts on the next candle
+      STOP   none (classic template)
+    params: {instrument: ETH_SPOT, base_eur: 70, so_eur: 70, max_so: 5, deviation: 0.015,
+             step_scale: 1.2, volume_scale: 1.5, take_profit: 0.015}
+
+  bb_meanrev:
+    name: "BinHV45 Bollinger mean reversion on 8 coins (Freqtrade community strategy)"
+    class: BinHV45Bot
+    timeframe: 15m
+    source: >
+      BinHV45 is one of the most copied strategies in the Freqtrade community repositories
+      (e.g. github.com/freqtrade/freqtrade-strategies and many forks). Rules and hyper-parameters
+      are taken verbatim from the published file; 15-minute candles as in the original.
+    rules: |
+      BUY    the candle closes below the previous lower Bollinger band (40, 2), the band is wide
+             (mid-lower > 0.7% of price), the close moved > 1.7% of price, the lower wick is small
+             (< 25% of the band width) and the close is not above the previous close
+      SELL   take-profit limit +1.25% above entry (Freqtrade minimal_roi)
+      STOP   -5% stop-loss
+      SIZE   up to 3 open trades (Freqtrade max_open_trades), one third of equity each, at most one
+             per coin; scans 8 liquid EUR pairs as Freqtrade setups usually run on a pair list
+    params: {instruments: [BTC_SPOT, ETH_SPOT, SOL_SPOT, XRP_SPOT, DOGE_SPOT, ADA_SPOT, LINK_SPOT, AVAX_SPOT],
+             max_open_trades: 3, bb_window: 40, bb_std: 2.0, bbdelta: 7, closedelta: 17, tail: 25,
+             roi: 0.0125, stoploss: 0.05}
+
+  supertrend:
+    name: "Supertrend (10, 3) trend following on BTC/ETH/SOL, 1-hour"
+    class: SupertrendBot
+    timeframe: 1h
+    source: >
+      Supertrend is among the most-used community indicators and strategies on TradingView
+      (trend-following family in pickmytrade.io's comparison of TradingView strategies).
+      ATR 10 and multiplier 3 are the TradingView defaults.
+    rules: |
+      BUY    when Supertrend(10, 3) flips to an uptrend (close above the band)
+      SELL   when it flips back to a downtrend
+      SIZE   one third of equity per coin, long only, no leverage
+    params: {instruments: [BTC_SPOT, ETH_SPOT, SOL_SPOT], atr_period: 10, multiplier: 3.0}
+
+  ema_macd:
+    name: "EMA 9/21 crossover + MACD confirmation, EMA200 filter, ATR stop (1-hour)"
+    class: EmaMacdBot
+    timeframe: 1h
+    source: >
+      The moving-average crossover confirmed by MACD and filtered by the 200 EMA is the
+      textbook combination recommended in most strategy guides (pickmytrade.io: combine crossovers
+      with a trend filter); 9/21 and MACD 12/26/9 are the standard settings.
+    rules: |
+      BUY    EMA(9) crosses above EMA(21), MACD(12,26,9) line above its signal line, close > EMA(200)
+      SELL   EMA(9) crosses below EMA(21)
+      STOP   2 x ATR(14) below the entry
+      SIZE   one third of equity per coin, long only
+    params: {instruments: [BTC_SPOT, ETH_SPOT, SOL_SPOT], fast: 9, slow: 21, trend: 200,
+             atr_period: 14, stop_atr: 2.0}
+
+  orb_stocks:
+    name: "Opening Range Breakout on US 'stocks in play' (Zarattini, Barbon & Aziz 2024), IBKR"
+    class: ORBBot
+    timeframe: 5m
+    source: >
+      "A Profitable Day Trading Strategy for the U.S. Equity Market" (Zarattini, Barbon & Aziz,
+      2024; concretumgroup.com) reports a 5-minute opening range breakout on the 20 most active
+      'stocks in play' with a 2.81 Sharpe ratio for 2016-2023; replicated on QuantConnect. Adapted
+      here for a EUR 1,000 cash account: long only, no leverage, 5 names.
+    rules: |
+      SELECT at 09:35 New York time, the 5 names (of the 100 most liquid S&P 500 stocks) with the
+             highest volume in the first 5 minutes relative to their 14-day average, whose first
+             candle closed up
+      BUY    stop order at the high of the first 5-minute candle
+      STOP   10% of the 14-day ATR below the entry
+      SELL   everything at the close of the session (no overnight positions)
+      SIZE   one fifth of equity per name
+    params: {n_names: 5, rel_volume_days: 14, atr_days: 14, stop_atr_frac: 0.10, min_price: 5.0}

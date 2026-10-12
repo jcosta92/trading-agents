@@ -127,6 +127,17 @@ ETH_SPOT:
   yf: [ETH-EUR]
   ccxt: {exchange: kraken, symbol: ETH/EUR}
 
+SOL_SPOT:
+  kind: crypto_spot
+  description: Solana vs EUR (Bitvavo fee schedule; used by the trading bots)
+  currency: EUR
+  venue: bitvavo_spot
+  calendar: CRYPTO
+  lot_size: 0
+  half_spread_bps: 5
+  yf: [SOL-EUR]
+  ccxt: {exchange: kraken, symbol: SOL/EUR}
+
 # Perpetuals: Kraken Pro EEA multi-collateral perps, USD-quoted. Funding accrues to the holder.
 BTC_PERP:
   kind: perp

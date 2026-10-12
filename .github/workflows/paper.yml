@@ -1,13 +1,12 @@
 name: paper
-# One paper-trading cycle for every agent, every hour (GitHub Actions minutes are free and
-# unlimited for public repositories). Each cycle:
+# One paper-trading cycle of the research agents. Normally run every hour from inside the `bots`
+# trading loop (GitHub's scheduler does not fire for this repository); this workflow is kept for
+# manual runs. Each cycle:
 #   - checks every stop-loss / take-profit / time exit against live prices (markets that are open)
 #   - runs each strategy's indicator rules once per day on completed daily bars
 #   - commits the ledgers and rebuilds the dashboard (docs/, served by GitHub Pages)
 # Scheduled runs can be delayed or skipped by GitHub under load; nothing depends on exact timing.
 on:
-  schedule:
-    - cron: "7 * * * *"
   workflow_dispatch:
 permissions:
   contents: write

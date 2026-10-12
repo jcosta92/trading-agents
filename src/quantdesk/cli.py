@@ -212,6 +212,31 @@ def cmd_selftest(args) -> int:
     return 0 if ok else 1
 
 
+def cmd_bots(args) -> int:
+    """One cycle of the trading bots (replays every candle closed since the last cycle) + dashboard."""
+    from .bots import report
+    from .bots.runner import load_config, run_cycle
+    cfg = load_config()
+    s = run_cycle(Path(args.state), now=pd.Timestamp(args.now) if args.now else None, cfg=cfg,
+                  only=args.bots or None, start=args.start, end=args.end)
+    if not args.no_report:
+        if args.start:                                    # preview replay of a past period
+            cfg = {**cfg, "start": args.start, "end": args.end or cfg["end"]}
+            report.write(Path(args.state), cfg, Path(args.docs), Path(args.reports), "preview.html",
+                         "BOTS_PREVIEW.md", preview=True)
+        else:
+            report.write(Path(args.state), cfg, Path(args.docs), Path(args.reports))
+    print(f"bots cycle {s['ts']}: {s['n_fills']} fills, sources {s.get('data_sources')}")
+    for bid, b in s["bots"].items():
+        print(f"- {bid}: equity {b.get('equity_eur')} positions {len(b.get('positions') or {})} "
+              f"orders {len(b.get('open_orders') or [])} {b.get('error', '')}")
+        for n in (b.get("notes") or [])[-3:]:
+            print(f"    . {n}")
+    for e in s["errors"]:
+        print(f"::error::{e}")
+    return 1 if s["errors"] else 0
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="quantdesk")
     p.add_argument("-v", "--verbose", action="store_true")
@@ -244,13 +269,22 @@ def main(argv=None) -> int:
     n.add_argument("--state", default=str(ROOT / "state"))
     n.add_argument("--now")
     n.add_argument("--force", action="store_true", help="rebuild even if it exists / not a trading day")
+    bt = sub.add_parser("bots")
+    bt.add_argument("--state", default=str(ROOT / "state" / "bots"))
+    bt.add_argument("--docs", default=str(ROOT / "docs"))
+    bt.add_argument("--reports", default=str(ROOT / "reports"))
+    bt.add_argument("--now")
+    bt.add_argument("--start", help="override the test start (preview replay of a past period)")
+    bt.add_argument("--end")
+    bt.add_argument("--bots", nargs="*")
+    bt.add_argument("--no-report", action="store_true")
     v = sub.add_parser("validate-labels")
     v.add_argument("--state", default=str(ROOT / "state"))
     v.add_argument("--date", help="YYYY-MM-DD (default: today UTC)")
     args = p.parse_args(argv)
     _setup_logging(args.verbose)
     return {"fetch-history": cmd_fetch_history, "backtest": cmd_backtest, "paper": cmd_paper,
-            "dashboard": cmd_dashboard, "selftest": cmd_selftest, "news-inbox": cmd_news_inbox,
+            "dashboard": cmd_dashboard, "selftest": cmd_selftest, "news-inbox": cmd_news_inbox, "bots": cmd_bots,
             "validate-labels": cmd_validate_labels}[args.cmd](args)
 
 

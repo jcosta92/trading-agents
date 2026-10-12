@@ -1,25 +1,37 @@
 # trading-agents
 
-Eight systematic trading agents plus two buy-and-hold benchmarks. Each agent gets its own simulated
-**EUR 1,000** account and trades on **fixed indicator rules**: it buys and sells when its indicators fire, and
-every entry carries protective orders (stop-loss, and where the strategy has one, a take-profit or a time exit).
-Every agent is backtested over many years, then paper-traded for one month. The same Python code runs both, and
-both apply the full cost model an EU retail investor based in Portugal would actually pay.
+## The one-month bot test (12 Oct - 12 Nov 2026)
 
-**It costs nothing to run.** Everything runs on GitHub Actions in a public repository (free, unlimited minutes),
-the dashboard is a GitHub Pages site, market data comes from free public sources (Yahoo Finance, Kraken's public
-API, public GitHub datasets), and the one LLM step is done by a scheduled Claude task instead of a paid API.
+Six trading bots, each built on a strategy that bot platforms and trading communities rank among the most used, trade
+their own simulated **EUR 1,000** for one month and buy and sell throughout it. On the last day every bot sells what it
+holds, and the results are checked.
 
-The point is to find out, honestly, whether any of these strategies survives costs at this account size. It is not a
-profit machine. The research behind the design concluded that no strategy credibly delivers "best profits" on
-EUR 1,000 after costs, and that one month of trading cannot separate skill from luck. The month mainly checks that the
-plumbing works: data feeds, orders, protective stops, the cost model, kill switches and unattended operation. The
-multi-year backtest gives the statistical evidence.
+| Bot | Strategy | Where it comes from | Market, candles |
+|---|---|---|---|
+| `grid_btc` | Spot grid: 16 levels ±8%, buy low / sell one level higher, trailing reset | Pionex / Binance / Bybit grid bot | BTC/EUR, 15 min |
+| `dca_eth` | DCA bot: base order, 5 safety orders (1.5% apart, ×1.5 size), 1.5% take-profit | 3Commas-style DCA bot | ETH/EUR, 15 min |
+| `bb_meanrev` | BinHV45: sharp close below the lower Bollinger band, +1.25% target, −5% stop | Freqtrade community strategy | 8 coins, 15 min |
+| `supertrend` | Buy when Supertrend(10,3) flips up, sell when it flips down | TradingView's most-used trend indicator | BTC/ETH/SOL, 1 h |
+| `ema_macd` | EMA 9/21 cross with MACD confirmation and EMA200 filter, 2×ATR stop | Classic strategy-guide setup | BTC/ETH/SOL, 1 h |
+| `orb_stocks` | 5-min opening range breakout on the day's most active stocks, out by the close | Zarattini, Barbon & Aziz (2024) | 100 liquid US stocks, 5 min |
 
-- **Dashboard:** `docs/index.html` (GitHub Pages), rebuilt every hour: equity, resting stop/target orders, the
-  latest indicator readings, every fill with the rule that triggered it
-- **Status table:** [`reports/STATUS.md`](reports/STATUS.md)
-- **Backtest report:** `docs/backtest.html` and [`reports/backtest/summary.md`](reports/backtest/summary.md)
+Exact rules, parameters and sources: [`config/bots.yaml`](config/bots.yaml).
+
+- **Live dashboard:** `docs/index.html` on GitHub Pages; status table [`reports/BOTS.md`](reports/BOTS.md); every fill
+  in [`state/bots/fills.csv`](state/bots/fills.csv).
+- **Preview:** `docs/preview.html` replays the month before the test through the same bots.
+- **How the simulation works:** every real candle (Bitvavo, Kraken as a fallback, Yahoo for stocks) is replayed in
+  order. Resting orders fill when a candle trades through them; market orders fill at the next candle's open. Every
+  fill pays Bitvavo fees (0.15% maker, 0.25% taker) or IBKR fees and FX, plus the spread and slippage. A bot only
+  ever sees candles up to the one it is deciding on, so the result does not depend on when a cycle runs.
+- **Running it:** the `bots` workflow loops every 15 minutes for ~5h40m, then starts its next run. It costs nothing
+  (public repository).
+
+## The research agents (background)
+
+Eight slower systematic agents plus two buy-and-hold benchmarks also paper-trade alongside, run hourly by the same
+loop (dashboard `docs/classic.html`). Each was also backtested over many years (`docs/backtest.html`); none beat
+its benchmark after costs.
 
 ## The agents and their rules
 

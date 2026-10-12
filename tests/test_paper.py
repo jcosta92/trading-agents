@@ -228,7 +228,7 @@ def test_dashboard_renders(tmp_path, settings, instruments, venues, paper_store)
     store, extras = paper_store
     _runner(settings, instruments, venues, tmp_path / "state", store, extras, "2026-10-12T15:10:00Z").run()
     write_dashboard(tmp_path / "state", settings, tmp_path / "docs", tmp_path / "reports")
-    html = (tmp_path / "docs" / "index.html").read_text()
+    html = (tmp_path / "docs" / "classic.html").read_text()
     assert "Scoreboard" in html and "lineChart" in html
     assert (tmp_path / "reports" / "STATUS.md").read_text().startswith("# Paper run status")
 

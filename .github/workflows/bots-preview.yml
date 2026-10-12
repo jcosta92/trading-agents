@@ -1,0 +1,36 @@
+name: bots-preview
+# Replays the month BEFORE the live test through the same bots, data and costs, and publishes
+# docs/preview.html: a quick look at how each strategy behaves. Run manually.
+on:
+  workflow_dispatch:
+    inputs:
+      start: {description: "replay start (UTC)", default: "2026-09-12T17:00:00Z"}
+      end: {description: "replay end (UTC)", default: "2026-10-12T17:00:00Z"}
+permissions:
+  contents: write
+concurrency:
+  group: bots-preview
+  cancel-in-progress: true
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt && pip install -e .
+      - name: Replay
+        shell: bash
+        run: |
+          rm -rf state/bots-preview
+          mkdir -p state/bots-preview
+          python -m quantdesk.cli -v bots --state state/bots-preview --start "${{ inputs.start }}" --end "${{ inputs.end }}" 2>&1 | tee state/bots-preview/run.log
+      - name: Publish log tail on failure
+        if: failure()
+        run: .github/scripts/annotate_tail.sh state/bots-preview/run.log 60
+      - name: Commit
+        if: always()
+        run: .github/scripts/commit_push.sh "Bots preview replay" state/bots-preview docs/preview.html reports/BOTS_PREVIEW.md

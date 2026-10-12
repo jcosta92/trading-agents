@@ -1,6 +1,6 @@
 """Static HTML reports (GitHub Pages) and a Markdown status file.
 
-docs/index.html          live paper-run dashboard (rebuilt every run)
+docs/classic.html        paper-run dashboard of the research agents (docs/index.html is the bots page)
 docs/backtest.html       backtest report (rebuilt after every backtest)
 reports/STATUS.md        the same headline table, readable directly on GitHub
 """
@@ -468,7 +468,7 @@ then sold at the bid (so a fast move can fill beyond the level, as a real stop o
 <th>Price</th><th>Fees</th><th>Value</th><th class='l'>Reason</th></tr></thead><tbody>{fill_rows or "<tr><td class='l muted' colspan='8'>No fills yet</td></tr>"}</tbody></table></div>
 <p class='small muted' style='margin-top:28px'>Paper trading with simulated fills against (often 15-minute delayed) public quotes.
 Simulated fills are not real executions. The LLM agent's headline labels come from a scheduled Claude task, not a paid API.
-Not investment advice. <a href='backtest.html'>Backtest report</a></p>
+Not investment advice. <a href='index.html'>Trading bots</a> · <a href='backtest.html'>Backtest report</a></p>
 """
     page = _page("Trading agents dashboard", body, {"groups": groups}).replace(
         "(window.__init||function(){})(D);",
@@ -476,7 +476,7 @@ Not investment advice. <a href='backtest.html'>Backtest report</a></p>
         "h.textContent=g.title;c.appendChild(h);document.getElementById('charts').appendChild(c);"
         "lineChart(c,{series:g.series,title:g.title,prefix:'€',decimals:2,baseline:1000,intraday:true});});")
     docs_dir.mkdir(parents=True, exist_ok=True)
-    (docs_dir / "index.html").write_text(page, encoding="utf-8")
+    (docs_dir / "classic.html").write_text(page, encoding="utf-8")
     (docs_dir / ".nojekyll").write_text("")
     reports_dir.mkdir(parents=True, exist_ok=True)
     (reports_dir / "STATUS.md").write_text(status_markdown(table, paper, last_run, upd), encoding="utf-8")
@@ -493,7 +493,7 @@ def status_markdown(table: pd.DataFrame, paper: dict, last_run: dict, upd: str) 
                      f"{_eur(r['funding'])} | {r['fills']} | {r['gate']} |")
     if last_run.get("errors"):
         lines += ["", "## Errors in the last run", ""] + [f"- {e}" for e in last_run["errors"]]
-    lines += ["", "Simulated fills against public quotes; not investment advice. Full dashboard: docs/index.html (GitHub Pages)."]
+    lines += ["", "Simulated fills against public quotes; not investment advice. Full dashboard: docs/classic.html (GitHub Pages)."]
     return "\n".join(lines) + "\n"
 
 
@@ -588,7 +588,7 @@ random day of the backtest would have been halted by the agent's loss limit. The
 <tbody>{var_rows or "<tr><td class='muted' colspan='5'>none</td></tr>"}</tbody></table></div>
 <h2>Caveats</h2>
 <ul class='small'>{notes}{''.join(f'<li>{_esc(n)}</li>' for n in data_notes)}</ul>
-<p class='small muted'><a href='index.html'>Paper-run dashboard</a></p>
+<p class='small muted'><a href='index.html'>Trading bots</a> · <a href='classic.html'>Research agents</a></p>
 """
     page = _page("Backtest report", body, {"multiples": multiples}).replace(
         "(window.__init||function(){})(D);",

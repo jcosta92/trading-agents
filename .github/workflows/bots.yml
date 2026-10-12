@@ -1,0 +1,67 @@
+name: bots
+# The trading loop. Runs for ~5h40m, then starts its own next run, so it keeps going without
+# depending on GitHub's scheduler (which has not fired for this repository). Every 15 minutes:
+#   - the trading bots replay every candle that closed since the last cycle (orders, fills, P&L)
+#   - once an hour, one paper cycle of the research agents
+#   - commit the state and rebuild the dashboards (GitHub Pages)
+# Minutes are free for public repositories. The cron line is only a backup to restart the chain.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 */4 * * *"
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: repo-writes
+  cancel-in-progress: false
+jobs:
+  loop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt && pip install -e .
+      - name: Trading loop
+        shell: bash
+        run: |
+          stop_at=$(( $(date +%s) + 20400 ))          # 5h40m
+          last_paper=""
+          mkdir -p state/logs
+          while [ "$(date +%s)" -lt "$stop_at" ]; do
+            git pull -q --rebase || git rebase --abort 2>/dev/null || true
+            log="state/logs/bots-$(date -u +%Y-%m-%d).log"
+            echo "===== $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$log"
+            python -m quantdesk.cli -v bots >> "$log" 2>&1 || echo "::warning::bots cycle reported errors (see $log)"
+            hour=$(date -u +%Y-%m-%dT%H)
+            enabled=$(python -c "import yaml;print(bool(yaml.safe_load(open('config/agents.yaml'))['paper'].get('enabled')))")
+            if [ "$enabled" = "True" ] && [ "$hour" != "$last_paper" ] && [ "$(date -u +%M)" -ge 5 ]; then
+              plog="state/logs/$(date -u +%Y-%m-%d).log"
+              echo "===== $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$plog"
+              python -m quantdesk.cli -v paper >> "$plog" 2>&1 || echo "::warning::paper cycle reported errors"
+              last_paper="$hour"
+            fi
+            .github/scripts/commit_push.sh "Bots cycle $(date -u +%Y-%m-%dT%H:%MZ)" state docs reports || true
+            # sleep until 2 minutes past the next quarter hour (candles are closed and published by then)
+            now=$(date +%s); next=$(( (now / 900 + 1) * 900 + 120 ))
+            [ "$next" -lt "$stop_at" ] && sleep $(( next - now )) || break
+          done
+      - name: Publish log tail on failure
+        if: failure()
+        shell: bash
+        run: .github/scripts/annotate_tail.sh "state/logs/bots-$(date -u +%Y-%m-%d).log" 60
+      - name: Start the next run
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          end=$(python -c "import yaml;print(yaml.safe_load(open('config/bots.yaml'))['end'])")
+          if [ "$(date -u +%s)" -lt "$(( $(date -u -d "$end" +%s) + 7200 ))" ]; then
+            gh workflow run bots.yml --repo "$GITHUB_REPOSITORY" --ref main
+          else
+            echo "test period over - not restarting"
+          fi
