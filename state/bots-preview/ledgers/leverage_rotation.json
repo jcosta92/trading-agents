@@ -1,0 +1,107 @@
+{
+"agent_id": "leverage_rotation",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 9.343386447704233,
+"USD": 1149.6633402998555
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-09-14T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 990.6566135522958,
+"amount_to": 1105.5586280686302,
+"rate": 1.1163206100463867,
+"fee_rate": 0.0003,
+"fee_eur": 0.29719698406563566,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-14T19:55:00+00:00",
+"inst": "SSO",
+"kind": "stock",
+"qty": 15.992545334816315,
+"price": 69.10453469467163,
+"mid": 69.06999969482422,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.40122412270741664
+},
+"fees_eur": 0.3594165682301113,
+"spread_cost_eur": 0.4947526236881136,
+"value_eur": 990.0,
+"eur_rate": 1.1163206100463867,
+"reason": "lr:buy (SPY 761.25 > SMA 714.70)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-12T17:00:00+00:00",
+"inst": "SSO",
+"kind": "stock",
+"qty": -15.992545334816315,
+"price": 71.91402194976807,
+"mid": 71.94999694824219,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.42491594078597383
+},
+"fees_eur": 0.38063969881225895,
+"spread_cost_eur": 0.515382219802749,
+"value_eur": 1030.2490573858092,
+"eur_rate": 1.1163206100463867,
+"reason": "end of test: sell all",
+"seq": 3
+}
+],
+"costs": {
+"fx": 0.29719698406563566,
+"commissions": 0.7400562670423703,
+"spread_slippage": 1.0101348434908626
+},
+"realized": [
+{
+"ts": "2026-10-12T17:00:00+00:00",
+"inst": "SSO",
+"qty": 15.992545334816315,
+"pnl": 44.930852294718505,
+"ccy": "USD",
+"pnl_eur": 40.24905738580916
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-09",
+"signal": {
+"day": "2026-10-09",
+"spy": 778.41,
+"sma200": 722.93,
+"above": true
+}
+},
+"last_ts": "2026-10-12T17:00:00+00:00",
+"order_seq": 1,
+"orders": [],
+"open_buy_fees": {
+"SSO": 0.0
+},
+"finished": "2026-10-12T17:00:00+00:00"
+},
+"halted": false,
+"halt_reason": null
+}

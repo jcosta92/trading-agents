@@ -3,50 +3,9 @@
 "base": "EUR",
 "initial_capital": 1000.0,
 "cash": {
-"EUR": 10.330296032523306
+"EUR": 1060.314379532623
 },
-"positions": {
-"BTC_SPOT": {
-"inst_id": "BTC_SPOT",
-"qty": 0.0036106571954688453,
-"avg_price": 67029.75291466394,
-"currency": "EUR",
-"multiplier": 1.0,
-"kind": "crypto_spot",
-"opened": "2026-09-12T17:15:00+00:00",
-"last_mark": 74132.0
-},
-"ETH_SPOT": {
-"inst_id": "ETH_SPOT",
-"qty": 0.11901381474791148,
-"avg_price": 2195.864471293812,
-"currency": "EUR",
-"multiplier": 1.0,
-"kind": "crypto_spot",
-"opened": "2026-09-12T17:15:00+00:00",
-"last_mark": 2263.6
-},
-"SOL_SPOT": {
-"inst_id": "SOL_SPOT",
-"qty": 2.6603736315723623,
-"avg_price": 88.71509350527234,
-"currency": "EUR",
-"multiplier": 1.0,
-"kind": "crypto_spot",
-"opened": "2026-09-12T17:15:00+00:00",
-"last_mark": 97.3
-},
-"XRP_SPOT": {
-"inst_id": "XRP_SPOT",
-"qty": 214.86370475030998,
-"avg_price": 1.1938854019958627,
-"currency": "EUR",
-"multiplier": 1.0,
-"kind": "crypto_spot",
-"opened": "2026-09-12T17:15:00+00:00",
-"last_mark": 1.22948
-}
-},
+"positions": {},
 "journal": [
 {
 "type": "deposit",
@@ -694,11 +653,91 @@
 "eur_rate": 1.0,
 "reason": "rb:sell overweight",
 "seq": 32
+},
+{
+"type": "trade",
+"ts": "2026-10-12T17:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": -0.0036106571954688453,
+"price": 73833.065,
+"mid": 73870.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 0.6664647185144225
+},
+"fees_eur": 0.6664647185144225,
+"spread_cost_eur": 0.1333596235146334,
+"value_eur": 266.585887405769,
+"eur_rate": 1.0,
+"reason": "end of test: sell all",
+"seq": 33
+},
+{
+"type": "trade",
+"ts": "2026-10-12T17:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -0.11901381474791148,
+"price": 2249.529472,
+"mid": 2250.88,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 0.6693127096264379
+},
+"fees_eur": 0.6693127096264379,
+"spread_cost_eur": 0.16073148920386027,
+"value_eur": 267.7250838505751,
+"eur_rate": 1.0,
+"reason": "end of test: sell all",
+"seq": 34
+},
+{
+"type": "trade",
+"ts": "2026-10-12T17:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -2.6603736315723623,
+"price": 96.542361,
+"mid": 96.639,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 0.6420968788353499
+},
+"fees_eur": 0.6420968788353499,
+"spread_cost_eur": 0.25709584738151126,
+"value_eur": 256.83875153414,
+"eur_rate": 1.0,
+"reason": "end of test: sell all",
+"seq": 35
+},
+{
+"type": "trade",
+"ts": "2026-10-12T17:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": -214.86370475030998,
+"price": 1.21689189,
+"mid": 1.21811,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 0.6536647494150168
+},
+"fees_eur": 0.6536647494150168,
+"spread_cost_eur": 0.26172762739338695,
+"value_eur": 261.4658997660067,
+"eur_rate": 1.0,
+"reason": "end of test: sell all",
+"seq": 36
 }
 ],
 "costs": {
-"commissions": 2.9454768325701863,
-"spread_slippage": 0.9241735936845769
+"commissions": 5.577015888961414,
+"spread_slippage": 1.7370881811779686
 },
 "realized": [
 {
@@ -812,6 +851,38 @@
 "pnl": 0.5653619848973025,
 "ccy": "EUR",
 "pnl_eur": 0.5653619848973025
+},
+{
+"ts": "2026-10-12T17:00:00+00:00",
+"inst": "BTC_SPOT",
+"qty": 0.0036106571954688453,
+"pnl": 24.5644277339388,
+"ccy": "EUR",
+"pnl_eur": 24.5644277339388
+},
+{
+"ts": "2026-10-12T17:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 0.11901381474791148,
+"pnl": 6.386876452492802,
+"ccy": "EUR",
+"pnl_eur": 6.386876452492802
+},
+{
+"ts": "2026-10-12T17:00:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 2.6603736315723623,
+"pnl": 20.823456050236942,
+"ccy": "EUR",
+"pnl_eur": 20.823456050236942
+},
+{
+"ts": "2026-10-12T17:00:00+00:00",
+"inst": "XRP_SPOT",
+"qty": 214.86370475030998,
+"pnl": 4.943259245862527,
+"ccy": "EUR",
+"pnl_eur": 4.943259245862527
 }
 ],
 "meta": {
@@ -821,13 +892,14 @@
 },
 "orders": [],
 "order_seq": 32,
-"last_ts": "2026-10-12T16:30:00+00:00",
+"last_ts": "2026-10-12T17:00:00+00:00",
 "open_buy_fees": {
-"BTC_SPOT": 0.6050536491795753,
-"ETH_SPOT": 0.6533455184952058,
-"SOL_SPOT": 0.5900382387097578,
-"XRP_SPOT": 0.6413066013003601
-}
+"BTC_SPOT": 0.0,
+"ETH_SPOT": 0.0,
+"SOL_SPOT": 0.0,
+"XRP_SPOT": 0.0
+},
+"finished": "2026-10-12T17:00:00+00:00"
 },
 "halted": false,
 "halt_reason": null

@@ -3,20 +3,9 @@
 "base": "EUR",
 "initial_capital": 1000.0,
 "cash": {
-"EUR": 28.75444062499964
+"EUR": 1008.4043404655662
 },
-"positions": {
-"ETH_SPOT": {
-"inst_id": "ETH_SPOT",
-"qty": 0.43658248312446873,
-"avg_price": 2274.7706066733376,
-"currency": "EUR",
-"multiplier": 1.0,
-"kind": "crypto_spot",
-"opened": "2026-10-02T08:30:00+00:00",
-"last_mark": 2263.6
-}
-},
+"positions": {},
 "journal": [
 {
 "type": "deposit",
@@ -904,11 +893,31 @@
 "eur_rate": 1.0,
 "reason": "dca:so:5",
 "seq": 44
+},
+{
+"type": "trade",
+"ts": "2026-10-12T17:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -0.43658248312446873,
+"price": 2249.529472,
+"mid": 2250.88,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.4552629068685876
+},
+"fees_eur": 2.4552629068685876,
+"spread_cost_eur": 0.5896168677690964,
+"value_eur": 982.1051627474351,
+"eur_rate": 1.0,
+"reason": "end of test: sell all",
+"seq": 45
 }
 ],
 "costs": {
-"commissions": 8.701809374999998,
-"spread_slippage": 0.6296222266639387
+"commissions": 11.157072281868587,
+"spread_slippage": 1.2192390944330351
 },
 "realized": [
 {
@@ -1022,6 +1031,14 @@
 "pnl": 1.0499999999999985,
 "ccy": "EUR",
 "pnl_eur": 1.0499999999999985
+},
+{
+"ts": "2026-10-12T17:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 0.43658248312446873,
+"pnl": -11.019837252564793,
+"ccy": "EUR",
+"pnl_eur": -11.019837252564793
 }
 ],
 "meta": {
@@ -1032,24 +1049,13 @@
 },
 "completed_deals": 14
 },
-"orders": [
-{
-"id": 120,
-"inst": "ETH_SPOT",
-"side": "sell",
-"type": "limit",
-"price": 2308.8921657734377,
-"qty": 0.43658248312446873,
-"eur": null,
-"tag": "dca:tp",
-"placed": "2026-10-08T15:30:00+00:00"
-}
-],
+"orders": [],
 "order_seq": 120,
-"last_ts": "2026-10-12T16:30:00+00:00",
+"last_ts": "2026-10-12T17:00:00+00:00",
 "open_buy_fees": {
-"ETH_SPOT": 1.5596875000000003
-}
+"ETH_SPOT": 0.0
+},
+"finished": "2026-10-12T17:00:00+00:00"
 },
 "halted": false,
 "halt_reason": null
