@@ -7,7 +7,9 @@ in time order. For each candle it
        stop    -> at the stop level (or the open if it gapped through), plus spread/slippage, taker fee
        limit   -> at the limit price (or the open if it gapped through), maker fee
      Orders placed on a candle only become active from the next candle; when a candle reaches
-     both a stop and a take-profit, the stop is assumed to have filled first.
+     both a stop and a take-profit, the stop is assumed to have filled first. Within a candle all
+     sell orders (of every market) are handled before buy orders, so a switch from one coin to
+     another can be paid with the proceeds of the sale, as on a real exchange a moment later.
   2. lets the bot look at the candle (and all earlier ones) and place or cancel orders.
 Because only closed candles are used and they are processed strictly in order, nothing depends
 on when the cycle runs: a cycle delayed by an hour produces exactly the same trades.
@@ -153,8 +155,9 @@ class BotEngine:
                 meta["last_ts"] = ts.isoformat()
                 break
             ctx = BotContext(self, bot, ledger, candles, ts)
-            for iid, bar in bars.items():
-                self._fill_orders(bot, ledger, ctx, iid, bar, ts)
+            for side in ("sell", "buy"):              # sales first, so their cash can pay for buys
+                for iid, bar in bars.items():
+                    self._fill_orders(bot, ledger, ctx, iid, bar, ts, side)
             ledger.update_marks({iid: float(b["close"]) for iid, b in bars.items()})
             for iid in bars:
                 bot.on_candle(ctx, iid)
@@ -168,8 +171,10 @@ class BotEngine:
                                          "n_positions": len(ledger.positions)})
 
     # ------------------------------------------------------------------ fills
-    def _fill_orders(self, bot, ledger: Ledger, ctx: BotContext, iid: str, bar, ts: pd.Timestamp) -> None:
-        orders = [o for o in ledger.meta.get("orders", []) if o["inst"] == iid and pd.Timestamp(o["placed"]) < ts]
+    def _fill_orders(self, bot, ledger: Ledger, ctx: BotContext, iid: str, bar, ts: pd.Timestamp,
+                     side: str | None = None) -> None:
+        orders = [o for o in ledger.meta.get("orders", []) if o["inst"] == iid and pd.Timestamp(o["placed"]) < ts
+                  and (side is None or o["side"] == side)]
         rank = {"market": 0, "stop": 1, "limit": 2}
         for o in sorted(orders, key=lambda o: (rank[o["type"]], o["id"])):
             if o not in ledger.meta.get("orders", []):        # cancelled by an earlier fill's callback

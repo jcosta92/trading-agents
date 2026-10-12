@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 
 from . import ta
+from .data import TF
 
 
 class Bot:
@@ -348,7 +349,179 @@ class ORBBot(Bot):
             ctx.cancel("orb:", iid)
 
 
-CLASSES = {c.__name__: c for c in (GridBot, DCABot, BinHV45Bot, SupertrendBot, EmaMacdBot, ORBBot)}
+# ============================================================================================ volatility breakout
+class VolBreakoutBot(Bot):
+    """Larry Williams volatility breakout as run by the Korean Upbit bot community (pyupbit tutorials):
+    the trading day runs 00:00-24:00 UTC (09:00-09:00 KST, Upbit's daily candle). Buy when the price
+    breaks today's open + k x yesterday's range; sell everything at the next day's open."""
+    timeframe = "15m"
+
+    def warmup(self) -> int:
+        return 2 * 96 + 4
+
+    def on_candle(self, ctx, iid: str) -> None:
+        tf = TF[self.timeframe]
+        end = ctx.ts + tf
+        if not (end.hour == 0 and end.minute == 0):
+            return                                        # act only on the last candle of the UTC day
+        ctx.cancel("vb:", iid)                            # an unfilled breakout order expires with its day
+        if ctx.qty(iid) > 0:
+            ctx.place(iid, "sell", "market", qty=ctx.qty(iid), tag="vb:sell at the day's end (09:00 KST)")
+        h = ctx.hist(iid)
+        day = h[h.index >= end - pd.Timedelta(days=1)]
+        if len(day) < 0.9 * (pd.Timedelta(days=1) / tf):
+            return                                        # incomplete day of data: no signal
+        rng = float(day["high"].max() - day["low"].min())
+        next_open = float(day["close"].iloc[-1])          # 24h market: the next day opens at this close
+        target = next_open + float(self.p["k"]) * rng
+        n = len(self.instruments())
+        ctx.place(iid, "buy", "stop", eur=ctx.equity() / n * 0.99, price=target,
+                  tag=f"vb:buy breakout {end:%Y-%m-%d}")
+        ctx.state.setdefault("targets", {})[iid] = {"day": f"{end:%Y-%m-%d}", "open": round(next_open, 6),
+                                                    "range": round(rng, 6), "target": round(target, 6)}
+
+
+# ============================================================================================ time of day
+class TimeOfDayBot(Bot):
+    """Quantpedia's Bitcoin intraday seasonality: hold BTC only from 21:00 to 23:00 UTC every day."""
+    timeframe = "1h"
+
+    def warmup(self) -> int:
+        return 2
+
+    def on_candle(self, ctx, iid: str) -> None:
+        end_hour = (ctx.ts + TF[self.timeframe]).hour     # the next candle opens at this hour
+        if end_hour == int(self.p["entry_hour"]) and ctx.qty(iid) <= 0 and not ctx.orders("tod:"):
+            ctx.place(iid, "buy", "market", eur=ctx.cash_eur() * 0.995, tag="tod:buy at 21:00 UTC")
+        elif end_hour == int(self.p["exit_hour"]) and ctx.qty(iid) > 0:
+            ctx.place(iid, "sell", "market", qty=ctx.qty(iid), tag="tod:sell at 23:00 UTC")
+
+
+# ============================================================================================ rebalancing
+class RebalanceBot(Bot):
+    """Pionex / Shrimpy-style rebalancing bot: equal weights, rebalanced when a coin drifts past a band."""
+    timeframe = "15m"
+
+    def warmup(self) -> int:
+        return 2
+
+    def on_bar(self, ctx, bars: dict) -> None:
+        ins = self.instruments()
+        if ctx.orders("rb:") or any(i not in bars for i in ins):
+            return
+        px = {i: float(bars[i]["close"]) for i in ins}
+        eq = ctx.equity()
+        tgt = (1 - float(self.p["cash_buffer"])) / len(ins)
+        val = {i: ctx.qty(i) * px[i] for i in ins}
+        drift = max(abs(val[i] / eq - tgt) for i in ins)
+        first = not ctx.state.get("started")
+        if not first and drift <= float(self.p["band"]):
+            return
+        proceeds = 0.0
+        for i in ins:
+            over = val[i] - tgt * eq
+            if over > 5.0:
+                ctx.place(i, "sell", "market", qty=over / px[i], tag="rb:sell overweight")
+                proceeds += over
+        budget = (ctx.cash_eur() + proceeds * (1 - 0.004)) * 0.998
+        need = {i: tgt * eq - val[i] for i in ins if tgt * eq - val[i] > 5.0}
+        scale = min(1.0, budget / sum(need.values())) if need else 0.0
+        for i, eur in need.items():
+            ctx.place(i, "buy", "market", eur=eur * scale, tag="rb:buy underweight" if not first else "rb:initial buy")
+        ctx.state["started"] = True
+        ctx.state["rebalances"] = int(ctx.state.get("rebalances", 0)) + (0 if first else 1)
+        if not first:
+            ctx.note(f"rebalance: largest drift {drift:.1%} from the {tgt:.1%} target")
+
+
+# ============================================================================================ momentum rotation
+class MomentumRotationBot(Bot):
+    """Pionex 'Momentum Rebalancing': at each interval rank the coins by their return over that interval
+    and move all funds into the best one."""
+    timeframe = "1h"
+
+    def warmup(self) -> int:
+        return int(self.p["interval_hours"]) + 3
+
+    def on_bar(self, ctx, bars: dict) -> None:
+        hrs = int(self.p["interval_hours"])
+        end = ctx.ts + TF[self.timeframe]
+        on_schedule = (end.hour == 0) if hrs >= 24 else (end.hour % hrs == 0)
+        if not on_schedule:
+            return
+        if ctx.orders("mr:"):
+            return
+        perf = {}
+        for i in self.instruments():
+            h = ctx.hist(i)
+            if i in bars and len(h) > hrs:
+                perf[i] = float(h["close"].iloc[-1] / h["close"].iloc[-1 - hrs] - 1)
+        if len(perf) < len(self.instruments()) / 2:
+            return
+        best = max(perf, key=perf.get)
+        held = [i for i, p in ctx.ledger.positions.items() if p.qty > 0]
+        if held == [best]:
+            return
+        for i in held:
+            if i != best:
+                ctx.place(i, "sell", "market", qty=ctx.qty(i), tag="mr:rotate out")
+        ctx.place(best, "buy", "market", eur=ctx.equity() * 0.99, tag=f"mr:rotate into ({perf[best]:+.1%} in {hrs}h)")
+        ctx.state["holding"] = best
+        ctx.state["switches"] = int(ctx.state.get("switches", 0)) + 1
+        ctx.note(f"best coin over {hrs}h: {best} {perf[best]:+.2%}")
+
+
+# ============================================================================================ IBS on US ETFs
+class IBSBot(Bot):
+    """Internal Bar Strength mean reversion on US index ETFs: buy into a close near the day's low,
+    sell into a close near the day's high. Orders go in 5 minutes before the close."""
+    timeframe = "5m"
+
+    def __init__(self, bot_id, spec):
+        super().__init__(bot_id, spec)
+        self.sessions = None
+
+    def warmup(self) -> int:
+        return 0
+
+    def _session(self, ts: pd.Timestamp):
+        if self.sessions is None:
+            return None
+        day = ts.tz_convert("America/New_York").normalize().tz_localize(None)
+        return self.sessions.loc[day] if day in self.sessions.index else None
+
+    def on_bar(self, ctx, bars: dict) -> None:
+        sess = self._session(ctx.ts)
+        if sess is None:
+            return
+        tf = TF[self.timeframe]
+        day = sess["open"].strftime("%Y-%m-%d")
+        # decide on the candle that ends 5 minutes before the close; the order fills at the last candle's open
+        # (if that candle is missing from the data, the day is skipped rather than traded after the close)
+        if ctx.ts + 2 * tf != sess["close"] or ctx.state.get("done_day") == day:
+            return
+        ctx.state["done_day"] = day
+        n = len(self.instruments())
+        ibs_all = {}
+        for iid in self.instruments():
+            h = ctx.hist(iid)
+            d = h[h.index >= sess["open"]]
+            if d.empty:
+                continue
+            hi, lo, c = float(d["high"].max()), float(d["low"].min()), float(d["close"].iloc[-1])
+            if hi <= lo:
+                continue
+            ibs = (c - lo) / (hi - lo)
+            ibs_all[iid] = round(ibs, 3)
+            if ctx.qty(iid) > 0 and ibs >= float(self.p["exit"]):
+                ctx.place(iid, "sell", "market", qty=ctx.qty(iid), tag=f"ibs:sell (IBS {ibs:.2f})")
+            elif ctx.qty(iid) <= 0 and ibs < float(self.p["entry"]) and not ctx.orders("ibs:", iid):
+                ctx.place(iid, "buy", "market", eur=ctx.equity() / n * 0.99, tag=f"ibs:buy (IBS {ibs:.2f})")
+        ctx.state["last_ibs"] = {"day": day, **ibs_all}
+
+
+CLASSES = {c.__name__: c for c in (GridBot, DCABot, BinHV45Bot, SupertrendBot, EmaMacdBot, ORBBot,
+                                   VolBreakoutBot, TimeOfDayBot, RebalanceBot, MomentumRotationBot, IBSBot)}
 
 
 def build_bot(bot_id: str, spec: dict) -> Bot:

@@ -90,6 +90,7 @@ def cfg(tmp_path):
     uni = tmp_path / "llm" / "universe.json"
     uni.parent.mkdir(parents=True)
     uni.write_text(json.dumps({"tickers": ["AAA", "BBB", "CCC"]}))
+    c["bots"]["ibs_etf"]["params"]["instruments"] = ["AAA", "BBB", "CCC"]
     return c
 
 
@@ -271,3 +272,97 @@ def test_grid_never_has_two_orders_on_one_level(tmp_path, cfg):
         tags = [o["tag"] for o in s["bots"]["grid_btc"]["open_orders"] if o["tag"].count(":") == 2]
         levels = [int(x.split(":")[2]) for x in tags]
         assert len(levels) == len(set(levels)), tags
+
+
+# ------------------------------------------------------------------------------ alternative bots
+def _run_alt(tmp_path, cfg, bots, now="2026-09-15T12:00:00Z"):
+    state = tmp_path / "alt"
+    s = run_cycle(state, now=pd.Timestamp(now), source=FakeSource(), cfg=cfg, only=bots)
+    assert not s["errors"], s["errors"]
+    f = _fills(state)
+    f["ts"] = pd.to_datetime(f["ts"], utc=True)
+    return s, f
+
+
+def test_vol_breakout_buys_on_the_break_and_sells_at_the_day_end(tmp_path, cfg):
+    s, f = _run_alt(tmp_path, cfg, ["vol_breakout"])
+    f = f[f.bot == "vol_breakout"]
+    buys, sells = f[f.side == "buy"], f[f.side == "sell"]
+    assert len(buys) > 0 and len(sells) > 0
+    # every sale happens on the first candle of a UTC day, every buy is a breakout stop (taker)
+    assert ((sells.ts.dt.hour == 0) & (sells.ts.dt.minute == 0)).all()
+    assert (buys.liquidity == "taker").all() and buys.tag.str.startswith("vb:buy breakout").all()
+    # a buy never fills below that day's target
+    src = FakeSource()
+    for _, b in buys.iterrows():
+        sym = {"BTC_SPOT": "BTC/EUR", "ETH_SPOT": "ETH/EUR", "XRP_SPOT": "XRP/EUR"}[b.inst]
+        df = src._series(sym, "15m")
+        day0 = b.ts.normalize()
+        prev = df[(df.index >= day0 - pd.Timedelta(days=1)) & (df.index < day0)]
+        target = prev.close.iloc[-1] + 0.5 * (prev.high.max() - prev.low.min())
+        assert b.price >= target * 0.9999
+
+
+def test_btc_night_holds_only_from_21_to_23_utc(tmp_path, cfg):
+    s, f = _run_alt(tmp_path, cfg, ["btc_night"])
+    f = f[f.bot == "btc_night"]
+    assert set(f[f.side == "buy"].ts.dt.hour) == {21}
+    assert set(f[f.side == "sell"].ts.dt.hour) == {23}
+    assert len(f[f.side == "buy"]) >= 13               # one round trip a day
+
+
+def test_rebalance_keeps_weights_inside_the_band(tmp_path, cfg):
+    s, f = _run_alt(tmp_path, cfg, ["rebalance"])
+    st = s["bots"]["rebalance"]
+    assert st["state"]["rebalances"] > 0
+    eq = st["equity_eur"]
+    w = {i: p["qty"] * p["mark"] / eq for i, p in st["positions"].items()}
+    assert len(w) == 4
+    # weights may drift between checks, but stay near the 24.75% target
+    assert all(abs(x - 0.2475) < 0.06 for x in w.values()), w
+
+
+def test_momentum_rotation_holds_one_coin_and_switches_at_midnight(tmp_path, cfg):
+    s, f = _run_alt(tmp_path, cfg, ["momentum_rotation"])
+    f = f[f.bot == "momentum_rotation"]
+    assert len(f[f.side == "buy"]) > 3
+    assert (f.ts.dt.hour == 0).all()
+    assert len(s["bots"]["momentum_rotation"]["positions"]) <= 1
+    # each switch: the sale is paid out before the buy in the same candle, so the buy is not cut short
+    for ts, g in f.groupby("ts"):
+        if (g.side == "sell").any() and (g.side == "buy").any():
+            assert g[g.side == "buy"].value_eur.sum() > 0.95 * g[g.side == "sell"].value_eur.sum()
+
+
+def test_ibs_trades_only_five_minutes_before_the_close(tmp_path, cfg):
+    s, f = _run_alt(tmp_path, cfg, ["ibs_etf"])
+    f = f[f.bot == "ibs_etf"]
+    assert len(f) > 0
+    ny = f.ts.dt.tz_convert("America/New_York")
+    assert ((ny.dt.hour == 15) & (ny.dt.minute == 55)).all()
+    assert f[f.side == "buy"].tag.str.contains("IBS 0.[01]").all()
+    assert f[f.side == "sell"].tag.str.contains(r"IBS (?:0\.[89]|1\.0)").all()
+
+
+def test_sells_fill_before_buys_in_the_same_candle():
+    inst = load_instruments()
+    mk = {i: Market(inst[i], 0.0, 0.0, 0.0015, 0.0025) for i in ("BTC_SPOT", "ETH_SPOT")}
+    eng = BotEngine(mk, CostModel(load_venues(), 1.0), FxRates(1.16))
+
+    class Switch(Bot):
+        timeframe = "1h"
+
+        def on_bar(self, ctx, bars):
+            if ctx.ts == T[0]:
+                ctx.place("BTC_SPOT", "buy", "market", eur=990, tag="x")
+            if ctx.ts == T[1]:
+                ctx.place("ETH_SPOT", "buy", "market", eur=980, tag="x")     # listed first, needs the BTC cash
+                ctx.place("BTC_SPOT", "sell", "market", qty=ctx.qty("BTC_SPOT"), tag="x")
+
+    T = pd.date_range("2026-09-01", periods=4, freq="1h", tz="UTC")
+    c = {i: pd.DataFrame({"open": p, "high": p, "low": p, "close": p, "volume": 1.0}, index=T)
+         for i, p in (("ETH_SPOT", 2500.0), ("BTC_SPOT", 60000.0))}
+    led = Ledger("t", 1000.0, ts=T[0].isoformat())
+    eng.run(Switch("t", {}), led, c, T[0], T[-1] + pd.Timedelta(hours=1))
+    assert led.qty("BTC_SPOT") == 0
+    assert led.qty("ETH_SPOT") * 2500 > 970

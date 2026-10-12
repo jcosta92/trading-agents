@@ -30,9 +30,13 @@ markets:
 crypto_fees: {maker: 0.0015, taker: 0.0025}     # Bitvavo, checked 2026-10-10
 stock_costs: {half_spread_bps: 3, slippage_bps: 2}
 
+# Two groups: "popular" = the strategies bot platforms and trading communities rank highest;
+# "alternative" = less common strategies with published, rule-based definitions (added 12 Oct 2026,
+# before the test started; rules taken from the sources as published, no tuning on data).
 bots:
 
   grid_btc:
+    group: popular
     name: "Grid bot on BTC/EUR (Pionex / Binance / Bybit spot grid)"
     class: GridBot
     timeframe: 15m
@@ -50,6 +54,7 @@ bots:
     params: {instrument: BTC_SPOT, levels: 16, range_pct: 0.08, reset_hours: 24, invest: 0.98}
 
   dca_eth:
+    group: popular
     name: "DCA bot with safety orders on ETH/EUR (3Commas-style)"
     class: DCABot
     timeframe: 15m
@@ -68,6 +73,7 @@ bots:
              step_scale: 1.2, volume_scale: 1.5, take_profit: 0.015}
 
   bb_meanrev:
+    group: popular
     name: "BinHV45 Bollinger mean reversion on 8 coins (Freqtrade community strategy)"
     class: BinHV45Bot
     timeframe: 15m
@@ -88,6 +94,7 @@ bots:
              roi: 0.0125, stoploss: 0.05}
 
   supertrend:
+    group: popular
     name: "Supertrend (10, 3) trend following on BTC/ETH/SOL, 1-hour"
     class: SupertrendBot
     timeframe: 1h
@@ -102,6 +109,7 @@ bots:
     params: {instruments: [BTC_SPOT, ETH_SPOT, SOL_SPOT], atr_period: 10, multiplier: 3.0}
 
   ema_macd:
+    group: popular
     name: "EMA 9/21 crossover + MACD confirmation, EMA200 filter, ATR stop (1-hour)"
     class: EmaMacdBot
     timeframe: 1h
@@ -118,6 +126,7 @@ bots:
              atr_period: 14, stop_atr: 2.0}
 
   orb_stocks:
+    group: popular
     name: "Opening Range Breakout on US 'stocks in play' (Zarattini, Barbon & Aziz 2024), IBKR"
     class: ORBBot
     timeframe: 5m
@@ -135,3 +144,86 @@ bots:
       SELL   everything at the close of the session (no overnight positions)
       SIZE   one fifth of equity per name
     params: {n_names: 5, rel_volume_days: 14, atr_days: 14, stop_atr_frac: 0.10, min_price: 5.0}
+
+  # ------------------------------------------------------------------------------ alternative strategies
+
+  vol_breakout:
+    group: alternative
+    name: "Volatility breakout on BTC/ETH/XRP (Larry Williams, as run by Korean Upbit bots)"
+    class: VolBreakoutBot
+    timeframe: 15m
+    source: >
+      Larry Williams' volatility breakout is the standard first bot of the Korean crypto community
+      (Upbit, pyupbit tutorials; wikidocs.net "파이썬을 이용한 비트코인 자동매매", target =
+      today's open + (yesterday's high - yesterday's low) x 0.5). Rarely seen in Western bot lists.
+    rules: |
+      DAY    00:00-24:00 UTC (= 09:00-09:00 Korea time, Upbit's daily candle)
+      BUY    stop order at today's open + 0.5 x yesterday's range (high - low); fills when the price
+             breaks above it during the day
+      SELL   everything at the next day's open (00:00 UTC); an unfilled buy order expires
+      SIZE   one third of equity per coin, long only
+    params: {instruments: [BTC_SPOT, ETH_SPOT, XRP_SPOT], k: 0.5}
+
+  btc_night:
+    group: alternative
+    name: "Bitcoin time-of-day seasonality: hold 21:00-23:00 UTC only (Quantpedia)"
+    class: TimeOfDayBot
+    timeframe: 1h
+    source: >
+      Quantpedia, "Are There Seasonal Intraday or Overnight Anomalies in Bitcoin?" (2022) and
+      "The Seasonality of Bitcoin" (2023 update): the highest average hourly returns fall at 22:00
+      and 23:00 UTC; the rule "buy at 21:00, sell at 23:00 UTC" earned ~33-41% a year in 2015-2023
+      before costs. The published tests ignore fees, which this test charges on ~60 trades.
+    rules: |
+      BUY    all cash into BTC at 21:00 UTC (market order)
+      SELL   everything at 23:00 UTC (market order)
+      Otherwise flat: in cash 22 hours a day
+    params: {instrument: BTC_SPOT, entry_hour: 21, exit_hour: 23}
+
+  rebalance:
+    group: alternative
+    name: "Rebalancing bot, equal-weight BTC/ETH/SOL/XRP (Pionex / Shrimpy style)"
+    class: RebalanceBot
+    timeframe: 15m
+    source: >
+      Rebalancing bots (Pionex "Rebalancing Bot", KuCoin "Smart Rebalance", Shrimpy) keep fixed
+      target weights and sell what has risen to buy what has fallen. Pionex rebalances when a coin's
+      weight drifts past a threshold; the 2.5% band is the example from Shrimpy's guide.
+    rules: |
+      SETUP  25% in each of BTC, ETH, SOL, XRP (1% kept in cash for fees)
+      REBAL  when any coin's weight is more than 2.5 percentage points away from its target, sell
+             the overweight coins and buy the underweight ones back to the targets (market orders)
+    params: {instruments: [BTC_SPOT, ETH_SPOT, SOL_SPOT, XRP_SPOT], band: 0.025, cash_buffer: 0.01}
+
+  momentum_rotation:
+    group: alternative
+    name: "Momentum rotation: all-in on the best coin of the last 24h (Pionex Momentum Rebalancing)"
+    class: MomentumRotationBot
+    timeframe: 1h
+    source: >
+      Pionex's "Momentum Rebalancing" mode: at each interval the bot ranks the coins by performance and
+      moves all funds into the top one. Pionex's example uses 4 hours; at 4 hours the fees of up to six
+      switches a day would dominate, so this test uses the daily interval.
+    rules: |
+      EVERY  day at 00:00 UTC, rank BTC, ETH, SOL, XRP, DOGE, ADA, LINK, AVAX by their 24-hour return
+      SWITCH if the best coin is not the one held: sell it and buy the best one (market orders)
+    params: {instruments: [BTC_SPOT, ETH_SPOT, SOL_SPOT, XRP_SPOT, DOGE_SPOT, ADA_SPOT, LINK_SPOT, AVAX_SPOT],
+             interval_hours: 24}
+
+  ibs_etf:
+    group: alternative
+    name: "Internal Bar Strength mean reversion on SPY/QQQ/IWM/DIA (US index ETFs), IBKR"
+    class: IBSBot
+    timeframe: 5m
+    source: >
+      IBS = (close - low) / (high - low) of the day. Buying index ETFs that close near the day's low
+      and selling when they close near the high is a documented short-term edge (quantifiedstrategies.com
+      IBS articles; TradingView "Internal Bar Strength (IBS) Strategy", default thresholds 0.2 / 0.8).
+      Note: EU retail accounts cannot buy US-domiciled ETFs (PRIIPs rules); the same trades would be
+      done with UCITS index ETFs or index options. The simulation uses the US ETFs' prices and IBKR fees.
+    rules: |
+      WHEN   5 minutes before the US close, using the day's high, low and price so far
+      BUY    IBS below 0.2 (market order at 15:55 New York time)
+      SELL   IBS at or above 0.8 (market order at 15:55 New York time)
+      SIZE   one quarter of equity per ETF, long only; positions are held overnight
+    params: {instruments: [SPY, QQQ, IWM, DIA], entry: 0.2, exit: 0.8}
