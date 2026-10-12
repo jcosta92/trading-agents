@@ -300,7 +300,9 @@ def save_ledger(path: Path, led: Ledger) -> None:
     if not ok:
         raise RuntimeError(f"{led.agent_id}: refusing to save an inconsistent ledger: {msg}")
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(led.to_dict(), indent=0, default=str))
+    tmp = path.with_suffix(".json.tmp")               # atomic: a cycle killed mid-write leaves the old file
+    tmp.write_text(json.dumps(led.to_dict(), indent=0, default=str))
+    tmp.replace(path)
 
 
 def append_csv(path: Path, rows: list[dict]) -> None:

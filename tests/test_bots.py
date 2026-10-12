@@ -422,3 +422,12 @@ def test_leverage_rotation_follows_the_moving_average(tmp_path, cfg):
     assert ("CCC" in pos) == sig["above"]
     f = f[f.bot == "leverage_rotation"]
     assert set(f.inst) <= {"CCC"}
+
+
+def test_single_ticker_yfinance_frames_are_read():
+    from quantdesk.bots.data import _ticker_frame
+    fields = ["Open", "High", "Low", "Close", "Volume"]
+    multi = pd.DataFrame([[1, 2, 0.5, 1.5, 10]], columns=pd.MultiIndex.from_product([["SPY"], fields]))
+    flat = pd.DataFrame([[1, 2, 0.5, 1.5, 10]], columns=fields)
+    for raw in (multi, flat):
+        assert float(_ticker_frame(raw, "SPY").rename(columns=str.lower)["close"].iloc[0]) == 1.5

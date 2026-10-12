@@ -30,6 +30,14 @@ def closed_only(df: pd.DataFrame, timeframe: str, now: pd.Timestamp) -> pd.DataF
     return df[df.index + TF[timeframe] <= now]
 
 
+def _ticker_frame(raw: pd.DataFrame, ticker: str) -> pd.DataFrame:
+    """One ticker's columns from a yfinance download. With group_by="ticker" yfinance returns
+    (ticker, field) columns even for a single ticker; older versions return plain fields."""
+    if isinstance(raw.columns, pd.MultiIndex):
+        return raw[ticker]
+    return raw
+
+
 class CandleSource:
     """Network candle source. `crypto()` / `stocks()` return closed candles from `since` to `now`."""
 
@@ -85,7 +93,7 @@ class CandleSource:
         out = {}
         for t in tickers:
             try:
-                sub = raw[t] if len(tickers) > 1 else raw
+                sub = _ticker_frame(raw, t)
                 df = sub.rename(columns=str.lower)[["open", "high", "low", "close", "volume"]].dropna()
             except (KeyError, TypeError):
                 continue
@@ -102,7 +110,7 @@ class CandleSource:
         out = {}
         for t in tickers:
             try:
-                sub = raw[t] if len(tickers) > 1 else raw
+                sub = _ticker_frame(raw, t)
                 df = sub.rename(columns=str.lower)[["open", "high", "low", "close", "volume"]].dropna()
             except (KeyError, TypeError):
                 continue
