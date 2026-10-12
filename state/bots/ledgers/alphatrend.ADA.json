@@ -1,0 +1,85 @@
+{
+"agent_id": "alphatrend.ADA",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4613.818210252908
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-21T20:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": 24339.289100010777,
+"price": 0.20337488,
+"mid": 0.20305,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 7.907348242811492,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-23T00:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": -24339.289100010777,
+"price": 0.188487936,
+"mid": 0.18879,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.469155915420822
+},
+"fees_eur": 11.469155915420822,
+"spread_cost_eur": 7.352023022706106,
+"value_eur": 4587.662366168329,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 23.84415591542082,
+"spread_slippage": 15.259371265517597
+},
+"realized": [
+{
+"ts": "2026-10-23T00:00:00+00:00",
+"inst": "ADA_SPOT",
+"qty": 24339.289100010777,
+"pnl": -362.33763383167116,
+"ccy": "EUR",
+"pnl_eur": -362.33763383167116
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-24T16:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"ADA_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

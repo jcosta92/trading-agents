@@ -1,0 +1,85 @@
+{
+"agent_id": "keltner_tv.ETH",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4910.839272868414
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-21T15:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 2.2204682530047672,
+"price": 2229.2595236619995,
+"mid": 2227.9227699999997,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 2.9682190685585645,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-22T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -2.2204682530047672,
+"price": 2200.1791,
+"mid": 2201.5,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.213569606186502
+},
+"fees_eur": 12.213569606186502,
+"spread_cost_eur": 2.933016515394364,
+"value_eur": 4885.427842474601,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.588569606186503,
+"spread_slippage": 5.9012355839529285
+},
+"realized": [
+{
+"ts": "2026-10-22T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 2.2204682530047672,
+"pnl": -64.57215752539898,
+"ccy": "EUR",
+"pnl_eur": -64.57215752539898
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-24T22:00:00+00:00",
+"order_seq": 3,
+"open_buy_fees": {
+"ETH_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

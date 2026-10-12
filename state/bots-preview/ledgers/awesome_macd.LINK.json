@@ -1,0 +1,181 @@
+{
+"agent_id": "awesome_macd.LINK",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1038.6956794361263
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-20T19:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 91.33333921802954,
+"price": 10.839415360000002,
+"mid": 10.8221,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.4749999999999996
+},
+"fees_eur": 2.4749999999999996,
+"spread_cost_eur": 1.5814696485624218,
+"value_eur": 989.9999999999999,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-25T08:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -91.33333921802954,
+"price": 11.968408046469705,
+"mid": 11.968408046469705,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.6396720080120175
+},
+"fees_eur": 1.6396720080120175,
+"spread_cost_eur": 0.0,
+"value_eur": 1093.1146720080117,
+"eur_rate": 1.0,
+"reason": "sbx:take profit",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-09-28T14:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 83.94747755826782,
+"price": 12.960603840000001,
+"mid": 12.9399,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.7200249999999992
+},
+"fees_eur": 2.7200249999999992,
+"spread_cost_eur": 1.7380351437700725,
+"value_eur": 1088.0099999999998,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-01T11:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -83.94747755826782,
+"price": 12.66929664,
+"mid": 12.6896,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.658888738413595
+},
+"fees_eur": 2.658888738413595,
+"spread_cost_eur": 1.7044158579574133,
+"value_eur": 1063.555495365438,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 4
+},
+{
+"type": "trade",
+"ts": "2026-10-11T16:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 88.67944358957898,
+"price": 11.935967040000001,
+"mid": 11.9169,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.646187289526885
+},
+"fees_eur": 2.646187289526885,
+"spread_cost_eur": 1.6908544981003575,
+"value_eur": 1058.474915810754,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-10-12T16:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -88.67944358957898,
+"price": 11.651328,
+"mid": 11.67,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.5830832102992054
+},
+"fees_eur": 2.5830832102992054,
+"spread_cost_eur": 1.65582257070466,
+"value_eur": 1033.2332841196821,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 6
+}
+],
+"costs": {
+"commissions": 14.722856246251702,
+"spread_slippage": 8.370597719094924
+},
+"realized": [
+{
+"ts": "2026-09-25T08:00:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 91.33333921802954,
+"pnl": 103.11467200801181,
+"ccy": "EUR",
+"pnl_eur": 103.11467200801181
+},
+{
+"ts": "2026-10-01T11:00:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 83.94747755826782,
+"pnl": -24.454504634561864,
+"ccy": "EUR",
+"pnl_eur": -24.454504634561864
+},
+{
+"ts": "2026-10-12T16:00:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 88.67944358957898,
+"pnl": -25.24163169107208,
+"ccy": "EUR",
+"pnl_eur": -25.24163169107208
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T16:00:00+00:00",
+"order_seq": 405,
+"open_buy_fees": {
+"LINK_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

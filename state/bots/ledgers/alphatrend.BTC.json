@@ -1,0 +1,85 @@
+{
+"agent_id": "alphatrend.BTC",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4882.089172946226
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-19T08:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": 0.06698791227482243,
+"price": 73893.9285,
+"mid": 73857.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 2.4737631184404134,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-23T20:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": -0.06698791227482243,
+"price": 72499.732,
+"mid": 72536.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.141514217910341
+},
+"fees_eur": 12.141514217910341,
+"spread_cost_eur": 2.429517602383018,
+"value_eur": 4856.605687164137,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.51651421791034,
+"spread_slippage": 4.903280720823432
+},
+"realized": [
+{
+"ts": "2026-10-23T20:00:00+00:00",
+"inst": "BTC_SPOT",
+"qty": 0.06698791227482243,
+"pnl": -93.39431283586386,
+"ccy": "EUR",
+"pnl_eur": -93.39431283586386
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-24T16:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"BTC_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

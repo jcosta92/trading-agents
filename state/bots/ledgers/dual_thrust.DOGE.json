@@ -1,0 +1,155 @@
+{
+"agent_id": "dual_thrust.DOGE",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4388.98649570158
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-13T08:00:00+00:00",
+"inst": "DOGE_SPOT",
+"kind": "crypto_spot",
+"qty": 64987.345349023475,
+"price": 0.07616867520000001,
+"mid": 0.076047,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 7.907348242811781,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-15T02:30:00+00:00",
+"inst": "DOGE_SPOT",
+"kind": "crypto_spot",
+"qty": -64987.345349023475,
+"price": 0.0701745408,
+"mid": 0.070287,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.401142794196847
+},
+"fees_eur": 11.401142794196847,
+"spread_cost_eur": 7.30842486807477,
+"value_eur": 4560.4571176787385,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-20T22:30:00+00:00",
+"inst": "DOGE_SPOT",
+"kind": "crypto_spot",
+"qty": 62039.828510246705,
+"price": 0.07319192000000001,
+"mid": 0.073075,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.352035412839241
+},
+"fees_eur": 11.352035412839241,
+"spread_cost_eur": 7.253696749418446,
+"value_eur": 4540.814165135696,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-22T08:30:00+00:00",
+"inst": "DOGE_SPOT",
+"kind": "crypto_spot",
+"qty": -62039.828510246705,
+"price": 0.0703642368,
+"mid": 0.070477,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 10.913462960815975
+},
+"fees_eur": 10.913462960815975,
+"spread_cost_eur": 6.995809590266931,
+"value_eur": 4365.38518432639,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 4
+}
+],
+"costs": {
+"commissions": 46.04164116785206,
+"spread_slippage": 29.465279450571927
+},
+"realized": [
+{
+"ts": "2026-10-15T02:30:00+00:00",
+"inst": "DOGE_SPOT",
+"qty": 64987.345349023475,
+"pnl": -389.54288232126186,
+"ccy": "EUR",
+"pnl_eur": -389.54288232126186
+},
+{
+"ts": "2026-10-22T08:30:00+00:00",
+"inst": "DOGE_SPOT",
+"qty": 62039.828510246705,
+"pnl": -175.4289808093065,
+"ccy": "EUR",
+"pnl_eur": -175.4289808093065
+}
+],
+"meta": {
+"state": {
+"pos": {
+"DOGE_SPOT": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+}
+}
+}
+},
+"orders": [
+{
+"id": 851,
+"inst": "DOGE_SPOT",
+"side": "buy",
+"type": "stop",
+"price": 0.07241249999999999,
+"qty": null,
+"eur": 4345.096630744564,
+"tag": "sbe:buy stop",
+"placed": "2026-10-24T22:45:00+00:00"
+}
+],
+"order_seq": 851,
+"last_ts": "2026-10-24T22:45:00+00:00",
+"open_buy_fees": {
+"DOGE_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

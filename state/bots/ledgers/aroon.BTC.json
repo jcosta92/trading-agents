@@ -1,0 +1,85 @@
+{
+"agent_id": "aroon.BTC",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4926.228565885455
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-19T04:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": 0.06740682630155535,
+"price": 73434.699,
+"mid": 73398.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 2.4737631184403246,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-23T08:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": -0.06740682630155535,
+"price": 72705.629,
+"mid": 72742.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.252139262870815
+},
+"fees_eur": 12.252139262870815,
+"spread_cost_eur": 2.451653679413815,
+"value_eur": 4900.855705148326,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.627139262870813,
+"spread_slippage": 4.925416797854139
+},
+"realized": [
+{
+"ts": "2026-10-23T08:00:00+00:00",
+"inst": "BTC_SPOT",
+"qty": 0.06740682630155535,
+"pnl": -49.14429485167445,
+"ccy": "EUR",
+"pnl_eur": -49.14429485167445
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-24T16:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"BTC_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

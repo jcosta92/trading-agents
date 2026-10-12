@@ -1,0 +1,86 @@
+{
+"agent_id": "paa",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 73.03311582889273,
+"USD": 3.738120923912902e-13
+},
+"positions": {
+"IEF": {
+"inst_id": "IEF",
+"qty": 61.656097004813766,
+"avg_price": 89.46971555328369,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 91.05000305175781
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4926.966884171107,
+"amount_to": 5516.9009456250615,
+"rate": 1.1200717687606812,
+"fee_rate": 0.0003,
+"fee_eur": 1.4780900652503988,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "IEF",
+"kind": "stock",
+"qty": 61.656097004813766,
+"price": 89.46971555328369,
+"mid": 89.42500305175781,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5474844787064185
+},
+"fees_eur": 0.4887941058564401,
+"spread_cost_eur": 2.461269365317354,
+"value_eur": 4925.0,
+"eur_rate": 1.1200717687606812,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+}
+],
+"costs": {
+"fx": 1.4780900652503988,
+"commissions": 0.4887941058564401,
+"spread_slippage": 2.461269365317354
+},
+"realized": [],
+"meta": {
+"state": {
+"done_day": "2026-10-23",
+"last_target": {
+"IEF": 0.985
+},
+"started": true
+},
+"last_ts": "2026-10-23T19:55:00+00:00",
+"order_seq": 1,
+"orders": [],
+"open_buy_fees": {
+"IEF": 0.5474844787064185
+}
+},
+"halted": false,
+"halt_reason": null
+}

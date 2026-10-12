@@ -1,0 +1,85 @@
+{
+"agent_id": "ichimoku_tk.LINK",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1061.248740982248
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-25T08:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 83.41999800412178,
+"price": 11.86765792,
+"mid": 11.8487,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.5814696485623063,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-30T04:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -83.41999800412178,
+"price": 12.6632064,
+"mid": 12.6835,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.640911631534456
+},
+"fees_eur": 2.640911631534456,
+"spread_cost_eur": 1.6928920714964848,
+"value_eur": 1056.3646526137823,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 5.1159116315344555,
+"spread_slippage": 3.274361720058791
+},
+"realized": [
+{
+"ts": "2026-09-30T04:00:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 83.41999800412178,
+"pnl": 66.36465261378218,
+"ccy": "EUR",
+"pnl_eur": 66.36465261378218
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"LINK_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

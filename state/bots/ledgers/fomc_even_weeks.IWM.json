@@ -1,0 +1,130 @@
+{
+"agent_id": "fomc_even_weeks.IWM",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 73.15273714297746,
+"USD": 5388.4802539658685
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4926.8472628570225,
+"amount_to": 5516.76700136355,
+"rate": 1.1200717687606812,
+"fee_rate": 0.0003,
+"fee_eur": 1.478054178856837,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "IWM",
+"kind": "stock",
+"qty": 19.837720010962567,
+"price": 278.073965057373,
+"mid": 277.93499755859375,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4135402171951131
+},
+"fees_eur": 0.36920867816593606,
+"spread_cost_eur": 2.461269365316794,
+"value_eur": 4925.0,
+"eur_rate": 1.1200717687606812,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-13T19:55:00+00:00",
+"inst": "IWM",
+"kind": "stock",
+"qty": -2.132087323049428,
+"price": 276.80153244018555,
+"mid": 276.94000244140625,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3689864754850446
+},
+"fees_eur": 0.3294311005564534,
+"spread_cost_eur": 0.2635814440283115,
+"value_eur": 526.8993066126208,
+"eur_rate": 1.1200717687606812,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-19T19:55:00+00:00",
+"inst": "IWM",
+"kind": "stock",
+"qty": -17.705632687913138,
+"price": 271.05440744018557,
+"mid": 271.19000244140625,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5055744508968488
+},
+"fees_eur": 0.4508713006631153,
+"spread_cost_eur": 2.141029261413764,
+"value_eur": 4279.917493566876,
+"eur_rate": 1.1213276386260986,
+"reason": "wb:sell (rebalance)",
+"seq": 4
+}
+],
+"costs": {
+"fx": 1.478054178856837,
+"commissions": 1.1495110793855048,
+"spread_slippage": 4.86588007075887
+},
+"realized": [
+{
+"ts": "2026-10-13T19:55:00+00:00",
+"inst": "IWM",
+"qty": 2.132087323049428,
+"pnl": -2.712937452539994,
+"ccy": "USD",
+"pnl_eur": -2.4221103756072355
+},
+{
+"ts": "2026-10-19T19:55:00+00:00",
+"inst": "IWM",
+"qty": 17.705632687913138,
+"pnl": -124.28570880156369,
+"ccy": "USD",
+"pnl_eur": -110.83799642524122
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-23",
+"last_target": {},
+"started": true
+},
+"last_ts": "2026-10-23T19:55:00+00:00",
+"order_seq": 3,
+"orders": [],
+"open_buy_fees": {
+"IWM": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

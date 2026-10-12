@@ -1,0 +1,85 @@
+{
+"agent_id": "obelisk_ichimoku_slow.XRP",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4835.575506538279
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-21T19:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 4003.2178754887154,
+"price": 1.2365052699999999,
+"mid": 1.23527,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 4.945054945054099,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-22T02:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": -4003.2178754887154,
+"price": 1.2015272700000001,
+"mid": 1.20273,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.024938612877893
+},
+"fees_eur": 12.024938612877893,
+"spread_cost_eur": 4.814790235386261,
+"value_eur": 4809.975445151157,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.399938612877893,
+"spread_slippage": 9.75984518044036
+},
+"realized": [
+{
+"ts": "2026-10-22T02:00:00+00:00",
+"inst": "XRP_SPOT",
+"qty": 4003.2178754887154,
+"pnl": -140.02455484884322,
+"ccy": "EUR",
+"pnl_eur": -140.02455484884322
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-24T22:00:00+00:00",
+"order_seq": 8,
+"open_buy_fees": {
+"XRP_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

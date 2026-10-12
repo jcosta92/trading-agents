@@ -1,0 +1,85 @@
+{
+"agent_id": "cluchanix.ADA",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 5079.791218848526
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-15T02:30:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": 25380.508688153182,
+"price": 0.19503155200000002,
+"mid": 0.19472,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 7.90734824281202,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-15T04:35:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": -25380.508688153182,
+"price": 0.19916083199999998,
+"mid": 0.19948,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.637008067289539
+},
+"fees_eur": 12.637008067289539,
+"spread_cost_eur": 8.100646196980692,
+"value_eur": 5054.803226915816,
+"eur_rate": 1.0,
+"reason": "sbx:stop",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 25.01200806728954,
+"spread_slippage": 16.00799443979271
+},
+"realized": [
+{
+"ts": "2026-10-15T04:35:00+00:00",
+"inst": "ADA_SPOT",
+"qty": 25380.508688153182,
+"pnl": 104.8032269158161,
+"ccy": "EUR",
+"pnl_eur": 104.8032269158161
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-24T22:55:00+00:00",
+"order_seq": 26,
+"open_buy_fees": {
+"ADA_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

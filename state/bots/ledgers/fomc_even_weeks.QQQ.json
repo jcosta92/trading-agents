@@ -1,0 +1,130 @@
+{
+"agent_id": "fomc_even_weeks.QQQ",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 73.18833958549476,
+"USD": 5329.161643123349
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4926.811660414505,
+"amount_to": 5516.727136035975,
+"rate": 1.1200717687606812,
+"fee_rate": 0.0003,
+"fee_eur": 1.4780434981239523,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "QQQ",
+"kind": "stock",
+"qty": 7.391473499865778,
+"price": 746.3130945739746,
+"mid": 745.9401245117188,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.37367488962007006
+},
+"fees_eur": 0.33361691638164204,
+"spread_cost_eur": 2.4612693653171553,
+"value_eur": 4925.0,
+"eur_rate": 1.1200717687606812,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-13T19:55:00+00:00",
+"inst": "QQQ",
+"kind": "stock",
+"qty": -0.7943613914920921,
+"price": 742.8583654785157,
+"mid": 743.22998046875,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.36470035843754006
+},
+"fees_eur": 0.32560445554401196,
+"spread_cost_eur": 0.26355150533655475,
+"value_eur": 526.8394591678504,
+"eur_rate": 1.1200717687606812,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-19T19:55:00+00:00",
+"inst": "QQQ",
+"kind": "stock",
+"qty": -6.597112108373685,
+"price": 718.4806068420411,
+"mid": 718.8400268554688,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4687724305703245
+},
+"fees_eur": 0.41805125854624053,
+"spread_cost_eur": 2.1145774356197173,
+"value_eur": 4227.040293804618,
+"eur_rate": 1.1213276386260986,
+"reason": "wb:sell (rebalance)",
+"seq": 4
+}
+],
+"costs": {
+"fx": 1.4780434981239523,
+"commissions": 1.0772726304718945,
+"spread_slippage": 4.839398306273427
+},
+"realized": [
+{
+"ts": "2026-10-13T19:55:00+00:00",
+"inst": "QQQ",
+"qty": 0.7943613914920921,
+"pnl": -2.74430341149695,
+"ccy": "USD",
+"pnl_eur": -2.4501139016595537
+},
+{
+"ts": "2026-10-19T19:55:00+00:00",
+"inst": "QQQ",
+"qty": 6.597112108373685,
+"pnl": -183.61404182250052,
+"ccy": "USD",
+"pnl_eur": -163.74700444151432
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-23",
+"last_target": {},
+"started": true
+},
+"last_ts": "2026-10-23T19:55:00+00:00",
+"order_seq": 3,
+"orders": [],
+"open_buy_fees": {
+"QQQ": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

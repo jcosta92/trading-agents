@@ -1,0 +1,85 @@
+{
+"agent_id": "alphatrend.ETH",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4821.950462260305
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-21T12:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 2.252910859138845,
+"price": 2197.157504,
+"mid": 2195.84,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 2.968219068558063,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-24T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -2.252910859138845,
+"price": 2128.941868,
+"mid": 2130.22,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.990790632231342
+},
+"fees_eur": 11.990790632231342,
+"spread_cost_eur": 2.8795174622126565,
+"value_eur": 4796.316252892537,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.36579063223134,
+"spread_slippage": 5.847736530770719
+},
+"realized": [
+{
+"ts": "2026-10-24T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 2.252910859138845,
+"pnl": -153.6837471074625,
+"ccy": "EUR",
+"pnl_eur": -153.6837471074625
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-24T16:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"ETH_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

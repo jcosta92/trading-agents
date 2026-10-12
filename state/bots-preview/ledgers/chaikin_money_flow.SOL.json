@@ -1,0 +1,85 @@
+{
+"agent_id": "chaikin_money_flow.SOL",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1171.6003845193914
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-17T16:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 11.220018707511192,
+"price": 88.235147,
+"mid": 88.147,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 0.9890109890109016,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-28T20:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -11.220018707511192,
+"price": 104.00988600000001,
+"mid": 104.114,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.917482166715266
+},
+"fees_eur": 2.917482166715266,
+"spread_cost_eur": 1.1681610277137708,
+"value_eur": 1166.9928666861065,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 5.392482166715267,
+"spread_slippage": 2.1571720167246724
+},
+"realized": [
+{
+"ts": "2026-09-28T20:00:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 11.220018707511192,
+"pnl": 176.9928666861065,
+"ccy": "EUR",
+"pnl_eur": 176.9928666861065
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"SOL_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

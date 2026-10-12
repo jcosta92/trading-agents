@@ -1,0 +1,85 @@
+{
+"agent_id": "ifr2.LINK",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4727.956264304534
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-21T23:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 442.04368939072,
+"price": 11.19798816,
+"mid": 11.1801,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 7.90734824281152,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-22T20:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -442.04368939072,
+"price": 10.63715328,
+"mid": 10.6542,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.755216201264496
+},
+"fees_eur": 11.755216201264496,
+"spread_cost_eur": 7.535395000810458,
+"value_eur": 4702.086480505798,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.130216201264496,
+"spread_slippage": 15.442743243621978
+},
+"realized": [
+{
+"ts": "2026-10-22T20:00:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 442.04368939072,
+"pnl": -247.91351949420164,
+"ccy": "EUR",
+"pnl_eur": -247.91351949420164
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-24T22:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"LINK_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,85 @@
+{
+"agent_id": "chandelier_exit.LINK",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4818.222371506164
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-21T00:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 450.550884470525,
+"price": 10.9865504,
+"mid": 10.969,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 7.907348242811986,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-22T20:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -450.550884470525,
+"price": 10.63715328,
+"mid": 10.6542,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.981447046381364
+},
+"fees_eur": 11.981447046381364,
+"spread_cost_eur": 7.680414773321269,
+"value_eur": 4792.578818552545,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.356447046381362,
+"spread_slippage": 15.587763016133255
+},
+"realized": [
+{
+"ts": "2026-10-22T20:00:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 450.550884470525,
+"pnl": -157.4211814474545,
+"ccy": "EUR",
+"pnl_eur": -157.4211814474545
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-24T16:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"LINK_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}
