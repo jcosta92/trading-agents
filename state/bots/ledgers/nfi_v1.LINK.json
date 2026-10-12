@@ -1,0 +1,85 @@
+{
+"agent_id": "nfi_v1.LINK",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4957.228367117351
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-11-27T14:35:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 578.3878299460698,
+"price": 8.55827136,
+"mid": 8.5446,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 7.907348242811513,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-27T16:35:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -578.3878299460698,
+"price": 8.527034879999999,
+"mid": 8.5407,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.329833000294114
+},
+"fees_eur": 12.329833000294114,
+"spread_cost_eur": 7.903739102753009,
+"value_eur": 4931.933200117645,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.704833000294116,
+"spread_slippage": 15.811087345564522
+},
+"realized": [
+{
+"ts": "2026-11-27T16:35:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 578.3878299460698,
+"pnl": -18.066799882355102,
+"ccy": "EUR",
+"pnl_eur": -18.066799882355102
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-28T16:10:00+00:00",
+"order_seq": 25,
+"open_buy_fees": {
+"LINK_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

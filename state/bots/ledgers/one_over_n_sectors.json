@@ -1,0 +1,491 @@
+{
+"agent_id": "one_over_n_sectors",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 70.11151240809727,
+"USD": 1.3766765505351941e-14
+},
+"positions": {
+"XLB": {
+"inst_id": "XLB",
+"qty": 10.922199565023677,
+"avg_price": 49.469722194671625,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 52.099998474121094
+},
+"XLE": {
+"inst_id": "XLE",
+"qty": 8.184407807290123,
+"avg_price": 66.01799311065673,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 61.665000915527344
+},
+"XLF": {
+"inst_id": "XLF",
+"qty": 9.818164597263406,
+"avg_price": 55.03250356864929,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 57.189998626708984
+},
+"XLI": {
+"inst_id": "XLI",
+"qty": 3.191962564965586,
+"avg_price": 169.27459744262694,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 165.38999938964844
+},
+"XLK": {
+"inst_id": "XLK",
+"qty": 2.7519778793433494,
+"avg_price": 196.33812549591065,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 160.25999450683594
+},
+"XLP": {
+"inst_id": "XLP",
+"qty": 6.403227147364513,
+"avg_price": 84.38216633605957,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 92.72000122070312
+},
+"XLU": {
+"inst_id": "XLU",
+"qty": 12.98504814085222,
+"avg_price": 41.61079515266418,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 43.665000915527344
+},
+"XLV": {
+"inst_id": "XLV",
+"qty": 3.141093335458963,
+"avg_price": 172.01595767211913,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 183.8300018310547
+},
+"XLY": {
+"inst_id": "XLY",
+"qty": 4.808549246719144,
+"avg_price": 112.36615255737304,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 119.75
+},
+"XLRE": {
+"inst_id": "XLRE",
+"qty": 12.898212752237457,
+"avg_price": 41.89093393135071,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 44.099998474121094
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 492.9988123682891,
+"amount_to": 540.7031620416913,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.14789964371050246,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "XLB",
+"kind": "stock",
+"qty": 10.922199565023677,
+"price": 49.469722194671625,
+"mid": 49.44499969482422,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.38498380520677083
+},
+"fees_eur": 0.35091272457864486,
+"spread_cost_eur": 0.2461269365316804,
+"value_eur": 492.5,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 492.99081689247174,
+"amount_to": 540.6943928946913,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.14789724506772473,
+"reason": "FX for stock purchase",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "XLE",
+"kind": "stock",
+"qty": 8.184407807290123,
+"price": 66.01799311065673,
+"mid": 65.98500061035156,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.37621465820675026
+},
+"fees_eur": 0.34291964740399555,
+"spread_cost_eur": 0.24612693653169004,
+"value_eur": 492.5,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 4
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 492.99558813296835,
+"amount_to": 540.6996258176896,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.14789867643986554,
+"reason": "FX for stock purchase",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "XLF",
+"kind": "stock",
+"qty": 9.818164597263406,
+"price": 55.03250356864929,
+"mid": 55.005001068115234,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3814475812050347
+},
+"fees_eur": 0.3476894565284391,
+"spread_cost_eur": 0.24612693653171275,
+"value_eur": 492.5,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 6
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 492.97623690292653,
+"amount_to": 540.6784020925801,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.14789287107089422,
+"reason": "FX for stock purchase",
+"seq": 7
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "XLI",
+"kind": "stock",
+"qty": 3.191962564965586,
+"price": 169.27459744262694,
+"mid": 169.19000244140625,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.36022385609558477
+},
+"fees_eur": 0.32834403185566563,
+"spread_cost_eur": 0.24612693653169976,
+"value_eur": 492.5,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 8
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 492.97495196702744,
+"amount_to": 540.6769928216321,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.14789248559014823,
+"reason": "FX for stock purchase",
+"seq": 9
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "XLK",
+"kind": "stock",
+"qty": 2.7519778793433494,
+"price": 196.33812549591065,
+"mid": 196.24000549316406,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3588145851475367
+},
+"fees_eur": 0.32705948143728253,
+"spread_cost_eur": 0.24612693653173698,
+"value_eur": 492.5,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 10
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 492.9856151137562,
+"amount_to": 540.6886877730375,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.14789568453409174,
+"reason": "FX for stock purchase",
+"seq": 11
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "XLP",
+"kind": "stock",
+"qty": 6.403227147364513,
+"price": 84.38216633605957,
+"mid": 84.33999633789062,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3705095365530085
+},
+"fees_eur": 0.33771942922211157,
+"spread_cost_eur": 0.24612693653172818,
+"value_eur": 492.5,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 12
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 493.00483673294593,
+"amount_to": 540.7097693456797,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.14790145101989083,
+"reason": "FX for stock purchase",
+"seq": 13
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "XLU",
+"kind": "stock",
+"qty": 12.98504814085222,
+"price": 41.61079515266418,
+"mid": 41.59000015258789,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3915911091951496
+},
+"fees_eur": 0.3569352819260534,
+"spread_cost_eur": 0.24612693653169515,
+"value_eur": 492.5,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 14
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 492.9760883438941,
+"amount_to": 540.6782391584379,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.14789282650315272,
+"reason": "FX for stock purchase",
+"seq": 15
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "XLV",
+"kind": "stock",
+"qty": 3.141093335458963,
+"price": 172.01595767211913,
+"mid": 171.92999267578125,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.36006092195347505
+},
+"fees_eur": 0.3281955173910016,
+"spread_cost_eur": 0.2461269365316996,
+"value_eur": 492.4999999999999,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 16
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 492.98095799965864,
+"amount_to": 540.6835800197217,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.14789428739993582,
+"reason": "FX for stock purchase",
+"seq": 17
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "XLY",
+"kind": "stock",
+"qty": 4.808549246719144,
+"price": 112.36615255737304,
+"mid": 112.30999755859375,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3654017832372414
+},
+"fees_eur": 0.33306371225877385,
+"spread_cost_eur": 0.24612693653171072,
+"value_eur": 492.5,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 18
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 493.0045831379646,
+"amount_to": 540.70949121193,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.147901374941398,
+"reason": "FX for stock purchase",
+"seq": 19
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "XLRE",
+"kind": "stock",
+"qty": 12.898212752237457,
+"price": 41.89093393135071,
+"mid": 41.869998931884766,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.39131297544541654
+},
+"fees_eur": 0.35668176302319027,
+"spread_cost_eur": 0.2461269365317455,
+"value_eur": 492.5,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 20
+}
+],
+"costs": {
+"fx": 1.4789665462776043,
+"commissions": 3.409521045625159,
+"spread_slippage": 2.461269365317099
+},
+"realized": [],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"last_target": {
+"XLB": 0.0985,
+"XLE": 0.0985,
+"XLF": 0.0985,
+"XLI": 0.0985,
+"XLK": 0.0985,
+"XLP": 0.0985,
+"XLU": 0.0985,
+"XLV": 0.0985,
+"XLY": 0.0985,
+"XLRE": 0.0985
+},
+"started": true
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"order_seq": 10,
+"orders": [],
+"open_buy_fees": {
+"XLB": 0.38498380520677083,
+"XLE": 0.37621465820675026,
+"XLF": 0.3814475812050347,
+"XLI": 0.36022385609558477,
+"XLK": 0.3588145851475367,
+"XLP": 0.3705095365530085,
+"XLU": 0.3915911091951496,
+"XLV": 0.36006092195347505,
+"XLY": 0.3654017832372414,
+"XLRE": 0.39131297544541654
+}
+},
+"halted": false,
+"halt_reason": null
+}

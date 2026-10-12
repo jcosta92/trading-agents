@@ -1,0 +1,131 @@
+{
+"agent_id": "alphatrend.ADA",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 8.982547164297557
+},
+"positions": {
+"ADA_SPOT": {
+"inst_id": "ADA_SPOT",
+"qty": 5219.736527946706,
+"avg_price": 0.226401664,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-11T20:00:00+00:00",
+"last_mark": 0.2171
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-18T08:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": 5294.721075377317,
+"price": 0.18697868800000003,
+"mid": 0.18668,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.5814696485624016,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-08T08:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": -5294.721075377317,
+"price": 0.22459008,
+"mid": 0.22495,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.972854574741694
+},
+"fees_eur": 2.972854574741694,
+"spread_cost_eur": 1.9056760094498757,
+"value_eur": 1189.1418298966776,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-11T20:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": 5219.736527946706,
+"price": 0.226401664,
+"mid": 0.22604,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.9543925889217917
+},
+"fees_eur": 2.9543925889217917,
+"spread_cost_eur": 1.8877907916433776,
+"value_eur": 1181.7570355687167,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 3
+}
+],
+"costs": {
+"commissions": 8.402247163663485,
+"spread_slippage": 5.374936449655655
+},
+"realized": [
+{
+"ts": "2026-10-08T08:00:00+00:00",
+"inst": "ADA_SPOT",
+"qty": 5294.721075377317,
+"pnl": 199.14182989667765,
+"ccy": "EUR",
+"pnl_eur": 199.14182989667765
+}
+],
+"meta": {
+"state": {
+"pos": {
+"ADA_SPOT": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 0.22640166,
+"entry_ts": "2026-10-11T20:00:00+00:00",
+"hi": 0.22827,
+"bars": 5,
+"hic": 0.22640166
+}
+}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 3,
+"open_buy_fees": {
+"ADA_SPOT": 2.9543925889217917
+}
+},
+"halted": false,
+"halt_reason": null
+}

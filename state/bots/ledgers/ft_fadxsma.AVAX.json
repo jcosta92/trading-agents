@@ -1,0 +1,85 @@
+{
+"agent_id": "ft_fadxsma.AVAX",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4718.9872625
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-11-09T16:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": 615.2232634037015,
+"price": 8.0458596,
+"mid": 8.0298,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 9.880239520958192,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-09T18:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": -615.2232634037015,
+"price": 7.6282794867599995,
+"mid": 7.64356662,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.7327375
+},
+"fees_eur": 11.7327375,
+"spread_cost_eur": 9.40500000000012,
+"value_eur": 4693.095,
+"eur_rate": 1.0,
+"reason": "sbx:stop",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.1077375,
+"spread_slippage": 19.285239520958314
+},
+"realized": [
+{
+"ts": "2026-11-09T18:00:00+00:00",
+"inst": "AVAX_SPOT",
+"qty": 615.2232634037015,
+"pnl": -256.90500000000037,
+"ccy": "EUR",
+"pnl_eur": -256.90500000000037
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-28T15:00:00+00:00",
+"order_seq": 5,
+"open_buy_fees": {
+"AVAX_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

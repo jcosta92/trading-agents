@@ -1,0 +1,115 @@
+{
+"agent_id": "haa_simple",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 73.03057784174416,
+"USD": 480.43669784017806
+},
+"positions": {
+"BIL": {
+"inst_id": "BIL",
+"qty": 53.772765590166664,
+"avg_price": 91.55074975204467,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 91.66500091552734
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4926.969422158256,
+"amount_to": 5403.720818405465,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 1.4780908266475308,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "BIL",
+"kind": "stock",
+"qty": 59.018432912879256,
+"price": 91.55074975204467,
+"mid": 91.50499725341797,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5390360406199523
+},
+"fees_eur": 0.4913313316087141,
+"spread_cost_eur": 2.4612693653167237,
+"value_eur": 4925.0,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "BIL",
+"kind": "stock",
+"qty": -5.245667322712591,
+"price": 91.65914933013917,
+"mid": 91.70500183105469,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.37670662856670456
+},
+"fees_eur": 0.3433680783693729,
+"spread_cost_eur": 0.21924032058728582,
+"value_eur": 438.26140085409963,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 1.4780908266475308,
+"commissions": 0.834699409978087,
+"spread_slippage": 2.6805096859040094
+},
+"realized": [
+{
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "BIL",
+"qty": 5.245667322712591,
+"pnl": 0.5686281246061815,
+"ccy": "USD",
+"pnl_eur": 0.5183045150962391
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"last_target": {
+"BIL": 0.985
+},
+"started": true
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"order_seq": 2,
+"orders": [],
+"open_buy_fees": {
+"BIL": 0.49112552174496854
+}
+},
+"halted": false,
+"halt_reason": null
+}

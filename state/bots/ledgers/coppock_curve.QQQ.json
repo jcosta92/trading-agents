@@ -1,0 +1,98 @@
+{
+"agent_id": "coppock_curve.QQQ",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 48.1735650303317,
+"USD": -3.991251773527438e-13
+},
+"positions": {
+"QQQ": {
+"inst_id": "QQQ",
+"qty": 7.488198084003414,
+"avg_price": 725.2224153442382,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-28T19:55:00+00:00",
+"last_mark": 650.760009765625
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-28T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4951.826434969668,
+"amount_to": 5430.983085755515,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 1.4855479304906112,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-28T19:55:00+00:00",
+"inst": "QQQ",
+"kind": "stock",
+"qty": 7.488198084003414,
+"price": 725.2224153442382,
+"mid": 724.8599853515625,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3739846984630629
+},
+"fees_eur": 0.34088703917794894,
+"spread_cost_eur": 2.473763118440519,
+"value_eur": 4950.0,
+"eur_rate": 1.0970927476882935,
+"reason": "sbe:buy",
+"seq": 2
+}
+],
+"costs": {
+"fx": 1.4855479304906112,
+"commissions": 0.34088703917794894,
+"spread_slippage": 2.473763118440519
+},
+"realized": [],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"pos": {
+"QQQ": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 725.22241534,
+"entry_ts": "2026-10-28T19:55:00+00:00",
+"hi": 725.22241534,
+"bars": 21,
+"hic": 725.22241534
+}
+}
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"orders": [],
+"order_seq": 1,
+"open_buy_fees": {
+"QQQ": 0.3739846984630629
+}
+},
+"halted": false,
+"halt_reason": null
+}

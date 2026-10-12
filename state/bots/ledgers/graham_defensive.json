@@ -1,0 +1,86 @@
+{
+"agent_id": "graham_defensive",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 73.00865623111986,
+"USD": 2.7622348852673895e-13
+},
+"positions": {
+"SHY": {
+"inst_id": "SHY",
+"qty": 66.524778532795,
+"avg_price": 81.22059030532836,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 81.58000183105469
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4926.99134376888,
+"amount_to": 5403.744861230486,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 1.4780974031309597,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "SHY",
+"kind": "stock",
+"qty": 66.524778532795,
+"price": 81.22059030532836,
+"mid": 81.18000030517578,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5630788656405423
+},
+"fees_eur": 0.5132463657489463,
+"spread_cost_eur": 2.461269365316652,
+"value_eur": 4925.0,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+}
+],
+"costs": {
+"fx": 1.4780974031309597,
+"commissions": 0.5132463657489463,
+"spread_slippage": 2.461269365316652
+},
+"realized": [],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"last_target": {
+"SHY": 0.985
+},
+"started": true
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"order_seq": 1,
+"orders": [],
+"open_buy_fees": {
+"SHY": 0.5630788656405423
+}
+},
+"halted": false,
+"halt_reason": null
+}

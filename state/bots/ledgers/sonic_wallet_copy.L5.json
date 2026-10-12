@@ -1,0 +1,552 @@
+{
+"agent_id": "sonic_wallet_copy.L5",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 0.0,
+"USD": 4.454554667949472
+},
+"positions": {
+"S_SONIC": {
+"inst_id": "S_SONIC",
+"qty": 121021.08191820611,
+"avg_price": 0.03679862985603313,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-11-10T18:20:00+00:00",
+"last_mark": 0.02714587263414189
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T17:00:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 5000.0,
+"amount_to": 5479.828791022301,
+"rate": 1.0992635488510132,
+"fee_rate": 0.003,
+"fee_eur": 15.0,
+"reason": "EUR -> USDC.e on an exchange, withdrawn to Sonic",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-15T11:55:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": 5711.180517905285,
+"price": 0.05383006586645508,
+"mid": 0.05382043909692885,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4611498351810848
+},
+"fees_eur": 0.4195079839253234,
+"spread_cost_eur": 0.050015502311537806,
+"value_eur": 279.67198928354895,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 6% of USD -> S",
+"seq": 2
+},
+{
+"type": "charge",
+"ts": "2026-10-15T11:55:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-15T15:20:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": 86810.03105814132,
+"price": 0.055948713431151265,
+"mid": 0.05519310469123695,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 7.285364325931935
+},
+"fees_eur": 6.627495593342324,
+"spread_cost_eur": 59.671239211312155,
+"value_eur": 4418.330395561549,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 94% of USD -> S",
+"seq": 4
+},
+{
+"type": "charge",
+"ts": "2026-10-15T15:20:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-10-15T17:25:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": -46260.6057880233,
+"price": 0.053922334454854746,
+"mid": 0.054149543453395045,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 3.7417197860789724
+},
+"fees_eur": 3.403842317877221,
+"spread_cost_eur": 9.561697851211914,
+"value_eur": 2269.2282119181473,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 50% of S -> USD",
+"seq": 6
+},
+{
+"type": "charge",
+"ts": "2026-10-15T17:25:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 7
+},
+{
+"type": "trade",
+"ts": "2026-10-15T19:30:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": 24011.180883813304,
+"price": 0.058186564615933516,
+"mid": 0.05801636128227601,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 2.0956921920013056
+},
+"fees_eur": 1.906451090997962,
+"spread_cost_eur": 3.7177463363995154,
+"value_eur": 1270.9673939986415,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 50% of USD -> S",
+"seq": 8
+},
+{
+"type": "charge",
+"ts": "2026-10-15T19:30:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 9
+},
+{
+"type": "trade",
+"ts": "2026-10-16T20:45:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": -35135.89333591831,
+"price": 0.053903465097325756,
+"mid": 0.053950111598682224,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 2.8409196001440495
+},
+"fees_eur": 2.5843844300245133,
+"spread_cost_eur": 1.4909677464223368,
+"value_eur": 1722.9229533496757,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 50% of S -> USD",
+"seq": 10
+},
+{
+"type": "charge",
+"ts": "2026-10-16T20:45:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 11
+},
+{
+"type": "trade",
+"ts": "2026-10-21T17:40:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": -17567.946667959153,
+"price": 0.05686723016763759,
+"mid": 0.05689230152089354,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 1.4985607001094225
+},
+"fees_eur": 1.3632406001961659,
+"spread_cost_eur": 0.40067934332447874,
+"value_eur": 908.8270667974439,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 50% of S -> USD",
+"seq": 12
+},
+{
+"type": "charge",
+"ts": "2026-10-21T17:40:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 13
+},
+{
+"type": "trade",
+"ts": "2026-10-21T18:10:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": 37408.72536867887,
+"price": 0.05722487214965157,
+"mid": 0.057028467506328895,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 3.2110642897561137
+},
+"fees_eur": 2.9211050371973353,
+"spread_cost_eur": 6.683790589500528,
+"value_eur": 1947.4033581315568,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 50% of USD -> S",
+"seq": 14
+},
+{
+"type": "charge",
+"ts": "2026-10-21T18:10:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 15
+},
+{
+"type": "trade",
+"ts": "2026-10-24T14:45:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": -27488.33601831901,
+"price": 0.04778952860979923,
+"mid": 0.047912736556186886,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 1.9704819308748465
+},
+"fees_eur": 1.7925473221908064,
+"spread_cost_eur": 3.0809549120144086,
+"value_eur": 1195.0315481272044,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 50% of S -> USD",
+"seq": 16
+},
+{
+"type": "charge",
+"ts": "2026-10-24T14:45:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 17
+},
+{
+"type": "trade",
+"ts": "2026-10-24T14:50:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": -5038.03029039389,
+"price": 0.04788166382584765,
+"mid": 0.04790428677553475,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3618439090636168
+},
+"fees_eur": 0.3291693874884036,
+"spread_cost_eur": 0.1036831485050113,
+"value_eur": 219.44625832560237,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 18% of S -> USD",
+"seq": 18
+},
+{
+"type": "charge",
+"ts": "2026-10-24T14:50:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 19
+},
+{
+"type": "trade",
+"ts": "2026-10-29T11:45:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": -11225.15286396256,
+"price": 0.0441400184327907,
+"mid": 0.0441646936439009,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.7432176814893011
+},
+"fees_eur": 0.6761050907820394,
+"spread_cost_eur": 0.2519714375611384,
+"value_eur": 450.7367271880263,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 50% of S -> USD",
+"seq": 20
+},
+{
+"type": "charge",
+"ts": "2026-10-29T11:45:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 21
+},
+{
+"type": "trade",
+"ts": "2026-10-30T23:05:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": 45311.713247040134,
+"price": 0.04110547286513772,
+"mid": 0.04102046080935975,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 2.7938390990236646
+},
+"fees_eur": 2.541555300313449,
+"spread_cost_eur": 3.504202334353087,
+"value_eur": 1694.370200208966,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 100% of USD -> S, 50% of S -> USD",
+"seq": 22
+},
+{
+"type": "charge",
+"ts": "2026-10-30T23:05:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 23
+},
+{
+"type": "trade",
+"ts": "2026-11-08T00:10:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": -28268.433055501348,
+"price": 0.038038651585314054,
+"mid": 0.03808580752041435,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 1.6129396137914858
+},
+"fees_eur": 1.4672910927296587,
+"spread_cost_eur": 1.2126522306189476,
+"value_eur": 978.1940618197725,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 50% of S -> USD",
+"seq": 24
+},
+{
+"type": "charge",
+"ts": "2026-11-08T00:10:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 25
+},
+{
+"type": "trade",
+"ts": "2026-11-08T12:05:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": -28268.433055501348,
+"price": 0.037734330148535944,
+"mid": 0.03778714071069317,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 1.6000355785471119
+},
+"fees_eur": 1.4555522924593673,
+"spread_cost_eur": 1.3580654452931475,
+"value_eur": 970.3681949729115,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 100% of S -> USD",
+"seq": 26
+},
+{
+"type": "charge",
+"ts": "2026-11-08T12:05:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 27
+},
+{
+"type": "trade",
+"ts": "2026-11-10T18:20:00+00:00",
+"inst": "S_SONIC",
+"kind": "crypto_spot",
+"qty": 121021.08191820611,
+"price": 0.03679862985603313,
+"mid": 0.036502578752078144,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 6.680114997427097
+},
+"fees_eur": 6.076900306945841,
+"spread_cost_eur": 32.59311649254734,
+"value_eur": 4051.266871297227,
+"eur_rate": 1.0992635488510132,
+"reason": "copy 0x95a68f: 100% of USD -> S",
+"seq": 28
+},
+{
+"type": "charge",
+"ts": "2026-11-10T18:20:00+00:00",
+"ccy": "USD",
+"amount": -0.01,
+"amount_eur": -0.009096999541604315,
+"category": "gas",
+"note": "Sonic network fee for one swap",
+"seq": 29
+}
+],
+"costs": {
+"fx": 15.0,
+"commissions": 33.56514784647041,
+"spread_slippage": 123.68078258137555,
+"gas": 0.1273579935824604
+},
+"realized": [
+{
+"ts": "2026-10-15T17:25:00+00:00",
+"inst": "S_SONIC",
+"qty": 46260.6057880233,
+"pnl": -87.69152965169106,
+"ccy": "USD",
+"pnl_eur": -79.77298050440147
+},
+{
+"ts": "2026-10-16T20:45:00+00:00",
+"inst": "S_SONIC",
+"qty": 35135.89333591831,
+"pnl": -95.70335742323908,
+"ccy": "USD",
+"pnl_eur": -87.06133986091999
+},
+{
+"ts": "2026-10-21T17:40:00+00:00",
+"inst": "S_SONIC",
+"qty": 17567.946667959153,
+"pnl": 4.215587979978945,
+"ccy": "USD",
+"pnl_eur": 3.8349201921461127
+},
+{
+"ts": "2026-10-24T14:45:00+00:00",
+"inst": "S_SONIC",
+"qty": 27488.33601831901,
+"pnl": -254.11258204862514,
+"ccy": "USD",
+"pnl_eur": -231.1662042412232
+},
+{
+"ts": "2026-10-24T14:50:00+00:00",
+"inst": "S_SONIC",
+"qty": 5038.03029039389,
+"pnl": -46.10927880897797,
+"ccy": "USD",
+"pnl_eur": -41.94560881889782
+},
+{
+"ts": "2026-10-29T11:45:00+00:00",
+"inst": "S_SONIC",
+"qty": 11225.15286396256,
+"pnl": -144.7358712306994,
+"ccy": "USD",
+"pnl_eur": -131.66621542393736
+},
+{
+"ts": "2026-11-08T00:10:00+00:00",
+"inst": "S_SONIC",
+"qty": 28268.433055501348,
+"pnl": -176.0937865920145,
+"ccy": "USD",
+"pnl_eur": -160.19250959069242
+},
+{
+"ts": "2026-11-08T12:05:00+00:00",
+"inst": "S_SONIC",
+"qty": 28268.433055501348,
+"pnl": -184.6964767549305,
+"ccy": "USD",
+"pnl_eur": -168.01837643755348
+}
+],
+"meta": {
+"state": {
+"funded": "2026-10-12T17:00:00+00:00",
+"seen": [
+82358835,
+0
+]
+},
+"last_ts": "2026-11-28T16:10:00+00:00",
+"order_seq": 14,
+"orders": [],
+"open_buy_fees": {
+"S_SONIC": 6.680114997427097
+}
+},
+"halted": false,
+"halt_reason": null
+}

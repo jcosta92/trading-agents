@@ -1,0 +1,110 @@
+{
+"agent_id": "hammer_candle.XLK",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 48.09442320299513,
+"USD": -1.6825429938194247e-13
+},
+"positions": {
+"XLK": {
+"inst_id": "XLK",
+"qty": 34.55619330921977,
+"avg_price": 157.11851328277587,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-11-24T20:55:00+00:00",
+"last_mark": 160.25999450683594
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-11-24T20:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4951.905576797005,
+"amount_to": 5429.878400943987,
+"rate": 1.0968520641326904,
+"fee_rate": 0.0003,
+"fee_eur": 1.4855716730380664,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-24T20:55:00+00:00",
+"inst": "XLK",
+"kind": "stock",
+"qty": 34.55619330921977,
+"price": 157.11851328277587,
+"mid": 157.0399932861328,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4606834871694309
+},
+"fees_eur": 0.42000512396692746,
+"spread_cost_eur": 2.473763118440343,
+"value_eur": 4950.0,
+"eur_rate": 1.0968520641326904,
+"reason": "sbe:buy",
+"seq": 2
+}
+],
+"costs": {
+"fx": 1.4855716730380664,
+"commissions": 0.42000512396692746,
+"spread_slippage": 2.473763118440343
+},
+"realized": [],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"pos": {
+"XLK": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 157.11851328,
+"entry_ts": "2026-11-24T20:55:00+00:00",
+"hi": 160.3000030517578,
+"bars": 2,
+"hic": 159.0
+}
+}
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"orders": [
+{
+"id": 3,
+"inst": "XLK",
+"side": "sell",
+"type": "stop",
+"price": 149.262587616,
+"qty": 34.55619330921977,
+"eur": null,
+"tag": "sbx:stop",
+"placed": "2026-11-27T17:50:00+00:00"
+}
+],
+"order_seq": 3,
+"open_buy_fees": {
+"XLK": 0.4606834871694309
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,327 @@
+{
+"agent_id": "country_reversal",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 71.49747884817793,
+"USD": 406.1350090429014
+},
+"positions": {
+"EWQ": {
+"inst_id": "EWQ",
+"qty": 28.64602989319345,
+"avg_price": 41.270624999999995,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 42.380001068115234
+},
+"EIDO": {
+"inst_id": "EIDO",
+"qty": 115.69154897788752,
+"avg_price": 11.675835076332092,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 10.765000343322754
+},
+"INDA": {
+"inst_id": "INDA",
+"qty": 25.331017406937978,
+"avg_price": 46.378177042007444,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 52.77000045776367
+},
+"EWZ": {
+"inst_id": "EWZ",
+"qty": 40.83659247530955,
+"avg_price": 32.46122219467163,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-30T19:55:00+00:00",
+"last_mark": 33.11000061035156
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1232.1181151390379,
+"amount_to": 1351.3423240598838,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.3696354345418058,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "EWH",
+"kind": "stock",
+"qty": 61.46689624490818,
+"price": 21.975982652664182,
+"mid": 21.96500015258789,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5468784686724408
+},
+"fees_eur": 0.49847970449606893,
+"spread_cost_eur": 0.6153173413292128,
+"value_eur": 1231.25,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1232.0341921635522,
+"amount_to": 1351.2502803935006,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.3696102576489011,
+"reason": "FX for stock purchase",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "EWQ",
+"kind": "stock",
+"qty": 32.73019116117605,
+"price": 41.270624999999995,
+"mid": 41.25,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4548348022892469
+},
+"fees_eur": 0.4145819059032507,
+"spread_cost_eur": 0.6153173413291997,
+"value_eur": 1231.25,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 4
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1232.3265483693037,
+"amount_to": 1351.57092604401,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.36969796451080583,
+"reason": "FX for stock purchase",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "EIDO",
+"kind": "stock",
+"qty": 115.69154897788752,
+"price": 11.675835076332092,
+"mid": 11.670000076293945,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.7754804527987801
+},
+"fees_eur": 0.706850404792859,
+"spread_cost_eur": 0.6153173413292994,
+"value_eur": 1231.25,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 6
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1232.0236654799282,
+"amount_to": 1351.238735109864,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.36960709964387206,
+"reason": "FX for stock purchase",
+"seq": 7
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "INDA",
+"kind": "stock",
+"qty": 29.125669263966895,
+"price": 46.378177042007444,
+"mid": 46.35499954223633,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.44328951865248595
+},
+"fees_eur": 0.40405838028421054,
+"spread_cost_eur": 0.6153173413292674,
+"value_eur": 1231.25,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 8
+},
+{
+"type": "trade",
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "EWH",
+"kind": "stock",
+"qty": -61.46689624490818,
+"price": 22.458764313697817,
+"mid": 22.469999313354492,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5753161617111344
+},
+"fees_eur": 0.5244006606764969,
+"spread_cost_eur": 0.6294641539319223,
+"value_eur": 1258.2988437100946,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:sell (rebalance)",
+"seq": 9
+},
+{
+"type": "trade",
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "EWQ",
+"kind": "stock",
+"qty": -4.084161267982602,
+"price": 42.153911737442016,
+"mid": 42.17499923706055,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.36662813403775585
+},
+"fees_eur": 0.334181530969269,
+"spread_cost_eur": 0.0785027057758587,
+"value_eur": 156.92690884593563,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:sell (rebalance)",
+"seq": 10
+},
+{
+"type": "trade",
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "INDA",
+"kind": "stock",
+"qty": -3.7946518570289163,
+"price": 47.67115219497681,
+"mid": 47.69499969482422,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3658807156778532
+},
+"fees_eur": 0.3335002591611401,
+"spread_cost_eur": 0.08248432939889162,
+"value_eur": 164.88617446842605,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:sell (rebalance)",
+"seq": 11
+},
+{
+"type": "trade",
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "EWZ",
+"kind": "stock",
+"qty": 40.83659247530955,
+"price": 32.46122219467163,
+"mid": 32.44499969482422,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.48079960569841645
+},
+"fees_eur": 0.4382488232754424,
+"spread_cost_eur": 0.6038428533916665,
+"value_eur": 1208.2895496369742,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 12
+}
+],
+"costs": {
+"fx": 1.4785507563453848,
+"commissions": 3.6543016695587376,
+"spread_slippage": 3.855563407815318
+},
+"realized": [
+{
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "EWH",
+"qty": 61.46689624490818,
+"pnl": 29.67509026769882,
+"ccy": "USD",
+"pnl_eur": 27.04884371009453
+},
+{
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "EWQ",
+"qty": 4.084161267982602,
+"pnl": 3.6074854815834176,
+"ccy": "USD",
+"pnl_eur": 3.2882228865196894
+},
+{
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "INDA",
+"qty": 3.7946518570289163,
+"pnl": 4.906390565307463,
+"ccy": "USD",
+"pnl_eur": 4.472174823546887
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"last_target": {
+"EWQ": 0.2462,
+"EWZ": 0.2462,
+"EIDO": 0.2462,
+"INDA": 0.2462
+},
+"started": true
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"order_seq": 8,
+"orders": [],
+"open_buy_fees": {
+"EWH": 0.0,
+"EWQ": 0.3980792925614657,
+"EIDO": 0.7754804527987801,
+"INDA": 0.3855353300736445,
+"EWZ": 0.48079960569841645
+}
+},
+"halted": false,
+"halt_reason": null
+}

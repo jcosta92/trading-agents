@@ -1,0 +1,115 @@
+{
+"agent_id": "style_momentum",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 73.14095757386622,
+"USD": 488.55868901026327
+},
+"positions": {
+"IWD": {
+"inst_id": "IWD",
+"qty": 19.33246993097838,
+"avg_price": 254.59723622131347,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 257.55999755859375
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4926.859042426134,
+"amount_to": 5403.599757930903,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 1.4780577127276047,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "IWD",
+"kind": "stock",
+"qty": 21.222468329027844,
+"price": 254.59723622131347,
+"mid": 254.47000122070312,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.41797556605787617
+},
+"fees_eur": 0.3809847134060461,
+"spread_cost_eur": 2.461269365317135,
+"value_eur": 4925.0,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "IWD",
+"kind": "stock",
+"qty": -1.8899983980494652,
+"price": 258.69059732055666,
+"mid": 258.82000732421875,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.36612551604819443
+},
+"fees_eur": 0.3337233946898883,
+"spread_cost_eur": 0.22293894488710303,
+"value_eur": 445.6549508293942,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 1.4780577127276047,
+"commissions": 0.7147081080959344,
+"spread_slippage": 2.684208310204238
+},
+"realized": [
+{
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "IWD",
+"qty": 1.8899983980494652,
+"pnl": 7.73644592020764,
+"ccy": "USD",
+"pnl_eur": 7.051770177598259
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"last_target": {
+"IWD": 0.985
+},
+"started": true
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"order_seq": 2,
+"orders": [],
+"open_buy_fees": {
+"IWD": 0.38075213200554736
+}
+},
+"halted": false,
+"halt_reason": null
+}

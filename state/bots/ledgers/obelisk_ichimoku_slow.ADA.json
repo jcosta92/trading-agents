@@ -1,0 +1,85 @@
+{
+"agent_id": "obelisk_ichimoku_slow.ADA",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4774.48544273826
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-11-27T10:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": 35516.296455315765,
+"price": 0.13937264,
+"mid": 0.13915,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 7.907348242811366,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-27T15:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": -35516.296455315765,
+"price": 0.133705728,
+"mid": 0.13392,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.871830683554535
+},
+"fees_eur": 11.871830683554535,
+"spread_cost_eur": 7.610147874073965,
+"value_eur": 4748.732273421814,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.246830683554535,
+"spread_slippage": 15.517496116885331
+},
+"realized": [
+{
+"ts": "2026-11-27T15:00:00+00:00",
+"inst": "ADA_SPOT",
+"qty": 35516.296455315765,
+"pnl": -201.26772657818623,
+"ccy": "EUR",
+"pnl_eur": -201.26772657818623
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-28T15:00:00+00:00",
+"order_seq": 6,
+"open_buy_fees": {
+"ADA_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

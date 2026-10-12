@@ -1,0 +1,115 @@
+{
+"agent_id": "top1_market_cap",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 14.376798253226411,
+"USD": 130.1042630086542
+},
+"positions": {
+"NVDA": {
+"inst_id": "NVDA",
+"qty": 4.6416748773686045,
+"avg_price": 211.81586171722412,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-09-14T19:55:00+00:00",
+"last_mark": 226.22500610351562
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-09-14T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 985.6232017467736,
+"amount_to": 1103.1432598030042,
+"rate": 1.1195701360702515,
+"fee_rate": 0.0003,
+"fee_eur": 0.29568696052399446,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-14T19:55:00+00:00",
+"inst": "NVDA",
+"kind": "stock",
+"qty": 5.2062984098018745,
+"price": 211.81586171722412,
+"mid": 211.7100067138672,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3666757738065954
+},
+"fees_eur": 0.3275147862496995,
+"spread_cost_eur": 0.49225387306347995,
+"value_eur": 985.0,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-01T19:55:00+00:00",
+"inst": "NVDA",
+"kind": "stock",
+"qty": -0.5646235324332697,
+"price": 231.05441316986085,
+"mid": 231.1699981689453,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.35449593960871795
+},
+"fees_eur": 0.31663575883956396,
+"spread_cost_eur": 0.05829202510566949,
+"value_eur": 116.52575818624453,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 0.29568696052399446,
+"commissions": 0.6441505450892635,
+"spread_slippage": 0.5505458981691495
+},
+"realized": [
+{
+"ts": "2026-10-01T19:55:00+00:00",
+"inst": "NVDA",
+"qty": 0.5646235324332697,
+"pnl": 10.86253888008696,
+"ccy": "USD",
+"pnl_eur": 9.702419285865401
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-09",
+"last_target": {
+"NVDA": 0.985
+},
+"started": true
+},
+"last_ts": "2026-10-12T16:55:00+00:00",
+"order_seq": 2,
+"orders": [],
+"open_buy_fees": {
+"NVDA": 0.32690975304324443
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,85 @@
+{
+"agent_id": "ehlers_zero_lag.ADA",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4559.5762848841405
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-11-04T16:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": 28021.163756632013,
+"price": 0.176652192,
+"mid": 0.17637,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 7.9073482428119055,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-05T16:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": -28021.163756632013,
+"price": 0.16178073599999998,
+"mid": 0.16204,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.33321124031113
+},
+"fees_eur": 11.33321124031113,
+"spread_cost_eur": 7.264879000199696,
+"value_eur": 4533.284496124452,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 23.70821124031113,
+"spread_slippage": 15.172227243011601
+},
+"realized": [
+{
+"ts": "2026-11-05T16:00:00+00:00",
+"inst": "ADA_SPOT",
+"qty": 28021.163756632013,
+"pnl": -416.7155038755486,
+"ccy": "EUR",
+"pnl_eur": -416.7155038755486
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-28T12:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"ADA_SPOT": 1.7763568394002505e-15
+}
+},
+"halted": false,
+"halt_reason": null
+}

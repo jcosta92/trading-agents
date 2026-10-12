@@ -1,0 +1,85 @@
+{
+"agent_id": "gekko_uo.DOGE",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1011.8336494239626
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-13T09:00:00+00:00",
+"inst": "DOGE_SPOT",
+"kind": "crypto_spot",
+"qty": 13712.798700769114,
+"price": 0.072195328,
+"mid": 0.07208,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.5814696485622712,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-18T05:00:00+00:00",
+"inst": "DOGE_SPOT",
+"kind": "crypto_spot",
+"qty": -13712.798700769114,
+"price": 0.07342233599999999,
+"mid": 0.07354,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.517064284270583
+},
+"fees_eur": 2.517064284270583,
+"spread_cost_eur": 1.6135027463273441,
+"value_eur": 1006.8257137082331,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 4.992064284270583,
+"spread_slippage": 3.194972394889615
+},
+"realized": [
+{
+"ts": "2026-09-18T05:00:00+00:00",
+"inst": "DOGE_SPOT",
+"qty": 13712.798700769114,
+"pnl": 16.825713708233142,
+"ccy": "EUR",
+"pnl_eur": 16.825713708233142
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T16:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"DOGE_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,229 @@
+{
+"agent_id": "nfi_v1.SOL",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1010.8607255310917
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-18T08:10:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 10.785641722313587,
+"price": 91.788697,
+"mid": 91.697,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 0.9890109890109497,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-18T13:45:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -10.785641722313587,
+"price": 93.819087,
+"mid": 93.913,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.5297476477414205
+},
+"fees_eur": 2.5297476477414205,
+"spread_cost_eur": 1.0129119710676422,
+"value_eur": 1011.8990590965682,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-09-18T20:35:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 10.199065487791712,
+"price": 98.70760899999999,
+"mid": 98.609,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.516813420835846
+},
+"fees_eur": 2.516813420835846,
+"spread_cost_eur": 1.005719648685614,
+"value_eur": 1006.7253683343384,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-09-19T16:25:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -10.199065487791712,
+"price": 97.121781,
+"mid": 97.219,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.476378511774912
+},
+"fees_eur": 2.476378511774912,
+"spread_cost_eur": 0.9915429476575766,
+"value_eur": 990.5514047099648,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 4
+},
+{
+"type": "trade",
+"ts": "2026-09-21T16:35:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 9.642655287812257,
+"price": 102.230128,
+"mid": 102.128,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.4644247108323096
+},
+"fees_eur": 2.4644247108323096,
+"spread_cost_eur": 0.9847850992336259,
+"value_eur": 985.7698843329238,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-09-22T05:50:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -9.642655287812257,
+"price": 101.89700099999999,
+"mid": 101.999,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.456394138762152
+},
+"fees_eur": 2.456394138762152,
+"spread_cost_eur": 0.983541196701624,
+"value_eur": 982.5576555048607,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 6
+},
+{
+"type": "trade",
+"ts": "2026-09-25T12:20:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 9.38182139762114,
+"price": 104.21410999999999,
+"mid": 104.11,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.444295417830108
+},
+"fees_eur": 2.444295417830108,
+"spread_cost_eur": 0.976741425706257,
+"value_eur": 977.7181671320432,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 7
+},
+{
+"type": "trade",
+"ts": "2026-09-25T18:25:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -9.38182139762114,
+"price": 107.22267,
+"mid": 107.33,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.5148598492901755
+},
+"fees_eur": 2.5148598492901755,
+"spread_cost_eur": 1.00695089060672,
+"value_eur": 1005.9439397160702,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 8
+}
+],
+"costs": {
+"commissions": 19.877913697066923,
+"spread_slippage": 7.951204168670009
+},
+"realized": [
+{
+"ts": "2026-09-18T13:45:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 10.785641722313587,
+"pnl": 21.89905909656825,
+"ccy": "EUR",
+"pnl_eur": 21.89905909656825
+},
+{
+"ts": "2026-09-19T16:25:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 10.199065487791712,
+"pnl": -16.173963624373677,
+"ccy": "EUR",
+"pnl_eur": -16.173963624373677
+},
+{
+"ts": "2026-09-22T05:50:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 9.642655287812257,
+"pnl": -3.212228828063078,
+"ccy": "EUR",
+"pnl_eur": -3.212228828063078
+},
+{
+"ts": "2026-09-25T18:25:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 9.38182139762114,
+"pnl": 28.225772584027084,
+"ccy": "EUR",
+"pnl_eur": 28.225772584027084
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T16:55:00+00:00",
+"order_seq": 541,
+"open_buy_fees": {
+"SOL_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

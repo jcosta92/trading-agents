@@ -1,0 +1,95 @@
+{
+"agent_id": "wyckoff_spring.LINK",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1109.7258091910423
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-16T16:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 104.86929516055298,
+"price": 9.440322817888001,
+"mid": 9.42524243,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.5814696485623154,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-18T12:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -104.86929516055298,
+"price": 10.526022821,
+"mid": 10.526022821,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.6557848911232482
+},
+"fees_eur": 1.6557848911232482,
+"spread_cost_eur": 0.0,
+"value_eur": 1103.8565940821654,
+"eur_rate": 1.0,
+"reason": "sbx:take profit",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 4.130784891123248,
+"spread_slippage": 1.5814696485623154
+},
+"realized": [
+{
+"ts": "2026-09-18T12:00:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 104.86929516055298,
+"pnl": 113.85659408216549,
+"ccy": "EUR",
+"pnl_eur": 113.85659408216549
+}
+],
+"meta": {
+"state": {
+"pos": {
+"LINK_SPOT": {
+"sig": {
+"sl_dist": 1.0592377345716244,
+"tp_dist": 1.1968000010000015,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+}
+}
+}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 25,
+"open_buy_fees": {
+"LINK_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

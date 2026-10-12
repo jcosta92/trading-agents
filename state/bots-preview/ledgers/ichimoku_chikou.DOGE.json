@@ -1,0 +1,82 @@
+{
+"agent_id": "ichimoku_chikou.DOGE",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 7.525
+},
+"positions": {
+"DOGE_SPOT": {
+"inst_id": "DOGE_SPOT",
+"qty": 13652.189645738088,
+"avg_price": 0.07251584000000001,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-09-15T00:00:00+00:00",
+"last_mark": 0.077408
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-15T00:00:00+00:00",
+"inst": "DOGE_SPOT",
+"kind": "crypto_spot",
+"qty": 13652.189645738088,
+"price": 0.07251584000000001,
+"mid": 0.0724,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.5814696485623811,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+}
+],
+"costs": {
+"commissions": 2.475,
+"spread_slippage": 1.5814696485623811
+},
+"realized": [],
+"meta": {
+"state": {
+"pos": {
+"DOGE_SPOT": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 0.07251584,
+"entry_ts": "2026-09-15T00:00:00+00:00",
+"hi": 0.09218,
+"bars": 27,
+"hic": 0.087733
+}
+}
+},
+"orders": [],
+"last_ts": "2026-10-11T00:00:00+00:00",
+"order_seq": 1,
+"open_buy_fees": {
+"DOGE_SPOT": 2.475
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,101 @@
+{
+"agent_id": "raschke_8020.GLD",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 48.147281064238996,
+"USD": 5523.8181859736005
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-11-25T20:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4951.852718935761,
+"amount_to": 5435.185900792963,
+"rate": 1.0979359149932861,
+"fee_rate": 0.0003,
+"fee_eur": 1.4855558156805273,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-25T20:55:00+00:00",
+"inst": "GLD",
+"kind": "stock",
+"qty": 16.58494417637816,
+"price": 327.6937637786865,
+"mid": 327.5299987792969,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4031215761969392
+},
+"fees_eur": 0.36716312008010443,
+"spread_cost_eur": 2.473763118440464,
+"value_eur": 4950.0,
+"eur_rate": 1.0979359149932861,
+"reason": "sbe:buy",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-11-27T17:55:00+00:00",
+"inst": "GLD",
+"kind": "stock",
+"qty": -16.58494417637816,
+"price": 333.0933797607422,
+"mid": 333.260009765625,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5169228794393118
+},
+"fees_eur": 0.47251920711469214,
+"spread_cost_eur": 2.526160457863012,
+"value_eur": 5049.794755268823,
+"eur_rate": 1.0939722061157227,
+"reason": "sbx:time stop (1 bars)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 1.4855558156805273,
+"commissions": 0.8396823271947966,
+"spread_slippage": 4.999923576303476
+},
+"realized": [
+{
+"ts": "2026-11-27T17:55:00+00:00",
+"inst": "GLD",
+"qty": 16.58494417637816,
+"pnl": 89.55232963627323,
+"ccy": "USD",
+"pnl_eur": 81.85978504357011
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"pos": {}
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"orders": [],
+"order_seq": 2,
+"open_buy_fees": {
+"GLD": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

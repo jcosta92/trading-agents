@@ -1,0 +1,115 @@
+{
+"agent_id": "holiday_seasonality",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 73.14197824919756,
+"USD": 453.8986619031265
+},
+"positions": {
+"AMZN": {
+"inst_id": "AMZN",
+"qty": 19.10077196826002,
+"avg_price": 258.1189852294922,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-11-19T20:55:00+00:00",
+"last_mark": 254.24000549316406
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-11-19T20:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4926.858021750802,
+"amount_to": 5406.564338426279,
+"rate": 1.0976948738098145,
+"fee_rate": 0.0003,
+"fee_eur": 1.478057406525295,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-19T20:55:00+00:00",
+"inst": "AMZN",
+"kind": "stock",
+"qty": 20.944399919698895,
+"price": 258.1189852294922,
+"mid": 257.989990234375,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.41708491294279554
+},
+"fees_eur": 0.3799643442764763,
+"spread_cost_eur": 2.4612693653172375,
+"value_eur": 4925.0,
+"eur_rate": 1.0976948738098145,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-11-20T20:55:00+00:00",
+"inst": "AMZN",
+"kind": "stock",
+"qty": -1.8436279514388747,
+"price": 246.39674427032472,
+"mid": 246.52000427246094,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.36526297718099304
+},
+"fees_eur": 0.33301024734800133,
+"spread_cost_eur": 0.2071797944898249,
+"value_eur": 414.15240918519436,
+"eur_rate": 1.0968520641326904,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 1.478057406525295,
+"commissions": 0.7129745916244776,
+"spread_slippage": 2.6684491598070625
+},
+"realized": [
+{
+"ts": "2026-11-20T20:55:00+00:00",
+"inst": "AMZN",
+"qty": 1.8436279514388747,
+"pnl": -21.611451085822782,
+"ccy": "USD",
+"pnl_eur": -19.703159425525193
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"last_target": {
+"AMZN": 0.985
+},
+"started": true
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"order_seq": 2,
+"orders": [],
+"open_buy_fees": {
+"AMZN": 0.3803710702653758
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,133 @@
+{
+"agent_id": "backtrader_sma15.ETH",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4407.039951056153
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-22T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 2.247118683139424,
+"price": 2202.8208999999997,
+"mid": 2201.5,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 2.9682190685582146,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-23T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -2.247118683139424,
+"price": 2123.954862,
+"mid": 2125.23,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.931946631362544
+},
+"fees_eur": 11.931946631362544,
+"spread_cost_eur": 2.865386423380971,
+"value_eur": 4772.778652545017,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-11-05T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 2.2016705802368004,
+"price": 2157.673828,
+"mid": 2156.38,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.876217472136295
+},
+"fees_eur": 11.876217472136295,
+"spread_cost_eur": 2.8485830434862853,
+"value_eur": 4750.486988854518,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-11-06T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -2.2016705802368004,
+"price": 1990.25513,
+"mid": 1991.45,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 10.95471541721592
+},
+"fees_eur": 10.95471541721592,
+"spread_cost_eur": 2.6307101262076276,
+"value_eur": 4381.886166886368,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 4
+}
+],
+"costs": {
+"commissions": 47.13787952071476,
+"spread_slippage": 11.312898661633099
+},
+"realized": [
+{
+"ts": "2026-10-23T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 2.247118683139424,
+"pnl": -177.22134745498303,
+"ccy": "EUR",
+"pnl_eur": -177.22134745498303
+},
+{
+"ts": "2026-11-06T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 2.2016705802368004,
+"pnl": -368.60082196814955,
+"ccy": "EUR",
+"pnl_eur": -368.60082196814955
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-27T00:00:00+00:00",
+"order_seq": 4,
+"open_buy_fees": {
+"ETH_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

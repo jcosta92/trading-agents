@@ -1,0 +1,188 @@
+{
+"agent_id": "baa_g12",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 72.61108309941073,
+"USD": 481.7788905291525
+},
+"positions": {
+"DBC": {
+"inst_id": "DBC",
+"qty": 49.007704054664394,
+"avg_price": 33.326656373977656,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 29.514999389648438
+},
+"BIL": {
+"inst_id": "BIL",
+"qty": 35.92705970579508,
+"avg_price": 91.55074975204467,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 91.66500091552734
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1642.6362618872156,
+"amount_to": 1801.5836927072708,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.4927908785659838,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "DBC",
+"kind": "stock",
+"qty": 54.04264303957991,
+"price": 33.326656373977656,
+"mid": 33.310001373291016,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5230985856557744
+},
+"fees_eur": 0.4768043419829418,
+"spread_cost_eur": 0.8204231217721839,
+"value_eur": 1641.6666666666665,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 3284.752655013374,
+"amount_to": 3602.59721227031,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.9854257965039324,
+"reason": "FX for stock purchase",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "BIL",
+"kind": "stock",
+"qty": 39.345621941919504,
+"price": 91.55074975204467,
+"mid": 91.50499725341797,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.47602402707996816
+},
+"fees_eur": 0.43389588353674574,
+"spread_cost_eur": 1.6408462435444826,
+"value_eur": 3283.3333333333335,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 4
+},
+{
+"type": "trade",
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "DBC",
+"kind": "stock",
+"qty": -5.034938984915513,
+"price": 33.59989086914063,
+"mid": 33.61669921875,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3696118816174588
+},
+"fees_eur": 0.336901216780692,
+"spread_cost_eur": 0.07713934386917629,
+"value_eur": 154.20154839452877,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:sell (rebalance)",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "BIL",
+"kind": "stock",
+"qty": -3.418562236124426,
+"price": 91.65914933013917,
+"mid": 91.70500183105469,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3674045104761098
+},
+"fees_eur": 0.3348891980648631,
+"spread_cost_eur": 0.14287728033197886,
+"value_eur": 285.61168338370084,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:sell (rebalance)",
+"seq": 6
+}
+],
+"costs": {
+"fx": 1.4782166750699162,
+"commissions": 1.5824906403652428,
+"spread_slippage": 2.6812859895178214
+},
+"realized": [
+{
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "DBC",
+"qty": 5.034938984915513,
+"pnl": 1.3757190117197677,
+"ccy": "USD",
+"pnl_eur": 1.2539678296284187
+},
+{
+"ts": "2026-10-30T19:55:00+00:00",
+"inst": "BIL",
+"qty": 3.418562236124426,
+"pnl": 0.3705707040856986,
+"ccy": "USD",
+"pnl_eur": 0.33777518342595525
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"last_target": {
+"DBC": 0.3283,
+"BIL": 0.6567
+},
+"started": true
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"order_seq": 4,
+"orders": [],
+"open_buy_fees": {
+"DBC": 0.4743635624641163,
+"BIL": 0.4346644632416932
+}
+},
+"halted": false,
+"halt_reason": null
+}

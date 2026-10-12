@@ -1,0 +1,86 @@
+{
+"agent_id": "buffett_small_value.SLYV",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 73.04994701374198,
+"USD": -1.8463008899516353e-13
+},
+"positions": {
+"SLYV": {
+"inst_id": "SLYV",
+"qty": 52.386087238700455,
+"avg_price": 103.14154133605956,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 104.1500015258789
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4926.950052986258,
+"amount_to": 5403.699575002271,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 1.4780850158958856,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "SLYV",
+"kind": "stock",
+"qty": 52.386087238700455,
+"price": 103.14154133605956,
+"mid": 103.08999633789062,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5177926374255576
+},
+"fees_eur": 0.4719679703622224,
+"spread_cost_eur": 2.4612693653168853,
+"value_eur": 4925.0,
+"eur_rate": 1.0970927476882935,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+}
+],
+"costs": {
+"fx": 1.4780850158958856,
+"commissions": 0.4719679703622224,
+"spread_slippage": 2.4612693653168853
+},
+"realized": [],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"last_target": {
+"SLYV": 0.985
+},
+"started": true
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"order_seq": 1,
+"orders": [],
+"open_buy_fees": {
+"SLYV": 0.5177926374255576
+}
+},
+"halted": false,
+"halt_reason": null
+}

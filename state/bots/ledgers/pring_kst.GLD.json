@@ -1,0 +1,162 @@
+{
+"agent_id": "pring_kst.GLD",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 47.227292815180384,
+"USD": 4735.532431334432
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-19T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4951.846315368177,
+"amount_to": 5431.004889853348,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 1.485553894610348,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-19T19:55:00+00:00",
+"inst": "GLD",
+"kind": "stock",
+"qty": 14.295596719900324,
+"price": 379.87984744262695,
+"mid": 379.69000244140625,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.39578879629384073
+},
+"fees_eur": 0.3607614735653074,
+"spread_cost_eur": 2.473763118440786,
+"value_eur": 4950.000000000001,
+"eur_rate": 1.0970927476882935,
+"reason": "sbe:buy",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-11-02T20:55:00+00:00",
+"inst": "GLD",
+"kind": "stock",
+"qty": -14.295596719900324,
+"price": 361.5391412200928,
+"mid": 361.7200012207031,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5022582021774764
+},
+"fees_eur": 0.4578083331931552,
+"spread_cost_eur": 2.356684643968409,
+"value_eur": 4711.012603293584,
+"eur_rate": 1.0970927476882935,
+"reason": "sbx:exit (exit)",
+"seq": 3
+},
+{
+"type": "fx",
+"ts": "2026-11-06T20:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 0.9263918166427446,
+"amount_to": 1.0160328422334715,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 0.00027791754499284504,
+"reason": "FX for stock purchase",
+"seq": 4
+},
+{
+"type": "trade",
+"ts": "2026-11-06T20:55:00+00:00",
+"inst": "GLD",
+"kind": "stock",
+"qty": 13.86833325809624,
+"price": 372.68625,
+"mid": 372.5,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.39442027142568226
+},
+"fees_eur": 0.35951406319727597,
+"spread_cost_eur": 2.3543835056449787,
+"value_eur": 4711.1213947962915,
+"eur_rate": 1.0970927476882935,
+"reason": "sbe:buy",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-11-18T20:55:00+00:00",
+"inst": "GLD",
+"kind": "stock",
+"qty": -13.86833325809624,
+"price": 341.49917842102053,
+"mid": 341.6700134277344,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4919823743480831
+},
+"fees_eur": 0.44844191649680415,
+"spread_cost_eur": 2.1595228026517175,
+"value_eur": 4316.886082501369,
+"eur_rate": 1.0970927476882935,
+"reason": "sbx:exit (exit)",
+"seq": 6
+}
+],
+"costs": {
+"fx": 1.4858318121553409,
+"commissions": 1.6265257864525426,
+"spread_slippage": 9.34435407070589
+},
+"realized": [
+{
+"ts": "2026-11-02T20:55:00+00:00",
+"inst": "GLD",
+"qty": 14.295596719900324,
+"pnl": -262.1913397155147,
+"ccy": "USD",
+"pnl_eur": -238.9873967064165
+},
+{
+"ts": "2026-11-18T20:55:00+00:00",
+"inst": "GLD",
+"qty": 13.86833325809624,
+"pnl": -432.51270200138856,
+"ccy": "USD",
+"pnl_eur": -394.2353122949221
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"pos": {}
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"orders": [],
+"order_seq": 4,
+"open_buy_fees": {
+"GLD": 5.551115123125783e-17
+}
+},
+"halted": false,
+"halt_reason": null
+}

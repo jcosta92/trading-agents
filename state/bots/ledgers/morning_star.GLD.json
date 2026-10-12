@@ -1,0 +1,101 @@
+{
+"agent_id": "morning_star.GLD",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 48.1539859200293,
+"USD": 5227.218015118754
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-15T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4951.846014079971,
+"amount_to": 5431.004559411404,
+"rate": 1.0970927476882935,
+"fee_rate": 0.0003,
+"fee_eur": 1.485553804223855,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-15T19:55:00+00:00",
+"inst": "GLD",
+"kind": "stock",
+"qty": 14.192430331371087,
+"price": 382.64123721313473,
+"mid": 382.45001220703125,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.39545835435138155
+},
+"fees_eur": 0.36046027574665856,
+"spread_cost_eur": 2.473763118440315,
+"value_eur": 4950.0,
+"eur_rate": 1.0970927476882935,
+"reason": "sbe:buy",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-29T19:55:00+00:00",
+"inst": "GLD",
+"kind": "stock",
+"qty": -14.192430331371087,
+"price": 368.3457337799072,
+"mid": 368.5299987792969,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.503149410340681
+},
+"fees_eur": 0.45862066940181434,
+"spread_cost_eur": 2.3837256894262397,
+"value_eur": 4765.067653162901,
+"eur_rate": 1.0970927476882935,
+"reason": "sbx:time stop (10 bars)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 1.485553804223855,
+"commissions": 0.8190809451484728,
+"spread_slippage": 4.857488807866554
+},
+"realized": [
+{
+"ts": "2026-10-29T19:55:00+00:00",
+"inst": "GLD",
+"qty": 14.192430331371087,
+"pnl": -202.8879365279576,
+"ccy": "USD",
+"pnl_eur": -184.93234683709917
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-11-27",
+"pos": {}
+},
+"last_ts": "2026-11-27T17:55:00+00:00",
+"orders": [],
+"order_seq": 11,
+"open_buy_fees": {
+"GLD": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}
