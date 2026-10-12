@@ -1,0 +1,85 @@
+{
+"agent_id": "ichimoku_chikou.SOL",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4530.88052522542
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-11-05T00:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 58.14496625459976,
+"price": 85.13204699999999,
+"mid": 85.047,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 4.945054945054292,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-09T00:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -58.14496625459976,
+"price": 77.47045200000001,
+"mid": 77.548,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.261292043171478
+},
+"fees_eur": 11.261292043171478,
+"spread_cost_eur": 4.509025843111299,
+"value_eur": 4504.516817268591,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 23.63629204317148,
+"spread_slippage": 9.45408078816559
+},
+"realized": [
+{
+"ts": "2026-11-09T00:00:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 58.14496625459976,
+"pnl": -445.4831827314089,
+"ccy": "EUR",
+"pnl_eur": -445.4831827314089
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-13T00:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"SOL_SPOT": 1.7763568394002505e-15
+}
+},
+"halted": false,
+"halt_reason": null
+}

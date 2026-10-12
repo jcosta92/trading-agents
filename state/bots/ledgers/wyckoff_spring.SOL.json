@@ -1,0 +1,85 @@
+{
+"agent_id": "wyckoff_spring.SOL",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4826.978460478821
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-11-06T00:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 61.415482412197804,
+"price": 80.59856905099998,
+"mid": 80.518051,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 4.945054945053983,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-08T20:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -61.415482412197804,
+"price": 78.17828117648627,
+"mid": 78.25653771420046,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.00339213152587
+},
+"fees_eur": 12.00339213152587,
+"spread_cost_eur": 4.806163015625722,
+"value_eur": 4801.356852610347,
+"eur_rate": 1.0,
+"reason": "sbx:stop",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.37839213152587,
+"spread_slippage": 9.751217960679705
+},
+"realized": [
+{
+"ts": "2026-11-08T20:00:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 61.415482412197804,
+"pnl": -148.64314738965288,
+"ccy": "EUR",
+"pnl_eur": -148.64314738965288
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-14T08:00:00+00:00",
+"order_seq": 37,
+"open_buy_fees": {
+"SOL_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,111 @@
+{
+"agent_id": "half_kelly.ETH",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 1366.2183497614674
+},
+"positions": {
+"ETH_SPOT": {
+"inst_id": "ETH_SPOT",
+"qty": 1.5026937696808393,
+"avg_price": 2230.067238,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-14T00:00:00+00:00",
+"last_mark": 1750.16
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-14T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 2.2084535910302447,
+"price": 2230.067238,
+"mid": 2228.73,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.3125
+},
+"fees_eur": 12.3125,
+"spread_cost_eur": 2.953228063162258,
+"value_eur": 4925.0,
+"eur_rate": 1.0,
+"reason": "wb:buy (rebalance)",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-12T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -0.7057598213494053,
+"price": 1851.618362,
+"mid": 1852.73,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 3.2669946109309964
+},
+"fees_eur": 3.2669946109309964,
+"spread_cost_eur": 0.7845494362852699,
+"value_eur": 1306.7978443723985,
+"eur_rate": 1.0,
+"reason": "wb:sell (rebalance)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 15.579494610930997,
+"spread_slippage": 3.7377774994475277
+},
+"realized": [
+{
+"ts": "2026-11-12T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 0.7057598213494053,
+"pnl": -267.09401111564335,
+"ccy": "EUR",
+"pnl_eur": -267.09401111564335
+}
+],
+"meta": {
+"state": {
+"last_target": {
+"ETH_SPOT": 0.4253
+},
+"started": true
+},
+"order_seq": 3,
+"orders": [
+{
+"id": 3,
+"inst": "ETH_SPOT",
+"side": "sell",
+"type": "market",
+"price": null,
+"qty": 0.5315870682005551,
+"eur": null,
+"tag": "wb:sell (rebalance)",
+"placed": "2026-11-13T00:00:00+00:00"
+}
+],
+"last_ts": "2026-11-13T00:00:00+00:00",
+"open_buy_fees": {
+"ETH_SPOT": 8.377770361279895
+}
+},
+"halted": false,
+"halt_reason": null
+}

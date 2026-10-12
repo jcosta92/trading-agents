@@ -1,0 +1,107 @@
+{
+"agent_id": "holy_grail.BTC",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 7.525
+},
+"positions": {
+"BTC_SPOT": {
+"inst_id": "BTC_SPOT",
+"qty": 0.013557225359627808,
+"avg_price": 73023.79164899999,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-08T20:00:00+00:00",
+"last_mark": 74075.0
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-08T20:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": 0.013557225359627808,
+"price": 73023.79164899999,
+"mid": 72987.298,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 0.49475262368810674,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+}
+],
+"costs": {
+"commissions": 2.475,
+"spread_slippage": 0.49475262368810674
+},
+"realized": [],
+"meta": {
+"state": {
+"pos": {
+"BTC_SPOT": {
+"sig": {
+"sl_dist": 1345.0,
+"tp_dist": 4508.000000001,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 73023.791649,
+"entry_ts": "2026-10-08T20:00:00+00:00",
+"hi": 75198.0,
+"bars": 23,
+"fixed_sl": 71678.791649,
+"fixed_tp": 77531.79164900101,
+"hic": 74912.0
+}
+}
+},
+"orders": [
+{
+"id": 48,
+"inst": "BTC_SPOT",
+"side": "sell",
+"type": "stop",
+"price": 71678.791649,
+"qty": 0.013557225359627808,
+"eur": null,
+"tag": "sbx:stop",
+"placed": "2026-10-12T12:00:00+00:00"
+},
+{
+"id": 49,
+"inst": "BTC_SPOT",
+"side": "sell",
+"type": "limit",
+"price": 77531.79164900101,
+"qty": 0.013557225359627808,
+"eur": null,
+"tag": "sbx:take profit",
+"placed": "2026-10-12T12:00:00+00:00"
+}
+],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 49,
+"open_buy_fees": {
+"BTC_SPOT": 2.475
+}
+},
+"halted": false,
+"halt_reason": null
+}

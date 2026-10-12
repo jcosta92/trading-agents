@@ -1,0 +1,131 @@
+{
+"agent_id": "hmm_regime.XRP",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 7.182944096153857
+},
+"positions": {
+"XRP_SPOT": {
+"inst_id": "XRP_SPOT",
+"qty": 754.5012273554993,
+"avg_price": 1.25248123,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-11T00:00:00+00:00",
+"last_mark": 1.25788
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-14T00:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 854.7325114605385,
+"price": 1.1582571,
+"mid": 1.1571,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 0.989010989010913,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-16T00:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": -854.7325114605385,
+"price": 1.11074814,
+"mid": 1.11186,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.373481368255805
+},
+"fees_eur": 2.373481368255805,
+"spread_cost_eur": 0.950342890192484,
+"value_eur": 949.3925473023219,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-11T00:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 754.5012273554993,
+"price": 1.25248123,
+"mid": 1.25123,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.3624965631868133
+},
+"fees_eur": 2.3624965631868133,
+"spread_cost_eur": 0.9440545707038898,
+"value_eur": 944.9986252747253,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 3
+}
+],
+"costs": {
+"commissions": 7.210977931442619,
+"spread_slippage": 2.8834084499072867
+},
+"realized": [
+{
+"ts": "2026-09-16T00:00:00+00:00",
+"inst": "XRP_SPOT",
+"qty": 854.7325114605385,
+"pnl": -40.60745269767811,
+"ccy": "EUR",
+"pnl_eur": -40.60745269767811
+}
+],
+"meta": {
+"state": {
+"pos": {
+"XRP_SPOT": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 1.25248123,
+"entry_ts": "2026-10-11T00:00:00+00:00",
+"hi": 1.27243,
+"bars": 1,
+"hic": 1.25788
+}
+}
+},
+"orders": [],
+"order_seq": 3,
+"last_ts": "2026-10-11T00:00:00+00:00",
+"open_buy_fees": {
+"XRP_SPOT": 2.3624965631868133
+}
+},
+"halted": false,
+"halt_reason": null
+}

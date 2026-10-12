@@ -1,0 +1,131 @@
+{
+"agent_id": "aroon.LINK",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 8.734969938199468
+},
+"positions": {
+"LINK_SPOT": {
+"inst_id": "LINK_SPOT",
+"qty": 96.41593734028419,
+"avg_price": 11.91904,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-12T04:00:00+00:00",
+"last_mark": 11.66
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-18T12:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 95.88569699673445,
+"price": 10.32479328,
+"mid": 10.3083,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.581469648562359,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-02T20:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -95.88569699673445,
+"price": 12.0576768,
+"mid": 12.077,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.8903968603233863
+},
+"fees_eur": 2.8903968603233863,
+"spread_cost_eur": 1.852818500207351,
+"value_eur": 1156.1587441293545,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-12T04:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 96.41593734028419,
+"price": 11.91904,
+"mid": 11.9,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.8729635344908524
+},
+"fees_eur": 2.8729635344908524,
+"spread_cost_eur": 1.8357594469590486,
+"value_eur": 1149.185413796341,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 3
+}
+],
+"costs": {
+"commissions": 8.238360394814238,
+"spread_slippage": 5.270047595728759
+},
+"realized": [
+{
+"ts": "2026-10-02T20:00:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 95.88569699673445,
+"pnl": 166.1587441293546,
+"ccy": "EUR",
+"pnl_eur": 166.1587441293546
+}
+],
+"meta": {
+"state": {
+"pos": {
+"LINK_SPOT": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 11.91904,
+"entry_ts": "2026-10-12T04:00:00+00:00",
+"hi": 12.0406,
+"bars": 3,
+"hic": 12.0249
+}
+}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 3,
+"open_buy_fees": {
+"LINK_SPOT": 2.8729635344908524
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,85 @@
+{
+"agent_id": "hlhb.LINK",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1002.5514672232536
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-10T16:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 84.32094337630951,
+"price": 11.74085536,
+"mid": 11.7221,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.5814696485623096,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-11T20:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -84.32094337630951,
+"price": 11.8300416,
+"mid": 11.849,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.493800669732465
+},
+"fees_eur": 2.493800669732465,
+"spread_cost_eur": 1.598590172905486,
+"value_eur": 997.520267892986,
+"eur_rate": 1.0,
+"reason": "sbx:stop (through the price)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 4.968800669732465,
+"spread_slippage": 3.180059821467796
+},
+"realized": [
+{
+"ts": "2026-10-11T20:00:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 84.32094337630951,
+"pnl": 7.520267892985958,
+"ccy": "EUR",
+"pnl_eur": 7.520267892985958
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 14,
+"open_buy_fees": {
+"LINK_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

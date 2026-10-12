@@ -1,0 +1,85 @@
+{
+"agent_id": "ai_hedge_fund_technicals.SOL",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4086.180650028743
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-16T00:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 52.639447159470166,
+"price": 94.03594199999998,
+"mid": 93.942,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 4.945054945054115,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-10T00:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -52.639447159470166,
+"price": 77.103819,
+"mid": 77.181,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 10.14675601510963
+},
+"fees_eur": 10.14675601510963,
+"spread_cost_eur": 4.062765171214854,
+"value_eur": 4058.702406043852,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 22.52175601510963,
+"spread_slippage": 9.007820116268968
+},
+"realized": [
+{
+"ts": "2026-11-10T00:00:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 52.639447159470166,
+"pnl": -891.2975939561481,
+"ccy": "EUR",
+"pnl_eur": -891.2975939561481
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-13T00:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"SOL_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

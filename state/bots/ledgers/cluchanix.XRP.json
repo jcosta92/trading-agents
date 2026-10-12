@@ -1,0 +1,85 @@
+{
+"agent_id": "cluchanix.XRP",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4922.476893674187
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-11-05T15:15:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 4434.430296421957,
+"price": 1.11626515,
+"mid": 1.11515,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 4.94505494505474,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-05T20:20:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": -4434.430296421957,
+"price": 1.10433456,
+"mid": 1.10544,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.242736575624528
+},
+"fees_eur": 12.242736575624528,
+"spread_cost_eur": 4.901996626876254,
+"value_eur": 4897.094630249811,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.617736575624527,
+"spread_slippage": 9.847051571930994
+},
+"realized": [
+{
+"ts": "2026-11-05T20:20:00+00:00",
+"inst": "XRP_SPOT",
+"qty": 4434.430296421957,
+"pnl": -52.90536975018867,
+"ccy": "EUR",
+"pnl_eur": -52.90536975018867
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-14T13:10:00+00:00",
+"order_seq": 62,
+"open_buy_fees": {
+"XRP_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

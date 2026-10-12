@@ -1,0 +1,120 @@
+{
+"agent_id": "ols_pairs_eth_btc",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 10.583825184769434
+},
+"positions": {
+"ETH_SPOT": {
+"inst_id": "ETH_SPOT",
+"qty": 0.4884870755150917,
+"avg_price": 2207.4937019999998,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-09T00:00:00+00:00",
+"last_mark": 2262.25
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-14T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": 0.014851527321269221,
+"price": 66323.14499999999,
+"mid": 66290.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.4625
+},
+"fees_eur": 2.4625,
+"spread_cost_eur": 0.49225387306331275,
+"value_eur": 985.0,
+"eur_rate": 1.0,
+"reason": "wb:buy (rebalance)",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-09T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": -0.014851527321269221,
+"price": 72839.562,
+"mid": 72876.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.7044468627807086
+},
+"fees_eur": 2.7044468627807086,
+"spread_cost_eur": 0.5411599525323283,
+"value_eur": 1081.7787451122833,
+"eur_rate": 1.0,
+"reason": "wb:sell (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-09T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 0.4884870755150917,
+"price": 2207.4937019999998,
+"mid": 2206.17,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.695830356769908
+},
+"fees_eur": 2.695830356769908,
+"spread_cost_eur": 0.6466113188333238,
+"value_eur": 1078.3321427079632,
+"eur_rate": 1.0,
+"reason": "wb:buy (rebalance)",
+"seq": 3
+}
+],
+"costs": {
+"commissions": 7.862777219550616,
+"spread_slippage": 1.680025144428965
+},
+"realized": [
+{
+"ts": "2026-10-09T00:00:00+00:00",
+"inst": "BTC_SPOT",
+"qty": 0.014851527321269221,
+"pnl": 96.77874511228345,
+"ccy": "EUR",
+"pnl_eur": 96.77874511228345
+}
+],
+"meta": {
+"state": {
+"last_target": {
+"ETH_SPOT": 0.985
+},
+"started": true
+},
+"order_seq": 3,
+"orders": [],
+"last_ts": "2026-10-11T00:00:00+00:00",
+"open_buy_fees": {
+"BTC_SPOT": 0.0,
+"ETH_SPOT": 2.695830356769908
+}
+},
+"halted": false,
+"halt_reason": null
+}
