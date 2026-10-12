@@ -1,0 +1,128 @@
+{
+"agent_id": "octobot_dca.LINK",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 3329.166666666666
+},
+"positions": {
+"LINK_SPOT": {
+"inst_id": "LINK_SPOT",
+"qty": 157.68692237017694,
+"avg_price": 10.569466647044411,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-12T18:00:00+00:00",
+"last_mark": 9.7791
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-12T18:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 36.01366654224031,
+"price": 11.56968192,
+"mid": 11.5512,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.0416666666666665
+},
+"fees_eur": 1.0416666666666665,
+"spread_cost_eur": 0.6656017039403994,
+"value_eur": 416.66666666666663,
+"eur_rate": 1.0,
+"reason": "dca:time-based buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-19T18:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 39.17147504357121,
+"price": 10.636992,
+"mid": 10.62,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.0416666666666665
+},
+"fees_eur": 1.0416666666666665,
+"spread_cost_eur": 0.6656017039403667,
+"value_eur": 416.66666666666663,
+"eur_rate": 1.0,
+"reason": "dca:time-based buy",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-26T18:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 40.528532107354174,
+"price": 10.280823040000001,
+"mid": 10.2644,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.0416666666666665
+},
+"fees_eur": 1.0416666666666665,
+"spread_cost_eur": 0.6656017039404092,
+"value_eur": 416.6666666666666,
+"eur_rate": 1.0,
+"reason": "dca:time-based buy",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-11-02T18:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 41.973248677011256,
+"price": 9.92695776,
+"mid": 9.9111,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.0416666666666665
+},
+"fees_eur": 1.0416666666666665,
+"spread_cost_eur": 0.6656017039404108,
+"value_eur": 416.66666666666663,
+"eur_rate": 1.0,
+"reason": "dca:time-based buy",
+"seq": 4
+}
+],
+"costs": {
+"commissions": 4.166666666666666,
+"spread_slippage": 2.662406815761586
+},
+"realized": [],
+"meta": {
+"state": {
+"last_buy": "2026-11-02T18:00:00+00:00",
+"buys": 4
+},
+"orders": [],
+"order_seq": 4,
+"last_ts": "2026-11-07T14:00:00+00:00",
+"open_buy_fees": {
+"LINK_SPOT": 4.166666666666666
+}
+},
+"halted": false,
+"halt_reason": null
+}

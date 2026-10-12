@@ -1,0 +1,85 @@
+{
+"agent_id": "chaikin_money_flow.AVAX",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4824.903466903585
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-11-04T16:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": 618.4039257030785,
+"price": 8.004477,
+"mid": 7.9885,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 9.880239520957753,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-05T08:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": -618.4039257030785,
+"price": 7.7607474,
+"mid": 7.7763,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.998191646374899
+},
+"fees_eur": 11.998191646374899,
+"spread_cost_eur": 9.617788894889921,
+"value_eur": 4799.276658549959,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.3731916463749,
+"spread_slippage": 19.498028415847674
+},
+"realized": [
+{
+"ts": "2026-11-05T08:00:00+00:00",
+"inst": "AVAX_SPOT",
+"qty": 618.4039257030785,
+"pnl": -150.72334145004103,
+"ccy": "EUR",
+"pnl_eur": -150.72334145004103
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-07T08:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"AVAX_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

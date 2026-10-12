@@ -1,0 +1,139 @@
+{
+"agent_id": "half_kelly.SOL",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 15.51880655974724
+},
+"positions": {
+"SOL_SPOT": {
+"inst_id": "SOL_SPOT",
+"qty": 10.858635641377433,
+"avg_price": 89.5042081561496,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-09-14T00:00:00+00:00",
+"last_mark": 99.287
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-14T00:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 8.659554263802875,
+"price": 85.78369799999999,
+"mid": 85.698,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.857121469451695
+},
+"fees_eur": 1.857121469451695,
+"spread_cost_eur": 0.7421064812993234,
+"value_eur": 742.848587780678,
+"eur_rate": 1.0,
+"reason": "wb:buy (rebalance)",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-15T00:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 2.7013941819026956,
+"price": 88.81973099999999,
+"mid": 88.731,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 0.5998427614039062
+},
+"fees_eur": 0.5998427614039062,
+"spread_cost_eur": 0.2396974071543964,
+"value_eur": 239.93710456156248,
+"eur_rate": 1.0,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-09-16T00:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -3.3028939439945737,
+"price": 83.85606,
+"mid": 83.94,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 0.692419181853114
+},
+"fees_eur": 0.692419181853114,
+"spread_cost_eur": 0.2772449176588991,
+"value_eur": 276.9676727412456,
+"eur_rate": 1.0,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-09-19T00:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 2.800581139666436,
+"price": 98.13203399999999,
+"mid": 98.034,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 0.6870668090437636
+},
+"fees_eur": 0.6870668090437636,
+"spread_cost_eur": 0.2745521714460151,
+"value_eur": 274.8267236175054,
+"eur_rate": 1.0,
+"reason": "wb:buy (rebalance)",
+"seq": 4
+}
+],
+"costs": {
+"commissions": 3.836450221752479,
+"spread_slippage": 1.5336009775586341
+},
+"realized": [
+{
+"ts": "2026-09-16T00:00:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 3.3028939439945737,
+"pnl": -8.751158480869474,
+"ccy": "EUR",
+"pnl_eur": -8.751158480869474
+}
+],
+"meta": {
+"state": {
+"last_target": {
+"SOL_SPOT": 0.985
+},
+"started": true
+},
+"order_seq": 4,
+"orders": [],
+"last_ts": "2026-10-11T00:00:00+00:00",
+"open_buy_fees": {
+"SOL_SPOT": 2.4297339618440774
+}
+},
+"halted": false,
+"halt_reason": null
+}

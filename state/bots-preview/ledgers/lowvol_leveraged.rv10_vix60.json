@@ -1,0 +1,115 @@
+{
+"agent_id": "lowvol_leveraged.rv10_vix60",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 14.381010331646848,
+"USD": 114.04564943642839
+},
+"positions": {
+"SPXL": {
+"inst_id": "SPXL",
+"qty": 3.3350292460092676,
+"avg_price": 295.2975688934326,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-09-22T19:55:00+00:00",
+"last_mark": 296.9599914550781
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-09-22T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 985.6189896683532,
+"amount_to": 1103.138545500509,
+"rate": 1.1195701360702515,
+"fee_rate": 0.0003,
+"fee_eur": 0.2956856969004775,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-22T19:55:00+00:00",
+"inst": "SPXL",
+"kind": "stock",
+"qty": 3.7344587297539493,
+"price": 295.2975688934326,
+"mid": 295.1499938964844,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3619614713114019
+},
+"fees_eur": 0.32330397145274453,
+"spread_cost_eur": 0.4922538730633545,
+"value_eur": 985.0,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-09-23T19:55:00+00:00",
+"inst": "SPXL",
+"kind": "stock",
+"qty": -0.3994294837446819,
+"price": 286.4067127990723,
+"mid": 286.54998779296875,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3536359979163817
+},
+"fees_eur": 0.3158676589549469,
+"spread_cost_eur": 0.05111627668674471,
+"value_eur": 102.18143709682376,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 0.2956856969004775,
+"commissions": 0.6391716304076914,
+"spread_slippage": 0.5433701497500992
+},
+"realized": [
+{
+"ts": "2026-09-23T19:55:00+00:00",
+"inst": "SPXL",
+"qty": 0.3994294837446819,
+"pnl": -3.5512700598185885,
+"ccy": "USD",
+"pnl_eur": -3.171994272983851
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-09",
+"last_target": {
+"SPXL": 0.985
+},
+"started": true
+},
+"last_ts": "2026-10-12T16:55:00+00:00",
+"order_seq": 2,
+"orders": [],
+"open_buy_fees": {
+"SPXL": 0.32324686925422386
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,85 @@
+{
+"agent_id": "stochrsi_trend.AVAX",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4880.062255475005
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-11-04T23:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": 630.7609500100922,
+"price": 7.847664,
+"mid": 7.832,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 9.880239520958161,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-05T13:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": -630.7609500100922,
+"price": 7.6963764,
+"mid": 7.7118,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.136434224248132
+},
+"fees_eur": 12.136434224248132,
+"spread_cost_eur": 9.728604588575717,
+"value_eur": 4854.573689699253,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.511434224248134,
+"spread_slippage": 19.608844109533877
+},
+"realized": [
+{
+"ts": "2026-11-05T13:00:00+00:00",
+"inst": "AVAX_SPOT",
+"qty": 630.7609500100922,
+"pnl": -95.42631030074674,
+"ccy": "EUR",
+"pnl_eur": -95.42631030074674
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-07T14:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"AVAX_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

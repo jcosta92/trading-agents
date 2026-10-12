@@ -1,0 +1,105 @@
+{
+"agent_id": "turn_of_month",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 9.38606886974435,
+"USD": 1116.0156766013508
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-09-24T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 990.6139311302557,
+"amount_to": 1108.7290551364865,
+"rate": 1.1195701360702515,
+"fee_rate": 0.0003,
+"fee_eur": 0.2971841793390695,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-24T19:55:00+00:00",
+"inst": "SPY",
+"kind": "stock",
+"qty": 1.4425310451045965,
+"price": 768.3539556884765,
+"mid": 767.969970703125,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.35462042693747
+},
+"fees_eur": 0.3167469509165418,
+"spread_cost_eur": 0.4947526236880797,
+"value_eur": 990.0,
+"eur_rate": 1.1195701360702515,
+"reason": "tom:buy (4 trading days left in the month)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-05T19:55:00+00:00",
+"inst": "SPY",
+"kind": "stock",
+"qty": -1.4425310451045965,
+"price": 773.9128377990723,
+"mid": 774.2999877929688,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.37761812880891127
+},
+"fees_eur": 0.3372884972926933,
+"spread_cost_eur": 0.498830638041036,
+"value_eur": 997.1624454442466,
+"eur_rate": 1.1195701360702515,
+"reason": "tom:sell (trading day 3 of the month)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 0.2971841793390695,
+"commissions": 0.6540354482092351,
+"spread_slippage": 0.9935832617291157
+},
+"realized": [
+{
+"ts": "2026-10-05T19:55:00+00:00",
+"inst": "SPY",
+"qty": 1.4425310451045965,
+"pnl": 8.01886002061107,
+"ccy": "USD",
+"pnl_eur": 7.162445444246735
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-09",
+"day_position": {
+"day": "2026-10-09",
+"nth": 7,
+"left_in_month": 15
+}
+},
+"last_ts": "2026-10-12T16:55:00+00:00",
+"order_seq": 2,
+"orders": [],
+"open_buy_fees": {
+"SPY": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

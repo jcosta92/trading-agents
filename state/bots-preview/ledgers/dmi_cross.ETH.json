@@ -1,0 +1,131 @@
+{
+"agent_id": "dmi_cross.ETH",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 7.479757950947926
+},
+"positions": {
+"ETH_SPOT": {
+"inst_id": "ETH_SPOT",
+"qty": 0.43336351006584634,
+"avg_price": 2270.721616,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-12T04:00:00+00:00",
+"last_mark": 2265.5
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-11T20:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 0.4373801372987677,
+"price": 2263.4772719999996,
+"mid": 2262.12,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 0.5936438137116589,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -0.4373801372987677,
+"price": 2261.04256,
+"mid": 2262.4,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.4723377633278925
+},
+"fees_eur": 2.4723377633278925,
+"spread_cost_eur": 0.5937172935749373,
+"value_eur": 988.935105331157,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-12T04:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 0.43336351006584634,
+"price": 2270.721616,
+"mid": 2269.36,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.460119724730377
+},
+"fees_eur": 2.460119724730377,
+"spread_cost_eur": 0.590074689121681,
+"value_eur": 984.0478898921508,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 3
+}
+],
+"costs": {
+"commissions": 7.40745748805827,
+"spread_slippage": 1.7774357964082772
+},
+"realized": [
+{
+"ts": "2026-10-12T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 0.4373801372987677,
+"pnl": -1.0648946688428536,
+"ccy": "EUR",
+"pnl_eur": -1.0648946688428536
+}
+],
+"meta": {
+"state": {
+"pos": {
+"ETH_SPOT": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 2270.721616,
+"entry_ts": "2026-10-12T04:00:00+00:00",
+"hi": 2300.01,
+"bars": 3,
+"hic": 2286.04
+}
+}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 3,
+"open_buy_fees": {
+"ETH_SPOT": 2.460119724730377
+}
+},
+"halted": false,
+"halt_reason": null
+}

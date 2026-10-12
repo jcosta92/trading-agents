@@ -1,0 +1,85 @@
+{
+"agent_id": "gekko_uo.ETH",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4980.916895960192
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-11-05T16:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 2.4680491615728366,
+"price": 2005.632658,
+"mid": 2004.43,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 2.968219068558688,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-11-06T22:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -2.4680491615728366,
+"price": 2007.934516,
+"mid": 2009.14,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.389202746767399
+},
+"fees_eur": 12.389202746767399,
+"spread_cost_eur": 2.975193775489641,
+"value_eur": 4955.681098706959,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.7642027467674,
+"spread_slippage": 5.9434128440483285
+},
+"realized": [
+{
+"ts": "2026-11-06T22:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 2.4680491615728366,
+"pnl": 5.681098706959821,
+"ccy": "EUR",
+"pnl_eur": 5.681098706959821
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-11-07T14:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"ETH_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

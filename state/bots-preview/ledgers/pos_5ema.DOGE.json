@@ -1,0 +1,131 @@
+{
+"agent_id": "pos_5ema.DOGE",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 7.4602710321162595
+},
+"positions": {
+"DOGE_SPOT": {
+"inst_id": "DOGE_SPOT",
+"qty": 13390.310275764672,
+"avg_price": 0.0732980896,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-09-12T19:00:00+00:00",
+"last_mark": 0.07561
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-12T17:45:00+00:00",
+"inst": "DOGE_SPOT",
+"kind": "crypto_spot",
+"qty": 13482.90837893625,
+"price": 0.07342629440000001,
+"mid": 0.073309,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.5814696485624247,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-12T18:00:00+00:00",
+"inst": "DOGE_SPOT",
+"kind": "crypto_spot",
+"qty": -13482.90837893625,
+"price": 0.0731547648,
+"mid": 0.073272,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.4658474782025763
+},
+"fees_eur": 2.4658474782025763,
+"spread_cost_eur": 1.5806714603864,
+"value_eur": 986.3389912810305,
+"eur_rate": 1.0,
+"reason": "sbx:stop (through the price)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-09-12T19:00:00+00:00",
+"inst": "DOGE_SPOT",
+"kind": "crypto_spot",
+"qty": 13390.310275764672,
+"price": 0.0732980896,
+"mid": 0.073181,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.453710405911999
+},
+"fees_eur": 2.453710405911999,
+"spread_cost_eur": 1.5678660740652928,
+"value_eur": 981.4841623647997,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 3
+}
+],
+"costs": {
+"commissions": 7.394557884114575,
+"spread_slippage": 4.730007183014117
+},
+"realized": [
+{
+"ts": "2026-09-12T18:00:00+00:00",
+"inst": "DOGE_SPOT",
+"qty": 13482.90837893625,
+"pnl": -3.6610087189694034,
+"ccy": "EUR",
+"pnl_eur": -3.6610087189694034
+}
+],
+"meta": {
+"state": {
+"pos": {
+"DOGE_SPOT": {
+"sig": {
+"sl_dist": 0.0,
+"tp_dist": 0.0,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 0.07329809,
+"entry_ts": "2026-09-12T19:00:00+00:00",
+"hi": 0.09218,
+"bars": 2863,
+"hic": 0.091359
+}
+}
+},
+"orders": [],
+"last_ts": "2026-10-12T16:45:00+00:00",
+"order_seq": 6,
+"open_buy_fees": {
+"DOGE_SPOT": 2.453710405911999
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,85 @@
+{
+"agent_id": "bollinger_method2.XRP",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 984.6720095112335
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-14T20:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 780.2417136812871,
+"price": 1.2688375699999999,
+"mid": 1.26757,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 0.9890109890108125,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-08T08:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": -780.2417136812871,
+"price": 1.2555032400000001,
+"mid": 1.25676,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.4489899987750214
+},
+"fees_eur": 2.4489899987750214,
+"spread_cost_eur": 0.9805765760860694,
+"value_eur": 979.5959995100085,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 4.9239899987750215,
+"spread_slippage": 1.969587565096882
+},
+"realized": [
+{
+"ts": "2026-10-08T08:00:00+00:00",
+"inst": "XRP_SPOT",
+"qty": 780.2417136812871,
+"pnl": -10.404000489991585,
+"ccy": "EUR",
+"pnl_eur": -10.404000489991585
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"XRP_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

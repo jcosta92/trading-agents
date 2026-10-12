@@ -1,0 +1,107 @@
+{
+"agent_id": "donchian_55_20.LINK",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1149.3447119474251
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-18T16:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": 92.63876156101799,
+"price": 10.686671360000002,
+"mid": 10.6696,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 1.5814696485623907,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-02T16:00:00+00:00",
+"inst": "LINK_SPOT",
+"kind": "crypto_spot",
+"qty": -92.63876156101799,
+"price": 12.35639808,
+"mid": 12.3762,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.861703538715351
+},
+"fees_eur": 2.861703538715351,
+"spread_cost_eur": 1.834425345330428,
+"value_eur": 1144.6814154861404,
+"eur_rate": 1.0,
+"reason": "sbx:stop",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 5.336703538715351,
+"spread_slippage": 3.4158949938928185
+},
+"realized": [
+{
+"ts": "2026-10-02T16:00:00+00:00",
+"inst": "LINK_SPOT",
+"qty": 92.63876156101799,
+"pnl": 154.68141548614048,
+"ccy": "EUR",
+"pnl_eur": 154.68141548614048
+}
+],
+"meta": {
+"state": {
+"pos": {
+"LINK_SPOT": {
+"sig": {
+"sl_dist": 0.4162785761569245,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+}
+}
+}
+},
+"orders": [
+{
+"id": 179,
+"inst": "LINK_SPOT",
+"side": "buy",
+"type": "stop",
+"price": 12.745,
+"qty": null,
+"eur": 1137.851264827951,
+"tag": "sbe:buy stop",
+"placed": "2026-10-12T12:00:00+00:00"
+}
+],
+"order_seq": 179,
+"last_ts": "2026-10-12T12:00:00+00:00",
+"open_buy_fees": {
+"LINK_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

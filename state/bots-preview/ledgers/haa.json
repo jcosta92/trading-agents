@@ -1,0 +1,115 @@
+{
+"agent_id": "haa",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 14.35722403050704,
+"USD": 118.13833097402377
+},
+"positions": {
+"BIL": {
+"inst_id": "BIL",
+"qty": 10.752555736907372,
+"avg_price": 91.54575,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-09-14T19:55:00+00:00",
+"last_mark": 91.50499725341797
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-09-14T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 985.642775969493,
+"amount_to": 1103.165167943783,
+"rate": 1.1195701360702515,
+"fee_rate": 0.0003,
+"fee_eur": 0.2956928327907917,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-14T19:55:00+00:00",
+"inst": "BIL",
+"kind": "stock",
+"qty": 12.04618001413717,
+"price": 91.54575,
+"mid": 91.5,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.38858391458528135
+},
+"fees_eur": 0.34708313670211927,
+"spread_cost_eur": 0.4922538730634487,
+"value_eur": 985.0,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-09-30T19:55:00+00:00",
+"inst": "BIL",
+"kind": "stock",
+"qty": -1.2936242772297974,
+"price": 91.59917414474488,
+"mid": 91.6449966430664,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3565844738181926
+},
+"fees_eur": 0.3185012375105166,
+"spread_cost_eur": 0.052946299979128725,
+"value_eur": 105.83965365829172,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+}
+],
+"costs": {
+"fx": 0.2956928327907917,
+"commissions": 0.6655843742126359,
+"spread_slippage": 0.5452001730425774
+},
+"realized": [
+{
+"ts": "2026-09-30T19:55:00+00:00",
+"inst": "BIL",
+"qty": 1.2936242772297974,
+"pnl": 0.06911077063221634,
+"ccy": "USD",
+"pnl_eur": 0.06172973751765002
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-09",
+"last_target": {
+"BIL": 0.985
+},
+"started": true
+},
+"last_ts": "2026-10-12T16:55:00+00:00",
+"order_seq": 2,
+"orders": [],
+"open_buy_fees": {
+"BIL": 0.34685437168798344
+}
+},
+"halted": false,
+"halt_reason": null
+}
