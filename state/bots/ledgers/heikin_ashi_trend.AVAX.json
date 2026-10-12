@@ -1,0 +1,85 @@
+{
+"agent_id": "heikin_ashi_trend.AVAX",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4911.947111152957
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-15T20:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": 551.4942184354289,
+"price": 8.9756154,
+"mid": 8.9577,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 9.880239520957915,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-16T20:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": -551.4942184354289,
+"price": 8.8605434,
+"mid": 8.8783,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.216346143240495
+},
+"fees_eur": 12.216346143240495,
+"spread_cost_eur": 9.792662239070665,
+"value_eur": 4886.5384572961975,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.591346143240493,
+"spread_slippage": 19.67290176002858
+},
+"realized": [
+{
+"ts": "2026-10-16T20:00:00+00:00",
+"inst": "AVAX_SPOT",
+"qty": 551.4942184354289,
+"pnl": -63.46154270380245,
+"ccy": "EUR",
+"pnl_eur": -63.46154270380245
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-17T12:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"AVAX_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

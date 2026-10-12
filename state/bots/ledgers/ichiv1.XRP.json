@@ -1,0 +1,85 @@
+{
+"agent_id": "ichiv1.XRP",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4999.999999999999
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-15T15:05:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 4154.949708488728,
+"price": 1.19135016,
+"mid": 1.19016,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 4.945054945054696,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-15T17:15:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": -4154.949708488728,
+"price": 1.1961227194792188,
+"mid": 1.1961227194792188,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 7.454744616925387
+},
+"fees_eur": 7.454744616925387,
+"spread_cost_eur": 0.0,
+"value_eur": 4969.8297446169245,
+"eur_rate": 1.0,
+"reason": "sbx:take profit",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 19.82974461692539,
+"spread_slippage": 4.945054945054696
+},
+"realized": [
+{
+"ts": "2026-10-15T17:15:00+00:00",
+"inst": "XRP_SPOT",
+"qty": 4154.949708488728,
+"pnl": 19.829744616924977,
+"ccy": "EUR",
+"pnl_eur": 19.829744616924977
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-17T18:55:00+00:00",
+"order_seq": 53,
+"open_buy_fees": {
+"XRP_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

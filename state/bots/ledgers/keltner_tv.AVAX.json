@@ -1,0 +1,85 @@
+{
+"agent_id": "keltner_tv.AVAX",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4812.471569038634
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-16T10:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": 534.4006791837604,
+"price": 9.26271277866,
+"mid": 9.24422433,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 9.880239520957783,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-16T16:00:00+00:00",
+"inst": "AVAX_SPOT",
+"kind": "crypto_spot",
+"qty": -534.4006791837604,
+"price": 8.9573494,
+"mid": 8.9753,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 11.967034007615624
+},
+"fees_eur": 11.967034007615624,
+"spread_cost_eur": 9.592812831756387,
+"value_eur": 4786.813603046249,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.342034007615624,
+"spread_slippage": 19.47305235271417
+},
+"realized": [
+{
+"ts": "2026-10-16T16:00:00+00:00",
+"inst": "AVAX_SPOT",
+"qty": 534.4006791837604,
+"pnl": -163.18639695375137,
+"ccy": "EUR",
+"pnl_eur": -163.18639695375137
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-17T18:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"AVAX_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

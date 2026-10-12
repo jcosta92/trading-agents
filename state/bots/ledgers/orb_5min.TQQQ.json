@@ -1,0 +1,100 @@
+{
+"agent_id": "orb_5min.TQQQ",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 47.997934223443735,
+"USD": 5608.775580231333
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-13T13:35:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4952.002065776556,
+"amount_to": 5544.312308036169,
+"rate": 1.1199462413787842,
+"fee_rate": 0.0003,
+"fee_eur": 1.485600619732395,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-13T13:35:00+00:00",
+"inst": "TQQQ",
+"kind": "stock",
+"qty": 71.31227323997696,
+"price": 77.73884694671631,
+"mid": 77.69999694824219,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5784132111876462
+},
+"fees_eur": 0.5164651568235563,
+"spread_cost_eur": 2.4737631184407216,
+"value_eur": 4950.0,
+"eur_rate": 1.1199462413787842,
+"reason": "sbe:buy",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-13T19:55:00+00:00",
+"inst": "TQQQ",
+"kind": "stock",
+"qty": -71.31227323997696,
+"price": 78.66064694976806,
+"mid": 78.69999694824219,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.6939682838870598
+},
+"fees_eur": 0.6195748372936053,
+"spread_cost_eur": 2.505319678116872,
+"value_eur": 5008.134036555439,
+"eur_rate": 1.1200717687606812,
+"reason": "sbx:eod flat at the close",
+"seq": 3
+}
+],
+"costs": {
+"fx": 1.485600619732395,
+"commissions": 1.1360399941171617,
+"spread_slippage": 4.979082796557593
+},
+"realized": [
+{
+"ts": "2026-10-13T19:55:00+00:00",
+"inst": "TQQQ",
+"qty": 71.31227323997696,
+"pnl": 65.73565369023851,
+"ccy": "USD",
+"pnl_eur": 58.6887872042098
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-16T19:55:00+00:00",
+"order_seq": 152,
+"open_buy_fees": {
+"TQQQ": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

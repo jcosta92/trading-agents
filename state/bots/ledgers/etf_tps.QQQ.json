@@ -1,0 +1,204 @@
+{
+"agent_id": "etf_tps.QQQ",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 47.24280265603443,
+"USD": -1.865174681370263e-13
+},
+"positions": {
+"QQQ": {
+"inst_id": "QQQ",
+"qty": 7.681942453054951,
+"avg_price": 722.6181791556556,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-13T19:55:00+00:00",
+"last_mark": 709.9299926757812
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-13T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 495.46325112183524,
+"amount_to": 554.7879137199396,
+"rate": 1.1200717687606812,
+"fee_rate": 0.0003,
+"fee_eur": 0.14863897533649606,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-13T19:55:00+00:00",
+"inst": "QQQ",
+"kind": "stock",
+"qty": 0.7456083054721186,
+"price": 743.6015954589843,
+"mid": 743.22998046875,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.35238818340242717
+},
+"fees_eur": 0.3146121464987301,
+"spread_cost_eur": 0.24737631184404166,
+"value_eur": 495.0,
+"eur_rate": 1.1200717687606812,
+"reason": "sbe:buy",
+"seq": 2
+},
+{
+"type": "fx",
+"ts": "2026-10-14T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 990.6151674851355,
+"amount_to": 1105.14227210133,
+"rate": 1.115946888923645,
+"fee_rate": 0.0003,
+"fee_eur": 0.2971845502454471,
+"reason": "FX for stock purchase",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-14T19:55:00+00:00",
+"inst": "QQQ",
+"kind": "stock",
+"qty": 1.5148507403693734,
+"price": 729.3044724426269,
+"mid": 728.9400024414062,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3548520669214031
+},
+"fees_eur": 0.31798293489008744,
+"spread_cost_eur": 0.49475262368806827,
+"value_eur": 990.0,
+"eur_rate": 1.115946888923645,
+"reason": "sbe:tps add",
+"seq": 4
+},
+{
+"type": "fx",
+"ts": "2026-10-15T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1485.7642454785282,
+"amount_to": 1666.2760905360187,
+"rate": 1.1218308210372925,
+"fee_rate": 0.0003,
+"fee_eur": 0.44572927364356474,
+"reason": "FX for stock purchase",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-10-15T19:55:00+00:00",
+"inst": "QQQ",
+"kind": "stock",
+"qty": 2.2857619854254914,
+"price": 728.8242519836425,
+"mid": 728.4600219726562,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3573212956393178
+},
+"fees_eur": 0.31851620488455057,
+"spread_cost_eur": 0.7421289355320987,
+"value_eur": 1485.0,
+"eur_rate": 1.1218308210372925,
+"reason": "sbe:tps add",
+"seq": 6
+},
+{
+"type": "fx",
+"ts": "2026-10-16T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1980.914533258467,
+"amount_to": 2226.329596709488,
+"rate": 1.1242270469665527,
+"fee_rate": 0.0003,
+"fee_eur": 0.5942743599773621,
+"reason": "FX for stock purchase",
+"seq": 7
+},
+{
+"type": "trade",
+"ts": "2026-10-16T19:55:00+00:00",
+"inst": "QQQ",
+"kind": "stock",
+"qty": 3.1357214217879688,
+"price": 709.8747795410156,
+"mid": 709.52001953125,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.36004371571398686
+},
+"fees_eur": 0.3202588984898338,
+"spread_cost_eur": 0.9895052473763574,
+"value_eur": 1980.0,
+"eur_rate": 1.1242270469665527,
+"reason": "sbe:tps add",
+"seq": 8
+}
+],
+"costs": {
+"fx": 1.48582715920287,
+"commissions": 1.2713701847632017,
+"spread_slippage": 2.473763118440566
+},
+"realized": [],
+"meta": {
+"state": {
+"done_day": "2026-10-16",
+"pos": {
+"QQQ": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 722.6181791556556,
+"entry_ts": "2026-10-13T19:55:00+00:00",
+"hi": 743.60159546,
+"bars": 3,
+"hic": 743.60159546,
+"entries": 4,
+"last_entry_ts": "2026-10-16T19:55:00+00:00"
+}
+},
+"tps": {
+"plan": 4950.0,
+"tranche": 4,
+"last": 709.5499877929688
+}
+},
+"last_ts": "2026-10-16T19:55:00+00:00",
+"orders": [],
+"order_seq": 4,
+"open_buy_fees": {
+"QQQ": 1.4246052616771347
+}
+},
+"halted": false,
+"halt_reason": null
+}

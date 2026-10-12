@@ -1,0 +1,85 @@
+{
+"agent_id": "hull_suite.ETH",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4936.660069574274
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-13T00:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 2.256878156247521,
+"price": 2193.295188,
+"mid": 2191.98,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 2.968219068558943,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-14T20:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -2.256878156247521,
+"price": 2176.153524,
+"mid": 2177.46,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.278283382391663
+},
+"fees_eur": 12.278283382391663,
+"spread_cost_eur": 2.948557146062093,
+"value_eur": 4911.313352956665,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.653283382391663,
+"spread_slippage": 5.916776214621036
+},
+"realized": [
+{
+"ts": "2026-10-14T20:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 2.256878156247521,
+"pnl": -38.686647043335,
+"ccy": "EUR",
+"pnl_eur": -38.686647043335
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"order_seq": 2,
+"last_ts": "2026-10-17T12:00:00+00:00",
+"open_buy_fees": {
+"ETH_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

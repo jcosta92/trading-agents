@@ -1,0 +1,105 @@
+{
+"agent_id": "swinghightosky.ADA",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 37.625
+},
+"positions": {
+"ADA_SPOT": {
+"inst_id": "ADA_SPOT",
+"qty": 22723.309815426863,
+"avg_price": 0.217837984,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-12T17:15:00+00:00",
+"last_mark": 0.19739
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-12T17:15:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": 22723.309815426863,
+"price": 0.217837984,
+"mid": 0.21749,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 7.9073482428120325,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+}
+],
+"costs": {
+"commissions": 12.375,
+"spread_slippage": 7.9073482428120325
+},
+"realized": [],
+"meta": {
+"state": {
+"pos": {
+"ADA_SPOT": {
+"sig": {
+"sl_dist": null,
+"tp_dist": null,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 0.21783798,
+"entry_ts": "2026-10-12T17:15:00+00:00",
+"hi": 0.21858,
+"bars": 487,
+"hic": 0.21802
+}
+}
+},
+"orders": [
+{
+"id": 974,
+"inst": "ADA_SPOT",
+"side": "sell",
+"type": "stop",
+"price": 0.14311955286,
+"qty": 22723.309815426863,
+"eur": null,
+"tag": "sbx:stop",
+"placed": "2026-10-17T18:45:00+00:00"
+},
+{
+"id": 975,
+"inst": "ADA_SPOT",
+"side": "sell",
+"type": "limit",
+"price": 0.218710640911367,
+"qty": 22723.309815426863,
+"eur": null,
+"tag": "sbx:take profit",
+"placed": "2026-10-17T18:45:00+00:00"
+}
+],
+"order_seq": 975,
+"last_ts": "2026-10-17T18:45:00+00:00",
+"open_buy_fees": {
+"ADA_SPOT": 12.375
+}
+},
+"halted": false,
+"halt_reason": null
+}

@@ -1,0 +1,132 @@
+{
+"agent_id": "squeeze",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4949.057712467772
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-17T12:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 0.7655534137879284,
+"price": 2166.188934,
+"mid": 2164.89,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 4.145833333333334
+},
+"fees_eur": 4.145833333333334,
+"spread_cost_eur": 0.9944033579851458,
+"value_eur": 1658.3333333333335,
+"eur_rate": 1.0,
+"reason": "sq:buy (squeeze fired up)",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-17T12:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": 17.80415536460674,
+"price": 93.14304999999999,
+"mid": 93.05,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 4.145833333333334
+},
+"fees_eur": 4.145833333333334,
+"spread_cost_eur": 1.6566766566764963,
+"value_eur": 1658.3333333333335,
+"eur_rate": 1.0,
+"reason": "sq:buy (squeeze fired up)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-17T13:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -17.80415536460674,
+"price": 92.26764,
+"mid": 92.36,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 4.106868494214009
+},
+"fees_eur": 4.106868494214009,
+"spread_cost_eur": 1.6443917894750666,
+"value_eur": 1642.7473976856033,
+"eur_rate": 1.0,
+"reason": "sq:sell (momentum fading)",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-17T16:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": -0.7655534137879284,
+"price": 2141.5542960000002,
+"mid": 2142.84,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 4.09868550528751
+},
+"fees_eur": 4.09868550528751,
+"spread_cost_eur": 0.9842750863207151,
+"value_eur": 1639.474202115004,
+"eur_rate": 1.0,
+"reason": "sq:sell (momentum fading)",
+"seq": 4
+}
+],
+"costs": {
+"commissions": 16.497220666168186,
+"spread_slippage": 5.279746890457424
+},
+"realized": [
+{
+"ts": "2026-10-17T13:00:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 17.80415536460674,
+"pnl": -15.585935647730173,
+"ccy": "EUR",
+"pnl_eur": -15.585935647730173
+},
+{
+"ts": "2026-10-17T16:00:00+00:00",
+"inst": "ETH_SPOT",
+"qty": 0.7655534137879284,
+"pnl": -18.859131218329473,
+"ccy": "EUR",
+"pnl_eur": -18.859131218329473
+}
+],
+"meta": {
+"state": {},
+"orders": [],
+"last_ts": "2026-10-17T18:00:00+00:00",
+"order_seq": 4,
+"open_buy_fees": {
+"ETH_SPOT": 0.0,
+"SOL_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

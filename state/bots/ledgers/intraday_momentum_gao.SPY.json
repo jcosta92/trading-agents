@@ -1,0 +1,148 @@
+{
+"agent_id": "intraday_momentum_gao.SPY",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 48.18158819506243,
+"USD": 5534.3428639985395
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:30:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4951.818411804938,
+"amount_to": 5544.728089489937,
+"rate": 1.1200717687606812,
+"fee_rate": 0.0003,
+"fee_eur": 1.4855455235401678,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:30:00+00:00",
+"inst": "SPY",
+"kind": "stock",
+"qty": 7.1289805070055055,
+"price": 777.7206361999512,
+"mid": 777.3319702148438,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3728341245639386
+},
+"fees_eur": 0.33286628139593777,
+"spread_cost_eur": 2.4737631184407856,
+"value_eur": 4950.000000000001,
+"eur_rate": 1.1200717687606812,
+"reason": "sbe:buy",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "SPY",
+"kind": "stock",
+"qty": -7.1289805070055055,
+"price": 777.521018157959,
+"mid": 777.9099731445312,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.48701852751798297
+},
+"fees_eur": 0.4348101086922772,
+"spread_cost_eur": 2.4756025414729255,
+"value_eur": 4948.729480404829,
+"eur_rate": 1.1200717687606812,
+"reason": "sbx:eod flat at the close",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-13T19:30:00+00:00",
+"inst": "SPY",
+"kind": "stock",
+"qty": 7.113517578354068,
+"price": 778.6891377868652,
+"mid": 778.2999877929688,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.37278459680346804
+},
+"fees_eur": 0.3328220630147126,
+"spread_cost_eur": 2.471471381929247,
+"value_eur": 4945.4142352406425,
+"eur_rate": 1.1200717687606812,
+"reason": "sbe:buy",
+"seq": 4
+},
+{
+"type": "trade",
+"ts": "2026-10-13T19:55:00+00:00",
+"inst": "SPY",
+"kind": "stock",
+"qty": -7.113517578354068,
+"price": 777.6709675598145,
+"mid": 778.0599975585938,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.4867433044204626
+},
+"fees_eur": 0.43456438952927673,
+"spread_cost_eur": 2.4707092991777277,
+"value_eur": 4938.947889056509,
+"eur_rate": 1.1200717687606812,
+"reason": "sbx:eod flat at the close",
+"seq": 5
+}
+],
+"costs": {
+"fx": 1.4855455235401678,
+"commissions": 1.5350628426322044,
+"spread_slippage": 9.891546341020685
+},
+"realized": [
+{
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "SPY",
+"qty": 7.1289805070055055,
+"pnl": -1.4230731302086648,
+"ccy": "USD",
+"pnl_eur": -1.2705195951713377
+},
+{
+"ts": "2026-10-13T19:55:00+00:00",
+"inst": "SPY",
+"qty": 7.113517578354068,
+"pnl": -7.2427718078822325,
+"ccy": "USD",
+"pnl_eur": -6.466346184134341
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-16T19:55:00+00:00",
+"order_seq": 4,
+"open_buy_fees": {
+"SPY": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

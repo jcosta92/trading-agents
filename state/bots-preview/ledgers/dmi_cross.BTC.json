@@ -1,0 +1,85 @@
+{
+"agent_id": "dmi_cross.BTC",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 984.4413195515831
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-09-24T16:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": 0.013329542357630087,
+"price": 74271.117,
+"mid": 74234.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 0.4947526236881342,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-25T16:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": -0.013329542357630087,
+"price": 73473.24500000001,
+"mid": 73510.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.448411828450083
+},
+"fees_eur": 2.448411828450083,
+"spread_cost_eur": 0.48992732935456196,
+"value_eur": 979.3647313800332,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 4.923411828450083,
+"spread_slippage": 0.9846799530426962
+},
+"realized": [
+{
+"ts": "2026-09-25T16:00:00+00:00",
+"inst": "BTC_SPOT",
+"qty": 0.013329542357630087,
+"pnl": -10.63526861996688,
+"ccy": "EUR",
+"pnl_eur": -10.63526861996688
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"BTC_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

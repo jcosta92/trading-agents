@@ -1,0 +1,130 @@
+{
+"agent_id": "treasury_month_end",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 14.352479264183785,
+"USD": 1065.7496773260061
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-09-23T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 985.6475207358162,
+"amount_to": 1103.1704784488315,
+"rate": 1.1195701360702515,
+"fee_rate": 0.0003,
+"fee_eur": 0.2956942562207132,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-09-23T19:55:00+00:00",
+"inst": "TLT",
+"kind": "stock",
+"qty": 13.704158487024415,
+"price": 80.47021530532837,
+"mid": 80.43000030517578,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.3938944196339392
+},
+"fees_eur": 0.35182647959557833,
+"spread_cost_eur": 0.4922538730634377,
+"value_eur": 985.0,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-09-24T19:55:00+00:00",
+"inst": "TLT",
+"kind": "stock",
+"qty": -1.469241158433801,
+"price": 79.3902853050232,
+"mid": 79.43000030517578,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.35710883501031226
+},
+"fees_eur": 0.3189695969059898,
+"spread_cost_eur": 0.05211903296759444,
+"value_eur": 104.18594690223412,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-09-30T19:55:00+00:00",
+"inst": "TLT",
+"kind": "stock",
+"qty": -12.234917328590614,
+"price": 77.63616555023194,
+"mid": 77.67500305175781,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.40875580478812246
+},
+"fees_eur": 0.3651006682108155,
+"spread_cost_eur": 0.42442505843000405,
+"value_eur": 848.4256918016426,
+"eur_rate": 1.1195701360702515,
+"reason": "wb:sell (rebalance)",
+"seq": 4
+}
+],
+"costs": {
+"fx": 0.2956942562207132,
+"commissions": 1.0358967447123837,
+"spread_slippage": 0.9687979644610363
+},
+"realized": [
+{
+"ts": "2026-09-24T19:55:00+00:00",
+"inst": "TLT",
+"qty": 1.469241158433801,
+"pnl": -1.5866776046757807,
+"ccy": "USD",
+"pnl_eur": -1.4172203719590988
+},
+{
+"ts": "2026-09-30T19:55:00+00:00",
+"inst": "TLT",
+"qty": 12.234917328590614,
+"pnl": -34.6743644587173,
+"ccy": "USD",
+"pnl_eur": -30.971140924164068
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-09",
+"last_target": {},
+"started": true
+},
+"last_ts": "2026-10-12T16:55:00+00:00",
+"order_seq": 3,
+"orders": [],
+"open_buy_fees": {
+"TLT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

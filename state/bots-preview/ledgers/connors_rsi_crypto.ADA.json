@@ -1,0 +1,85 @@
+{
+"agent_id": "connors_rsi_crypto.ADA",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 1012.7139377501248
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-07T02:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": 4360.530416681716,
+"price": 0.22703659999999998,
+"mid": 0.22703659999999998,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 1.485
+},
+"fees_eur": 1.485,
+"spread_cost_eur": 0.0,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy limit",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-07T06:00:00+00:00",
+"inst": "ADA_SPOT",
+"kind": "crypto_spot",
+"qty": -4360.530416681716,
+"price": 0.23087001599999998,
+"mid": 0.23124,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.516789317669486
+},
+"fees_eur": 2.516789317669486,
+"spread_cost_eur": 1.6133264856856449,
+"value_eur": 1006.7157270677943,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 4.001789317669486,
+"spread_slippage": 1.6133264856856449
+},
+"realized": [
+{
+"ts": "2026-10-07T06:00:00+00:00",
+"inst": "ADA_SPOT",
+"qty": 4360.530416681716,
+"pnl": 16.715727067794383,
+"ccy": "EUR",
+"pnl_eur": 16.715727067794383
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-12T16:00:00+00:00",
+"order_seq": 7,
+"open_buy_fees": {
+"ADA_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

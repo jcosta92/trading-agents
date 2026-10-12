@@ -1,0 +1,107 @@
+{
+"agent_id": "holy_grail.XRP",
+"base": "EUR",
+"initial_capital": 1000.0,
+"cash": {
+"EUR": 7.525
+},
+"positions": {
+"XRP_SPOT": {
+"inst_id": "XRP_SPOT",
+"qty": 805.3751539642876,
+"avg_price": 1.2292408017889997,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-08T20:00:00+00:00",
+"last_mark": 1.23325
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-09-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 1000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-08T20:00:00+00:00",
+"inst": "XRP_SPOT",
+"kind": "crypto_spot",
+"qty": 805.3751539642876,
+"price": 1.2292408017889997,
+"mid": 1.2280127889999999,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 2.475
+},
+"fees_eur": 2.475,
+"spread_cost_eur": 0.9890109890108814,
+"value_eur": 990.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+}
+],
+"costs": {
+"commissions": 2.475,
+"spread_slippage": 0.9890109890108814
+},
+"realized": [],
+"meta": {
+"state": {
+"pos": {
+"XRP_SPOT": {
+"sig": {
+"sl_dist": 0.053059999999999885,
+"tp_dist": 0.13306000100000018,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 1.2292408,
+"entry_ts": "2026-10-08T20:00:00+00:00",
+"hi": 1.27243,
+"bars": 23,
+"fixed_sl": 1.1761808,
+"fixed_tp": 1.3623008010000002,
+"hic": 1.27154
+}
+}
+},
+"orders": [
+{
+"id": 48,
+"inst": "XRP_SPOT",
+"side": "sell",
+"type": "stop",
+"price": 1.1761808,
+"qty": 805.3751539642876,
+"eur": null,
+"tag": "sbx:stop",
+"placed": "2026-10-12T12:00:00+00:00"
+},
+{
+"id": 49,
+"inst": "XRP_SPOT",
+"side": "sell",
+"type": "limit",
+"price": 1.3623008010000002,
+"qty": 805.3751539642876,
+"eur": null,
+"tag": "sbx:take profit",
+"placed": "2026-10-12T12:00:00+00:00"
+}
+],
+"last_ts": "2026-10-12T12:00:00+00:00",
+"order_seq": 49,
+"open_buy_fees": {
+"XRP_SPOT": 2.475
+}
+},
+"halted": false,
+"halt_reason": null
+}

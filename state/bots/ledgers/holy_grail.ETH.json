@@ -1,0 +1,107 @@
+{
+"agent_id": "holy_grail.ETH",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 37.625
+},
+"positions": {
+"ETH_SPOT": {
+"inst_id": "ETH_SPOT",
+"qty": 2.330644757664105,
+"avg_price": 2123.8758003433995,
+"currency": "EUR",
+"multiplier": 1.0,
+"kind": "crypto_spot",
+"opened": "2026-10-15T12:00:00+00:00",
+"last_mark": 2142.85
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-15T12:00:00+00:00",
+"inst": "ETH_SPOT",
+"kind": "crypto_spot",
+"qty": 2.330644757664105,
+"price": 2123.8758003433995,
+"mid": 2122.602239,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 2.96821906855818,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy stop",
+"seq": 1
+}
+],
+"costs": {
+"commissions": 12.375,
+"spread_slippage": 2.96821906855818
+},
+"realized": [],
+"meta": {
+"state": {
+"pos": {
+"ETH_SPOT": {
+"sig": {
+"sl_dist": 58.440000000000055,
+"tp_dist": 177.62000000100034,
+"sl_pct": null,
+"tp_pct": null,
+"trail_dist": null
+},
+"entry_px": 2123.87580034,
+"entry_ts": "2026-10-15T12:00:00+00:00",
+"hi": 2213.25,
+"bars": 13,
+"fixed_sl": 2065.43580034,
+"fixed_tp": 2301.495800341,
+"hic": 2198.1
+}
+}
+},
+"orders": [
+{
+"id": 30,
+"inst": "ETH_SPOT",
+"side": "sell",
+"type": "stop",
+"price": 2065.43580034,
+"qty": 2.330644757664105,
+"eur": null,
+"tag": "sbx:stop",
+"placed": "2026-10-17T12:00:00+00:00"
+},
+{
+"id": 31,
+"inst": "ETH_SPOT",
+"side": "sell",
+"type": "limit",
+"price": 2301.495800341,
+"qty": 2.330644757664105,
+"eur": null,
+"tag": "sbx:take profit",
+"placed": "2026-10-17T12:00:00+00:00"
+}
+],
+"last_ts": "2026-10-17T12:00:00+00:00",
+"order_seq": 31,
+"open_buy_fees": {
+"ETH_SPOT": 12.375
+}
+},
+"halted": false,
+"halt_reason": null
+}

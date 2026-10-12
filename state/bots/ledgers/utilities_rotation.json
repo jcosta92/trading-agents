@@ -1,0 +1,149 @@
+{
+"agent_id": "utilities_rotation",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 69.75076932849834,
+"USD": -4.3942627314663696e-13
+},
+"positions": {
+"XLU": {
+"inst_id": "XLU",
+"qty": 127.801668684504,
+"avg_price": 42.28613188934326,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-16T19:55:00+00:00",
+"last_mark": 42.21500015258789
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 4926.831864716964,
+"amount_to": 5516.7497595156865,
+"rate": 1.1200717687606812,
+"fee_rate": 0.0003,
+"fee_eur": 1.478049559414103,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "VTI",
+"kind": "stock",
+"qty": 14.454689145147807,
+"price": 381.6307224426269,
+"mid": 381.44000244140625,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.39629836933190843
+},
+"fees_eur": 0.3538151575504829,
+"spread_cost_eur": 2.461269365316714,
+"value_eur": 4925.0,
+"eur_rate": 1.1200717687606812,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "trade",
+"ts": "2026-10-16T19:55:00+00:00",
+"inst": "VTI",
+"kind": "stock",
+"qty": -14.454689145147807,
+"price": 373.7030696411133,
+"mid": 373.8900146484375,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5075746604394545
+},
+"fees_eur": 0.45148767929842876,
+"spread_cost_eur": 2.403635435920138,
+"value_eur": 4804.867236404893,
+"eur_rate": 1.1242270469665527,
+"reason": "wb:sell (rebalance)",
+"seq": 3
+},
+{
+"type": "fx",
+"ts": "2026-10-16T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 3.4173659545372184,
+"amount_to": 3.84074266690277,
+"rate": 1.1242270469665527,
+"fee_rate": 0.0003,
+"fee_eur": 0.0010252097863610032,
+"reason": "FX for stock purchase",
+"seq": 4
+},
+{
+"type": "trade",
+"ts": "2026-10-16T19:55:00+00:00",
+"inst": "XLU",
+"kind": "stock",
+"qty": 127.801668684504,
+"price": 42.28613188934326,
+"mid": 42.26499938964844,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.8566545851922303
+},
+"fees_eur": 0.7619942853213679,
+"spread_cost_eur": 2.4023338806519474,
+"value_eur": 4807.070095185025,
+"eur_rate": 1.1242270469665527,
+"reason": "wb:buy (rebalance)",
+"seq": 5
+}
+],
+"costs": {
+"fx": 1.479074769200464,
+"commissions": 1.5672971221702796,
+"spread_slippage": 7.2672386818887995
+},
+"realized": [
+{
+"ts": "2026-10-16T19:55:00+00:00",
+"inst": "VTI",
+"qty": 14.454689145147807,
+"pnl": -114.59175689653927,
+"ccy": "USD",
+"pnl_eur": -101.92937201229648
+}
+],
+"meta": {
+"state": {
+"done_day": "2026-10-16",
+"last_target": {
+"XLU": 0.985
+},
+"started": true
+},
+"last_ts": "2026-10-16T19:55:00+00:00",
+"order_seq": 3,
+"orders": [],
+"open_buy_fees": {
+"VTI": 5.551115123125783e-17,
+"XLU": 0.8566545851922303
+}
+},
+"halted": false,
+"halt_reason": null
+}

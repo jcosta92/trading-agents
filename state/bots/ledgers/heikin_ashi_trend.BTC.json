@@ -1,0 +1,85 @@
+{
+"agent_id": "heikin_ashi_trend.BTC",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 4943.76826663699
+},
+"positions": {},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "trade",
+"ts": "2026-10-15T20:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": 0.0674086630999177,
+"price": 73432.69799999999,
+"mid": 73396.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.375
+},
+"fees_eur": 12.375,
+"spread_cost_eur": 2.4737631184400657,
+"value_eur": 4950.0,
+"eur_rate": 1.0,
+"reason": "sbe:buy",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-16T04:00:00+00:00",
+"inst": "BTC_SPOT",
+"kind": "crypto_spot",
+"qty": -0.0674086630999177,
+"price": 72964.4995,
+"mid": 73001.0,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 12.296098412624035
+},
+"fees_eur": 12.296098412624035,
+"spread_cost_eur": 2.460449907478185,
+"value_eur": 4918.439365049614,
+"eur_rate": 1.0,
+"reason": "sbx:exit (exit)",
+"seq": 2
+}
+],
+"costs": {
+"commissions": 24.671098412624033,
+"spread_slippage": 4.93421302591825
+},
+"realized": [
+{
+"ts": "2026-10-16T04:00:00+00:00",
+"inst": "BTC_SPOT",
+"qty": 0.0674086630999177,
+"pnl": -31.560634950385744,
+"ccy": "EUR",
+"pnl_eur": -31.560634950385744
+}
+],
+"meta": {
+"state": {
+"pos": {}
+},
+"orders": [],
+"last_ts": "2026-10-17T12:00:00+00:00",
+"order_seq": 2,
+"open_buy_fees": {
+"BTC_SPOT": 0.0
+}
+},
+"halted": false,
+"halt_reason": null
+}

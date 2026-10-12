@@ -1,0 +1,176 @@
+{
+"agent_id": "faa",
+"base": "EUR",
+"initial_capital": 5000.0,
+"cash": {
+"EUR": 72.36144347841628,
+"USD": 8.504308368628699e-14
+},
+"positions": {
+"VTI": {
+"inst_id": "VTI",
+"qty": 4.818229715049268,
+"avg_price": 381.6307224426269,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 374.0199890136719
+},
+"SHY": {
+"inst_id": "SHY",
+"qty": 22.63938836366908,
+"avg_price": 81.22059030532836,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 81.37000274658203
+},
+"GSG": {
+"inst_id": "GSG",
+"qty": 50.46308749786716,
+"avg_price": 36.43820816802978,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 37.1150016784668
+}
+},
+"journal": [
+{
+"type": "deposit",
+"ts": "2026-10-12T17:00:00+00:00",
+"ccy": "EUR",
+"amount": 5000.0,
+"seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1642.4856707380827,
+"amount_to": 1839.149919838562,
+"rate": 1.1200717687606812,
+"fee_rate": 0.0003,
+"fee_eur": 0.4927457012211107,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "VTI",
+"kind": "stock",
+"qty": 4.818229715049268,
+"price": 381.6307224426269,
+"mid": 381.44000244140625,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.36543278977730276
+},
+"fees_eur": 0.32625837019501075,
+"spread_cost_eur": 0.8204231217722378,
+"value_eur": 1641.6666666666665,
+"eur_rate": 1.1200717687606812,
+"reason": "wb:buy (rebalance)",
+"seq": 2
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1642.5366480970647,
+"amount_to": 1839.2070010097134,
+"rate": 1.1200717687606812,
+"fee_rate": 0.0003,
+"fee_eur": 0.4927609944290907,
+"reason": "FX for stock purchase",
+"seq": 3
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "SHY",
+"kind": "stock",
+"qty": 22.63938836366908,
+"price": 81.22059030532836,
+"mid": 81.18000030517578,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.42251396092883203
+},
+"fees_eur": 0.3772204359693205,
+"spread_cost_eur": 0.8204231217722172,
+"value_eur": 1641.6666666666663,
+"eur_rate": 1.1200717687606812,
+"reason": "wb:buy (rebalance)",
+"seq": 4
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 1642.6162376864363,
+"amount_to": 1839.2961203180403,
+"rate": 1.1200717687606812,
+"fee_rate": 0.0003,
+"fee_eur": 0.4927848713057301,
+"reason": "FX for stock purchase",
+"seq": 5
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "GSG",
+"kind": "stock",
+"qty": 50.46308749786716,
+"price": 36.43820816802978,
+"mid": 36.41999816894531,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.5116332692556684
+},
+"fees_eur": 0.45678614846419363,
+"spread_cost_eur": 0.8204231217722857,
+"value_eur": 1641.6666666666663,
+"eur_rate": 1.1200717687606812,
+"reason": "wb:buy (rebalance)",
+"seq": 6
+}
+],
+"costs": {
+"fx": 1.4782915669559316,
+"commissions": 1.1602649546285249,
+"spread_slippage": 2.461269365316741
+},
+"realized": [],
+"meta": {
+"state": {
+"done_day": "2026-10-16",
+"last_target": {
+"VTI": 0.3283,
+"SHY": 0.3283,
+"GSG": 0.3283
+},
+"started": true
+},
+"last_ts": "2026-10-16T19:55:00+00:00",
+"order_seq": 3,
+"orders": [],
+"open_buy_fees": {
+"VTI": 0.36543278977730276,
+"SHY": 0.42251396092883203,
+"GSG": 0.5116332692556684
+}
+},
+"halted": false,
+"halt_reason": null
+}
