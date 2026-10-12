@@ -1,0 +1,719 @@
+{
+ "agent_id": "factor_equity",
+ "base": "EUR",
+ "initial_capital": 1000.0,
+ "cash": {
+  "EUR": 4.075538146253166e-05,
+  "USD": -6.938893903907228e-15
+ },
+ "positions": {
+  "APA": {
+   "inst_id": "APA",
+   "qty": 2.39581759,
+   "avg_price": 48.779235,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 46.175
+  },
+  "COP": {
+   "inst_id": "COP",
+   "qty": 0.81457092,
+   "avg_price": 135.867162,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 135.81
+  },
+  "DVN": {
+   "inst_id": "DVN",
+   "qty": 2.26880388,
+   "avg_price": 48.77975200000001,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 48.760000000000005
+  },
+  "EOG": {
+   "inst_id": "EOG",
+   "qty": 0.73783224,
+   "avg_price": 150.13998700000002,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 149.935
+  },
+  "FANG": {
+   "inst_id": "FANG",
+   "qty": 0.56396247,
+   "avg_price": 207.92923199999998,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 196.16
+  },
+  "MU": {
+   "inst_id": "MU",
+   "qty": 0.11145499,
+   "avg_price": 995.1985139999999,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 992.5699999999999
+  },
+  "NEM": {
+   "inst_id": "NEM",
+   "qty": 0.9421468,
+   "avg_price": 117.463484,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 117.42
+  },
+  "OXY": {
+   "inst_id": "OXY",
+   "qty": 1.81340672,
+   "avg_price": 61.022200999999995,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 61.004999999999995
+  },
+  "SNDK": {
+   "inst_id": "SNDK",
+   "qty": 0.07473022,
+   "avg_price": 1481.0901505737304,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 1480.3499755859375
+  },
+  "VLO": {
+   "inst_id": "VLO",
+   "qty": 0.2400164,
+   "avg_price": 434.94686800000005,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 434.34000000000003
+  }
+ },
+ "journal": [
+  {
+   "type": "deposit",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "ccy": "EUR",
+   "amount": 1000.0,
+   "seq": 0
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 104.93508782524545,
+   "amount_to": 117.22382304348442,
+   "rate": 1.1174432039260864,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.03148052634757903,
+   "reason": "auto FX for APA",
+   "seq": 1
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "APA",
+   "kind": "stock",
+   "qty": 2.39581759,
+   "price": 48.779235,
+   "mid": 46.175,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35767380374076996
+   },
+   "fees_eur": 0.3200823115520316,
+   "spread_cost_eur": 5.583524960885936,
+   "value_eur": 104.58352498734584,
+   "eur_rate": 1.1174432039260864,
+   "reason": "BUY signal: ranked #2 of 391 on momentum+quality+value and close > SMA200",
+   "seq": 2
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 99.38703429256387,
+   "amount_to": 111.0260482187858,
+   "rate": 1.1174432039260864,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.02981611028778275,
+   "reason": "auto FX for COP",
+   "seq": 3
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "COP",
+   "kind": "stock",
+   "qty": 0.81457092,
+   "price": 135.867162,
+   "mid": 135.81,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35260907065676
+   },
+   "fees_eur": 0.3155498815670308,
+   "spread_cost_eur": 0.04166878707163731,
+   "value_eur": 99.04166830070906,
+   "eur_rate": 1.1174432039260864,
+   "reason": "BUY signal: ranked #9 of 391 on momentum+quality+value and close > SMA200",
+   "seq": 4
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 99.38963866309496,
+   "amount_to": 111.02895758186543,
+   "rate": 1.1174432039260864,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.029816891598940742,
+   "reason": "auto FX for DVN",
+   "seq": 5
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "DVN",
+   "kind": "stock",
+   "qty": 2.26880388,
+   "price": 48.77975200000001,
+   "mid": 48.760000000000005,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35726697882763997
+   },
+   "fees_eur": 0.31971824390930875,
+   "spread_cost_eur": 0.04010352748159292,
+   "value_eur": 99.04010352758671,
+   "eur_rate": 1.1174432039260864,
+   "reason": "BUY signal: ranked #11 of 391 on momentum+quality+value and close > SMA200",
+   "seq": 6
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 99.4805238946205,
+   "amount_to": 111.13048619844561,
+   "rate": 1.1174432039260864,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.029844157168398056,
+   "reason": "auto FX for EOG",
+   "seq": 7
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "EOG",
+   "kind": "stock",
+   "qty": 0.73783224,
+   "price": 150.13998700000002,
+   "mid": 149.935,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35236327666472
+   },
+   "fees_eur": 0.31532992050665976,
+   "spread_cost_eur": 0.13535007134993204,
+   "value_eur": 99.13534981694545,
+   "eur_rate": 1.1174432039260864,
+   "reason": "BUY signal: ranked #8 of 391 on momentum+quality+value and close > SMA200",
+   "seq": 8
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 105.28623256901736,
+   "amount_to": 117.61608963571445,
+   "rate": 1.1174432039260864,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.03158586977070854,
+   "reason": "auto FX for FANG",
+   "seq": 9
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "FANG",
+   "kind": "stock",
+   "qty": 0.56396247,
+   "price": 207.92923199999998,
+   "mid": 196.16,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35180637179141
+   },
+   "fees_eur": 0.31483154629725624,
+   "spread_cost_eur": 5.93981432380886,
+   "value_eur": 104.93981515294938,
+   "eur_rate": 1.1174432039260864,
+   "reason": "BUY signal: ranked #7 of 391 on momentum+quality+value and close > SMA200",
+   "seq": 10
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 99.60558899253716,
+   "amount_to": 111.27019741621783,
+   "rate": 1.1174432039260864,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.02988167669775521,
+   "reason": "auto FX for MU",
+   "seq": 11
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "MU",
+   "kind": "stock",
+   "qty": 0.11145499,
+   "price": 995.1985139999999,
+   "mid": 992.5699999999999,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35035699033296996
+   },
+   "fees_eur": 0.3135344947304762,
+   "spread_cost_eur": 0.26217082045472573,
+   "value_eur": 99.26217282110893,
+   "eur_rate": 1.1174432039260864,
+   "reason": "BUY signal: ranked #1 of 391 on momentum+quality+value and close > SMA200",
+   "seq": 12
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 99.38239288343513,
+   "amount_to": 111.02086326365159,
+   "rate": 1.1174432039260864,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.029814717865036755,
+   "reason": "auto FX for NEM",
+   "seq": 13
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "NEM",
+   "kind": "stock",
+   "qty": 0.9421468,
+   "price": 117.463484,
+   "mid": 117.42,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35301769620039997
+   },
+   "fees_eur": 0.31591556059412074,
+   "spread_cost_eur": 0.036662544733595794,
+   "value_eur": 99.03666260497599,
+   "eur_rate": 1.1174432039260864,
+   "reason": "BUY signal: ranked #4 of 391 on momentum+quality+value and close > SMA200",
+   "seq": 14
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 99.3761396299285,
+   "amount_to": 111.01387770431487,
+   "rate": 1.1174432039260864,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.029812841888983144,
+   "reason": "auto FX for OXY",
+   "seq": 15
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "OXY",
+   "kind": "stock",
+   "qty": 1.81340672,
+   "price": 61.022200999999995,
+   "mid": 61.004999999999995,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35580834172416
+   },
+   "fees_eur": 0.31841290946514633,
+   "spread_cost_eur": 0.0279140889497801,
+   "value_eur": 99.02791387857438,
+   "eur_rate": 1.1174432039260864,
+   "reason": "BUY signal: ranked #6 of 391 on momentum+quality+value and close > SMA200",
+   "seq": 16
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 99.39274899023212,
+   "amount_to": 111.03243215310266,
+   "rate": 1.1174432039260864,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.02981782469707639,
+   "reason": "auto FX for SNDK",
+   "seq": 17
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "SNDK",
+   "kind": "stock",
+   "qty": 0.07473022,
+   "price": 1481.0901505737304,
+   "mid": 1480.3499755859375,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35023936089465996
+   },
+   "fees_eur": 0.3134292281380474,
+   "spread_cost_eur": 0.04950000096820965,
+   "value_eur": 99.049501937397,
+   "eur_rate": 1.1174432039260864,
+   "reason": "BUY signal: ranked #3 of 391 on momentum+quality+value and close > SMA200",
+   "seq": 18
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 93.7645715039435,
+   "amount_to": 104.74515022116441,
+   "rate": 1.1174432039260864,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.028129371451186103,
+   "reason": "auto FX for VLO",
+   "seq": 19
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "VLO",
+   "kind": "stock",
+   "qty": 0.2400164,
+   "price": 434.94686800000005,
+   "mid": 434.34000000000003,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35076877252919997
+   },
+   "fees_eur": 0.3139029986461859,
+   "spread_cost_eur": 0.13034959819294709,
+   "value_eur": 93.42253913384613,
+   "eur_rate": 1.1174432039260864,
+   "reason": "BUY signal: ranked #10 of 391 on momentum+quality+value and close > SMA200",
+   "seq": 20
+  }
+ ],
+ "costs": {
+  "fx": 0.2999999877734467,
+  "commissions": 3.1607070954062633,
+  "spread_slippage": 12.247058723897219
+ },
+ "realized": [],
+ "meta": {
+  "splits_applied": {},
+  "split_suspect": {},
+  "funding_ts": {},
+  "div_checked": {},
+  "day_start": {
+   "date": "2026-10-12",
+   "equity": 1000.0
+  },
+  "protect": {
+   "APA": {
+    "entry": 48.779235,
+    "opened": "2026-10-12",
+    "stop": 44.122339098539456,
+    "target": null,
+    "hwm": 48.779235,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 1.5522986338201816,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
+   },
+   "COP": {
+    "entry": 135.867162,
+    "opened": "2026-10-12",
+    "stop": 126.09570054954641,
+    "target": null,
+    "hwm": 135.867162,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 3.2571538168178678,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
+   },
+   "DVN": {
+    "entry": 48.77975200000001,
+    "opened": "2026-10-12",
+    "stop": 44.54495876975136,
+    "target": null,
+    "hwm": 48.77975200000001,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 1.4115977434162168,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
+   },
+   "EOG": {
+    "entry": 150.13998700000002,
+    "opened": "2026-10-12",
+    "stop": 139.4268967888263,
+    "target": null,
+    "hwm": 150.13998700000002,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 3.571030070391242,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
+   },
+   "FANG": {
+    "entry": 207.92923199999998,
+    "opened": "2026-10-12",
+    "stop": 191.93675407679106,
+    "target": null,
+    "hwm": 207.92923199999998,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 5.330825974402974,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
+   },
+   "MU": {
+    "entry": 995.1985139999999,
+    "opened": "2026-10-12",
+    "stop": 849.2686031811966,
+    "target": null,
+    "hwm": 995.1985139999999,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 48.6433036062678,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
+   },
+   "NEM": {
+    "entry": 117.463484,
+    "opened": "2026-10-12",
+    "stop": 105.85015959170983,
+    "target": null,
+    "hwm": 117.463484,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 3.871108136096721,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
+   },
+   "OXY": {
+    "entry": 61.022200999999995,
+    "opened": "2026-10-12",
+    "stop": 56.30694275764195,
+    "target": null,
+    "hwm": 61.022200999999995,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 1.5717527474526818,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
+   },
+   "SNDK": {
+    "entry": 1481.0901505737304,
+    "opened": "2026-10-12",
+    "stop": 1169.8119082446333,
+    "target": null,
+    "hwm": 1481.0901505737304,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 103.75941410969904,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
+   },
+   "VLO": {
+    "entry": 434.94686800000005,
+    "opened": "2026-10-12",
+    "stop": 389.1008624884414,
+    "target": null,
+    "hwm": 434.94686800000005,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 15.282001837186218,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
+   }
+  },
+  "last_rebalance": "2026-10",
+  "mode": "momentum+quality+value",
+  "holdings_target": [
+   "APA",
+   "COP",
+   "DVN",
+   "EOG",
+   "FANG",
+   "MU",
+   "NEM",
+   "OXY",
+   "SNDK",
+   "VLO"
+  ],
+  "top_scores": {
+   "MU": 1.664,
+   "APA": 1.64,
+   "SNDK": 1.206,
+   "NEM": 1.202,
+   "CF": 1.128,
+   "OXY": 1.097,
+   "FANG": 1.092,
+   "EOG": 1.092,
+   "COP": 1.084,
+   "VLO": 1.071,
+   "DVN": 1.037,
+   "VTRS": 1.021,
+   "BMY": 0.972,
+   "CNC": 0.971,
+   "MPC": 0.958
+  },
+  "coverage_log": [
+   {
+    "month": "2026-10",
+    "members": 397,
+    "with_data": 397,
+    "with_history": 393,
+    "eligible": 391,
+    "mode": "momentum+quality+value"
+   }
+  ],
+  "signals_asof": "2026-10-11",
+  "signals": {
+   "MU": {
+    "state": "BUY",
+    "rank": 1,
+    "score": 1.664
+   },
+   "APA": {
+    "state": "BUY",
+    "rank": 2,
+    "score": 1.64
+   },
+   "SNDK": {
+    "state": "BUY",
+    "rank": 3,
+    "score": 1.206
+   },
+   "NEM": {
+    "state": "BUY",
+    "rank": 4,
+    "score": 1.202
+   },
+   "OXY": {
+    "state": "BUY",
+    "rank": 6,
+    "score": 1.097
+   },
+   "FANG": {
+    "state": "BUY",
+    "rank": 7,
+    "score": 1.092
+   },
+   "EOG": {
+    "state": "BUY",
+    "rank": 8,
+    "score": 1.092
+   },
+   "COP": {
+    "state": "BUY",
+    "rank": 9,
+    "score": 1.084
+   },
+   "VLO": {
+    "state": "BUY",
+    "rank": 10,
+    "score": 1.071
+   },
+   "DVN": {
+    "state": "BUY",
+    "rank": 11,
+    "score": 1.037
+   }
+  },
+  "pending": [],
+  "last_equity": {
+   "date": "2026-10-12",
+   "equity": 984.2922
+  }
+ },
+ "halted": false,
+ "halt_reason": null
+}

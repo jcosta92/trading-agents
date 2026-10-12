@@ -1,0 +1,134 @@
+{
+ "agent_id": "vrp_spreads",
+ "base": "EUR",
+ "initial_capital": 1000.0,
+ "cash": {
+  "EUR": 1000.0,
+  "USD": 33.349399999999974
+ },
+ "positions": {
+  "XSP:2026-11-20:P:745": {
+   "inst_id": "XSP:2026-11-20:P:745",
+   "qty": -1.0,
+   "avg_price": 4.07,
+   "currency": "USD",
+   "multiplier": 100.0,
+   "kind": "option",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 4.095000000000001
+  },
+  "XSP:2026-11-20:P:741": {
+   "inst_id": "XSP:2026-11-20:P:741",
+   "qty": 1.0,
+   "avg_price": 3.71,
+   "currency": "USD",
+   "multiplier": 100.0,
+   "kind": "option",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 3.685
+  }
+ },
+ "journal": [
+  {
+   "type": "deposit",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "ccy": "EUR",
+   "amount": 1000.0,
+   "seq": 0
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "XSP:2026-11-20:P:745",
+   "kind": "option",
+   "qty": -1.0,
+   "price": 4.07,
+   "mid": 4.095000000000001,
+   "ccy": "USD",
+   "multiplier": 100.0,
+   "fees": {
+    "USD": 1.3253
+   },
+   "fees_eur": 1.1860110610934123,
+   "spread_cost_eur": 2.2372501718354885,
+   "value_eur": 364.22432797481235,
+   "eur_rate": 1.1174432039260864,
+   "reason": "ENTRY signal: VIX 14.8 within [13, 25.3], 2026-11-20 expiry, credit 0.36 for 4 wide - SELL 745P (0.16 delta)",
+   "combo": "open-XSP:2026-11-20:P:745-2026-10-11",
+   "seq": 1
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "XSP:2026-11-20:P:741",
+   "kind": "option",
+   "qty": 1.0,
+   "price": 3.71,
+   "mid": 3.685,
+   "ccy": "USD",
+   "multiplier": 100.0,
+   "fees": {
+    "USD": 1.3253
+   },
+   "fees_eur": 1.1860110610934123,
+   "spread_cost_eur": 2.2372501718354485,
+   "value_eur": 332.00792550038176,
+   "eur_rate": 1.1174432039260864,
+   "reason": "ENTRY signal: VIX 14.8 within [13, 25.3], 2026-11-20 expiry, credit 0.36 for 4 wide - BUY 741P wing",
+   "combo": "open-XSP:2026-11-20:P:745-2026-10-11",
+   "seq": 2
+  }
+ ],
+ "costs": {
+  "commissions": 2.3720221221868245,
+  "spread_slippage": 4.474500343670937
+ },
+ "realized": [],
+ "meta": {
+  "splits_applied": {},
+  "split_suspect": {},
+  "funding_ts": {},
+  "div_checked": {},
+  "day_start": {
+   "date": "2026-10-12",
+   "equity": 1000.0
+  },
+  "protect": {},
+  "spreads": [
+   {
+    "short": "XSP:2026-11-20:P:745",
+    "long": "XSP:2026-11-20:P:741",
+    "expiry": "2026-11-20",
+    "short_strike": 745.0,
+    "long_strike": 741.0,
+    "width": 4.0,
+    "qty": 1,
+    "credit": 0.36,
+    "max_loss_usd": 364.0,
+    "opened": "2026-10-11",
+    "short_delta": -0.16,
+    "vix": 14.84
+   }
+  ],
+  "last_decision": "2026-10-11",
+  "last_entry": "2026-10-11",
+  "signals": {
+   "XSP put spread": {
+    "state": "ENTRY",
+    "index": 781.07,
+    "open_spreads": 0,
+    "buy_rule": "VIX between 13.0 and its 1-year 95% percentile, at most 3 open, 5 business days apart",
+    "sell_rule": "take-profit at 50% of credit, stop at 2.0x credit or index <= short strike, time exit at 21 DTE",
+    "vix": 14.84,
+    "vix_cap": 25.32
+   }
+  },
+  "pending": [],
+  "last_equity": {
+   "date": "2026-10-12",
+   "equity": 993.1535
+  }
+ },
+ "halted": false,
+ "halt_reason": null
+}

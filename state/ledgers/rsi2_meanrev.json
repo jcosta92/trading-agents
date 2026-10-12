@@ -1,0 +1,51 @@
+{
+ "agent_id": "rsi2_meanrev",
+ "base": "EUR",
+ "initial_capital": 1000.0,
+ "cash": {
+  "EUR": 1000.0
+ },
+ "positions": {},
+ "journal": [
+  {
+   "type": "deposit",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "ccy": "EUR",
+   "amount": 1000.0,
+   "seq": 0
+  }
+ ],
+ "costs": {},
+ "realized": [],
+ "meta": {
+  "splits_applied": {},
+  "split_suspect": {},
+  "funding_ts": {},
+  "div_checked": {},
+  "day_start": {
+   "date": "2026-10-12",
+   "equity": 1000.0
+  },
+  "protect": {},
+  "last_decision": "2026-10-11",
+  "signals": {
+   "SP500": {
+    "close": 134.72,
+    "sma200": 120.8316,
+    "rsi2": 79.55,
+    "sma5": 134.431,
+    "atr10": 0.9455,
+    "buy_rule": "close > SMA200 and RSI(2) < 10",
+    "sell_rule": "close > SMA5; take-profit order at SMA5 while above the entry",
+    "state": "FLAT"
+   }
+  },
+  "pending": [],
+  "last_equity": {
+   "date": "2026-10-12",
+   "equity": 1000.0
+  }
+ },
+ "halted": false,
+ "halt_reason": null
+}

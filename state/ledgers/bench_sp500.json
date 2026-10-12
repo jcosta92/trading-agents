@@ -1,0 +1,72 @@
+{
+ "agent_id": "bench_sp500",
+ "base": "EUR",
+ "initial_capital": 1000.0,
+ "cash": {
+  "EUR": 51.36320090617976
+ },
+ "positions": {
+  "SP500": {
+   "inst_id": "SP500",
+   "qty": 7.0,
+   "avg_price": 135.20703250000003,
+   "currency": "EUR",
+   "multiplier": 1.0,
+   "kind": "etf",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 135.16250000000002
+  }
+ },
+ "journal": [
+  {
+   "type": "deposit",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "ccy": "EUR",
+   "amount": 1000.0,
+   "seq": 0
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "SP500",
+   "kind": "etf",
+   "qty": 7.0,
+   "price": 135.20703250000003,
+   "mid": 135.16250000000002,
+   "ccy": "EUR",
+   "multiplier": 1.0,
+   "fees": {
+    "EUR": 2.18757159382
+   },
+   "fees_eur": 2.18757159382,
+   "spread_cost_eur": 0.3117275000000177,
+   "value_eur": 946.4492275000002,
+   "eur_rate": 1.0,
+   "reason": "buy and hold: entry",
+   "seq": 1
+  }
+ ],
+ "costs": {
+  "commissions": 2.18757159382,
+  "spread_slippage": 0.3117275000000177
+ },
+ "realized": [],
+ "meta": {
+  "splits_applied": {},
+  "split_suspect": {},
+  "funding_ts": {},
+  "div_checked": {},
+  "day_start": {
+   "date": "2026-10-12",
+   "equity": 1000.0
+  },
+  "protect": {},
+  "pending": [],
+  "last_equity": {
+   "date": "2026-10-12",
+   "equity": 997.5007
+  }
+ },
+ "halted": false,
+ "halt_reason": null
+}

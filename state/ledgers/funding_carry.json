@@ -1,0 +1,66 @@
+{
+ "agent_id": "funding_carry",
+ "base": "EUR",
+ "initial_capital": 1000.0,
+ "cash": {
+  "EUR": 1000.0
+ },
+ "positions": {},
+ "journal": [
+  {
+   "type": "deposit",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "ccy": "EUR",
+   "amount": 1000.0,
+   "seq": 0
+  }
+ ],
+ "costs": {},
+ "realized": [],
+ "meta": {
+  "splits_applied": {},
+  "split_suspect": {},
+  "funding_ts": {},
+  "div_checked": {},
+  "day_start": {
+   "date": "2026-10-12",
+   "equity": 1000.0
+  },
+  "protect": {},
+  "last_decision": "2026-10-11",
+  "funding": {
+   "BTC": {
+    "avg7_ann": 0.08522721362466915,
+    "last_ann": 0.07706336402083346
+   },
+   "ETH": {
+    "avg7_ann": 0.07955002658201042,
+    "last_ann": 0.06735238997916654
+   }
+  },
+  "signals": {
+   "BTC": {
+    "state": "FLAT",
+    "funding_7d_ann": 0.0852,
+    "funding_last_ann": 0.0771,
+    "buy_rule": "7-day average funding > 12%/yr and the last day's funding positive",
+    "sell_rule": "7-day average < 4%/yr or the last 24h negative"
+   },
+   "ETH": {
+    "state": "FLAT",
+    "funding_7d_ann": 0.0796,
+    "funding_last_ann": 0.0674,
+    "buy_rule": "7-day average funding > 12%/yr and the last day's funding positive",
+    "sell_rule": "7-day average < 4%/yr or the last 24h negative"
+   }
+  },
+  "active": null,
+  "pending": [],
+  "last_equity": {
+   "date": "2026-10-12",
+   "equity": 1000.0
+  }
+ },
+ "halted": false,
+ "halt_reason": null
+}

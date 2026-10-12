@@ -1,0 +1,59 @@
+{
+ "agent_id": "crypto_trend",
+ "base": "EUR",
+ "initial_capital": 1000.0,
+ "cash": {
+  "EUR": 1000.0
+ },
+ "positions": {},
+ "journal": [
+  {
+   "type": "deposit",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "ccy": "EUR",
+   "amount": 1000.0,
+   "seq": 0
+  }
+ ],
+ "costs": {},
+ "realized": [],
+ "meta": {
+  "splits_applied": {},
+  "split_suspect": {},
+  "funding_ts": {},
+  "div_checked": {},
+  "day_start": {
+   "date": "2026-10-12",
+   "equity": 1000.0
+  },
+  "protect": {},
+  "last_decision": "2026-10-11",
+  "signals": {
+   "BTC_PERP": {
+    "close": 83679.47,
+    "high20": 87363.76,
+    "low10": 80336.91,
+    "atr20": 2080.51,
+    "buy_rule": "close > highest high of previous 20 days",
+    "sell_rule": "close < lowest low of previous 10 days",
+    "state": "FLAT"
+   },
+   "ETH_PERP": {
+    "close": 2534.7,
+    "high20": 2805.5,
+    "low10": 2406.15,
+    "atr20": 83.61,
+    "buy_rule": "close > highest high of previous 20 days",
+    "sell_rule": "close < lowest low of previous 10 days",
+    "state": "FLAT"
+   }
+  },
+  "pending": [],
+  "last_equity": {
+   "date": "2026-10-12",
+   "equity": 1000.0
+  }
+ },
+ "halted": false,
+ "halt_reason": null
+}

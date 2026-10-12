@@ -1,0 +1,72 @@
+{
+ "agent_id": "bench_btc",
+ "base": "EUR",
+ "initial_capital": 1000.0,
+ "cash": {
+  "EUR": 2.2110279043299514
+ },
+ "positions": {
+  "BTC_SPOT": {
+   "inst_id": "BTC_SPOT",
+   "qty": 0.01346973,
+   "avg_price": 73891.660805,
+   "currency": "EUR",
+   "multiplier": 1.0,
+   "kind": "crypto_spot",
+   "opened": "2026-10-12T14:57:36.390767+00:00",
+   "last_mark": 73869.35
+  }
+ },
+ "journal": [
+  {
+   "type": "deposit",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "ccy": "EUR",
+   "amount": 1000.0,
+   "seq": 0
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T14:57:36.390767+00:00",
+   "inst": "BTC_SPOT",
+   "kind": "crypto_spot",
+   "qty": 0.01346973,
+   "price": 73891.660805,
+   "mid": 73869.35,
+   "ccy": "EUR",
+   "multiplier": 1.0,
+   "fees": {
+    "EUR": 2.488251800737332
+   },
+   "fees_eur": 2.488251800737332,
+   "spread_cost_eur": 0.3005205194326632,
+   "value_eur": 995.3007202949327,
+   "eur_rate": 1.0,
+   "reason": "buy and hold: entry",
+   "seq": 1
+  }
+ ],
+ "costs": {
+  "commissions": 2.488251800737332,
+  "spread_slippage": 0.3005205194326632
+ },
+ "realized": [],
+ "meta": {
+  "splits_applied": {},
+  "split_suspect": {},
+  "funding_ts": {},
+  "div_checked": {},
+  "day_start": {
+   "date": "2026-10-12",
+   "equity": 1000.0
+  },
+  "protect": {},
+  "pending": [],
+  "last_equity": {
+   "date": "2026-10-12",
+   "equity": 997.2112
+  }
+ },
+ "halted": false,
+ "halt_reason": null
+}
