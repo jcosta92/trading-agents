@@ -3,9 +3,31 @@
  "base": "EUR",
  "initial_capital": 1000.0,
  "cash": {
-  "EUR": 1000.0
+  "EUR": 338.8396050687745,
+  "USD": 1.9206858326015208e-14
  },
- "positions": {},
+ "positions": {
+  "MRNA": {
+   "inst_id": "MRNA",
+   "qty": 1.66049943,
+   "avg_price": 222.26106889343262,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-12T15:14:21.224948+00:00",
+   "last_mark": 222.14999389648438
+  },
+  "MU": {
+   "inst_id": "MU",
+   "qty": 0.37425005,
+   "avg_price": 986.1438264770508,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-12T15:14:21.224948+00:00",
+   "last_mark": 985.6510009765625
+  }
+ },
  "journal": [
   {
    "type": "deposit",
@@ -13,9 +35,79 @@
    "ccy": "EUR",
    "amount": 1000.0,
    "seq": 0
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-12T15:14:21.224948+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 330.5820416549891,
+   "amount_to": 369.4196967884099,
+   "rate": 1.117817997932434,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.0991746124964834,
+   "reason": "auto FX for MRNA",
+   "seq": 1
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T15:14:21.224948+00:00",
+   "inst": "MRNA",
+   "kind": "stock",
+   "qty": 1.66049943,
+   "price": 222.26106889343262,
+   "mid": 222.14999389648438,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35531857967429
+   },
+   "fees_eur": 0.31786800743189236,
+   "spread_cost_eur": 0.16499999951777858,
+   "value_eur": 330.1649990350607,
+   "eur_rate": 1.117817997932434,
+   "reason": "BUY signal: product news, materiality 2, direction +1 (\"Moderna\u2019s (MRNA) Cancer Vaccine Breakthrough Drives Sharp Stock Rally\"), 1-month return +64.7%",
+   "seq": 2
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-12T15:14:21.224948+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 330.5783532762364,
+   "amount_to": 369.41557508913775,
+   "rate": 1.117817997932434,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.09917350598288976,
+   "reason": "auto FX for MU",
+   "seq": 3
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-12T15:14:21.224948+00:00",
+   "inst": "MU",
+   "kind": "stock",
+   "qty": 0.37425005,
+   "price": 986.1438264770508,
+   "mid": 985.6510009765625,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35119872291015
+   },
+   "fees_eur": 0.3141823835004829,
+   "spread_cost_eur": 0.1649999986940243,
+   "value_eur": 330.164997386753,
+   "eur_rate": 1.117817997932434,
+   "reason": "BUY signal: capital_return news, materiality 2, direction +1 (\"Micron board raises buyback ceiling to $35.16bn\"), 1-month return +5.3%",
+   "seq": 4
   }
  ],
- "costs": {},
+ "costs": {
+  "fx": 0.19834811847937317,
+  "commissions": 0.6320503909323753,
+  "spread_slippage": 0.32999999821180287
+ },
  "realized": [],
  "meta": {
   "splits_applied": {},
@@ -26,11 +118,87 @@
    "date": "2026-10-12",
    "equity": 1000.0
   },
-  "protect": {},
+  "protect": {
+   "MRNA": {
+    "entry": 222.26106889343262,
+    "opened": "2026-10-12",
+    "stop": 206.70279407089234,
+    "target": 244.4871757827759,
+    "hwm": 222.26106889343262,
+    "spec": {
+     "stop_pct": 0.07,
+     "target_pct": 0.1,
+     "max_days": 5,
+     "label": "stop -7%, take-profit +10%, time exit 5 days"
+    },
+    "updated": ""
+   },
+   "MU": {
+    "entry": 986.1438264770508,
+    "opened": "2026-10-12",
+    "stop": 917.1137586236572,
+    "target": 1084.758209124756,
+    "hwm": 986.1438264770508,
+    "spec": {
+     "stop_pct": 0.07,
+     "target_pct": 0.1,
+     "max_days": 5,
+     "label": "stop -7%, take-profit +10%, time exit 5 days"
+    },
+    "updated": ""
+   }
+  },
   "pending": [],
   "last_equity": {
    "date": "2026-10-12",
-   "equity": 1000.0
+   "equity": 998.8396
+  },
+  "last_decision": "2026-10-11",
+  "last_candidates": {
+   "MU": {
+    "event": {
+     "id": "cf41f0e4b48f",
+     "ticker": "MU",
+     "event_type": "capital_return",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.6,
+     "rationale": "Board raises buyback authorization to about $35bn",
+     "title": "Micron board raises buyback ceiling to $35.16bn",
+     "published": "2026-10-12T14:20:57+00:00"
+    },
+    "check": "1-month return +5.3% - BUY"
+   },
+   "MRNA": {
+    "event": {
+     "id": "98ee8d0766eb",
+     "ticker": "MRNA",
+     "event_type": "product",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.6,
+     "rationale": "Cancer vaccine breakthrough driving sharp rally",
+     "title": "Moderna\u2019s (MRNA) Cancer Vaccine Breakthrough Drives Sharp Stock Rally",
+     "published": "2026-10-12T14:27:07+00:00"
+    },
+    "check": "1-month return +64.7% - BUY"
+   }
+  },
+  "signals": {
+   "MU": {
+    "state": "BUY",
+    "event": "capital_return",
+    "materiality": 2,
+    "confidence": 0.6,
+    "check": "1-month return +5.3% - BUY"
+   },
+   "MRNA": {
+    "state": "BUY",
+    "event": "product",
+    "materiality": 2,
+    "confidence": 0.6,
+    "check": "1-month return +64.7% - BUY"
+   }
   }
  },
  "halted": false,
