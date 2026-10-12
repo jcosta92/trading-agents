@@ -1,19 +1,19 @@
 {
- "ts": "2026-10-12T15:55:02.450331+00:00",
+ "ts": "2026-10-12T16:47:33.457221+00:00",
  "start": "2026-09-12T17:00:00+00:00",
  "end": "2026-10-12T17:00:00+00:00",
  "bots": {
   "grid_btc": {
    "name": "Grid bot on BTC/EUR (Pionex / Binance / Bybit spot grid)",
    "timeframe": "15m",
-   "equity_eur": 1024.9443,
-   "return": 0.024944,
+   "equity_eur": 1025.7034,
+   "return": 0.025703,
    "cash_eur": 484.6188,
    "positions": {
     "BTC_SPOT": {
      "qty": 0.0072989343877644655,
      "avg": 74359.35906214283,
-     "mark": 74028.0
+     "mark": 74132.0
     }
    },
    "open_orders": [
@@ -162,7 +162,7 @@
      "tag": "grid:sell:8"
     }
    ],
-   "last_candle": "2026-10-12T15:30:00+00:00",
+   "last_candle": "2026-10-12T16:30:00+00:00",
    "finished": null,
    "costs_eur": {
     "commissions": 9.8704,
@@ -181,14 +181,14 @@
   "dca_eth": {
    "name": "DCA bot with safety orders on ETH/EUR (3Commas-style)",
    "timeframe": "15m",
-   "equity_eur": 1017.3344,
-   "return": 0.017334,
+   "equity_eur": 1017.0025,
+   "return": 0.017003,
    "cash_eur": 28.7544,
    "positions": {
     "ETH_SPOT": {
      "qty": 0.43658248312446873,
      "avg": 2274.7706066733376,
-     "mark": 2264.36
+     "mark": 2263.6
     }
    },
    "open_orders": [
@@ -202,7 +202,7 @@
      "tag": "dca:tp"
     }
    ],
-   "last_candle": "2026-10-12T15:30:00+00:00",
+   "last_candle": "2026-10-12T16:30:00+00:00",
    "finished": null,
    "costs_eur": {
     "commissions": 8.7018,
@@ -225,7 +225,7 @@
    "cash_eur": 952.5658,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T15:30:00+00:00",
+   "last_candle": "2026-10-12T16:30:00+00:00",
    "finished": null,
    "costs_eur": {
     "commissions": 8.7973,
@@ -244,37 +244,22 @@
   "supertrend": {
    "name": "Supertrend (10, 3) trend following on BTC/ETH/SOL, 1-hour",
    "timeframe": "1h",
-   "equity_eur": 1027.9526,
-   "return": 0.027953,
-   "cash_eur": 344.814,
+   "equity_eur": 1028.3737,
+   "return": 0.028374,
+   "cash_eur": 679.9042,
    "positions": {
     "ETH_SPOT": {
      "qty": 0.15381571343872993,
      "avg": 2227.5757439999998,
-     "mark": 2256.06
-    },
-    "SOL_SPOT": {
-     "qty": 3.4562942292755268,
-     "avg": 99.29519599999999,
-     "mark": 97.249
+     "mark": 2265.5
     }
    },
-   "open_orders": [
-    {
-     "inst": "SOL_SPOT",
-     "side": "sell",
-     "type": "market",
-     "price": null,
-     "qty": 3.4562942292755268,
-     "eur": null,
-     "tag": "st:sell (flip down)"
-    }
-   ],
-   "last_candle": "2026-10-12T14:00:00+00:00",
+   "open_orders": [],
+   "last_candle": "2026-10-12T15:00:00+00:00",
    "finished": null,
    "costs_eur": {
-    "commissions": 42.6752,
-    "spread_slippage": 12.0141
+    "commissions": 43.515,
+    "spread_slippage": 12.3504
    },
    "notes": [],
    "state": {}
@@ -287,7 +272,7 @@
    "cash_eur": 929.742,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T14:00:00+00:00",
+   "last_candle": "2026-10-12T15:00:00+00:00",
    "finished": null,
    "costs_eur": {
     "commissions": 47.0723,
@@ -299,23 +284,33 @@
   "orb_stocks": {
    "name": "Opening Range Breakout on US 'stocks in play' (Zarattini, Barbon & Aziz 2024), IBKR",
    "timeframe": "5m",
-   "equity_eur": 923.6249,
-   "return": -0.076375,
-   "cash_eur": 923.6249,
+   "equity_eur": 924.5105,
+   "return": -0.075489,
+   "cash_eur": 924.5105,
    "positions": {},
-   "open_orders": [],
-   "last_candle": "2026-10-12T15:50:00+00:00",
+   "open_orders": [
+    {
+     "inst": "GE",
+     "side": "buy",
+     "type": "stop",
+     "price": 311.7279052734375,
+     "qty": 0.6620230114728891,
+     "eur": null,
+     "tag": "orb:entry 2026-10-12"
+    }
+   ],
+   "last_candle": "2026-10-12T16:40:00+00:00",
    "finished": null,
    "costs_eur": {
-    "fx": 0.2978,
-    "commissions": 53.6141,
-    "spread_slippage": 16.1634
+    "fx": 0.2977,
+    "commissions": 53.6268,
+    "spread_slippage": 16.1703
    },
    "notes": [
     "2026-09-15 13:30 ORB 2026-09-15: watching MS, ACN, WFC, COHR, VLO",
     "2026-09-16 13:30 ORB 2026-09-16: watching UNH, IBM, INTC, DELL, HPE",
     "2026-09-17 13:30 ORB 2026-09-17: watching HD, TJX, AMZN, VLO, BSX",
-    "2026-09-18 13:30 ORB 2026-09-18: watching CSCO, NEE, AMGN, PM, HD",
+    "2026-09-18 13:30 ORB 2026-09-18: watching NFLX, CSCO, NEE, AMGN, PM",
     "2026-09-21 13:30 ORB 2026-09-21: watching ACN, CRWD, AMD, META, AMAT",
     "2026-09-22 13:30 ORB 2026-09-22: watching MPWR, META, AMD, AMZN, MCD",
     "2026-09-23 13:30 ORB 2026-09-23: watching BA, VLO, TMO, IBM, MRNA",
@@ -329,9 +324,9 @@
     "2026-10-05 13:30 ORB 2026-10-05: watching WDC, STX, UBER, MSFT, APP",
     "2026-10-06 13:30 ORB 2026-10-06: watching MRVL, CSCO, PG, MS, PANW",
     "2026-10-07 13:30 ORB 2026-10-07: watching TJX, CIEN, KLAC, PM, INTC",
-    "2026-10-08 13:30 ORB 2026-10-08: watching PLTR, PEP, ADBE, DDOG, GOOGL",
+    "2026-10-08 13:30 ORB 2026-10-08: watching PLTR, PEP, ADBE, GOOGL, DDOG",
     "2026-10-09 13:30 ORB 2026-10-09: watching T, COHR, APH, AAPL, PM",
-    "2026-10-12 13:30 ORB 2026-10-12: watching INTU, ADBE, JNJ, CRM, CVX"
+    "2026-10-12 13:30 ORB 2026-10-12: watching INTU, ADBE, JNJ, GE, CRM"
    ],
    "state": {
     "last_selection": {
@@ -340,27 +335,220 @@
       "INTU",
       "ADBE",
       "JNJ",
-      "CRM",
-      "CVX"
+      "GE",
+      "CRM"
      ],
      "rel_volume": {
       "INTU": 4.3,
       "ADBE": 3.11,
       "JNJ": 2.94,
+      "GE": 2.91,
       "CRM": 2.49,
       "CVX": 2.28,
       "MRK": 1.93,
       "VZ": 1.73,
-      "GE": 1.67,
       "NOW": 1.65,
       "JPM": 1.48
      }
     }
    }
+  },
+  "vol_breakout": {
+   "name": "Volatility breakout on BTC/ETH/XRP (Larry Williams, as run by Korean Upbit bots)",
+   "timeframe": "15m",
+   "equity_eur": 929.3561,
+   "return": -0.070644,
+   "cash_eur": 623.671,
+   "positions": {
+    "ETH_SPOT": {
+     "qty": 0.1350437762809439,
+     "avg": 2288.757431,
+     "mark": 2263.6
+    }
+   },
+   "open_orders": [
+    {
+     "inst": "BTC_SPOT",
+     "side": "buy",
+     "type": "stop",
+     "price": 75313.0,
+     "qty": null,
+     "eur": 309.0824464733119,
+     "tag": "vb:buy breakout 2026-10-12"
+    },
+    {
+     "inst": "XRP_SPOT",
+     "side": "buy",
+     "type": "stop",
+     "price": 1.27535,
+     "qty": null,
+     "eur": 309.0824464733119,
+     "tag": "vb:buy breakout 2026-10-12"
+    }
+   ],
+   "last_candle": "2026-10-12T16:30:00+00:00",
+   "finished": null,
+   "costs_eur": {
+    "commissions": 67.2065,
+    "spread_slippage": 18.4446
+   },
+   "notes": [],
+   "state": {
+    "targets": {
+     "BTC_SPOT": {
+      "day": "2026-10-12",
+      "open": 74702.0,
+      "range": 1222.0,
+      "target": 75313.0
+     },
+     "ETH_SPOT": {
+      "day": "2026-10-12",
+      "open": 2262.25,
+      "range": 50.27,
+      "target": 2287.385
+     },
+     "XRP_SPOT": {
+      "day": "2026-10-12",
+      "open": 1.25788,
+      "range": 0.03494,
+      "target": 1.27535
+     }
+    }
+   }
+  },
+  "btc_night": {
+   "name": "Bitcoin time-of-day seasonality: hold 21:00-23:00 UTC only (Quantpedia)",
+   "timeframe": "1h",
+   "equity_eur": 821.4697,
+   "return": -0.17853,
+   "cash_eur": 821.4697,
+   "positions": {},
+   "open_orders": [],
+   "last_candle": "2026-10-12T15:00:00+00:00",
+   "finished": null,
+   "costs_eur": {
+    "commissions": 134.0273,
+    "spread_slippage": 26.8055
+   },
+   "notes": [],
+   "state": {}
+  },
+  "rebalance": {
+   "name": "Rebalancing bot, equal-weight BTC/ETH/SOL/XRP (Pionex / Shrimpy style)",
+   "timeframe": "15m",
+   "equity_eur": 1069.1626,
+   "return": 0.069163,
+   "cash_eur": 7.525,
+   "positions": {
+    "BTC_SPOT": {
+     "qty": 0.0037066785316323234,
+     "avg": 66771.36899999999,
+     "mark": 74132.0
+    },
+    "ETH_SPOT": {
+     "qty": 0.11322718947823456,
+     "avg": 2185.870736,
+     "mark": 2263.6
+    },
+    "SOL_SPOT": {
+     "qty": 2.806787835905453,
+     "avg": 88.17909099999999,
+     "mark": 97.3
+    },
+    "XRP_SPOT": {
+     "qty": 209.3995843837049,
+     "avg": 1.18195077,
+     "mark": 1.22948
+    }
+   },
+   "open_orders": [],
+   "last_candle": "2026-10-12T16:30:00+00:00",
+   "finished": null,
+   "costs_eur": {
+    "commissions": 2.475,
+    "spread_slippage": 0.7666
+   },
+   "notes": [],
+   "state": {
+    "rebalances": 0
+   }
+  },
+  "momentum_rotation": {
+   "name": "Momentum rotation: all-in on the best coin of the last 24h (Pionex Momentum Rebalancing)",
+   "timeframe": "1h",
+   "equity_eur": 843.6719,
+   "return": -0.156328,
+   "cash_eur": 2.4648,
+   "positions": {
+    "AVAX_SPOT": {
+     "qty": 87.76195974027077,
+     "avg": 9.824409600000001,
+     "mark": 9.5851
+    }
+   },
+   "open_orders": [],
+   "last_candle": "2026-10-12T15:00:00+00:00",
+   "finished": null,
+   "costs_eur": {
+    "commissions": 114.819,
+    "spread_slippage": 63.7179
+   },
+   "notes": [
+    "2026-09-17 23:00 best coin over 24h: ADA_SPOT +3.17%",
+    "2026-09-18 23:00 best coin over 24h: SOL_SPOT +10.70%",
+    "2026-09-19 23:00 best coin over 24h: AVAX_SPOT +23.10%",
+    "2026-09-21 23:00 best coin over 24h: DOGE_SPOT +14.51%",
+    "2026-09-22 23:00 best coin over 24h: ADA_SPOT +3.83%",
+    "2026-09-23 23:00 best coin over 24h: BTC_SPOT -1.51%",
+    "2026-09-24 23:00 best coin over 24h: LINK_SPOT +7.00%",
+    "2026-09-26 23:00 best coin over 24h: AVAX_SPOT +2.15%",
+    "2026-09-27 23:00 best coin over 24h: SOL_SPOT +0.50%",
+    "2026-09-28 23:00 best coin over 24h: LINK_SPOT +10.17%",
+    "2026-09-29 23:00 best coin over 24h: AVAX_SPOT +8.09%",
+    "2026-09-30 23:00 best coin over 24h: ADA_SPOT +1.04%",
+    "2026-10-01 23:00 best coin over 24h: BTC_SPOT +2.25%",
+    "2026-10-02 23:00 best coin over 24h: SOL_SPOT +0.18%",
+    "2026-10-03 23:00 best coin over 24h: AVAX_SPOT +3.06%",
+    "2026-10-04 23:00 best coin over 24h: ADA_SPOT +6.43%",
+    "2026-10-06 23:00 best coin over 24h: AVAX_SPOT +4.14%",
+    "2026-10-07 23:00 best coin over 24h: BTC_SPOT -2.19%",
+    "2026-10-09 23:00 best coin over 24h: ADA_SPOT +4.92%",
+    "2026-10-11 23:00 best coin over 24h: AVAX_SPOT +5.71%"
+   ],
+   "state": {
+    "holding": "AVAX_SPOT",
+    "switches": 25
+   }
+  },
+  "ibs_etf": {
+   "name": "Internal Bar Strength mean reversion on SPY/QQQ/IWM/DIA (US index ETFs), IBKR",
+   "timeframe": "5m",
+   "equity_eur": 997.9093,
+   "return": -0.002091,
+   "cash_eur": 997.9093,
+   "positions": {},
+   "open_orders": [],
+   "last_candle": "2026-10-12T16:40:00+00:00",
+   "finished": null,
+   "costs_eur": {
+    "fx": 0.2969,
+    "commissions": 6.9877,
+    "spread_slippage": 2.7269
+   },
+   "notes": [],
+   "state": {
+    "last_ibs": {
+     "day": "2026-10-09",
+     "SPY": 0.763,
+     "QQQ": 0.602,
+     "IWM": 0.632,
+     "DIA": 0.836
+    }
+   }
   }
  },
  "errors": [],
- "eurusd": 1.1161960363388062,
+ "eurusd": 1.116071343421936,
  "data_sources": {
   "BTC/EUR": "bitvavo",
   "ETH/EUR": "bitvavo",
@@ -371,5 +559,5 @@
   "LINK/EUR": "bitvavo",
   "AVAX/EUR": "bitvavo"
  },
- "n_fills": 417
+ "n_fills": 634
 }

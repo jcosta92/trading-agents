@@ -3,7 +3,7 @@
 "base": "EUR",
 "initial_capital": 1000.0,
 "cash": {
-"EUR": 344.8140068585058
+"EUR": 679.9042372582442
 },
 "positions": {
 "ETH_SPOT": {
@@ -14,17 +14,7 @@
 "multiplier": 1.0,
 "kind": "crypto_spot",
 "opened": "2026-10-09T07:00:00+00:00",
-"last_mark": 2256.06
-},
-"SOL_SPOT": {
-"inst_id": "SOL_SPOT",
-"qty": 3.4562942292755268,
-"avg_price": 99.29519599999999,
-"currency": "EUR",
-"multiplier": 1.0,
-"kind": "crypto_spot",
-"opened": "2026-10-09T12:00:00+00:00",
-"last_mark": 97.249
+"last_mark": 2265.5
 }
 },
 "journal": [
@@ -1034,11 +1024,31 @@
 "eur_rate": 1.0,
 "reason": "st:sell (flip down)",
 "seq": 50
+},
+{
+"type": "trade",
+"ts": "2026-10-12T15:00:00+00:00",
+"inst": "SOL_SPOT",
+"kind": "crypto_spot",
+"qty": -3.4562942292755268,
+"price": 97.193709,
+"mid": 97.291,
+"ccy": "EUR",
+"multiplier": 1.0,
+"fees": {
+"EUR": 0.8398251388464621
+},
+"fees_eur": 0.8398251388464621,
+"spread_cost_eur": 0.33626632186044,
+"value_eur": 335.93005553858484,
+"eur_rate": 1.0,
+"reason": "st:sell (flip down)",
+"seq": 51
 }
 ],
 "costs": {
-"commissions": 42.67516638088907,
-"spread_slippage": 12.014109834792215
+"commissions": 43.51499151973553,
+"spread_slippage": 12.350376156652656
 },
 "realized": [
 {
@@ -1232,28 +1242,24 @@
 "pnl": 0.9998461021554339,
 "ccy": "EUR",
 "pnl_eur": 0.9998461021554339
+},
+{
+"ts": "2026-10-12T15:00:00+00:00",
+"inst": "SOL_SPOT",
+"qty": 3.4562942292755268,
+"pnl": -7.26335739099751,
+"ccy": "EUR",
+"pnl_eur": -7.26335739099751
 }
 ],
 "meta": {
 "state": {},
-"last_ts": "2026-10-12T14:00:00+00:00",
-"orders": [
-{
-"id": 51,
-"inst": "SOL_SPOT",
-"side": "sell",
-"type": "market",
-"price": null,
-"qty": 3.4562942292755268,
-"eur": null,
-"tag": "st:sell (flip down)",
-"placed": "2026-10-12T14:00:00+00:00"
-}
-],
+"last_ts": "2026-10-12T15:00:00+00:00",
+"orders": [],
 "order_seq": 51,
 "open_buy_fees": {
 "BTC_SPOT": 0.0,
-"SOL_SPOT": 0.8579835323239559,
+"SOL_SPOT": 0.0,
 "ETH_SPOT": 0.856590380755424
 }
 },
