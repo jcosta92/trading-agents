@@ -84,8 +84,19 @@ def build_inbox(universe: list[str], fetch_news, now: pd.Timestamp, lookback_hou
             "since": cutoff.isoformat(), "lookback_hours": lookback_hours, "universe": universe, "items": items}
 
 
-def validate_labels(inbox: dict, labels: dict) -> list[str]:
-    """Problems with a labels file (empty list = valid)."""
+def _is_int(x) -> bool:
+    return isinstance(x, int) and not isinstance(x, bool)
+
+
+def _is_num(x) -> bool:
+    return isinstance(x, (int, float)) and not isinstance(x, bool)
+
+
+def validate_labels(inbox: dict, labels) -> list[str]:
+    """Problems with a labels file (empty list = valid). Types are checked strictly: the file is
+    written by a model and read by a trading rule."""
+    if not isinstance(labels, dict):
+        return ["the labels file must contain a JSON object"]
     probs = []
     if labels.get("date") != inbox.get("date"):
         probs.append(f"date mismatch: labels {labels.get('date')} vs inbox {inbox.get('date')}")
@@ -96,9 +107,12 @@ def validate_labels(inbox: dict, labels: dict) -> list[str]:
         return probs
     ids = {it["id"]: it for it in inbox.get("items", [])}
     seen = set()
-    for i, lab in enumerate(labels.get("labels", [])):
+    for i, lab in enumerate(labels["labels"]):
+        if not isinstance(lab, dict):
+            probs.append(f"label {i}: not an object")
+            continue
         lid = lab.get("id")
-        if lid not in ids:
+        if not isinstance(lid, str) or lid not in ids:
             probs.append(f"label {i}: unknown id {lid}")
             continue
         if lid in seen:
@@ -108,16 +122,13 @@ def validate_labels(inbox: dict, labels: dict) -> list[str]:
             probs.append(f"label {lid}: ticker {lab.get('ticker')} != inbox {ids[lid]['ticker']}")
         if lab.get("event_type") not in EVENT_TYPES:
             probs.append(f"label {lid}: bad event_type {lab.get('event_type')}")
-        if lab.get("direction") not in (-1, 0, 1):
-            probs.append(f"label {lid}: bad direction {lab.get('direction')}")
-        if lab.get("materiality") not in (0, 1, 2, 3):
-            probs.append(f"label {lid}: bad materiality {lab.get('materiality')}")
-        try:
-            c = float(lab.get("confidence"))
-            if not 0 <= c <= 1:
-                raise ValueError
-        except (TypeError, ValueError):
-            probs.append(f"label {lid}: bad confidence {lab.get('confidence')}")
+        if not (_is_int(lab.get("direction")) and lab["direction"] in (-1, 0, 1)):
+            probs.append(f"label {lid}: direction must be the integer -1, 0 or 1 (got {lab.get('direction')!r})")
+        if not (_is_int(lab.get("materiality")) and lab["materiality"] in (0, 1, 2, 3)):
+            probs.append(f"label {lid}: materiality must be an integer 0-3 (got {lab.get('materiality')!r})")
+        c = lab.get("confidence")
+        if not (_is_num(c) and 0 <= c <= 1):
+            probs.append(f"label {lid}: confidence must be a number between 0 and 1 (got {c!r})")
     missing = set(ids) - seen
     if missing:
         probs.append(f"{len(missing)} inbox items have no label")
@@ -131,7 +142,14 @@ def load_labels(state_dir: Path, date: str) -> tuple[list[dict] | None, str]:
         return None, f"no headline inbox for {date}"
     if not lp.exists():
         return None, f"no labels yet for {date}"
-    inbox, labels = json.loads(ip.read_text()), json.loads(lp.read_text())
+    try:
+        inbox = json.loads(ip.read_text())
+    except (ValueError, OSError) as exc:
+        return None, f"headline inbox unreadable: {exc}"
+    try:
+        labels = json.loads(lp.read_text())
+    except (ValueError, OSError) as exc:
+        return None, f"labels file unreadable: {exc}"
     probs = validate_labels(inbox, labels)
     if probs:
         return None, "labels file invalid: " + "; ".join(probs[:3])

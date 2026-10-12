@@ -82,6 +82,9 @@ class NetworkData:
     def dividends(self, inst, symbol=None) -> pd.Series:
         return yahoo.dividends(symbol or (inst.yf[0] if inst and inst.yf else None))
 
+    def splits(self, inst, symbol=None) -> pd.Series:
+        return yahoo.splits(symbol or (inst.yf[0] if inst and inst.yf else None))
+
     def option_chains(self, spot, rate):
         from ..data.options import LiveOptionChains
         return LiveOptionChains(spot, rate)
@@ -264,6 +267,12 @@ class PaperRunner:
         out["market_open"] = is_open
         fx = self.fx
 
+        self._split_pause: set[str] = set()
+        try:
+            self._ensure_position_history(led)
+        except Exception as exc:
+            out["notes"].append(f"daily history for held stocks unavailable: {exc!r}")
+        self._apply_splits(led, out)
         self._accrue_funding(led, fx, out)
         self._credit_dividends(led, fx, out)
         self._settle_expired_options(led, fx)
@@ -301,38 +310,61 @@ class PaperRunner:
             pending = []
         else:
             pending = [OrderIntent.from_dict(o) for o in led.meta.get("pending", [])]
-            max_h = float(self.settings.paper.get("pending_order_max_age_hours", 24))
-            pending = [o for o in pending
-                       if (self.now - _utc(o.created)).total_seconds() <= max_h * 3600]
+            max_h = float(self.settings.paper.get("pending_order_max_age_hours", 6))
+            pending = _reconcile_reduce_only(
+                [o for o in pending if (self.now - _utc(o.created)).total_seconds() <= max_h * 3600], led)
 
         decided = False
         if is_open and trading_allowed and not led.halted:
-            extras: dict = {"sectors": self.sp500_sectors}
-            if hasattr(agent, "prepare_live") and agent.decision_due(self.asof, led):
-                extras.update(agent.prepare_live(self, led, self.asof) or {})
-                for k in ("llm_status", "llm_calls", "headlines"):
-                    if k in extras:
-                        out[k] = extras[k]
-            self._ensure_protect_history(led)
-            ctx = self.context(self.asof, extras, option_chains)
-            # (a) protective orders, every run: move trailing stops / indicator targets with the last
-            #     completed daily bar, then compare stop-loss / take-profit levels with the live price
-            protect.update_daily(led, ctx)
-            exits = (protect.check_price(led, self._marks(led)) + protect.time_exits(led, ctx)
-                     + agent.intraday(ctx, led))
+            # (a) protective orders, every run, BEFORE any heavy data preparation so that nothing
+            #     in (b) can stop them: trailing stops / indicator targets move with the last completed
+            #     daily bar, then stop-loss / take-profit / time-exit levels meet the live price
+            pctx = self.context(self.asof, {"sectors": self.sp500_sectors}, option_chains)
+            protect.update_daily(led, pctx)
+            exits = (protect.check_price(led, self._marks(led), skip=self._split_pause)
+                     + protect.time_exits(led, pctx))
+            try:
+                exits += agent.intraday(pctx, led)
+            except Exception as exc:
+                log.exception("%s intraday exits failed", agent.id)
+                out["notes"].append(f"INTRADAY EXIT CHECK FAILED: {exc!r}")
+                self.summary["errors"].append(f"{agent.id}: intraday exits failed: {exc!r}")
+            out["notes"] += pctx.log
             # (b) the strategy's indicator rules on completed daily bars (agents act once per day)
-            new = agent.decide(ctx, led)
-            decided = True
+            new: list[OrderIntent] = []
+            try:
+                extras: dict = {"sectors": self.sp500_sectors}
+                if hasattr(agent, "prepare_live") and agent.decision_due(self.asof, led):
+                    extras.update(agent.prepare_live(self, led, self.asof) or {})
+                    for k in ("llm_status", "llm_calls", "headlines"):
+                        if k in extras:
+                            out[k] = extras[k]
+                ctx = self.context(self.asof, extras, option_chains)
+                new = agent.decide(ctx, led)
+                decided = True
+                out["notes"] += ctx.log
+            except Exception as exc:
+                log.exception("%s decision failed", agent.id)
+                out["notes"].append(f"DECISION FAILED (protective orders still active): {exc!r}")
+                self.summary["errors"].append(f"{agent.id}: decision failed: {exc!r}")
             orders = dedupe_exits(exits + new, led)
-            out["notes"] += ctx.log
-            if rd.action == "block_entries":
+        orders = merge_pending(pending, orders)
+        # entry filters apply to retried orders too
+        if orders and not led.halted:
+            if not trading_allowed:
                 orders = riskmod.filter_entries(orders, led)
-                out["notes"].append(rd.reason + " - entries blocked")
+            if rd.action == "block_entries":
+                n0 = len(orders)
+                orders = riskmod.filter_entries(orders, led)
+                if len(orders) < n0:
+                    out["notes"].append(rd.reason + " - entries blocked")
             max_gross = spec.risk.get("max_gross")
             if max_gross and orders and riskmod.gross_ratio(led, fx, marks) >= max_gross:
+                n0 = len(orders)
                 orders = riskmod.filter_entries(orders, led)
-                out["notes"].append(f"gross exposure at/above {max_gross}x - entries blocked")
-        orders = merge_pending(pending, orders)
+                if len(orders) < n0:
+                    out["notes"].append(f"gross exposure at/above {max_gross}x - entries blocked")
+        _mark_reduce_only(orders, led)
         max_n = int(self.settings.paper.get("max_orders_per_agent_per_run", 25))
         if len(orders) > max_n:
             out["notes"].append(f"{len(orders)} orders exceeds cap {max_n}; truncated")
@@ -398,17 +430,73 @@ class PaperRunner:
                 out.append(o)
         return out
 
-    def _ensure_protect_history(self, led: Ledger) -> None:
-        """Daily bars for protected single stocks (not in the core store) so trailing stops can move."""
-        day = str(self.asof.date())
-        need = [iid for iid, pr in led.meta.get("protect", {}).items()
-                if (pr.get("updated") or "") < day and not self.store.has(iid)]
+    def _ensure_position_history(self, led: Ledger) -> None:
+        """Daily bars for held single stocks (not in the core store): the bad-print reference for
+        their quotes, split detection and trailing stops."""
+        need = [iid for iid, p in led.positions.items() if p.kind == "stock" and not self.store.has(iid)]
         if need:
             self.ensure_history(need, days=150)
+
+    SPLIT_RATIOS = (2, 3, 4, 5, 6, 8, 10, 15, 20, 25, 30, 40, 50)
+
+    def _apply_splits(self, led: Ledger, out: dict) -> None:
+        """Stock splits: the data feed's split list is checked on every run for held stocks and ETFs;
+        a confirmed split scales the position, its average price, its protective levels and any
+        retried orders (no cash moves). If the adjusted price history implies a split that the feed
+        does not list yet, the instrument's mark and protective orders are frozen for up to one day
+        instead of treating the price drop as a loss."""
+        fetch = getattr(self.data, "splits", None)
+        today = self.now.tz_convert("UTC").tz_localize(None).normalize()
+        applied = led.meta.setdefault("splits_applied", {})
+        suspect = led.meta.setdefault("split_suspect", {})
+        for iid, pos in list(led.positions.items()):
+            if pos.kind not in ("stock", "etf") or pos.qty == 0:
+                continue
+            inst = self.registry.get(iid)
+            sym = self.store.meta.get("resolved", {}).get(iid) or (inst.yf[0] if inst is not None and inst.yf else iid)
+            try:
+                sp = fetch(inst, sym) if fetch else None
+            except Exception as exc:
+                log.info("splits failed for %s: %s", iid, exc)
+                sp = None
+            done = set(applied.get(iid, []))
+            opened = pd.Timestamp(pos.opened[:10])
+            for ex_date, r in (sp.items() if sp is not None else []):
+                k = str(pd.Timestamp(ex_date).date())
+                r = float(r)
+                if not (r > 0) or abs(r - 1) < 1e-9 or k in done or not (opened < pd.Timestamp(ex_date) <= today):
+                    continue
+                led.split(self.ts, iid, r, note=f"split {r:g}:1, ex-date {k}")
+                protect.apply_split(led, iid, r)
+                for o in led.meta.get("pending", []):
+                    if o.get("inst_id") == iid:
+                        o["qty"] = float(o["qty"]) * r
+                done.add(k)
+                out["notes"].append(f"{iid}: {r:g}:1 split (ex {k}) applied - quantity now {led.qty(iid):g}")
+            if done:
+                applied[iid] = sorted(done)
+            # an adjusted history that disagrees with our last mark by a split-like ratio, with no
+            # split in the feed yet: freeze this instrument for up to a day rather than book a fake loss
+            prev, lm = self.previous_close(iid), led.positions[iid].last_mark
+            r = _split_like(lm / prev, self.SPLIT_RATIOS) if (prev and lm) else None
+            if r:
+                first = pd.Timestamp(suspect.setdefault(iid, str(today.date())))
+                if (today - first).days <= 1:
+                    self._split_pause.add(iid)
+                    out["notes"].append(f"{iid}: price history implies a ~{r:g}:1 split not yet in the data feed - "
+                                        "mark and stop/target frozen for this run")
+                    continue
+            suspect.pop(iid, None)
+        for d in (applied, suspect):
+            for iid in list(d):
+                if iid not in led.positions:
+                    d.pop(iid)
 
     def _marks(self, led: Ledger) -> dict[str, float]:
         marks = {}
         for iid in led.positions:
+            if iid in getattr(self, "_split_pause", ()):
+                continue                               # keep the last mark (see _apply_splits)
             q = self.quotes.quote(self.registry.get(iid))
             if q is not None:
                 marks[iid] = q.mid
@@ -499,6 +587,44 @@ class PaperRunner:
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "a", encoding="utf-8") as fh:
             fh.write(json.dumps(record, default=str) + "\n")
+
+
+def _split_like(ratio: float, ratios) -> float | None:
+    """The split ratio (r or 1/r) that `ratio` matches within 3%, else None."""
+    if not ratio or not math.isfinite(ratio) or ratio <= 0:
+        return None
+    for r in ratios:
+        for cand in (float(r), 1.0 / r):
+            if abs(ratio / cand - 1) < 0.03:
+                return cand
+    return None
+
+
+def _reduces(o: OrderIntent, led: Ledger) -> bool:
+    held = led.qty(o.inst_id)
+    return held != 0 and o.qty * held < 0
+
+
+def _mark_reduce_only(orders: list[OrderIntent], led: Ledger) -> None:
+    """Remember which orders close or reduce a position, so a retry can never open a new one."""
+    for o in orders:
+        if not o.combo and "reduce_only" not in (o.meta or {}):
+            o.meta = dict(o.meta or {})
+            o.meta["reduce_only"] = _reduces(o, led)
+
+
+def _reconcile_reduce_only(pending: list[OrderIntent], led: Ledger) -> list[OrderIntent]:
+    """A retried exit is dropped once the position is gone and capped at what is still held."""
+    out = []
+    for o in pending:
+        if not o.combo and (o.meta or {}).get("reduce_only"):
+            held = led.qty(o.inst_id)
+            if held == 0 or held * o.qty > 0:
+                continue
+            if abs(o.qty) > abs(held):
+                o.qty = -held
+        out.append(o)
+    return out
 
 
 def _utc(ts) -> pd.Timestamp:

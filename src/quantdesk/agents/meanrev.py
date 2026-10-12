@@ -1,8 +1,9 @@
 """A7: RSI(2) mean reversion on the S&P 500 UCITS ETF (Connors-style), Trading 212 cost model.
 
 BUY  when close > SMA(200) (only buy dips in an uptrend) and RSI(2) < 10.
-SELL when close > SMA(5); in the paper run this is also a resting take-profit at the 5-day average,
-     checked hourly. Protective stop 3xATR(10) below entry and a 10-business-day time exit.
+SELL when the daily close > SMA(5) (Connors' exit). In addition a take-profit order rests at the 5-day
+     average whenever that average is above the entry price, so a bounce through it is sold during the
+     day. Protective stop 3xATR(10) below entry and a 10-business-day time exit.
 """
 from __future__ import annotations
 
@@ -40,7 +41,7 @@ class RSI2MeanReversion(Agent):
         sig = {"close": round(close, 4), f"sma{p['trend_sma']}": round(trend, 4), f"rsi{p['rsi_window']}": round(r, 2),
                f"sma{p['exit_sma']}": round(exit_sma, 4), f"atr{p['atr_window']}": round(a, 4),
                "buy_rule": f"close > SMA{p['trend_sma']} and RSI({p['rsi_window']}) < {p['rsi_entry']}",
-               "sell_rule": f"close > SMA{p['exit_sma']} (take-profit order at SMA{p['exit_sma']})"}
+               "sell_rule": f"close > SMA{p['exit_sma']}; take-profit order at SMA{p['exit_sma']} while above the entry"}
         held = ledger.qty(iid) > 0
         orders: list[OrderIntent] = []
         if held and close > exit_sma:
@@ -63,7 +64,7 @@ class RSI2MeanReversion(Agent):
                     meta={"protect": {"stop_atr": float(p["stop_atr"]), "atr": a, "target_sma": int(p["exit_sma"]),
                                       "sma_value": exit_sma, "max_days": int(p["max_days"]),
                                       "label": f"stop {p['stop_atr']}xATR({p['atr_window']}), take-profit at "
-                                               f"SMA{p['exit_sma']}, time exit {p['max_days']} days"}}))
+                                               f"SMA{p['exit_sma']} (when above entry), time exit {p['max_days']} days"}}))
         else:
             sig["state"] = "FLAT"
         ledger.meta["signals"] = {iid: sig}

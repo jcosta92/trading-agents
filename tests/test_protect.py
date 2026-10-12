@@ -41,6 +41,9 @@ def test_check_bar_gap_intrabar_and_both_hit(instruments):
     # both levels inside one bar: assume the stop came first (pessimistic)
     (o, px), = protect.check_bar(led, {"GOLD": (100.0, 112.0, 94.0)})
     assert o.reason.startswith("STOP-LOSS")
+    # gap ABOVE the target at the open: the take-profit fills at the open, before any later dip
+    (o, px), = protect.check_bar(led, {"GOLD": (112.0, 113.0, 94.0)})
+    assert o.reason.startswith("TAKE-PROFIT") and px == 112.0
     # target only
     (o, px), = protect.check_bar(led, {"GOLD": (101.0, 111.0, 99.0)})
     assert o.reason.startswith("TAKE-PROFIT") and px == pytest.approx(110.0)
@@ -93,12 +96,30 @@ def test_trailing_stop_ignores_closes_before_entry(instruments):
     assert led.meta["protect"]["GOLD"]["hwm"] == 100.0
 
 
+def test_target_sma_only_armed_above_entry(instruments):
+    led = _ledger_with(instruments, ts="2024-02-09", spec={"target_sma": 5, "sma_value": 97.0, "stop_pct": 0.1})
+    assert led.meta["protect"]["GOLD"]["target"] is None           # SMA(5) below the entry: no take-profit
+    assert protect.check_price(led, {"GOLD": 100.5}) == []
+    protect.update_daily(led, _ctx_for(instruments, [100.0] * 30 + [104, 105, 106, 107, 108]))
+    assert led.meta["protect"]["GOLD"]["target"] == pytest.approx(106.0)
+
+
+def test_split_scales_levels(instruments):
+    led = _ledger_with(instruments, spec={"stop_atr": 2.0, "atr": 3.0, "target_pct": 0.1})
+    led.split("2024-03-05", "GOLD", 4.0)
+    protect.apply_split(led, "GOLD", 4.0)
+    pr = led.meta["protect"]["GOLD"]
+    assert led.qty("GOLD") == 40 and led.positions["GOLD"].avg_price == pytest.approx(25.0)
+    assert (pr["entry"], pr["stop"], pr["target"]) == pytest.approx((25.0, 23.5, 27.5))
+    assert led.verify()[0]
+
+
 def test_target_sma_follows_the_average(instruments):
     closes = [100.0] * 30
     led = _ledger_with(instruments, ts="2024-02-09", spec={"target_sma": 5, "sma_value": 104.0, "stop_pct": 0.1})
     assert led.meta["protect"]["GOLD"]["target"] == 104.0
     protect.update_daily(led, _ctx_for(instruments, closes + [90, 90, 90, 90, 90]))
-    assert led.meta["protect"]["GOLD"]["target"] == pytest.approx(90.0)
+    assert led.meta["protect"]["GOLD"]["target"] is None           # the average fell below the entry: disarmed
 
 
 def test_time_exit_counts_business_days(instruments):
@@ -109,6 +130,8 @@ def test_time_exit_counts_business_days(instruments):
     ctx.now = pd.Timestamp("2024-03-08")                     # Friday: 5 business days
     (o,) = protect.time_exits(led, ctx)
     assert o.qty == -10 and o.reason.startswith("TIME EXIT")
+    assert protect.due_time_exits(led, pd.Timestamp("2024-03-07")) == []
+    assert len(protect.due_time_exits(led, pd.Timestamp("2024-03-08"))) == 1
 
 
 def test_cleanup_after_position_closed(instruments):

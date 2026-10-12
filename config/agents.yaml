@@ -189,7 +189,8 @@ agents:
       small and decayed since publication; it only has a chance with zero commissions.
     rules: |
       BUY  when close > SMA(200) and RSI(2) < 10
-      SELL when close > SMA(5): a resting take-profit order at the 5-day average, checked hourly
+      SELL when the daily close > SMA(5)
+      TAKE-PROFIT resting at the 5-day average while that average is above the entry price, checked hourly
       STOP 3 x ATR(10) below entry, checked hourly; TIME EXIT after 10 business days
       SIZE 95% of equity, fractional shares
     params:

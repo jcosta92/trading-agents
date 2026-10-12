@@ -124,6 +124,22 @@ def dividends(symbol: str | None) -> pd.Series:
     return d.astype(float)
 
 
+def splits(symbol: str | None) -> pd.Series:
+    """Split ratios (new shares per old share) indexed by ex-date (tz-naive)."""
+    if not symbol:
+        return pd.Series(dtype="float64")
+    try:
+        d = _yf().Ticker(symbol).splits
+    except Exception as exc:
+        log.info("splits failed for %s: %s", symbol, exc)
+        return pd.Series(dtype="float64")
+    if d is None or len(d) == 0:
+        return pd.Series(dtype="float64")
+    d = d.copy()
+    d.index = pd.DatetimeIndex(d.index).tz_localize(None).normalize()
+    return d.astype(float)
+
+
 def option_expiries(symbol: str) -> list[str]:
     try:
         return list(_yf().Ticker(symbol).options or [])

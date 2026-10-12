@@ -50,11 +50,18 @@ recorded in `reports/trials.csv`, which raises the bar of the Deflated Sharpe Ra
   - in the paper run, every hourly cycle compares them with the live price while the market is open; a level that
     has been touched becomes a market order and fills at the bid (so a fast move can fill beyond the level, like a
     real stop order);
-  - in backtests, each day's open/high/low bar is checked: a gap through the level fills at the open, otherwise at the
-    level, and if a bar touches both the stop and the target, the stop is assumed to have come first.
+  - in backtests, each day's open/high/low bar is checked: a gap through a level fills at the open, otherwise at the
+    level, and if a bar touches both the stop and the target, the stop is assumed to have come first. Time exits fill
+    at the open of the day they fall due (the paper run sells at that day's first open cycle).
   - trailing stops and indicator targets move once a day from the last completed bar, and a stop never moves down.
+  - protective orders are checked before anything else in a cycle, so a failed data download or a bad labels file
+    can block new entries but never an exit.
 - Orders that could not fill because no usable quote was available are retried on the next cycle for up to 6 hours.
+  Retried entries still pass the risk filters; a retried exit is dropped once the position is gone.
 - Cash instruments (ETFs, stocks, spot crypto) can never be sold short; a stale exit order is rejected.
+- Stock splits listed by the data feed are applied to the position, its average price and its stop/target levels.
+  If the price history implies a split the feed does not list yet, that holding's mark and stops are frozen for up
+  to a day instead of booking a fake loss.
 
 ## Costs that are modelled (both in backtests and in the paper run)
 
@@ -146,6 +153,9 @@ python -m quantdesk.cli validate-labels     # check today's labels file
 - **Fills are simulated against public quotes.** Yahoo quotes are often 15 minutes delayed, and Kraken quotes are
   real-time. This is not a broker paper account; a broker account needs IB Gateway on an always-on machine with a
   daily login.
+- **Yahoo bad-print filter.** A Yahoo quote more than 35% (stocks), 20% (ETFs) or 15% (indices) away from the previous
+  daily close is ignored until a daily close confirms the move, so a genuine crash of that size is only acted on the
+  next day. Kraken crypto quotes are not filtered.
 - **Stops are checked hourly, not tick by tick.** GitHub can also delay or skip scheduled runs under load. A price that
   dips through a stop and recovers between two checks is not caught; a stop that is caught can fill well beyond its
   level. Backtests, which see the whole daily range, are the more pessimistic of the two on this point.

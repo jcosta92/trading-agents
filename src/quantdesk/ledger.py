@@ -105,6 +105,14 @@ class Ledger:
         elif t == "charge":
             self.cash[e["ccy"]] += e["amount"]          # amount is negative
             self.costs[e.get("category", "other")] -= e.get("amount_eur", 0.0)
+        elif t == "split":                              # ratio:1 split: more shares, lower price, no cash
+            pos = self.positions.get(e["inst"])
+            if pos is not None:
+                r = float(e["ratio"])
+                pos.qty *= r
+                pos.avg_price /= r
+                if pos.last_mark is not None:
+                    pos.last_mark /= r
         else:
             raise ValueError(f"unknown journal entry type {t}")
 
@@ -190,6 +198,10 @@ class Ledger:
         """Debit an external cost (e.g. LLM inference). `amount` is positive."""
         return self.post({"type": "charge", "ts": ts, "ccy": ccy, "amount": -abs(float(amount)),
                           "amount_eur": -fx.to_eur(abs(amount), ccy), "category": category, "note": note})
+
+    def split(self, ts: str, inst_id: str, ratio: float, note: str = "") -> dict:
+        """Stock split: `ratio` new shares per old share (0.1 = 1-for-10 reverse split)."""
+        return self.post({"type": "split", "ts": ts, "inst": inst_id, "ratio": float(ratio), "note": note})
 
     # ------------------------------------------------------------------ valuation
     def qty(self, inst_id: str) -> float:

@@ -1,13 +1,14 @@
 name: news
 # Builds today's headline inbox for the LLM news agent (state/llm/inbox/<date>.json): headlines
-# since the previous inbox for the 100 most liquid S&P 500 names. A scheduled Claude task labels it
-# about an hour later (config/llm_prompt.md) - no paid API. The second cron is a fallback in case
-# GitHub skips the first run; the command does nothing if today's inbox already exists or if the
-# NYSE is closed today.
+# since the previous inbox for the 100 most liquid S&P 500 names. 12:13 UTC is after the usual
+# 7:00-8:00 ET pre-market earnings releases. A scheduled Claude task labels it from ~13:13 UTC
+# (config/llm_prompt.md; it waits for a late inbox) - no paid API. The first possible US trade is
+# the 14:07 UTC cycle (15:07 in winter). The second cron is a fallback in case GitHub skips the
+# first run; the command does nothing if today's inbox already exists or if the NYSE is closed.
 on:
   schedule:
-    - cron: "20 12 * * 1-5"
-    - cron: "50 12 * * 1-5"
+    - cron: "13 12 * * 1-5"
+    - cron: "43 12 * * 1-5"
   workflow_dispatch:
 permissions:
   contents: write
@@ -43,4 +44,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A state/llm
           git commit -q -m "News inbox $(date -u +%Y-%m-%d)" || { echo "nothing to commit"; exit 0; }
-          for i in 1 2 3 4 5; do git pull -q --rebase && git push -q && break; sleep $((i*5)); done
+          ok=0
+          for i in 1 2 3 4 5; do
+            if git pull -q --rebase && git push -q; then ok=1; break; fi
+            git rebase --abort 2>/dev/null || true
+            sleep $((i*5))
+          done
+          if [ "$ok" != 1 ]; then echo "::error::push failed after 5 attempts"; exit 1; fi

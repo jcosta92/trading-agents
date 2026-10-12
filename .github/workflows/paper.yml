@@ -52,4 +52,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A state docs reports/STATUS.md
           git commit -q -m "Paper cycle $(date -u +%Y-%m-%dT%H:%MZ)" || { echo "nothing to commit"; exit 0; }
-          for i in 1 2 3 4 5; do git pull -q --rebase && git push -q && break; sleep $((i*5)); done
+          ok=0
+          for i in 1 2 3 4 5; do
+            if git pull -q --rebase && git push -q; then ok=1; break; fi
+            git rebase --abort 2>/dev/null || true
+            sleep $((i*5))
+          done
+          if [ "$ok" != 1 ]; then echo "::error::push failed after 5 attempts"; exit 1; fi

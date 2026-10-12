@@ -9,7 +9,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: repo-writes
+  group: backtest               # separate from the hourly paper run (different files), so stops keep being checked
   cancel-in-progress: false
 jobs:
   backtest:
@@ -42,4 +42,10 @@ jobs:
           find data/history -type f -size +90M -print -delete || true
           git add -A reports docs data/history
           git commit -m "Backtest results $(date -u +%Y-%m-%dT%H:%MZ)" || { echo "nothing to commit"; exit 0; }
-          for i in 1 2 3 4 5; do git pull --rebase && git push && break; sleep $((i*5)); done
+          ok=0
+          for i in 1 2 3 4 5; do
+            if git pull -q --rebase && git push -q; then ok=1; break; fi
+            git rebase --abort 2>/dev/null || true
+            sleep $((i*5))
+          done
+          if [ "$ok" != 1 ]; then echo "::error::push failed after 5 attempts"; exit 1; fi

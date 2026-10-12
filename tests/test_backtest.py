@@ -169,12 +169,12 @@ def test_liquidation_fee_only_on_filled_notional(instruments, venues):
     assert led.costs.get("liquidation", 0.0) == 0.0 and led.qty("BTC_PERP") == 0.02
 
 
-def _breakout_store(gap_open: float):
+def _breakout_store(gap_open: float, tail: int = 2):
     """BTC_PERP flat around 100 for 120 days, a breakout close at 110, one quiet day, then a gap open."""
-    idx = pd.date_range("2020-01-01", periods=124, freq="D")
-    c = np.array([100.0 + (0.5 if i % 2 else -0.5) for i in range(120)] + [110.0, 110.0, gap_open, gap_open])
+    idx = pd.date_range("2020-01-01", periods=122 + tail, freq="D")
+    c = np.array([100.0 + (0.5 if i % 2 else -0.5) for i in range(120)] + [110.0, 110.0] + [gap_open] * tail)
     o = np.r_[c[:1], c[:-1]]
-    o[-2] = gap_open                                     # the gap day opens at gap_open
+    o[122] = gap_open                                    # the gap day opens at gap_open
     o[121] = 110.0
     store = HistoryStore()
     store.set_series("close", "BTC_PERP", pd.Series(c, index=idx))
@@ -219,3 +219,50 @@ def test_backtest_stop_loss_intrabar_fills_at_stop(settings, instruments, venues
     stop = res.fills.iloc[0]["price"]                                # entry
     assert len(sells) == 1 and sells.iloc[0]["reason"].startswith("STOP-LOSS hit")
     assert 99.0 < sells.iloc[0]["price"] < stop                     # at the stop level, not the low
+
+
+def test_backtest_time_exit_fills_at_the_open_of_the_due_day(settings, instruments, venues):
+    """Same day as the paper run (first open cycle of the day the position reaches max_days)."""
+    store = _breakout_store(gap_open=110.0, tail=10)
+    reg, cm = Registry(instruments), CostModel(venues, 0.0)
+    agent = _breakout_agent(settings, reg, cm)
+    orig = agent.decide
+
+    def decide_with_time_exit(ctx, ledger):
+        orders = orig(ctx, ledger)
+        for o in orders:
+            if o.qty > 0:
+                o.meta["protect"] = {**o.meta["protect"], "max_days": 2}
+        return orders
+    agent.decide = decide_with_time_exit
+    res = run_backtest(agent, store, reg, cm, start="2020-02-15", capital=1000)
+    f = res.fills
+    buy, sell = f[f["qty"] > 0].iloc[0], f[f["qty"] < 0].iloc[0]
+    assert sell["reason"].startswith("TIME EXIT")
+    due = np.busday_offset(pd.Timestamp(str(buy["ts"])[:10]).date(), 2, roll="forward")
+    assert str(sell["ts"])[:10] == str(due)
+    o = store.frame("open")["BTC_PERP"]
+    assert sell["price"] == pytest.approx(o.loc[str(due)])        # at the open
+
+
+def test_backtest_whole_run_ignores_future_data(synth, settings, instruments, venues):
+    """Equity up to T must not change when every price after T changes (covers the bar checks,
+    trailing-stop updates and pending fills, not just decide())."""
+    store, extras = synth
+    T = pd.Timestamp("2020-06-30")
+    rng = np.random.default_rng(9)
+    frames = {}
+    for f, df in store.frames.items():
+        df = df.copy()
+        fut = df.index > T
+        df.loc[fut] = df.loc[fut] * rng.uniform(0.5, 1.5, size=df.loc[fut].shape)
+        frames[f] = df
+    pert = HistoryStore(frames, store.meta)
+    for aid in ("trend_etf", "rsi2_meanrev", "crypto_trend"):
+        eqs = []
+        for st in (store, pert):
+            reg, cm = Registry(instruments), CostModel(venues, 1.0)
+            r = run_backtest(build_agent(settings.agents[aid], reg, cm), st, reg, cm, start="2018-01-01",
+                             end="2020-09-30", capital=1000.0, extras=extras)
+            eqs.append(r.equity.loc[:T])
+        assert (eqs[0] - eqs[1]).abs().max() < 1e-9, aid

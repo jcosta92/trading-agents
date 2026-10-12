@@ -148,13 +148,26 @@ def run_backtest(agent: Agent, store: HistoryStore, registry: Registry, cm: Cost
             pending = _execute_pending(ex, ledger, pending, q_open, ts, fills_all, rejects_all)
         if pending and fill_at == "close":
             pending = _execute_pending(ex, ledger, pending, q_exec_close, ts, fills_all, rejects_all)
-        # 1b. protective stop-loss / take-profit levels crossed inside today's bar
+        # 1b. time exits due today fill at the open (the paper run sells at its first open cycle)
+        if ledger.meta.get("protect"):
+            te = protect.due_time_exits(ledger, d)
+            if te:
+                f, r = ex.execute(ledger, te, q_open, ts)
+                fills_all += f
+                rejects_all += r
+                protect.cleanup(ledger)
+        # 1c. protective stop-loss / take-profit levels crossed inside today's bar
         if ledger.meta.get("protect"):
             bars = {}
             for iid in list(ledger.meta["protect"]):
-                vals = [_at(f_open, d, iid), _at(f_high, d, iid), _at(f_low, d, iid)]
-                if all(v is not None for v in vals):
-                    bars[iid] = tuple(vals)
+                c = _at(close, d, iid)
+                o = _at(f_open, d, iid) or c
+                if o is None:
+                    continue
+                c = c or o
+                h = _at(f_high, d, iid) or max(o, c)      # missing high/low: fall back to open/close
+                lo = _at(f_low, d, iid) or min(o, c)
+                bars[iid] = (o, max(h, o, c), min(lo, o, c))
             trig = protect.check_bar(ledger, bars)
             if trig:
                 tq = protect.TriggerQuotes(q_close, {o.inst_id: px for o, px in trig})
@@ -208,8 +221,7 @@ def run_backtest(agent: Agent, store: HistoryStore, registry: Registry, cm: Cost
         # 6. decide (data up to today's close)
         ctx = Context(d, store, registry, q_close, "backtest", now=d, extras=extras, options=options)
         protect.update_daily(ledger, ctx)
-        orders = dedupe_exits(protect.time_exits(ledger, ctx) + agent.intraday(ctx, ledger)
-                              + agent.decide(ctx, ledger), ledger)
+        orders = dedupe_exits(agent.intraday(ctx, ledger) + agent.decide(ctx, ledger), ledger)
         if enforce_daily_loss and rd.action == "block_entries":
             orders = riskmod.filter_entries(orders, ledger)
         if max_gross and orders and expo_rec[d] >= max_gross:

@@ -26,10 +26,15 @@ class FakeChains:
 
 
 class FakeData:
+    SPLITS: dict = {}                                        # inst id -> pd.Series of ratios (tests set it)
+
     def __init__(self, store, extras, now, shock=None):
         self.store, self.extras, self.now = store, extras, pd.Timestamp(now)
         self.shock = shock or {}
         self.news_calls = 0
+
+    def splits(self, inst, symbol=None):
+        return self.SPLITS.get(inst.id if inst is not None else symbol, pd.Series(dtype="float64"))
 
     def _last(self, key):
         s = self.store.close(key).loc[:self.now.tz_localize(None)]
@@ -391,3 +396,119 @@ def test_no_quote_order_is_retried_next_run_then_expires(tmp_path, settings, ins
     (tmp_path / "ledgers" / "bench_sp500.json").write_text(json.dumps(led))
     s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T11:10:00Z", agents=["bench_sp500"]).run()
     assert not s["agents"]["bench_sp500"]["fills"]
+
+
+def _llm_position_with_stop(tmp_path, store, instruments, iid="S000", stop_frac=0.93):
+    px = float(store.close(iid).loc[:"2026-10-12"].iloc[-1])
+    from quantdesk.registry import Registry
+    Registry(instruments)
+    led = _give_position(tmp_path, "llm_news", instruments, iid, 2, px, ts="2026-10-09T15:10:00+00:00",
+                         protect_spec={"stop_pct": 1 - stop_frac, "target_pct": 0.10, "max_days": 5, "label": "t"})
+    return led, px
+
+
+@pytest.fixture()
+def stock_registry(monkeypatch):
+    """_give_position needs the synthetic stock S000 in the registry."""
+    from quantdesk.registry import Registry
+    orig_get = Registry.get
+
+    def get(self, iid):
+        i = orig_get(self, iid)
+        return i if i is not None or not iid.startswith("S0") else self.stock(iid)
+    monkeypatch.setattr(Registry, "get", get)
+
+
+def test_unreadable_labels_do_not_block_stops(tmp_path, settings, instruments, venues, paper_store, stock_registry):
+    store, extras = paper_store
+    _, px = _llm_position_with_stop(tmp_path, store, instruments)
+    from quantdesk import llm
+    for path in (llm.inbox_path(tmp_path, "2026-10-12"), llm.labels_path(tmp_path, "2026-10-12")):
+        path.parent.mkdir(parents=True, exist_ok=True)
+    llm.inbox_path(tmp_path, "2026-10-12").write_text(json.dumps({"date": "2026-10-12", "items": []}))
+    llm.labels_path(tmp_path, "2026-10-12").write_text('{"date": "2026-10-12", "labels": [')     # truncated
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T15:10:00Z",
+                shock={"S000": 0.8}, agents=["llm_news"]).run()
+    a = s["agents"]["llm_news"]
+    assert not s["errors"], s["errors"]
+    assert "unreadable" in a["llm_status"]
+    assert [f["reason"][:14] for f in a["fills"]] == ["STOP-LOSS hit:"]
+
+
+def test_decision_crash_does_not_block_stops(tmp_path, settings, instruments, venues, paper_store, stock_registry,
+                                            monkeypatch):
+    store, extras = paper_store
+    _llm_position_with_stop(tmp_path, store, instruments)
+    from quantdesk.agents.llmnews import LLMNews
+
+    def boom(self, runner, ledger, asof):
+        raise RuntimeError("panel download failed")
+    monkeypatch.setattr(LLMNews, "prepare_live", boom)
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T15:10:00Z",
+                shock={"S000": 0.8}, agents=["llm_news"]).run()
+    a = s["agents"]["llm_news"]
+    assert any("decision failed" in e for e in s["errors"])
+    assert [f["reason"][:14] for f in a["fills"]] == ["STOP-LOSS hit:"]
+    led = json.loads((tmp_path / "ledgers" / "llm_news.json").read_text())
+    assert led["journal"] and not led["positions"]
+
+
+def test_retried_entry_respects_risk_filters_and_paper_end(tmp_path, settings, instruments, venues, paper_store):
+    store, extras = paper_store
+    _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T09:10:00Z", agents=["trend_etf"]).run()
+    led = json.loads((tmp_path / "ledgers" / "trend_etf.json").read_text())
+    led["meta"]["pending"] = [{"inst_id": "GOLD", "qty": 1.0, "reason": "retried BUY", "combo": None,
+                               "created": "2026-10-12T09:10:00+00:00", "meta": {"reduce_only": False}}]
+    (tmp_path / "ledgers" / "trend_etf.json").write_text(json.dumps(led))
+    meta = json.loads((tmp_path / "paper.json").read_text())
+    meta["end"] = "2026-10-12T10:00:00+00:00"                      # the paper period ends before the retry
+    (tmp_path / "paper.json").write_text(json.dumps(meta))
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T10:10:00Z", agents=["trend_etf"]).run()
+    assert not [f for f in s["agents"]["trend_etf"]["fills"] if f["inst"] == "GOLD"]
+
+
+def test_retried_perp_exit_cannot_open_a_short(tmp_path, settings, instruments, venues, paper_store):
+    store, extras = paper_store
+    _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T09:10:00Z", agents=["crypto_trend"]).run()
+    led = json.loads((tmp_path / "ledgers" / "crypto_trend.json").read_text())
+    assert "BTC_PERP" not in led["positions"]
+    led["meta"]["pending"] = [{"inst_id": "BTC_PERP", "qty": -0.01, "reason": "SELL signal (retried)", "combo": None,
+                               "created": "2026-10-12T09:10:00+00:00", "meta": {"reduce_only": True}}]
+    (tmp_path / "ledgers" / "crypto_trend.json").write_text(json.dumps(led))
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T10:10:00Z", agents=["crypto_trend"]).run()
+    assert "BTC_PERP" not in s["agents"]["crypto_trend"]["positions"] or \
+        s["agents"]["crypto_trend"]["positions"]["BTC_PERP"]["qty"] > 0
+
+
+def test_split_is_applied_not_booked_as_a_loss(tmp_path, settings, instruments, venues, paper_store, stock_registry,
+                                              monkeypatch):
+    store, extras = paper_store
+    px = float(store.close("S000").loc[:"2026-10-12"].iloc[-1])
+    # bought 2 shares at 4x today's price before a 4:1 split that goes ex today
+    led = _give_position(tmp_path, "llm_news", instruments, "S000", 2, 4 * px, ts="2026-10-09T15:10:00+00:00",
+                         protect_spec={"stop_pct": 0.07, "target_pct": 0.10, "max_days": 5, "label": "t"})
+    eq0 = led.equity(__import__("quantdesk.ledger", fromlist=["FxRates"]).FxRates(1.1), {"S000": 4 * px})
+    monkeypatch.setattr(FakeData, "SPLITS", {"S000": pd.Series([4.0], index=[pd.Timestamp("2026-10-12")])})
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T15:10:00Z", agents=["llm_news"]).run()
+    a = s["agents"]["llm_news"]
+    assert not s["errors"], s["errors"]
+    assert not a["fills"], "a split must not trigger the stop-loss"
+    assert a["positions"]["S000"]["qty"] == pytest.approx(8)
+    assert a["equity_eur"] == pytest.approx(eq0, rel=0.02)
+    led = json.loads((tmp_path / "ledgers" / "llm_news.json").read_text())
+    assert led["meta"]["protect"]["S000"]["stop"] == pytest.approx(px * 0.93, rel=1e-6)
+    # the next run does not apply it again
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T16:10:00Z", agents=["llm_news"]).run()
+    assert s["agents"]["llm_news"]["positions"]["S000"]["qty"] == pytest.approx(8)
+
+
+def test_unconfirmed_split_freezes_mark_and_stops(tmp_path, settings, instruments, venues, paper_store, stock_registry):
+    store, extras = paper_store
+    px = float(store.close("S000").loc[:"2026-10-12"].iloc[-1])
+    led = _give_position(tmp_path, "llm_news", instruments, "S000", 2, 4 * px, ts="2026-10-09T15:10:00+00:00",
+                         protect_spec={"stop_pct": 0.07, "target_pct": 0.10, "max_days": 5, "label": "t"})
+    s = _runner(settings, instruments, venues, tmp_path, store, extras, "2026-10-12T15:10:00Z", agents=["llm_news"]).run()
+    a = s["agents"]["llm_news"]
+    assert not a["fills"] and not a["halted"]
+    assert any("not yet in the data feed" in n for n in a["notes"])
+    assert a["positions"]["S000"]["mark"] == pytest.approx(4 * px)

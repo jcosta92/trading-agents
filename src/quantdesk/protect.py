@@ -13,15 +13,18 @@ Spec fields (all optional):
     stop_pct            initial stop = entry * (1 - stop_pct)
     trail_atr, atr_n    chandelier trailing stop: max(stop, highest close since entry - trail_atr * ATR(atr_n))
     target_pct          take-profit = entry * (1 + target_pct)
-    target_sma          take-profit = SMA(n) of closes, re-set every day (a resting limit sell at the average)
+    target_sma          take-profit = SMA(n) of closes, re-set every day (a resting limit sell at the average);
+                        only armed while the average is above the entry price - a take-profit below the
+                        entry would just be a second stop
     max_days            time exit after n business days
     label               human-readable description shown on the dashboard
 
 Paper run: levels are checked against live prices every hourly run (a resting stop/limit order is
 approximated by polling, so a fast move can fill beyond the level - which is realistic for stop
-orders). Backtests check each day's open/high/low bar: a gap through the level fills at the open,
-otherwise at the level; if stop and target are both inside one bar, the STOP is assumed first.
-Only long positions are protected.
+orders). Backtests check each day's open/high/low bar: a gap through a level fills at the open (the
+open is the day's first trade), otherwise at the level; if the stop and the target are both inside
+one bar, the STOP is assumed first. Time exits fill at the open of the due day in backtests and at
+the first open cycle of that day in the paper run. Only long positions are protected.
 """
 from __future__ import annotations
 
@@ -36,6 +39,10 @@ from .execution import OrderIntent, Quote
 
 def _book(ledger) -> dict:
     return ledger.meta.setdefault("protect", {})
+
+
+def _armed(target: float, entry: float) -> float | None:
+    return target if target > entry else None
 
 
 def register(ledger, fills) -> None:
@@ -57,7 +64,7 @@ def register(ledger, fills) -> None:
             stop = s2 if stop is None else max(stop, s2)
         target = entry * (1 + float(spec["target_pct"])) if spec.get("target_pct") else None
         if spec.get("target_sma") and spec.get("sma_value"):
-            target = float(spec["sma_value"])
+            target = _armed(float(spec["sma_value"]), entry)
         # "updated" = last completed daily bar folded into hwm/trailing stop; empty so that the entry
         # day's own close is used as soon as that bar is complete
         book[f.inst] = {"entry": entry, "opened": str(f.ts)[:10], "stop": stop, "target": target, "hwm": entry,
@@ -94,17 +101,24 @@ def update_daily(ledger, ctx) -> None:
         if spec.get("target_sma"):
             t = ind.last(ind.sma(d["close"], int(spec["target_sma"])))
             if math.isfinite(t):
-                pr["target"] = t
+                pr["target"] = _armed(t, pr["entry"])
         pr["updated"] = day
 
 
 def time_exits(ledger, ctx) -> list[OrderIntent]:
+    now = ctx.now.tz_convert(None) if getattr(ctx.now, "tzinfo", None) else ctx.now
+    return due_time_exits(ledger, now)
+
+
+def due_time_exits(ledger, today: pd.Timestamp) -> list[OrderIntent]:
+    """Positions that have been held for `max_days` business days on `today`."""
     out = []
+    day = pd.Timestamp(today).normalize().date()
     for iid, pr in _book(ledger).items():
         n = pr["spec"].get("max_days")
         if not n or ledger.qty(iid) <= 0:
             continue
-        age = int(np.busday_count(pd.Timestamp(pr["opened"]).date(), ctx.now.normalize().date()))
+        age = int(np.busday_count(pd.Timestamp(pr["opened"]).date(), day))
         if age >= int(n):
             out.append(OrderIntent(iid, -ledger.qty(iid), f"TIME EXIT: held {age} business days (max {n})"))
     return out
@@ -122,19 +136,29 @@ def check_bar(ledger, bars: dict[str, tuple[float, float, float]]) -> list[tuple
             continue
         stop, target = pr.get("stop"), pr.get("target")
         label = pr["spec"].get("label", "")
-        if stop is not None and l <= stop:
-            px = o if o <= stop else stop
-            out.append((OrderIntent(iid, -q, f"STOP-LOSS hit: traded {px:.4g} <= stop {stop:.4g} ({label})"), px))
+        stop_msg = "STOP-LOSS hit: traded {px:.4g} <= stop {lvl:.4g} ({label})"
+        tp_msg = "TAKE-PROFIT hit: traded {px:.4g} >= target {lvl:.4g} ({label})"
+        if stop is not None and o <= stop:                     # gapped through the stop
+            hit = (stop_msg, o, stop)
+        elif target is not None and o >= target:               # gapped through the target
+            hit = (tp_msg, o, target)
+        elif stop is not None and l <= stop:                   # intrabar; if both, assume the stop first
+            hit = (stop_msg, stop, stop)
         elif target is not None and h >= target:
-            px = o if o >= target else target
-            out.append((OrderIntent(iid, -q, f"TAKE-PROFIT hit: traded {px:.4g} >= target {target:.4g} ({label})"), px))
+            hit = (tp_msg, target, target)
+        else:
+            continue
+        msg, px, lvl = hit
+        out.append((OrderIntent(iid, -q, msg.format(px=px, lvl=lvl, label=label)), px))
     return out
 
 
-def check_price(ledger, prices: dict[str, float]) -> list[OrderIntent]:
+def check_price(ledger, prices: dict[str, float], skip: set | None = None) -> list[OrderIntent]:
     """Paper run: market sell orders for every level crossed by the current price."""
     out = []
     for iid, pr in _book(ledger).items():
+        if skip and iid in skip:
+            continue
         q = ledger.qty(iid)
         p = prices.get(iid)
         if q <= 0 or p is None or not math.isfinite(p):
@@ -146,6 +170,18 @@ def check_price(ledger, prices: dict[str, float]) -> list[OrderIntent]:
         elif target is not None and p >= target:
             out.append(OrderIntent(iid, -q, f"TAKE-PROFIT hit: price {p:.4g} >= target {target:.4g} ({label})"))
     return out
+
+
+def apply_split(ledger, iid: str, ratio: float) -> None:
+    """Scale the protective levels of a position after a ratio:1 stock split."""
+    pr = _book(ledger).get(iid)
+    if not pr or not ratio or ratio <= 0:
+        return
+    for k in ("entry", "stop", "target", "hwm"):
+        if pr.get(k) is not None:
+            pr[k] = float(pr[k]) / ratio
+    if pr["spec"].get("atr"):
+        pr["spec"]["atr"] = float(pr["spec"]["atr"]) / ratio
 
 
 def resting_orders(ledger) -> list[dict]:
