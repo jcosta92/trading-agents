@@ -1,31 +1,31 @@
 # trading-agents
 
-## The one-month bot test (12 Oct - 12 Nov 2026)
+## The bot test (12 Oct - 31 Dec 2026): 910 bots, 163 strategy families
 
-Six trading bots, each built on a strategy that bot platforms and trading communities rank among the most used, trade
-their own simulated **EUR 1,000** for one month and buy and sell throughout it. On the last day every bot sells what it
-holds, and the results are checked.
+Every bot trades its own simulated **EUR 1,000** on real candles, buying and selling throughout the test; on
+31 Dec every bot sells what it holds. A mid-point review runs on 12 Nov, the final review on 31 Dec.
 
-| Bot | Strategy | Where it comes from | Market, candles |
-|---|---|---|---|
-| `grid_btc` | Spot grid: 16 levels ±8%, buy low / sell one level higher, trailing reset | Pionex / Binance / Bybit grid bot | BTC/EUR, 15 min |
-| `dca_eth` | DCA bot: base order, 5 safety orders (1.5% apart, ×1.5 size), 1.5% take-profit | 3Commas-style DCA bot | ETH/EUR, 15 min |
-| `bb_meanrev` | BinHV45: sharp close below the lower Bollinger band, +1.25% target, −5% stop | Freqtrade community strategy | 8 coins, 15 min |
-| `supertrend` | Buy when Supertrend(10,3) flips up, sell when it flips down | TradingView's most-used trend indicator | BTC/ETH/SOL, 1 h |
-| `ema_macd` | EMA 9/21 cross with MACD confirmation and EMA200 filter, 2×ATR stop | Classic strategy-guide setup | BTC/ETH/SOL, 1 h |
-| `orb_stocks` | 5-min opening range breakout on the day's most active stocks, out by the close | Zarattini, Barbon & Aziz (2024) | 100 liquid US stocks, 5 min |
-
-Exact rules, parameters and sources: [`config/bots.yaml`](config/bots.yaml).
-
-- **Live dashboard:** `docs/index.html` on GitHub Pages; status table [`reports/BOTS.md`](reports/BOTS.md); every fill
-  in [`state/bots/fills.csv`](state/bots/fills.csv).
-- **Preview:** `docs/preview.html` replays the month before the test through the same bots.
-- **How the simulation works:** every real candle (Bitvavo, Kraken as a fallback, Yahoo for stocks) is replayed in
-  order. Resting orders fill when a candle trades through them; market orders fill at the next candle's open. Every
-  fill pays Bitvavo fees (0.15% maker, 0.25% taker) or IBKR fees and FX, plus the spread and slippage. A bot only
-  ever sees candles up to the one it is deciding on, so the result does not depend on when a cycle runs.
-- **Running it:** the `bots` workflow loops every 15 minutes for ~5h40m, then starts its next run. It costs nothing
-  (public repository).
+- **Families, not bots.** A family is one published strategy: an open-source bot (Freqtrade, Jesse, QuantConnect,
+  Hummingbot, Pionex/KuCoin bot types, ai-hedge-fund), a classic or TradingView system, a crypto or stock/ETF
+  research paper, or a small machine-learning model. Each family runs its source's default rules, unchanged, on
+  several markets (usually 8 coins or 10 ETFs). That is a robustness check, not parameter fishing: a family is judged
+  by its median bot and by how many of its bots make money, never by its single best bot.
+- **The original 17 bots** (6 most-used bot strategies, 5 less common ones, 6 classic systems) are in
+  [`config/bots.yaml`](config/bots.yaml); the 146 other families, with source links and rules, in
+  [`config/families.yaml`](config/families.yaml).
+- **Luck.** With ~900 bots, dozens will beat the market by chance. The dashboard shows a luck yardstick (how far the
+  best bot would sit above the average with no skill at all) and the reviews correct for multiple testing.
+- **No look-ahead.** Every signal and weight function is checked by `tests/test_families.py`: its value at a candle
+  must be identical whether computed with or without the later candles.
+- **Simulation.** Candles from Bitvavo (Kraken fallback) and Yahoo are replayed in order; resting orders fill when a
+  candle trades through them, market orders at the next candle's open. Bitvavo fees (0.15% / 0.25%) or IBKR fees and
+  FX, plus spread and slippage, on every fill. Long only: a strategy's short signal means "go to cash".
+- **Where things are.** The bots' state, every fill (`state/bots/fills.csv`), the status table (`reports/BOTS.md`)
+  and the dashboard pages live on the branch **`bot-state`**, which holds a single commit replaced every 15 minutes,
+  so ~900 ledgers do not bloat the repository. The GitHub Pages site loads the latest page from that branch:
+  `index.html` (live) and `preview.html` (the same bots replayed over the month before the test).
+- **Running it.** The `bots` workflow loops every 15 minutes for ~5h40m, then starts its next run (free for a public
+  repository); a scheduled check restarts it if the chain ever breaks.
 
 ## The research agents (background)
 

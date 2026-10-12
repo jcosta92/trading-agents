@@ -190,6 +190,10 @@ def run_cycle(state_dir: str | Path, now: pd.Timestamp | None = None, source=Non
             summary["bots"][bid] = {"name": bot.name, "error": repr(exc), "trace": traceback.format_exc()[-1500:]}
         timing[bid] = round(time.time() - t_bot, 3)
     _record_prices(state, hub, t0)
+    try:
+        _record_all_prices(state, hub, t0, list(markets_cfg_keys(cfg)))
+    except Exception as exc:                       # reference data only; never fail the cycle for it
+        log.warning("price snapshot failed: %s", exc)
     append_csv(state / "fills.csv", [f.__dict__ for f in engine.fills])
     append_csv(state / "equity.csv", engine.equity_rows)
     summary["data_sources"] = getattr(source, "used", {})
@@ -311,6 +315,45 @@ def _status(bot, led, fx: FxRates, engine: BotEngine) -> dict:
                                                        "signal", "day_position", "last_target", "steps", "trails",
                                                        "last_quote")},
     }
+
+
+def markets_cfg_keys(cfg) -> list[str]:
+    return list((cfg.get("markets") or {}).keys())
+
+
+def _record_all_prices(state: Path, hub: DataHub, t0: pd.Timestamp, coins: list[str]) -> None:
+    """Hourly closes of every coin (for per-market buy-and-hold comparisons in the reviews) and
+    daily closes of every US ticker the bots use."""
+    cols = {}
+    for iid in coins:
+        for tf in ("1h", "15m", "5m"):
+            df = hub.mem.get((iid, tf))
+            if df is not None and len(df):
+                s = df["close"].resample("1h").last().dropna() if tf != "1h" else df["close"]
+                s = s.copy()
+                s.index = s.index + pd.Timedelta(hours=1)
+                cols[iid] = s
+                break
+    if cols:
+        p = pd.DataFrame(cols).reindex(columns=coins)
+        p = p[p.index >= t0]
+        path = state / "prices_all.csv"
+        if path.exists():
+            old = pd.read_csv(path, usecols=["ts"])
+            if len(old):
+                p = p[p.index > pd.Timestamp(old["ts"].iloc[-1])]
+        p = p.dropna(how="all")
+        append_csv(path, [{"ts": t.isoformat(), **{k: (round(float(v), 8) if pd.notna(v) else "") for k, v in r.items()}}
+                          for t, r in p.iterrows()])
+    if hub.us_daily:
+        start = (t0 - pd.Timedelta(days=7)).tz_localize(None)
+        wide = pd.DataFrame({t: d["close"] for t, d in hub.us_daily.items() if d is not None and len(d)})
+        if len(wide):
+            path = state / "us_closes.csv"
+            if path.exists():
+                old = pd.read_csv(path, index_col=0, parse_dates=True)
+                wide = old.combine_first(wide)
+            wide[wide.index >= start].sort_index().to_csv(path)
 
 
 def _record_prices(state: Path, hub: DataHub, t0: pd.Timestamp) -> None:
