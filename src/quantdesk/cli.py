@@ -217,24 +217,66 @@ def cmd_bots(args) -> int:
     from .bots import report
     from .bots.runner import load_config, run_cycle
     cfg = load_config()
+    only = args.bots or None
+    if args.shard:
+        k, n = (int(x) for x in args.shard.split("/"))
+        only = [b for i, b in enumerate(cfg["bots"]) if i % n == k]
     s = run_cycle(Path(args.state), now=pd.Timestamp(args.now) if args.now else None, cfg=cfg,
-                  only=args.bots or None, start=args.start, end=args.end)
+                  only=only, start=args.start, end=args.end)
     if not args.no_report:
-        if args.start:                                    # preview replay of a past period
-            cfg = {**cfg, "start": args.start, "end": args.end or cfg["end"]}
-            report.write(Path(args.state), cfg, Path(args.docs), Path(args.reports), "preview.html",
-                         "BOTS_PREVIEW.md", preview=True)
-        else:
-            report.write(Path(args.state), cfg, Path(args.docs), Path(args.reports))
-    print(f"bots cycle {s['ts']}: {s['n_fills']} fills, sources {s.get('data_sources')}")
-    for bid, b in s["bots"].items():
-        print(f"- {bid}: equity {b.get('equity_eur')} positions {len(b.get('positions') or {})} "
-              f"orders {len(b.get('open_orders') or [])} {b.get('error', '')}")
-        for n in (b.get("notes") or [])[-3:]:
-            print(f"    . {n}")
+        _bots_report(cfg, args)
+    print(f"bots cycle {s['ts']}: {len(s['bots'])} bots, {s['n_fills']} fills, {s.get('seconds')} s, "
+          f"sources {s.get('data_sources')}")
+    print(f"slowest: {s.get('slowest')}")
     for e in s["errors"]:
         print(f"::error::{e}")
     return 1 if s["errors"] else 0
+
+
+def _bots_report(cfg, args) -> None:
+    from .bots import report
+    if args.start:                                    # preview replay of a past period
+        cfg = {**cfg, "start": args.start, "end": args.end or cfg["end"]}
+        report.write(Path(args.state), cfg, Path(args.docs), Path(args.reports), "preview.html",
+                     "BOTS_PREVIEW.md", preview=True)
+    else:
+        report.write(Path(args.state), cfg, Path(args.docs), Path(args.reports))
+
+
+def cmd_bots_merge(args) -> int:
+    """Merge shard state folders of a sharded replay into one, then build the report."""
+    import json
+    import shutil
+    from .bots.runner import load_config
+    out = Path(args.state)
+    (out / "ledgers").mkdir(parents=True, exist_ok=True)
+    status = {"bots": {}, "errors": []}
+    frames = {"fills.csv": [], "equity.csv": [], "prices.csv": []}
+    for d in map(Path, args.inputs):
+        for f in (d / "ledgers").glob("*.json"):
+            shutil.copy2(f, out / "ledgers" / f.name)
+        if (d / "status.json").exists():
+            st = json.loads((d / "status.json").read_text())
+            status["bots"].update(st.get("bots", {}))
+            status["errors"] += st.get("errors", [])
+            for k in ("ts", "start", "end", "eurusd", "data_sources"):
+                status.setdefault(k, st.get(k))
+        for name in frames:
+            if (d / name).exists() and (d / name).stat().st_size:
+                frames[name].append(pd.read_csv(d / name))
+    for name, fs in frames.items():
+        if fs:
+            df = pd.concat(fs)
+            if name == "prices.csv":
+                df = df.drop_duplicates("ts").sort_values("ts")
+            df.to_csv(out / name, index=False)
+    (out / "status.json").write_text(json.dumps(status, indent=1, default=str))
+    cfg = load_config()
+    _bots_report(cfg, args)
+    print(f"merged {len(args.inputs)} shards: {len(status['bots'])} bots, {len(status['errors'])} errors")
+    for e in status["errors"][:50]:
+        print(f"::error::{e}")
+    return 0
 
 
 def main(argv=None) -> int:
@@ -278,13 +320,21 @@ def main(argv=None) -> int:
     bt.add_argument("--end")
     bt.add_argument("--bots", nargs="*")
     bt.add_argument("--no-report", action="store_true")
+    bt.add_argument("--shard", help="k/n: run only every n-th bot starting at k (sharded replays)")
+    bm = sub.add_parser("bots-merge")
+    bm.add_argument("inputs", nargs="+")
+    bm.add_argument("--state", required=True)
+    bm.add_argument("--docs", default=str(ROOT / "docs"))
+    bm.add_argument("--reports", default=str(ROOT / "reports"))
+    bm.add_argument("--start")
+    bm.add_argument("--end")
     v = sub.add_parser("validate-labels")
     v.add_argument("--state", default=str(ROOT / "state"))
     v.add_argument("--date", help="YYYY-MM-DD (default: today UTC)")
     args = p.parse_args(argv)
     _setup_logging(args.verbose)
     return {"fetch-history": cmd_fetch_history, "backtest": cmd_backtest, "paper": cmd_paper,
-            "dashboard": cmd_dashboard, "selftest": cmd_selftest, "news-inbox": cmd_news_inbox, "bots": cmd_bots,
+            "dashboard": cmd_dashboard, "selftest": cmd_selftest, "news-inbox": cmd_news_inbox, "bots": cmd_bots, "bots-merge": cmd_bots_merge,
             "validate-labels": cmd_validate_labels}[args.cmd](args)
 
 

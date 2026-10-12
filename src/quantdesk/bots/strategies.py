@@ -64,13 +64,21 @@ class GridBot(Bot):
             self._build(ctx, iid, close)
             return
         lv = st["levels"]
+        n_up = self.p.get("trail_up_levels")
+        if n_up and close > lv[-1] * (lv[1] / lv[0]) ** int(n_up):
+            ctx.note(f"price {close:,.2f} is {n_up} levels above the grid: trailing the grid up")
+            ctx.cancel("grid:")
+            if ctx.qty(iid) > 0:
+                ctx.place(iid, "sell", "market", qty=ctx.qty(iid), tag="grid:trail-up sell")
+            st.update({"levels": None, "out_since": None, "resetting": True, "trails": st.get("trails", 0) + 1})
+            return
         outside = close > lv[-1] or close < lv[0]
         if not outside:
             st["out_since"] = None
             return
         st["out_since"] = st.get("out_since") or ctx.ts.isoformat()
         hours = (ctx.ts - pd.Timestamp(st["out_since"])).total_seconds() / 3600
-        if hours >= float(self.p["reset_hours"]):
+        if self.p.get("reset_hours") is not None and hours >= float(self.p["reset_hours"]):
             ctx.note(f"price {close:,.0f} outside the grid {lv[0]:,.0f}-{lv[-1]:,.0f} for {hours:.0f}h: reset")
             ctx.cancel("grid:")
             if ctx.qty(iid) > 0:
@@ -689,5 +697,19 @@ CLASSES = {c.__name__: c for c in (GridBot, DCABot, BinHV45Bot, SupertrendBot, E
                                    VolBreakoutBot, TimeOfDayBot, RebalanceBot, MomentumRotationBot, IBSBot,
                                    OvernightBot, TurnOfMonthBot, LeverageRotationBot, TurtleBot, SqueezeBot, RSIBot)}
 
+def all_classes() -> dict:
+    """Bot classes by name, including the generic family bots (imported lazily: they import this module)."""
+    from . import generic
+    from .families import custom  # noqa: F401  (also registers every signal / weight function)
+    out = dict(CLASSES)
+    for mod in (generic, custom):
+        for name in dir(mod):
+            obj = getattr(mod, name)
+            if isinstance(obj, type) and issubclass(obj, Bot) and obj is not Bot:
+                out.setdefault(name, obj)
+    return out
+
+
 def build_bot(bot_id: str, spec: dict) -> Bot:
-    return CLASSES[spec["class"]](bot_id, spec)
+    cls = CLASSES.get(spec["class"]) or all_classes()[spec["class"]]
+    return cls(bot_id, spec)

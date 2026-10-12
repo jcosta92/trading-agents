@@ -1,0 +1,1608 @@
+# STRATEGY FAMILIES (added 12-13 Oct 2026; replayed from the common start 12 Oct 17:00 UTC)
+# ---------------------------------------------------------------------------------------
+# One family = one published strategy. Its bots ("variants") run the SAME rules with the source's
+# default parameters on different markets - a robustness grid, not parameter fishing. Nothing was
+# tuned on data. A family is judged by how many of its variants make money after costs, not by
+# its best variant.
+#
+# Every bot: EUR 1,000, long only (a short signal = exit to cash), Bitvavo fees for crypto
+# (0.15% maker / 0.25% taker + spread/slippage), IBKR fees for US ETFs/stocks.
+# Signal at a candle's close -> market order at the next candle's open (as Freqtrade); stop and
+# limit orders fill when a later candle trades through them.
+
+variant_sets:
+  crypto8: [BTC_SPOT, ETH_SPOT, SOL_SPOT, XRP_SPOT, ADA_SPOT, DOGE_SPOT, LINK_SPOT, AVAX_SPOT]
+  etf10: [SPY, QQQ, IWM, DIA, EFA, EEM, TLT, GLD, XLK, XLF]
+  etf3: [SPY, QQQ, IWM]
+
+universes:
+  crypto18: [BTC_SPOT, ETH_SPOT, SOL_SPOT, XRP_SPOT, DOGE_SPOT, ADA_SPOT, LINK_SPOT, AVAX_SPOT, DOT_SPOT, LTC_SPOT,
+             BCH_SPOT, ATOM_SPOT, UNI_SPOT, NEAR_SPOT, TRX_SPOT, XLM_SPOT, ETC_SPOT, FIL_SPOT]
+  crypto8: [BTC_SPOT, ETH_SPOT, SOL_SPOT, XRP_SPOT, ADA_SPOT, DOGE_SPOT, LINK_SPOT, AVAX_SPOT]
+  megacaps40: [AAPL, MSFT, NVDA, AMZN, GOOGL, META, AVGO, TSLA, BRK-B, JPM, LLY, V, MA, UNH, XOM, COST, WMT, HD,
+               PG, JNJ, ORCL, NFLX, ABBV, BAC, CRM, AMD, KO, PEP, CVX, MRK, ADBE, TMO, CSCO, MCD, LIN, ACN, ABT,
+               WFC, INTU, QCOM]
+
+groups:
+  repos: "Open-source bots on GitHub"
+  ta: "Technical systems and TradingView scripts"
+  crypto_research: "Crypto research papers"
+  equity_research: "Stock and ETF research"
+  ml: "Machine learning"
+
+families:
+
+  # =========================================================================== GitHub: Freqtrade / Jesse
+  e0v1e:
+    group: repos
+    name: "E0V1E fast-dip scalper (Freqtrade community)"
+    source: "https://github.com/ssssi/freqtrade_strs/blob/main/binance/dry_run/buy1_and_buynew/E0V1E.py"
+    rules: "Buy a sharp dip below SMA15 (x0.973 / x0.96) with falling RSI20, fast RSI4 low, CTI < 0.69. Exit when fast stochastic > 84 in profit or CCI20 > 80 above -3%. Stop -25%, trail 0.2% after +3%, 8h cooldown."
+    class: SignalBot
+    timeframe: 5m
+    signal: e0v1e
+    variants: crypto8
+    risk: {stoploss: 0.25, trailing: {positive: 0.002, offset: 0.03, only_offset: true}, cooldown: 96,
+           exits: [{col: exit_fastk, min_profit: 0.0}, {col: exit_cci, min_profit: -0.03}]}
+
+  elliotv5:
+    group: repos
+    name: "ElliotV5 EMA-offset dip with Elliott Wave Oscillator (Freqtrade community)"
+    source: "https://raw.githubusercontent.com/remiotore/ccxt-freqtrade/44beaeb6a420cd8e9f2e4ea93e11d6cfa192ee03/strategies/ElliotV5HO.py"
+    rules: "Buy close < EMA17 x 0.978 with EWO > 3.34 and RSI < 60, or EWO < -17.457. Sell close > EMA39 x 1.011. ROI 21.5/13.2/8.6/3%, stop -18.9%, trail 0.5% after +3%."
+    class: SignalBot
+    timeframe: 5m
+    signal: elliotv5
+    variants: crypto8
+    risk: {roi: {0: 0.215, 40: 0.132, 87: 0.086, 201: 0.03}, stoploss: 0.189,
+           trailing: {positive: 0.005, offset: 0.03, only_offset: true}}
+
+  smaoffset:
+    group: repos
+    name: "SMAOffset moving-average envelope (Freqtrade community)"
+    source: "https://raw.githubusercontent.com/remiotore/ccxt-freqtrade/44beaeb6a420cd8e9f2e4ea93e11d6cfa192ee03/strategies/SMAOffset_3.py"
+    rules: "Buy close < SMA30 x 0.958; sell close > EMA30 x 1.012; stop -50%."
+    class: SignalBot
+    timeframe: 5m
+    signal: smaoffset
+    variants: crypto8
+    risk: {stoploss: 0.5}
+
+  cluchanix:
+    group: repos
+    name: "ClucHAnix Heikin-Ashi Bollinger dip with 1h trend filter (Freqtrade community)"
+    source: "https://github.com/ssssi/freqtrade_strs/blob/main/ClucHAnix/ClucHAnix_5m.py"
+    rules: "Heikin-Ashi BB(40,2) dip (BinH-style) when the 1h HA close is above 0.795 x its value 168h ago; exit on a fading HA top above the BB mid. Tiered profit lock (2%/4%), no loss stop."
+    class: SignalBot
+    timeframe: 5m
+    signal: cluchanix
+    informative: [1h]
+    variants: crypto8
+    risk: {stoploss: 0.99, profit_lock: [[0.05, 0.04, 1.0], [0.02, 0.02, 0.6667]]}
+
+  clucmay72018:
+    group: repos
+    name: "ClucMay72018 deep Bollinger dip (Freqtrade official repo)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/ClucMay72018.py"
+    rules: "Buy close < EMA50 and < 0.985 x lower BB(typical, 20, 2), volume < 20x average; sell above the BB mid. ROI 1%, stop -5%."
+    class: SignalBot
+    timeframe: 5m
+    signal: clucmay72018
+    variants: crypto8
+    risk: {roi: {0: 0.01}, stoploss: 0.05}
+
+  ifr2:
+    group: repos
+    name: "IFR2: RSI(2) dip above the Ichimoku cloud with Hilbert trend mode (Jesse)"
+    source: "https://github.com/jesse-ai/example-strategies/blob/master/IFR2/__init__.py"
+    rules: "Buy RSI(2) < 10, close above both cloud spans (20/30/120/60) and HT_TRENDMODE = 1; sell when the close exceeds the two previous highs. No stop."
+    class: SignalBot
+    timeframe: 1h
+    signal: ifr2
+    variants: crypto8
+
+  rsi2_jesse:
+    group: repos
+    name: "Larry Connors RSI(2) (Jesse example)"
+    source: "https://github.com/jesse-ai/example-strategies/blob/master/RSI2/__init__.py"
+    rules: "Buy price > SMA200 and RSI(2) <= 10; sell price > SMA5. No stop."
+    class: SignalBot
+    timeframe: 4h
+    signal: rsi2_jesse
+    variants: crypto8
+
+  rsi_directional_trend:
+    group: repos
+    name: "RSIDirectionalWithTrend (paulcpk 'strategies that work')"
+    source: "https://github.com/paulcpk/freqtrade-strategies-that-work/blob/main/RSIDirectionalWithTrend.py"
+    rules: "Buy RSI(4) crossing above 15 with the low above EMA100; sell RSI(4) crossing above 85 or low below EMA100. Stop -10%, 10% trailing."
+    class: SignalBot
+    timeframe: 1h
+    signal: rsi_directional_trend
+    variants: crypto8
+    risk: {stoploss: 0.10, trailing: {pct: 0.10}}
+
+  ema800_cross:
+    group: repos
+    name: "EMAPriceCrossoverWithThreshold, EMA800 regime (paulcpk)"
+    source: "https://github.com/paulcpk/freqtrade-strategies-that-work/blob/main/EMAPriceCrossoverWithThreshold.py"
+    rules: "Buy the close crossing above EMA800; sell the close crossing below EMA800 x 0.99. Stop -15%, 15% trailing."
+    class: SignalBot
+    timeframe: 1h
+    signal: ema800_cross
+    variants: crypto8
+    risk: {stoploss: 0.15, trailing: {pct: 0.15}}
+
+  macd_cross_trend:
+    group: repos
+    name: "MACDCrossoverWithTrend (paulcpk)"
+    source: "https://github.com/paulcpk/freqtrade-strategies-that-work/blob/main/MACDCrossoverWithTrend.py"
+    rules: "Buy MACD < 0 crossing above its signal with the low above EMA100; sell MACD crossing below 0 or low below EMA100. Stop -20%."
+    class: SignalBot
+    timeframe: 1h
+    signal: macd_cross_trend
+    variants: crypto8
+    risk: {stoploss: 0.20}
+
+  hlhb:
+    group: repos
+    name: "HLHB 'Huck Loves Her Bucks' RSI 50 + EMA 5/10 cross, ADX > 25 (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/hlhb.py"
+    rules: "Buy when RSI(10) and EMA5/EMA10 (on (open+close)/2) cross up together with ADX > 25; sell on the mirror. Hyperopted ROI table, stop -32%, trail 1.17% after +1.86%."
+    class: SignalBot
+    timeframe: 4h
+    signal: hlhb
+    variants: crypto8
+    risk: {roi: {0: 0.6225, 703: 0.2187, 2849: 0.0363, 5520: 0}, stoploss: 0.3211,
+           trailing: {positive: 0.0117, offset: 0.0186, only_offset: true}}
+
+  cofibit:
+    group: repos
+    name: "CofiBit stochastic cross under the 5-EMA of lows (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/CofiBitStrategy.py"
+    rules: "Buy open < EMA5(low), fast stochastic K crossing above D below 25, ADX > 25; sell open >= EMA5(high) or K/D crossing 75. ROI 10/7/6/5%, stop -25%."
+    class: SignalBot
+    timeframe: 5m
+    signal: cofibit
+    variants: crypto8
+    risk: {roi: {0: 0.10, 20: 0.07, 30: 0.06, 40: 0.05}, stoploss: 0.25}
+
+  bandtastic:
+    group: repos
+    name: "Bandtastic 1-sigma Bollinger dip with MFI exit (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Bandtastic.py"
+    rules: "Buy close < lower BB(typical, 20, 1); sell MFI > 46 and close > upper BB(20, 2). ROI table, stop -34.5%, trail 1% after +5.8%."
+    class: SignalBot
+    timeframe: 15m
+    signal: bandtastic
+    variants: crypto8
+    risk: {roi: {0: 0.162, 69: 0.097, 229: 0.061, 566: 0}, stoploss: 0.345,
+           trailing: {positive: 0.01, offset: 0.058, only_offset: false}}
+
+  tdsequential:
+    group: repos
+    name: "DeMark TD Sequential buy setup 9 with perfection (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/TDSequentialStrategy.py"
+    rules: "Buy after 9+ closes below the close 4 bars earlier with a 'perfected' low; sell after the mirror sell setup. Stop -5%."
+    class: SignalBot
+    timeframe: 1h
+    signal: tdsequential
+    variants: crypto8
+    risk: {stoploss: 0.05}
+
+  awesome_macd:
+    group: repos
+    name: "AwesomeMacd: Awesome Oscillator zero cross with MACD sign (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/AwesomeMacd.py"
+    rules: "Buy MACD > 0 and AO crossing above 0; sell MACD < 0 and AO crossing below 0. ROI 10%, stop -25%."
+    class: SignalBot
+    timeframe: 1h
+    signal: awesome_macd
+    variants: crypto8
+    risk: {roi: {0: 0.10}, stoploss: 0.25}
+
+  cmcwinner:
+    group: repos
+    name: "CMCWinner triple-oscillator capitulation (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/CMCWinner.py"
+    rules: "Buy when CCI < -100, MFI < 20 and CMO < -50 (previous candle); sell on the mirror. ROI 5/3/2/0%, stop -5%."
+    class: SignalBot
+    timeframe: 15m
+    signal: cmcwinner
+    variants: crypto8
+    risk: {roi: {0: 0.05, 20: 0.03, 30: 0.02, 40: 0}, stoploss: 0.05}
+
+  simple_bollinger_jesse:
+    group: repos
+    name: "SimpleBollinger: upper-band breakout above the Ichimoku cloud (Jesse)"
+    source: "https://github.com/jesse-ai/example-strategies/blob/master/SimpleBollinger/__init__.py"
+    rules: "Buy close above the upper BB(hl2, 20, 2) and above the cloud; sell close below the BB mid. No stop."
+    class: SignalBot
+    timeframe: 1h
+    signal: simple_bollinger_jesse
+    variants: crypto8
+
+  tv_rsi_jesse:
+    group: repos
+    name: "TradingView_RSI 'RSI Trend Crypto' (Jesse)"
+    source: "https://github.com/jesse-ai/example-strategies/blob/master/TradingView_RSI/__init__.py"
+    rules: "Buy RSI(5) crossing above 35; sell RSI(5) crossing below 75 or 10; stop -5%, take profit +10%."
+    class: SignalBot
+    timeframe: 1h
+    signal: tv_rsi_jesse
+    variants: crypto8
+    risk: {bracket: true}
+
+  magen:
+    group: repos
+    name: "MAGen linear-regression MA cross with ADX and ATR bracket (Jesse)"
+    source: "https://github.com/jesse-ai/example-strategies/blob/master/MAGen/__init__.py"
+    rules: "Buy linreg(5) crossing above linreg(20) with ADX(8) > 13; sell fast < slow with ADX(8) < 15; stop entry - 2 ATR(32), target + 5 ATR(32)."
+    class: SignalBot
+    timeframe: 1h
+    signal: magen
+    variants: crypto8
+    risk: {bracket: true}
+
+  fott:
+    group: repos
+    name: "Optimized Trend Tracker (OTT) (Freqtrade official, long side)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/futures/FOttStrategy.py"
+    rules: "Buy when the VAR moving average crosses above OTT (1.4%); exit ADX > 60, ROI table, stop -26.5%, trail 5% after +10%."
+    class: SignalBot
+    timeframe: 1h
+    signal: fott
+    variants: crypto8
+    risk: {roi: {0: 0.10, 30: 0.75, 60: 0.05, 120: 0.025}, stoploss: 0.265,
+           trailing: {positive: 0.05, offset: 0.10, only_offset: true}}
+
+  trend_following_obv:
+    group: repos
+    name: "TrendFollowingStrategy: EMA20 cross with rising OBV (Freqtrade official, long side)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/futures/TrendFollowingStrategy.py"
+    rules: "Buy close crossing above EMA20 with OBV rising; sell close crossing below EMA20 (with OBV rising, as coded). ROI 15/10/5%, stop -26.5%, trail 5% after +10%."
+    class: SignalBot
+    timeframe: 5m
+    signal: trend_following_obv
+    variants: crypto8
+    risk: {roi: {0: 0.15, 30: 0.10, 60: 0.05}, stoploss: 0.265, trailing: {positive: 0.05, offset: 0.10, only_offset: true}}
+
+  emaskippump:
+    group: repos
+    name: "EMASkipPump: new 12-bar low under the Bollinger band (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/EMASkipPump.py"
+    rules: "Buy a 12-bar closing low below EMA5/EMA12 and the lower BB, volume not spiking; sell the mirror at the upper band. ROI 10%, stop -5%."
+    class: SignalBot
+    timeframe: 5m
+    signal: emaskippump
+    variants: crypto8
+    risk: {roi: {0: 0.10}, stoploss: 0.05}
+
+  quickie:
+    group: repos
+    name: "Quickie: TEMA turning up below the BB mid in a strong trend (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/Quickie.py"
+    rules: "Buy ADX > 30, TEMA9 below the BB mid and rising, SMA200 above the close; sell ADX > 70 with TEMA above the mid and falling. ROI 15/6/3/1% from minute 10, stop -25%."
+    class: SignalBot
+    timeframe: 5m
+    signal: quickie
+    variants: crypto8
+    risk: {roi: {10: 0.15, 15: 0.06, 30: 0.03, 100: 0.01}, stoploss: 0.25}
+
+  strategy001:
+    group: repos
+    name: "Strategy001: EMA20/50 cross with a green Heikin-Ashi candle (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy001.py"
+    rules: "Buy EMA20 crossing above EMA50 with HA close above EMA20 on a green HA candle; sell (in profit only) EMA50 crossing above EMA100 with a red HA candle below EMA20. ROI 5/4/3/1%, stop -10%."
+    class: SignalBot
+    timeframe: 5m
+    signal: strategy001
+    variants: crypto8
+    risk: {roi: {0: 0.05, 20: 0.04, 30: 0.03, 60: 0.01}, stoploss: 0.10, exits: [{col: exit, min_profit: 0.0}]}
+
+  strategy005:
+    group: repos
+    name: "Strategy005 volume-spike capitulation buy (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy005.py"
+    rules: "Buy volume > 4x its 150-bar average below SMA40 with fast stochastic D > K, RSI > 26, Fisher-RSI low; sell (in profit) RSI crossing 74 with MACD < 0. ROI table, stop -10%."
+    class: SignalBot
+    timeframe: 5m
+    signal: strategy005
+    variants: crypto8
+    risk: {roi: {0: 0.05, 20: 0.04, 40: 0.03, 80: 0.02, 1440: 0.01}, stoploss: 0.10, exits: [{col: exit, min_profit: 0.0}]}
+
+  swinghightosky:
+    group: repos
+    name: "SwingHighToSky long-period CCI extreme (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/SwingHighToSky.py"
+    rules: "Buy CCI(72) < -175; sell CCI(66) > -106 with RSI(45) > 88. ROI 27/8.5/4.1/0%, stop -34.3%."
+    class: SignalBot
+    timeframe: 15m
+    signal: swinghightosky
+    variants: crypto8
+    risk: {roi: {0: 0.2706, 33: 0.0853, 64: 0.0409, 244: 0}, stoploss: 0.343}
+
+  binhv27:
+    group: repos
+    name: "BinHV27 multi-regime DI/EMA-RSI dip buyer (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/BinHV27.py"
+    rules: "Four trend-regime dip entries below EMA60/EMA120 with -DI above its EMA and a low EMA-RSI; five regime exits. Stop -50%."
+    class: SignalBot
+    timeframe: 5m
+    signal: binhv27
+    variants: crypto8
+    risk: {stoploss: 0.5}
+
+  strategy004:
+    group: repos
+    name: "Strategy004 double stochastic oversold in a strong ADX trend (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy004.py"
+    rules: "Buy strong ADX, CCI < -100, fast and slow stochastics oversold and turning up; sell (in profit) ADX35 < 25 with stochastics > 70. ROI 5/4/3/1%, stop -10%."
+    class: SignalBot
+    timeframe: 5m
+    signal: strategy004
+    variants: crypto8
+    risk: {roi: {0: 0.05, 20: 0.04, 30: 0.03, 60: 0.01}, stoploss: 0.10, exits: [{col: exit, min_profit: 0.0}]}
+
+  strategy003:
+    group: repos
+    name: "Strategy003 RSI/MFI/Fisher oversold in an uptrend (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy003.py"
+    rules: "Buy RSI < 28, MFI < 16, Fisher-RSI < -0.94 below SMA40 with an EMA uptrend or EMA5/10 cross; sell SAR above the close with Fisher-RSI > 0.3. ROI 5/4/3/1%, stop -10%."
+    class: SignalBot
+    timeframe: 5m
+    signal: strategy003
+    variants: crypto8
+    risk: {roi: {0: 0.05, 20: 0.04, 30: 0.03, 60: 0.01}, stoploss: 0.10}
+
+  reinforced_average:
+    group: repos
+    name: "ReinforcedAverageStrategy: EMA 8/21 cross above the 48h SMA50 (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/ReinforcedAverageStrategy.py"
+    rules: "Buy EMA8 crossing above EMA21 with the close above SMA50 of 48-hour candles; sell EMA21 crossing above EMA8. ROI 50%, stop -20%."
+    class: SignalBot
+    timeframe: 4h
+    signal: reinforced_average
+    variants: crypto8
+    risk: {roi: {0: 0.5}, stoploss: 0.2}
+
+  adxsmas:
+    group: repos
+    name: "AdxSmas: SMA 3/6 cross with ADX > 25 (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/AdxSmas.py"
+    rules: "Buy ADX > 25 and SMA3 crossing above SMA6; sell ADX < 25 and SMA6 crossing above SMA3. ROI 10%, stop -25%."
+    class: SignalBot
+    timeframe: 1h
+    signal: adxsmas
+    variants: crypto8
+    risk: {roi: {0: 0.1}, stoploss: 0.25}
+
+  adxmomentum:
+    group: repos
+    name: "ADXMomentum (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/ADXMomentum.py"
+    rules: "Buy ADX > 25, momentum(14) > 0, +DI(25) > 25 and above -DI; sell on the mirror. ROI 1%, stop -25%."
+    class: SignalBot
+    timeframe: 1h
+    signal: adxmomentum
+    variants: crypto8
+    risk: {roi: {0: 0.01}, stoploss: 0.25}
+
+  macd_crossed_cci:
+    group: repos
+    name: "MACDStrategy_crossed: MACD cross with CCI filter (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/MACDStrategy_crossed.py"
+    rules: "Buy MACD crossing above signal with CCI <= -50; sell crossing below with CCI >= 100. ROI 5/4/3/1%, stop -30%."
+    class: SignalBot
+    timeframe: 5m
+    signal: macd_crossed_cci
+    variants: crypto8
+    risk: {roi: {0: 0.05, 20: 0.04, 30: 0.03, 60: 0.01}, stoploss: 0.3}
+
+  # =========================================================================== GitHub: other platforms
+  infinity_grid:
+    group: repos
+    name: "Infinity grid, constant-value rebalancing (Pionex / KuCoin bot)"
+    source: "https://www.kucoin.com/learn/trading-bot/what-is-infinity-grid-trading-bot-and-how-does-it-work"
+    rules: "Hold EUR 500 of the coin; at each 1.5% step up sell back to EUR 500, at each step down buy back to EUR 500; no upper limit; buying paused below 60% of the start price."
+    class: InfinityGridBot
+    timeframe: 5m
+    variants: [BTC_SPOT, ETH_SPOT, SOL_SPOT]
+    params: {grid: 0.015, floor: 0.6, v0_frac: 0.5}
+
+  grid_trailing_up:
+    group: repos
+    name: "Spot grid with trailing up (Pionex / Bitsgap / Gainium)"
+    source: "https://gainium.io/help/trailing-up-down-combo"
+    rules: "The BTC grid bot's rules (16 levels, +/-8%), but when the price runs 2 levels above the grid it is rebuilt around the new price (trailing up); no downside reset."
+    class: GridBot
+    timeframe: 15m
+    variants: [SOL_SPOT, XRP_SPOT, ETH_SPOT]
+    params: {levels: 16, range_pct: 0.08, reset_hours: null, invest: 0.98, trail_up_levels: 2}
+
+  avellaneda:
+    group: repos
+    name: "Avellaneda-Stoikov inventory-skewed market making (Hummingbot), candle approximation"
+    source: "https://github.com/hummingbot/hummingbot/blob/master/hummingbot/strategy/avellaneda_market_making/avellaneda_market_making.pyx"
+    rules: "Hold 50% in the coin; every 15 minutes quote a bid and an ask (10% of equity) around a reservation price skewed against inventory; half-spread 0.35% + volatility. Fills are optimistic: no queue or order book."
+    class: AvellanedaBot
+    timeframe: 5m
+    variants: [BTC_SPOT, ETH_SPOT]
+    params: {gamma: 1.0, half_spread: 0.0035, order_frac: 0.10}
+
+  dynamic_breakout2:
+    group: repos
+    name: "Dynamic Breakout II (QuantConnect Strategy Library)"
+    source: "https://www.quantconnect.com/learning/articles/investment-strategy-library/the-dynamic-breakout-ii-strategy"
+    rules: "Lookback adapts 20-60 days to volatility; buy above the upper Bollinger band and the n-day high; sell below the n-day average."
+    class: SignalBot
+    timeframe: 1d
+    signal: dynamic_breakout2
+    variants: crypto8
+
+  dual_thrust:
+    group: repos
+    name: "Dual Thrust range breakout (QuantConnect Strategy Library, long side)"
+    source: "https://www.quantconnect.com/learning/articles/investment-strategy-library/dual-thrust-trading-algorithm"
+    rules: "Range = max(HH - LC, HC - LL) of 4 days; buy stop at today's open + 0.5 range; exit below today's open - 0.5 range."
+    class: SignalBot
+    timeframe: 15m
+    signal: dual_thrust
+    informative: [1d]
+    variants: crypto8
+    risk: {entry: stop}
+
+  linreg_channel:
+    group: repos
+    name: "Linear regression channel mean reversion (QuantConnect Lean example)"
+    source: "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/RegressionChannelAlgorithm.py"
+    rules: "Buy below the 30-day regression line - 2 std; sell above + 2 std."
+    class: SignalBot
+    timeframe: 1d
+    signal: linreg_channel
+    variants: crypto8
+
+  regression_slope:
+    group: repos
+    name: "Regression slope trend (QuantConnect Lean scikit-learn example)"
+    source: "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScikitLearnLinearRegressionAlgorithm.py"
+    rules: "Slope of a linear fit to the last 30 daily opens, relative to its intercept: buy above 0.001, sell below -0.001."
+    class: SignalBot
+    timeframe: 1d
+    signal: regression_slope
+    variants: crypto8
+
+  ichimoku_chikou:
+    group: repos
+    name: "Ichimoku lagging span vs cloud (QuantConnect Strategy Library, Gurrib 2020)"
+    source: "https://www.quantconnect.com/learning/articles/investment-strategy-library/ichimoku-clouds-in-the-energy-sector"
+    rules: "Long when the lagging span moves above the cloud it is plotted against; out when it is below."
+    class: SignalBot
+    timeframe: 1d
+    signal: ichimoku_chikou
+    variants: crypto8
+
+  ai_hedge_fund_technicals:
+    group: repos
+    name: "ai-hedge-fund technicals agent, deterministic signals (virattt/ai-hedge-fund)"
+    source: "https://github.com/virattt/ai-hedge-fund (src/agents/technicals.py, commit 6c41ae8)"
+    rules: "Weighted vote of trend (EMA 8/21/55 + ADX), mean reversion (z-score + %B), momentum (1/3/6-month), volatility regime and Hurst/skew signals; long above +0.2, out below -0.2."
+    class: SignalBot
+    timeframe: 1d
+    signal: ai_hedge_fund_technicals
+    variants: crypto8
+
+  smart_trade_dip:
+    group: repos
+    name: "Smart Trade with trailing take-profit, bought on a 12% dip (Pionex)"
+    source: "https://intercom.help/pionex/en/articles/14616341-smart-trade-bot"
+    rules: "Buy when the close is 12% below its 30-day high; trailing take-profit (4%) once +8%; stop -10%."
+    class: SignalBot
+    timeframe: 1d
+    signal: smart_trade_dip
+    variants: crypto8
+    risk: {stoploss: 0.10, trailing: {positive: 0.04, offset: 0.08, only_offset: true}}
+
+  # =========================================================================== technical systems / TradingView
+  ichimoku_tk:
+    group: ta
+    name: "Ichimoku Tenkan/Kijun cross above the cloud (Hosoda)"
+    source: "Goichi Hosoda; pandas-ta ichimoku (9/26/52)"
+    rules: "Buy Tenkan crossing above Kijun with the close above the cloud; sell Tenkan crossing below Kijun or close below Kijun."
+    class: SignalBot
+    timeframe: 4h
+    signal: ichimoku_tk
+    variants: crypto8
+
+  psar_reversal:
+    group: ta
+    name: "Parabolic SAR stop-and-reverse, long side (Wilder 1978)"
+    source: "J. Welles Wilder, New Concepts in Technical Trading Systems (1978); TradingView built-in"
+    rules: "Long when SAR (0.02/0.2) flips below the price, out when it flips above."
+    class: SignalBot
+    timeframe: 4h
+    signal: psar_reversal
+    variants: crypto8
+
+  dmi_cross:
+    group: ta
+    name: "ADX/DMI directional cross (Wilder 1978)"
+    source: "J. Welles Wilder (1978)"
+    rules: "Buy +DI crossing above -DI with ADX > 25; sell -DI crossing above +DI."
+    class: SignalBot
+    timeframe: 4h
+    signal: dmi_cross
+    variants: crypto8
+
+  donchian_55_20:
+    group: ta
+    name: "Turtle System 2: 55-bar breakout, 20-bar exit, 2N stop"
+    source: "Curtis Faith, The Original Turtle Trading Rules"
+    rules: "Buy stop at the 55-bar high; exit at the 20-bar low or 2 x ATR(20) below the entry."
+    class: SignalBot
+    timeframe: 4h
+    signal: donchian_55_20
+    variants: crypto8
+    risk: {entry: stop, stop_col: stop_level, bracket: true}
+
+  keltner_tv:
+    group: ta
+    name: "Keltner Channels Strategy (TradingView built-in)"
+    source: "TradingView built-in strategy 'Keltner Channels Strategy' (EMA20 +/- 2 ATR10)"
+    rules: "When the close crosses above the upper channel, buy stop at that candle's high (3 candles); exit below the EMA20."
+    class: SignalBot
+    timeframe: 1h
+    signal: keltner_tv
+    variants: crypto8
+    risk: {entry: stop, entry_valid: 3}
+
+  bb_tv:
+    group: ta
+    name: "Bollinger Bands Strategy (TradingView built-in)"
+    source: "TradingView built-in strategy 'Bollinger Bands Strategy' (20, 2)"
+    rules: "Buy when the close crosses back above the lower band; sell when it crosses back below the upper band."
+    class: SignalBot
+    timeframe: 1h
+    signal: bb_tv
+    variants: crypto8
+
+  bollinger_method2:
+    group: ta
+    name: "Bollinger Method II: %B with MFI confirmation (John Bollinger)"
+    source: "John Bollinger, Bollinger on Bollinger Bands (2001), ch. 18"
+    rules: "Buy %B > 0.8 with MFI(10) > 80; sell %B < 0.2 with MFI < 20."
+    class: SignalBot
+    timeframe: 4h
+    signal: bollinger_method2
+    variants: crypto8
+
+  stoch_slow:
+    group: ta
+    name: "Stochastic Slow Strategy 14/3/3 (TradingView built-in)"
+    source: "George Lane; TradingView built-in 'Stochastic Slow Strategy'"
+    rules: "Buy %K crossing above %D below 20; sell %K crossing below %D above 80; stop 2 ATR(14)."
+    class: SignalBot
+    timeframe: 1h
+    signal: stoch_slow
+    variants: crypto8
+    risk: {bracket: true}
+
+  stochrsi_trend:
+    group: ta
+    name: "Stochastic RSI cross with EMA200 filter (Chande & Kroll)"
+    source: "Chande & Kroll, The New Technical Trader (1994)"
+    rules: "Buy StochRSI K crossing above D below 20 with the close above EMA200; sell K crossing below D above 80 or close below EMA200."
+    class: SignalBot
+    timeframe: 1h
+    signal: stochrsi_trend
+    variants: crypto8
+
+  cci_breakout:
+    group: ta
+    name: "CCI +100 breakout (Lambert 1980)"
+    source: "Donald Lambert, Commodities magazine (1980)"
+    rules: "Buy CCI(20) crossing above +100; sell when it falls back below +100."
+    class: SignalBot
+    timeframe: 4h
+    signal: cci_breakout
+    variants: crypto8
+
+  aroon:
+    group: ta
+    name: "Aroon(25) cross (Chande 1995)"
+    source: "Tushar Chande (1995)"
+    rules: "Buy Aroon Up crossing above Down with Up >= 70; sell Down crossing above Up."
+    class: SignalBot
+    timeframe: 4h
+    signal: aroon
+    variants: crypto8
+
+  chandelier_exit:
+    group: ta
+    name: "Chandelier Exit flip (LeBeau; TradingView script by everget)"
+    source: "Chuck LeBeau; https://www.tradingview.com/script/AqXxNS7j-Chandelier-Exit/"
+    rules: "ATR(22) x 3 trailing stops from the 22-bar closing high/low; long when direction flips up, out when it flips down."
+    class: SignalBot
+    timeframe: 4h
+    signal: chandelier_exit
+    variants: crypto8
+
+  hull_suite:
+    group: ta
+    name: "Hull moving average turn (Alan Hull; 'Hull Suite' by InSilico)"
+    source: "https://alanhull.com/hull-moving-average"
+    rules: "Long while HMA(55) is above its value 2 bars earlier; out when below."
+    class: SignalBot
+    timeframe: 4h
+    signal: hull_suite
+    variants: crypto8
+
+  elder_triple_screen:
+    group: ta
+    name: "Elder Triple Screen with Impulse filter (Alexander Elder)"
+    source: "Alexander Elder, Trading for a Living (1993); Come Into My Trading Room (2002)"
+    rules: "Daily MACD histogram rising (tide), 4h Force Index EMA2 < 0 (wave), not a red Impulse bar: buy stop above the 4h high; exit when the daily Impulse turns red; stop under the 5-bar low."
+    class: SignalBot
+    timeframe: 4h
+    signal: elder_triple_screen
+    informative: [1d]
+    variants: crypto8
+    risk: {entry: stop, stop_col: stop_level}
+
+  heikin_ashi_trend:
+    group: ta
+    name: "Heikin-Ashi trend (Valcu 2004)"
+    source: "Dan Valcu, Stocks & Commodities (Feb 2004)"
+    rules: "Buy two green HA candles with no lower shadow; sell the first red HA candle (trading at real prices)."
+    class: SignalBot
+    timeframe: 4h
+    signal: heikin_ashi_trend
+    variants: crypto8
+
+  kama_cross:
+    group: ta
+    name: "Kaufman Adaptive Moving Average cross (Kaufman 1995)"
+    source: "Perry Kaufman, Smarter Trading (1995)"
+    rules: "Buy the close crossing above a rising KAMA(10, 2, 30); sell the close crossing below KAMA."
+    class: SignalBot
+    timeframe: 4h
+    signal: kama_cross
+    variants: crypto8
+
+  trix:
+    group: ta
+    name: "TRIX signal cross (Hutson)"
+    source: "Jack Hutson, Stocks & Commodities"
+    rules: "Buy TRIX(15) crossing above its EMA9 signal while below zero; sell crossing below."
+    class: SignalBot
+    timeframe: 4h
+    signal: trix
+    variants: crypto8
+
+  chaikin_money_flow:
+    group: ta
+    name: "Chaikin Money Flow zero-line with trend filter (Chaikin)"
+    source: "Marc Chaikin; pandas-ta cmf(20)"
+    rules: "Buy CMF(20) crossing above +0.05 with the close above EMA50; sell CMF below -0.05."
+    class: SignalBot
+    timeframe: 4h
+    signal: chaikin_money_flow
+    variants: crypto8
+
+  obv_breakout:
+    group: ta
+    name: "On-Balance Volume breakout (Granville 1963)"
+    source: "Joe Granville, Granville's New Key to Stock Market Profits (1963)"
+    rules: "Buy a new 20-bar OBV high with the price near its 20-bar high and above EMA50; sell OBV below its EMA20 or price below EMA50."
+    class: SignalBot
+    timeframe: 4h
+    signal: obv_breakout
+    variants: crypto8
+
+  vwap_reversion:
+    group: ta
+    name: "Intraday VWAP 2-sigma band reversion"
+    source: "Session VWAP with standard-deviation bands (TradingView built-in VWAP)"
+    rules: "In a daily uptrend, buy a 15m close back above VWAP - 2 sigma; target VWAP, stop VWAP - 3 sigma, flat by 23:45 UTC."
+    class: SignalBot
+    timeframe: 15m
+    signal: vwap_reversion
+    informative: [1d]
+    variants: crypto8
+    risk: {tp_col: tp_level, stop_col: stop_level}
+
+  pivot_bounce:
+    group: ta
+    name: "Classic floor pivot S1 bounce"
+    source: "Floor-trader pivot points (TradingView built-in 'Pivot Points Standard')"
+    rules: "Buy when the 1h low touches yesterday's S1 and closes above it; target the pivot P, stop at S2."
+    class: SignalBot
+    timeframe: 1h
+    signal: pivot_bounce
+    variants: crypto8
+    risk: {tp_col: tp_level, stop_col: stop_level}
+
+  golden_cross:
+    group: ta
+    name: "Golden cross SMA 50/200"
+    source: "Classic moving-average regime rule"
+    rules: "Buy SMA50 crossing above SMA200; sell the death cross."
+    class: SignalBot
+    timeframe: 4h
+    signal: golden_cross
+    variants: crypto8
+
+  connors_rsi_crypto:
+    group: ta
+    name: "ConnorsRSI pullback (Connors, Alvarez & Radtke 2012)"
+    source: "An Introduction to ConnorsRSI (2012)"
+    rules: "Above SMA200 with ConnorsRSI(3,2,100) < 10: limit buy 2% below the close; sell ConnorsRSI > 70."
+    class: SignalBot
+    timeframe: 1h
+    signal: connors_rsi_crypto
+    variants: crypto8
+    risk: {entry: limit}
+
+  ut_bot:
+    group: ta
+    name: "UT Bot Alerts ATR trailing stop (TradingView, QuantNomad)"
+    source: "https://www.tradingview.com/script/n8ss8BID-UT-Bot-Alerts/"
+    rules: "ATR(10) x 2 trailing stop; buy when the close crosses above it, sell when below."
+    class: SignalBot
+    timeframe: 1h
+    signal: ut_bot
+    variants: crypto8
+    params: {key: 2.0, atr_period: 10}
+
+  ssl_channel:
+    group: ta
+    name: "SSL Channel (TradingView, ErwinBeckers)"
+    source: "https://www.tradingview.com/script/xzIoaIJC-SSL-channel/"
+    rules: "SMA10 of highs/lows; long when the close breaks above the high SMA, out below the low SMA."
+    class: SignalBot
+    timeframe: 4h
+    signal: ssl_channel
+    variants: crypto8
+
+  qqe:
+    group: ta
+    name: "QQE (Ignatov; TradingView 'QQE MT4')"
+    source: "https://www.tradingview.com/script/IYfA9R2k-QQE-MT4/"
+    rules: "Smoothed RSI(14, 5) against its 4.236 x volatility trailing bands; long when the trend flips up, out when it flips down."
+    class: SignalBot
+    timeframe: 1h
+    signal: qqe
+    variants: crypto8
+
+  wavetrend:
+    group: ta
+    name: "WaveTrend oscillator (TradingView, LazyBear)"
+    source: "https://www.tradingview.com/script/2KE8wTuF-Indicator-WaveTrend-Oscillator-WT/"
+    rules: "Buy WT1 crossing above WT2 below -53; sell crossing below above +53; stop 3 ATR."
+    class: SignalBot
+    timeframe: 1h
+    signal: wavetrend
+    variants: crypto8
+    risk: {bracket: true}
+
+  range_filter:
+    group: ta
+    name: "Range Filter Buy and Sell (TradingView, DonovanWall)"
+    source: "https://www.tradingview.com/script/lut7sBgG-Range-Filter-DW/"
+    rules: "Price filter that only moves when the price leaves a 3 x smoothed-range band; buy the first up-signal, sell the first down-signal."
+    class: SignalBot
+    timeframe: 1h
+    signal: range_filter
+    variants: crypto8
+
+  halftrend:
+    group: ta
+    name: "HalfTrend (TradingView, everget)"
+    source: "https://www.tradingview.com/script/U1SJ8ubc-HalfTrend/"
+    rules: "Amplitude-2 trend switch; long when it turns up, out when it turns down."
+    class: SignalBot
+    timeframe: 4h
+    signal: halftrend
+    variants: crypto8
+
+  coral_trend:
+    group: ta
+    name: "Coral Trend (TradingView, LazyBear)"
+    source: "LazyBear 'Coral Trend Indicator' (port of MT4 THV Coral)"
+    rules: "Six-stage smoothed line (21, 0.4); long when it turns up, out when it turns down."
+    class: SignalBot
+    timeframe: 4h
+    signal: coral_trend
+    variants: crypto8
+
+  holy_grail:
+    group: ta
+    name: "Holy Grail: ADX > 30 pullback to EMA20 (Raschke & Connors)"
+    source: "Raschke & Connors, Street Smarts (1995)"
+    rules: "With ADX(14) > 30 and rising, when price touches EMA20 buy stop above that bar's high; stop at the 5-bar low, target the prior 20-bar high."
+    class: SignalBot
+    timeframe: 4h
+    signal: holy_grail
+    variants: crypto8
+    risk: {entry: stop, bracket: true}
+
+  turtle_soup:
+    group: ta
+    name: "Turtle Soup false-breakdown reversal (Raschke & Connors)"
+    source: "Raschke & Connors, Street Smarts (1995)"
+    rules: "A new 20-bar low whose previous low is at least 4 bars old: buy stop just above that previous low; stop at today's low; out after 3 bars."
+    class: SignalBot
+    timeframe: 4h
+    signal: turtle_soup
+    variants: crypto8
+    risk: {entry: stop, bracket: true, time_stop: 3}
+
+  nr7_breakout:
+    group: ta
+    name: "NR7 narrow-range breakout (Toby Crabel)"
+    source: "Toby Crabel, Day Trading with Short Term Price Patterns and Opening Range Breakout (1990)"
+    rules: "After the narrowest range of 7 bars, buy stop above its high (next bar only); stop at its low; out after 3 bars."
+    class: SignalBot
+    timeframe: 4h
+    signal: nr7_breakout
+    variants: crypto8
+    risk: {entry: stop, bracket: true, time_stop: 3}
+
+  darvas_box:
+    group: ta
+    name: "Darvas box breakout (Nicolas Darvas 1960)"
+    source: "Nicolas Darvas, How I Made $2,000,000 in the Stock Market (1960)"
+    rules: "Box top = a 20-bar high not exceeded for 3 bars, bottom = the low after it not broken for 3 bars; buy stop above the top; stop below the box bottom."
+    class: SignalBot
+    timeframe: 4h
+    signal: darvas_box
+    variants: crypto8
+    risk: {entry: stop, stop_col: stop_level}
+
+  wyckoff_spring:
+    group: ta
+    name: "Wyckoff spring in a sideways range (codified)"
+    source: "Wyckoff method (Pruden, The Three Skills of Top Trading, 2007); mechanical rules are an approximation"
+    rules: "In a 40-bar range narrower than 6 ATR, a dip below the range low by < 1 ATR that closes back inside: buy stop above that bar; stop under the spring, target the range top."
+    class: SignalBot
+    timeframe: 4h
+    signal: wyckoff_spring
+    variants: crypto8
+    risk: {entry: stop, bracket: true}
+
+  vortex:
+    group: ta
+    name: "Vortex indicator cross (Botes & Siepman 2010)"
+    source: "Botes & Siepman, Stocks & Commodities (2010)"
+    rules: "Buy VI+ crossing above VI- (14); sell the reverse."
+    class: SignalBot
+    timeframe: 4h
+    signal: vortex
+    variants: crypto8
+
+  alphatrend:
+    group: ta
+    name: "AlphaTrend (TradingView, KivancOzbilgic)"
+    source: "KivancOzbilgic 'AlphaTrend' (TradingView)"
+    rules: "ATR(14) trailing line switched by MFI(14) >= 50; buy when it crosses above its value 2 bars earlier, sell on the cross below."
+    class: SignalBot
+    timeframe: 4h
+    signal: alphatrend
+    variants: crypto8
+
+  tv_momentum:
+    group: ta
+    name: "Momentum Strategy (TradingView built-in)"
+    source: "TradingView built-in 'Momentum Strategy' (length 12)"
+    rules: "When momentum and its change are both positive, buy stop above the high; exit when both are negative."
+    class: SignalBot
+    timeframe: 1h
+    signal: tv_momentum
+    variants: crypto8
+    risk: {entry: stop}
+
+  consecutive_updown:
+    group: ta
+    name: "Consecutive Up/Down Strategy (TradingView built-in)"
+    source: "TradingView built-in 'Consecutive Up/Down Strategy' (3 bars)"
+    rules: "Buy after 3 higher closes; exit after 3 lower closes."
+    class: SignalBot
+    timeframe: 1h
+    signal: consecutive_updown
+    variants: crypto8
+
+  # =========================================================================== crypto research papers
+  price_above_sma50:
+    group: crypto_research
+    name: "Price above its 50-day average (Detzel et al. 2021)"
+    source: "Detzel, Liu, Strauss, Zhou & Zhu (2021), Financial Management; https://www.cxoadvisory.com/currency-trading/timing-bitcoin-with-smas/"
+    rules: "Hold while the daily close is above its 50-day SMA, otherwise cash. Tested on BTC (the other coins are a robustness check)."
+    class: SignalBot
+    timeframe: 1d
+    signal: price_above_sma
+    params: {n: 50}
+    variants: crypto8
+
+  log_vma20:
+    group: crypto_research
+    name: "VMA(1,20) on log prices (Grobys, Ahmed & Sapkota 2020)"
+    source: "Grobys, Ahmed & Sapkota (2020), Finance Research Letters 32"
+    rules: "Hold while the daily log price is above its 20-day average."
+    class: SignalBot
+    timeframe: 1d
+    signal: log_vma
+    params: {n: 20}
+    variants: crypto8
+
+  max20_hold:
+    group: crypto_research
+    name: "New 20-day high, hold one day (Padysak & Vojtko, Quantpedia 2022)"
+    source: "https://quantpedia.com/trend-following-and-mean-reversion-in-bitcoin/"
+    rules: "Hold for the next day whenever the 00:00 UTC price is the 20-day maximum."
+    class: SignalBot
+    timeframe: 1d
+    signal: qp_max
+    params: {x: 20}
+    variants: crypto8
+
+  minmax10_hold:
+    group: crypto_research
+    name: "10-day max or min, hold one day (Quantpedia 2022)"
+    source: "https://quantpedia.com/revisiting-trend-following-and-mean-reversion-strategies-in-bitcoin/"
+    rules: "Hold for the next day when the 00:00 UTC price is the 10-day maximum or minimum."
+    class: SignalBot
+    timeframe: 1d
+    signal: qp_minmax
+    params: {x: 10}
+    variants: crypto8
+
+  trading_range_breakout:
+    group: crypto_research
+    name: "Trading-range breakout, 10-day hold (Gerritsen et al. 2020; Brock et al. 1992)"
+    source: "Gerritsen, Bouri, Ramezanifar & Roubaud (2020), Finance Research Letters"
+    rules: "Buy when the close exceeds the prior 50-day high by 1%; hold 10 days."
+    class: SignalBot
+    timeframe: 1d
+    signal: trading_range_breakout
+    params: {n: 50, band: 0.01}
+    variants: crypto8
+    risk: {time_stop: 10}
+
+  alexander_filter:
+    group: crypto_research
+    name: "Alexander 5% filter rule (Hudson & Urquhart 2021)"
+    source: "Hudson & Urquhart (2021), Annals of Operations Research 297"
+    rules: "Buy when the close is 5% above its 20-day low; sell when it is 5% below the highest close since entry."
+    class: SignalBot
+    timeframe: 1d
+    signal: alexander_filter
+    variants: crypto8
+    risk: {trail_close_pct: 0.05}
+
+  weekly_tsmom:
+    group: crypto_research
+    name: "Weekly time-series momentum (Liu & Tsyvinski 2021)"
+    source: "Liu & Tsyvinski (2021), Review of Financial Studies 34(6)"
+    rules: "On Sundays, if the 7-day return is above the 80th percentile of the last 104 weeks, hold 2 weeks."
+    class: SignalBot
+    timeframe: 1d
+    signal: weekly_tsmom
+    variants: crypto8
+    risk: {time_stop: 14}
+
+  daily_tsmom:
+    group: crypto_research
+    name: "Daily time-series momentum (Liu & Tsyvinski 2021)"
+    source: "Liu & Tsyvinski (2021), Review of Financial Studies 34(6)"
+    rules: "At 12:00 UTC, if the 24h return is above the 80th percentile of recent daily samples, hold 5 days."
+    class: SignalBot
+    timeframe: 1h
+    signal: daily_tsmom
+    variants: crypto8
+    risk: {time_stop: 120}
+
+  overreaction_day:
+    group: crypto_research
+    name: "Overreaction-day momentum (Caporale & Plastun 2019/2020)"
+    source: "https://www.brunel.ac.uk/economics-finance-and-accounting/research/pdf/1917-Oct-GMC-Momentum-effect-in-the-Cryptocurrency-Market-after-One-day-Abnormal-Returns.pdf"
+    rules: "When the day's return passes mean + 1.5 sigma of the trailing year's daily returns, buy and close at the end of the UTC day."
+    class: SignalBot
+    timeframe: 1h
+    signal: overreaction_day
+    informative: [1d]
+    params: {k: 1.5}
+    variants: crypto8
+
+  monday_effect:
+    group: crypto_research
+    name: "Monday effect (Caporale & Plastun 2019)"
+    source: "https://quantpedia.com/the-day-of-the-week-effect-in-the-crypto-currency-market/"
+    rules: "Hold from Monday 00:00 to Tuesday 00:00 UTC."
+    class: SignalBot
+    timeframe: 1h
+    signal: monday_effect
+    variants: crypto8
+
+  weekend_window_trend:
+    group: crypto_research
+    name: "Sunday-evening intraday trend window (Concretum 2026)"
+    source: "https://concretumgroup.com/seasonality-in-bitcoin-intraday-trend-trading/"
+    rules: "From Sunday 19:00 New York time for 24 hours, hold while the close is above the midpoint of the last 24 hourly closes, sized to 20% volatility."
+    class: SignalBot
+    timeframe: 1h
+    signal: weekend_window_trend
+    variants: crypto8
+    risk: {size_col: weight}
+
+  hurst_regime:
+    group: crypto_research
+    name: "Hurst-exponent regime switch"
+    source: "Hurst estimator (QuantStart / ai-hedge-fund, x2 fix); rules codified for this test"
+    rules: "H > 0.55: hold above EMA21. H < 0.45: buy a 2-sigma dip below the 50-day mean, exit at the mean. Otherwise flat."
+    class: SignalBot
+    timeframe: 1d
+    signal: hurst_regime
+    variants: crypto8
+
+  zarattini_crypto_trends:
+    group: crypto_research
+    name: "Catching Crypto Trends: Donchian ensemble with volatility targeting (Zarattini et al. 2025)"
+    source: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5209907"
+    rules: "18 coins x 9 lookbacks (5-360 days): enter a new n-day closing high, trailing midpoint stop; each coin sized to 25% annual volatility; no leverage."
+    class: WeightBot
+    timeframe: 1d
+    weights: zarattini_crypto_trends
+    universe: crypto18
+    schedule: every
+    band: 0.01
+
+  monash_vol_sma:
+    group: crypto_research
+    name: "Volatility-scaled SMA timing, BTC SMA65 / ETH SMA20 (Le & Ruthbah, Monash 2024)"
+    source: "https://www.monash.edu/__data/assets/pdf_file/0011/3744821/Trend-following-Strategies-for-Crypto-Investors.pdf"
+    rules: "Half the capital each in BTC (above SMA65) and ETH (above SMA20), each sized to 30% annual volatility."
+    class: WeightBot
+    timeframe: 1d
+    weights: monash_vol_sma
+    universe: [BTC_SPOT, ETH_SPOT]
+    schedule: every
+    band: 0.05
+
+  rohrbach_trend:
+    group: crypto_research
+    name: "Normalised multi-horizon EMA trend (Rohrbach, Suremann & Osterrieder 2017)"
+    source: "https://www.cxoadvisory.com/momentum-investing/currency-and-cryptocurrency-exchange-rate-momentum-tests/"
+    rules: "Three EMA crossovers (8/24, 16/48, 32/96) normalised by volatility, Baz et al. response function; long-only weight per coin."
+    class: WeightBot
+    timeframe: 1d
+    weights: rohrbach_trend
+    universe: [BTC_SPOT, ETH_SPOT, SOL_SPOT, XRP_SPOT]
+    schedule: every
+    band: 0.04
+
+  cs_momentum_3w:
+    group: crypto_research
+    name: "3-week cross-sectional momentum (Liu, Tsyvinski & Wu 2022)"
+    source: "https://www.nber.org/papers/w25882.pdf"
+    rules: "Weekly: equal weight in the top 30% of 18 coins by 3-week return (cash for any with a negative return)."
+    class: WeightBot
+    timeframe: 1d
+    weights: cs_momentum
+    universe: crypto18
+    schedule: weekly
+    weekday: 0
+    params: {days: 21, top_frac: 0.3, absolute: true}
+
+  vol_managed_momentum:
+    group: crypto_research
+    name: "Volatility-managed crypto momentum (Grobys et al. 2025)"
+    source: "https://osuva.uwasa.fi/items/2b92e591-acb3-445f-b33d-1a943a8972f5/full"
+    rules: "The 3-week momentum basket scaled by min(1, 40% / its realised volatility over 4 weeks)."
+    class: WeightBot
+    timeframe: 1d
+    weights: vol_managed_momentum
+    universe: crypto18
+    schedule: weekly
+    weekday: 0
+
+  momentum_2w2w:
+    group: crypto_research
+    name: "2-week momentum, 2-week hold (Dobrynskaya 2022)"
+    source: "https://www.hse.ru/en/news/research/559533243.html"
+    rules: "Every 2 weeks, equal weight in the top 5 coins by 14-day return."
+    class: WeightBot
+    timeframe: 1d
+    weights: top_k_return
+    universe: crypto18
+    schedule: every_n_days
+    n_days: 14
+    params: {days: 14, k: 5}
+
+  near_week_high:
+    group: crypto_research
+    name: "Nearness to the 1-week high (Ficura 2023)"
+    source: "https://wp.ffu.vse.cz/artkey/wps-202301-0003_impact-of-size-and-volume-on-cryptocurrency-momentum-and-reversal.php"
+    rules: "Weekly: hold the 5 coins closest to their 7-day high."
+    class: WeightBot
+    timeframe: 1d
+    weights: near_week_high
+    universe: crypto18
+    schedule: weekly
+    weekday: 0
+    params: {k: 5}
+
+  ctrend_proxy:
+    group: crypto_research
+    name: "CTREND trend factor, simplified (Fieberg et al. 2025, JFQA)"
+    source: "https://jfqa.org/wp-content/uploads/2024/09/24955-trend-factor-cross-section-crypto-returns.pdf"
+    rules: "Weekly: hold the 4 coins with the best average rank of price / SMA(3...200)."
+    class: WeightBot
+    timeframe: 1d
+    weights: ctrend_proxy
+    universe: crypto18
+    schedule: weekly
+    weekday: 0
+    params: {k: 4}
+
+  max_momentum:
+    group: crypto_research
+    name: "MAX momentum (Li, Urquhart, Wang & Zhang 2021)"
+    source: "https://reading-clone.eprints-hosting.org/99101/1/MAX%20Momentum.R1.pdf"
+    rules: "Weekly: hold the 3 coins with the highest average of their 5 largest daily returns over 30 days."
+    class: WeightBot
+    timeframe: 1d
+    weights: max_momentum
+    universe: crypto18
+    schedule: weekly
+    weekday: 0
+    params: {k: 3}
+
+  lottery_avoidance:
+    group: crypto_research
+    name: "Lottery avoidance, low-MAX coins (Grobys & Junttila 2021)"
+    source: "https://www.uwasa.fi/en/newshub/news/new-study-detects-lottery-behavior-cryptocurrency-markets"
+    rules: "Weekly: hold the 6 coins with the lowest maximum daily return over the past week."
+    class: WeightBot
+    timeframe: 1d
+    weights: lottery_avoidance
+    universe: crypto18
+    schedule: weekly
+    weekday: 0
+    params: {k: 6}
+
+  weekly_contrarian:
+    group: crypto_research
+    name: "Weekly contrarian, last week's losers (Kosc, Sakowski & Slepaczuk 2019)"
+    source: "https://www.wne.uw.edu.pl/files/2615/2405/6484/WNE_WP268.pdf"
+    rules: "Weekly: equal weight in the 5 coins with the worst 7-day return."
+    class: WeightBot
+    timeframe: 1d
+    weights: weekly_contrarian
+    universe: crypto18
+    schedule: weekly
+    weekday: 0
+    params: {k: 5}
+
+  low_volume_reversal:
+    group: crypto_research
+    name: "Low-volume one-day reversal (Bianchi, Babiak & Dickerson 2022)"
+    source: "https://www.riksbank.se/globalassets/media/rapporter/working-papers/2022/no.-413-trading-volume-and-liquidity-provision-in-cryptocurreny-markets.pdf"
+    rules: "Daily: hold coins in the bottom third by yesterday's return AND the bottom third by volume shock, for one day."
+    class: WeightBot
+    timeframe: 1d
+    weights: low_volume_reversal
+    universe: crypto18
+    schedule: every
+
+  btc_eth_distance:
+    group: crypto_research
+    name: "BTC/ETH distance pairs, long-only switch (Fil & Kristoufek 2020)"
+    source: "https://ieeexplore.ieee.org/document/9200323"
+    rules: "50/50 BTC/ETH; when the 30-day spread z-score passes +/-2, 100% in the cheap leg; back to 50/50 at the zero cross."
+    class: WeightBot
+    timeframe: 1h
+    weights: btc_eth_distance
+    universe: [BTC_SPOT, ETH_SPOT]
+    schedule: every
+    band: 0.05
+
+  # =========================================================================== machine learning / statistics
+  gbm_stumps:
+    group: ml
+    name: "Gradient-boosted stumps on technical features (QuantConnect library + backtesting.py features)"
+    source: "https://www.quantconnect.com/learning/articles/investment-strategy-library/gradient-boosting-model"
+    rules: "20 depth-1 trees predict the 10-hour return from 13 technical features; retrained every Monday on 4 weeks; buy if the prediction > 0.6%, hold 10 hours."
+    class: SignalBot
+    timeframe: 1h
+    signal: gbm_stumps
+    variants: crypto8
+    risk: {time_stop: 10}
+
+  knn_direction:
+    group: ml
+    name: "k-nearest-neighbours direction classifier (backtesting.py ML example)"
+    source: "https://github.com/kernc/backtesting.py/blob/master/doc/examples/Trading%20with%20Machine%20Learning.py"
+    rules: "7-NN on technical features predicts the 48-hour direction; retrained weekly on 400 bars; buy on 'up' with a 1.5% stop and target."
+    class: SignalBot
+    timeframe: 1h
+    signal: knn_direction
+    variants: crypto8
+    risk: {bracket: true}
+
+  hmm_regime:
+    group: ml
+    name: "2-state Gaussian HMM regime filter (Machine Learning for Trading, S. Jansen)"
+    source: "https://github.com/stefan-jansen/machine-learning-for-trading (09_model_based_features)"
+    rules: "HMM on daily return and 21-day volatility, refit weekly on 3 years; hold while P(calm) > 0.7, out below 0.3 (filtered probabilities, no look-ahead)."
+    class: SignalBot
+    timeframe: 1d
+    signal: hmm_regime
+    variants: crypto8
+
+  gnb_cross_section:
+    group: ml
+    name: "Gaussian Naive Bayes cross-section (QuantConnect library, Lu 2016)"
+    source: "https://www.quantconnect.com/learning/articles/investment-strategy-library/gaussian-naive-bayes-model"
+    rules: "One model per coin on the last 4 daily returns of all 8 coins; weekly, hold the coins predicted to rise."
+    class: WeightBot
+    timeframe: 1d
+    weights: gnb_cross_section
+    universe: crypto8
+    schedule: weekly
+    weekday: 0
+
+  kalman_pairs:
+    group: ml
+    name: "Kalman-filter BTC/ETH pairs, long-only switch (Quantopian research, D. Edwards)"
+    source: "https://github.com/quantopian/research_public (drafts/kelly/kelly_kalman_pairs.py)"
+    rules: "Kalman regression of log ETH on log BTC; |z| > 1.5: 100% in the cheap leg; back to 50/50 at the zero cross or after 20 days."
+    class: WeightBot
+    timeframe: 4h
+    weights: kalman_pairs
+    universe: [BTC_SPOT, ETH_SPOT]
+    schedule: every
+    band: 0.05
+
+  ols_pairs_eth_btc:
+    group: ml
+    name: "Rolling-OLS z-score pairs ETH/BTC, long-only switch (vectorbt example)"
+    source: "https://github.com/polakowo/vectorbt/blob/master/examples/PairsTrading.ipynb"
+    rules: "100-day rolling OLS spread of log ETH on log BTC; z < -1.96 hold ETH, z > +1.96 hold BTC."
+    class: WeightBot
+    timeframe: 1d
+    weights: ols_pairs_switch
+    universe: [ETH_SPOT, BTC_SPOT]
+    params: {p0: ETH_SPOT, p1: BTC_SPOT}
+    schedule: every
+
+  half_kelly:
+    group: ml
+    name: "Half-Kelly position sizing (Quantopian KellyLeverage, long only)"
+    source: "https://github.com/quantopian/research_public (drafts/kelly)"
+    rules: "Weight = clip(0.5 x mean / variance of 120 daily log returns, 0, 1); rebalanced when it moves by 0.2."
+    class: WeightBot
+    timeframe: 1d
+    weights: half_kelly
+    variants: [BTC_SPOT, ETH_SPOT, SOL_SPOT]
+    schedule: every
+    band: 0.2
+
+  # =========================================================================== stock and ETF research
+  etf_rsi2:
+    group: equity_research
+    name: "Connors RSI(2) pullback (Connors & Alvarez 2008)"
+    source: "https://chartschool.stockcharts.com/table-of-contents/trading-strategies-and-models/trading-strategies/rsi-2"
+    rules: "Above the 200-day SMA, buy RSI(2) <= 5 at 15:55; sell a close above the 5-day SMA."
+    class: EtfDailyBot
+    signal: etf_rsi2
+    variants: etf10
+
+  etf_cumulative_rsi:
+    group: equity_research
+    name: "Cumulative RSI (Connors & Alvarez)"
+    source: "https://www.prorealcode.com/prorealtime-trading-strategies/cumulative-rsi-2-periods-strategy"
+    rules: "Above the 200-day SMA, buy when RSI(2) today + yesterday < 35; sell when > 65."
+    class: EtfDailyBot
+    signal: etf_cumulative_rsi
+    variants: etf10
+
+  etf_r3:
+    group: equity_research
+    name: "R3 strategy (Connors, High Probability ETF Trading 2009)"
+    source: "https://quantifiedstrategies.substack.com/p/larry-connors-r3-strategy-it-still-795"
+    rules: "Above the 200-day SMA, RSI(2) falling 3 days from below 60 and now below 10: buy; sell RSI(2) > 70."
+    class: EtfDailyBot
+    signal: etf_r3
+    variants: etf10
+
+  etf_pct_b:
+    group: equity_research
+    name: "%b strategy (Connors 2009)"
+    source: "https://de.tradingview.com/script/yXkWPSlU"
+    rules: "Above the 200-day SMA with Bollinger %b (5, 1) below 0.2 for 3 days: buy; sell %b > 0.8."
+    class: EtfDailyBot
+    signal: etf_pct_b
+    variants: etf10
+
+  etf_tps:
+    group: equity_research
+    name: "TPS: time, price, scale-in (Connors 2009)"
+    source: "https://wl6.wealth-lab.com/Forum/Posts/Connors-TPS-Strategy-40197"
+    rules: "Above the 200-day SMA with RSI(2) < 25 two days: buy 10%; add 20/30/40% on each lower close; sell all at RSI(2) > 70."
+    class: TPSBot
+    signal: etf_tps
+    variants: etf10
+
+  etf_3day_high_low:
+    group: equity_research
+    name: "3-day high/low (Connors 2009)"
+    source: "https://quantifiedstrategies.substack.com/p/larry-connors-3-day-highlow-method-4f3"
+    rules: "Above SMA200, below SMA5, 3 lower highs and lower lows: buy; sell above SMA5."
+    class: EtfDailyBot
+    signal: etf_3day_high_low
+    variants: etf10
+
+  etf_double_7s:
+    group: equity_research
+    name: "Double 7s (Connors & Alvarez)"
+    source: "https://strategyquant.com/blog/larry-connors-double-7-strategy-tested-on-spy-and-8-other-markets/"
+    rules: "Above SMA200, a 7-day closing low: buy; a 7-day closing high: sell."
+    class: EtfDailyBot
+    signal: etf_double_7s
+    variants: etf10
+
+  etf_multiple_days_down:
+    group: equity_research
+    name: "Multiple days down (Connors 2009)"
+    source: "https://quantifiedstrategies.substack.com/p/larry-connors-multiple-days-up-and-d41"
+    rules: "Down 4 of the last 5 days, above SMA200 and below SMA5: buy; sell above SMA5."
+    class: EtfDailyBot
+    signal: etf_multiple_days_down
+    variants: etf10
+
+  etf_vix_stretch:
+    group: equity_research
+    name: "VIX stretch (Connors & Alvarez 2008)"
+    source: "Connors & Alvarez, Short Term Trading Strategies That Work (2008)"
+    rules: "VIX at least 5% above its 10-day average for 3 days (prior closes) and the ETF above SMA200: buy; sell RSI(2) > 65."
+    class: EtfDailyBot
+    signal: etf_vix_stretch
+    variants: etf3
+    params: {extra_tickers: ["^VIX"]}
+
+  noise_area_momentum:
+    group: equity_research
+    name: "Noise-area intraday momentum (Zarattini, Aziz & Barbon 2024, 'Beat the Market')"
+    source: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4824172"
+    rules: "Long when the price breaks above the noise area (open x (1 + 14-day average move at that time)), checked at :00/:30; exit below max(bound, VWAP); flat by the close."
+    class: IntradayEtfBot
+    signal: noise_area_momentum
+    variants: etf3
+    intraday_days: 30
+
+  vwap_trend:
+    group: equity_research
+    name: "VWAP trend day trading (Zarattini & Aziz 2023)"
+    source: "https://concretumgroup.com/volume-weighted-average-price-vwap-the-holy-grail-for-day-trading-systems/"
+    rules: "Long while the 5-minute close is above the session VWAP, flat below it and at the close."
+    class: IntradayEtfBot
+    signal: vwap_trend
+    variants: [QQQ, SPY, IWM]
+
+  intraday_momentum_gao:
+    group: equity_research
+    name: "Market intraday momentum: first half-hour predicts the last (Gao et al. 2018, JFE)"
+    source: "https://profiles.wustl.edu/en/publications/market-intraday-momentum/"
+    rules: "If the return from the prior close to 10:00 is positive, buy at 15:30 and sell at the close."
+    class: IntradayEtfBot
+    signal: intraday_momentum_gao
+    variants: etf3
+    intraday_days: 5
+
+  pre_fomc_drift:
+    group: equity_research
+    name: "Pre-FOMC announcement drift (Lucca & Moench 2015)"
+    source: "Lucca & Moench (2015), Journal of Finance 70(1); FOMC decisions 28 Oct and 9 Dec 2026 (federalreserve.gov calendar)"
+    rules: "Buy SPY at 15:55 the day before an FOMC decision; sell at 13:55 on decision day."
+    class: PreFomcBot
+    variants: [SPY]
+    params: {decision_days: ["2026-10-28", "2026-12-09"]}
+
+  gtaa:
+    group: equity_research
+    name: "Faber GTAA: 5 asset classes above their 200-day average (Faber 2007)"
+    source: "https://concretumgroup.substack.com/p/global-tactical-asset-allocation"
+    rules: "20% each in SPY, EFA, IEF, DBC, VNQ when above the 200-day SMA, else T-bills (BIL); rebalanced at month-end."
+    class: EtfWeightBot
+    weights: gtaa
+    schedule: monthly
+    params: {universe: [SPY, EFA, IEF, DBC, VNQ, BIL]}
+
+  gem:
+    group: equity_research
+    name: "Global Equities Momentum / dual momentum (Antonacci 2014)"
+    source: "https://api.advisorperspectives.com/articles/2019/05/06/global-equity-momentum-a-craftsmans-perspective"
+    rules: "Month-end: if SPY's 12-month return beats T-bills, hold the better of SPY and VEU, else bonds (AGG)."
+    class: EtfWeightBot
+    weights: gem
+    schedule: monthly
+    params: {universe: [SPY, VEU, AGG, BIL]}
+
+  vaa_g4:
+    group: equity_research
+    name: "Vigilant Asset Allocation G4 (Keller & Keuning 2017)"
+    source: "https://cxoadvisory.com/?p=30082"
+    rules: "13612W momentum; if SPY, EFA, EEM and AGG are all positive hold the best, else the best of SHY, IEF, LQD."
+    class: EtfWeightBot
+    weights: vaa_g4
+    schedule: monthly
+    params: {universe: [SPY, EFA, EEM, AGG, SHY, IEF, LQD]}
+
+  daa_g12:
+    group: equity_research
+    name: "Defensive Asset Allocation G12 (Keller & Keuning 2018)"
+    source: "https://www.cxoadvisory.com/strategic-allocation/multi-class-momentum-portfolio-with-canary-crash-protection/"
+    rules: "Canaries VWO/BND set 0/50/100% cash (best of SHY, IEF, LQD); the rest in the top 6 of 12 risky ETFs."
+    class: EtfWeightBot
+    weights: daa_g12
+    schedule: monthly
+    params: {universe: [SPY, IWM, QQQ, VGK, EWJ, VWO, VNQ, DBC, GLD, TLT, HYG, LQD, SHY, IEF, BND]}
+
+  baa_g4:
+    group: equity_research
+    name: "Bold Asset Allocation, aggressive G4 (Keller 2022)"
+    source: "https://thechartist.com.au/wp-content/uploads/2024/12/5369/SSRN-id4166845.pdf"
+    rules: "Canaries SPY/VWO/VEA/BND; offensive top-1 of QQQ/VWO/VEA/BND by SMA12 momentum; defensive top-3 of TIP/DBC/BIL/IEF/TLT/LQD/BND."
+    class: EtfWeightBot
+    weights: baa_g4
+    schedule: monthly
+    params: {universe: [QQQ, VWO, VEA, BND, TIP, DBC, BIL, IEF, TLT, LQD, SPY]}
+
+  paa:
+    group: equity_research
+    name: "Protective Asset Allocation (Keller & Keuning 2016)"
+    source: "https://www.quantconnect.com/forum/discussion/3152"
+    rules: "12 risky ETFs; bond share from how many have negative 12-month SMA momentum (a = 2); the rest in the top 6."
+    class: EtfWeightBot
+    weights: paa
+    schedule: monthly
+    params: {universe: [SPY, QQQ, IWM, VGK, EWJ, EEM, VNQ, DBC, GLD, TLT, HYG, LQD, IEF]}
+
+  sector_momentum:
+    group: equity_research
+    name: "Sector momentum rotation, top 3 of 11 (Faber 2010)"
+    source: "https://quantpedia.com/strategies/sector-momentum-rotational-system"
+    rules: "Month-end: hold the 3 US sector ETFs with the best 12-month return."
+    class: EtfWeightBot
+    weights: sector_momentum
+    schedule: monthly
+    params: {universe: [XLB, XLE, XLF, XLI, XLK, XLP, XLU, XLV, XLY, XLC, XLRE], k: 3}
+
+  industry_trend:
+    group: equity_research
+    name: "Industry trend following on sector ETFs (Zarattini & Antonacci 2024)"
+    source: "https://arxiv.org/html/2412.14361v1"
+    rules: "Enter at the upper band (min of 20-day Donchian high and a Keltner band), ratcheting stop; each ETF sized to 1% daily volatility; max 100% invested."
+    class: EtfWeightBot
+    weights: industry_trend
+    schedule: daily
+    band: 0.03
+    params: {universe: [XLB, XLE, XLF, XLI, XLK, XLP, XLU, XLV, XLY, XLC, XLRE, SMH, XBI, KRE, ITB, XME, XRT, IYT, IBB, KIE]}
+
+  ath_trend:
+    group: equity_research
+    name: "All-time-high trend following on large US stocks (Zarattini, Pagani & Wilcox 2025)"
+    source: "https://cxoadvisory.com/momentum-investing/all-time-high-trend-following"
+    rules: "Buy a stock at a new all-time closing high; exit below the highest close since entry minus 10 ATR(42); max 10 positions of 10%."
+    class: EtfWeightBot
+    weights: ath_trend
+    schedule: daily
+    band: 0.03
+    lookback: 2600
+    params: {universe: megacaps40}
+
+  volatility_edge:
+    group: equity_research
+    name: "The Volatility Edge: VIX ETN regimes (Zarattini, Aziz & Mele 2025)"
+    source: "https://concretumgroup.substack.com/p/automating-a-volatility-strategy"
+    rules: "Long SVXY (short volatility) in contango, long VXX in backwardation with a negative volatility premium; weight VIX/100."
+    class: EtfWeightBot
+    weights: volatility_edge
+    schedule: daily
+    band: 0.02
+    params: {universe: [SVXY, VXX], signal_tickers: [SPY, "^VIX", "^VIX3M"]}
+
+  vol_managed_spy:
+    group: equity_research
+    name: "Volatility-managed S&P 500 (Moreira & Muir 2017; Harvey et al. 2018)"
+    source: "https://alphaarchitect.com/volatility-targeting-improves-risk-adjusted-returns/"
+    rules: "SPY weight = min(1, 15% / 20-day realised volatility), the rest in BIL; rebalanced when it moves 10 points."
+    class: EtfWeightBot
+    weights: vol_managed_spy
+    schedule: daily
+    band: 0.10
+    params: {universe: [SPY, BIL]}
+
+  lowvol_leveraged:
+    group: equity_research
+    name: "3x S&P (SPXL) only in low-volatility regimes (Quantpedia 2025)"
+    source: "https://quantpedia.com/leveraged-etfs-in-low-volatility-environments/"
+    rules: "Hold SPXL while the VIX's moving average is above SPY's realised volatility, else cash."
+    class: EtfWeightBot
+    weights: lowvol_leveraged
+    schedule: daily
+    variants:
+      - {id: rv10_vix60, params: {universe: [SPXL], signal_tickers: [SPY, "^VIX"], rv: 10, vix_sma: 60}}
+      - {id: rv20_vix60, params: {universe: [SPXL], signal_tickers: [SPY, "^VIX"], rv: 20, vix_sma: 60}}
+
+  treasury_month_end:
+    group: equity_research
+    name: "Treasury month-end effect, TLT (Beyond Passive / Robot Wealth 2025)"
+    source: "https://beyondpassive.substack.com/p/two-calendar-effects-at-the-month"
+    rules: "Hold TLT from the close 5 trading days before month-end to the month-end close."
+    class: EtfWeightBot
+    weights: treasury_month_end
+    schedule: daily
+    params: {universe: [TLT]}
+
+  month_end_reversal:
+    group: equity_research
+    name: "Month-end rebalancing reversal, VTI / TBF (Beyond Passive 2025)"
+    source: "https://beyondpassive.substack.com/p/two-calendar-effects-at-the-month"
+    rules: "If bonds beat stocks over the first 15 trading days, hold VTI over the last 5; if stocks led, hold TBF over the next month's first 5."
+    class: EtfWeightBot
+    weights: month_end_reversal
+    schedule: daily
+    params: {universe: [VTI, TBF], signal_tickers: [TLT]}
+
+  holiday_seasonality:
+    group: equity_research
+    name: "Thanksgiving AMZN and Christmas gold (Quantpedia 2025)"
+    source: "https://quantpedia.com/thanksgiving-and-christmas-trading-strategies/"
+    rules: "AMZN from 5 trading days before Thanksgiving to 3 after; GLD from 23 December."
+    class: EtfWeightBot
+    weights: holiday_seasonality
+    schedule: daily
+    params: {universe: [AMZN, GLD]}
+
+  pre_holiday:
+    group: equity_research
+    name: "Pre-holiday effect (QuantConnect Strategy Library)"
+    source: "https://www.quantconnect.com/learning/articles/investment-strategy-library/pre-holiday-effect"
+    rules: "Hold SPY when an exchange holiday falls within the next 2 calendar days."
+    class: EtfWeightBot
+    weights: pre_holiday
+    schedule: daily
+    params: {universe: [SPY]}
+
+  opex_week:
+    group: equity_research
+    name: "Option-expiration week effect, OEF (QuantConnect Strategy Library)"
+    source: "https://www.quantconnect.com/learning/articles/investment-strategy-library/option-expiration-week-effect"
+    rules: "Hold OEF from the Monday of the monthly expiration week until expiration day."
+    class: EtfWeightBot
+    weights: opex_week
+    schedule: daily
+    params: {universe: [OEF]}
+
+  lunar_cycle:
+    group: equity_research
+    name: "Lunar cycle (QuantConnect Strategy Library) - a calendar control"
+    source: "https://www.quantconnect.com/learning/articles/investment-strategy-library/lunar-cycle-in-equity-market"
+    rules: "Long from the last quarter moon to the first quarter (around the new moon), cash around the full moon."
+    class: EtfWeightBot
+    weights: lunar_cycle
+    schedule: daily
+    variants:
+      - {id: EEM, params: {universe: [EEM]}}
+      - {id: SPY, params: {universe: [SPY]}}
+
+  pep_ko_pairs:
+    group: equity_research
+    name: "PEP/KO rolling-OLS pairs, long-only switch (vectorbt / backtrader example)"
+    source: "https://github.com/polakowo/vectorbt/blob/master/examples/PairsTrading.ipynb"
+    rules: "100-day rolling OLS spread of log PEP on log KO; hold the cheap leg when the z-score passes +/-1.96."
+    class: EtfWeightBot
+    weights: ols_pairs_switch
+    schedule: daily
+    params: {universe: [PEP, KO], p0: PEP, p1: KO}

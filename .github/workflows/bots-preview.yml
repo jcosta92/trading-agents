@@ -1,6 +1,7 @@
 name: bots-preview
-# Replays the month BEFORE the live test through the same bots, data and costs, and publishes
-# docs/preview.html: a quick look at how each strategy behaves. Run manually.
+# Replays the month BEFORE the live test through every bot (same code, data and costs) and
+# publishes docs/preview.html on the bot-state branch: a quick look at how each strategy behaves.
+# The ~900 bots are split over parallel shards, then merged. Run manually.
 on:
   workflow_dispatch:
     inputs:
@@ -12,7 +13,39 @@ concurrency:
   group: bots-preview
   cancel-in-progress: true
 jobs:
-  preview:
+  shard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        k: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt && pip install -e .
+      - name: Replay shard ${{ matrix.k }}/8
+        shell: bash
+        env:
+          QD_CACHE: ${{ runner.temp }}/qd-cache
+        run: |
+          mkdir -p shard
+          python -m quantdesk.cli bots --state shard --start "${{ inputs.start }}" --end "${{ inputs.end }}" \
+            --now "${{ inputs.end }}" --shard ${{ matrix.k }}/8 --no-report 2>&1 | tee shard/run.log || true
+      - name: Publish log tail on failure
+        if: failure()
+        run: .github/scripts/annotate_tail.sh shard/run.log 60
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shard-${{ matrix.k }}
+          path: shard
+          retention-days: 3
+  merge:
+    needs: shard
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -22,15 +55,18 @@ jobs:
           python-version: "3.13"
           cache: pip
       - run: pip install -r requirements.txt && pip install -e .
-      - name: Replay
+      - uses: actions/download-artifact@v4
+        with:
+          path: shards
+      - name: Merge and report
         shell: bash
         run: |
-          rm -rf state/bots-preview
-          mkdir -p state/bots-preview
-          python -m quantdesk.cli -v bots --state state/bots-preview --start "${{ inputs.start }}" --end "${{ inputs.end }}" 2>&1 | tee state/bots-preview/run.log
-      - name: Publish log tail on failure
-        if: failure()
-        run: .github/scripts/annotate_tail.sh state/bots-preview/run.log 60
-      - name: Commit
-        if: always()
-        run: .github/scripts/commit_push.sh "Bots preview replay" state/bots-preview docs/preview.html reports/BOTS_PREVIEW.md
+          rm -rf state/bots-preview && mkdir -p state/bots-preview
+          python -m quantdesk.cli bots-merge shards/shard-* --state state/bots-preview --docs site \
+            --start "${{ inputs.start }}" --end "${{ inputs.end }}" 2>&1 | tee merge.log
+          cat shards/shard-*/run.log > state/bots-preview/run.log || true
+          grep -h "::error::" shards/shard-*/run.log | head -40 || true
+      - name: Publish
+        run: |
+          .github/scripts/push_state.sh "Bots preview replay" mirror:state/bots-preview:state/bots-preview \
+            copy:site/preview.html:docs/preview.html copy:reports/BOTS_PREVIEW.md:reports/BOTS_PREVIEW.md

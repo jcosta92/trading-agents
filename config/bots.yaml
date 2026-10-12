@@ -14,7 +14,8 @@
 # At the end of the month every bot sells what it holds at market, so the result is realised.
 
 start: "2026-10-12T17:00:00Z"
-end: "2026-11-12T17:00:00Z"
+end: "2026-12-31T17:00:00Z"
+review: "2026-11-12T17:00:00Z"        # mid-point review (one month)
 initial_capital: 1000.0
 
 markets:
@@ -26,6 +27,17 @@ markets:
   ADA_SPOT: {symbol: ADA/EUR, half_spread_bps: 8, slippage_bps: 8}
   LINK_SPOT: {symbol: LINK/EUR, half_spread_bps: 8, slippage_bps: 8}
   AVAX_SPOT: {symbol: AVAX/EUR, half_spread_bps: 10, slippage_bps: 10}
+  # added for the strategy families (cross-sectional crypto papers use 18 coins)
+  DOT_SPOT: {symbol: DOT/EUR, half_spread_bps: 10, slippage_bps: 10}
+  LTC_SPOT: {symbol: LTC/EUR, half_spread_bps: 8, slippage_bps: 8}
+  BCH_SPOT: {symbol: BCH/EUR, half_spread_bps: 10, slippage_bps: 10}
+  ATOM_SPOT: {symbol: ATOM/EUR, half_spread_bps: 12, slippage_bps: 12}
+  UNI_SPOT: {symbol: UNI/EUR, half_spread_bps: 12, slippage_bps: 12}
+  NEAR_SPOT: {symbol: NEAR/EUR, half_spread_bps: 12, slippage_bps: 12}
+  TRX_SPOT: {symbol: TRX/EUR, half_spread_bps: 10, slippage_bps: 10}
+  XLM_SPOT: {symbol: XLM/EUR, half_spread_bps: 10, slippage_bps: 10}
+  ETC_SPOT: {symbol: ETC/EUR, half_spread_bps: 12, slippage_bps: 12}
+  FIL_SPOT: {symbol: FIL/EUR, half_spread_bps: 12, slippage_bps: 12}
 
 crypto_fees: {maker: 0.0015, taker: 0.0025}     # Bitvavo, checked 2026-10-10
 stock_costs: {half_spread_bps: 3, slippage_bps: 2}

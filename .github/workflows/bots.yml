@@ -2,8 +2,9 @@ name: bots
 # The trading loop. Runs for ~5h40m, then starts its own next run, so it keeps going without
 # depending on GitHub's scheduler (which has not fired for this repository). Every 15 minutes:
 #   - the trading bots replay every candle that closed since the last cycle (orders, fills, P&L)
-#   - once an hour, one paper cycle of the research agents
-#   - commit the state and rebuild the dashboards (GitHub Pages)
+#   - the bots' state and the dashboard go to the single-commit branch `bot-state` (served by
+#     GitHub Pages), so ~900 ledgers updated every cycle do not bloat the repository
+#   - once an hour, one paper cycle of the research agents (committed to main as before)
 # Minutes are free for public repositories. The cron line is only a backup to restart the chain.
 on:
   workflow_dispatch:
@@ -26,17 +27,25 @@ jobs:
           python-version: "3.13"
           cache: pip
       - run: pip install -r requirements.txt && pip install -e .
+      - name: Restore the bots' state
+        run: .github/scripts/restore_state.sh state/bots
       - name: Trading loop
         shell: bash
+        env:
+          QD_CACHE: ${{ runner.temp }}/qd-cache
         run: |
           stop_at=$(( $(date +%s) + 20400 ))          # 5h40m
           last_paper=""
           mkdir -p state/logs
           while [ "$(date +%s)" -lt "$stop_at" ]; do
             git pull -q --rebase || git rebase --abort 2>/dev/null || true
-            log="state/logs/bots-$(date -u +%Y-%m-%d).log"
+            mkdir -p state/bots/logs
+            log="state/bots/logs/bots-$(date -u +%Y-%m-%d).log"
             echo "===== $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$log"
-            timeout 840 python -m quantdesk.cli -v bots >> "$log" 2>&1 || echo "::warning::bots cycle reported errors (see $log)"
+            timeout 840 python -m quantdesk.cli bots --docs site >> "$log" 2>&1 || echo "::warning::bots cycle reported errors (see $log)"
+            .github/scripts/push_state.sh "Bots state $(date -u +%Y-%m-%dT%H:%MZ)" mirror:state/bots:state/bots \
+              copy:docs/classic.html:docs/classic.html \
+              copy:docs/backtest.html:docs/backtest.html copy:site:docs copy:reports/BOTS.md:reports/BOTS.md || true
             hour=$(date -u +%Y-%m-%dT%H)
             enabled=$(python -c "import yaml;print(bool(yaml.safe_load(open('config/agents.yaml'))['paper'].get('enabled')))")
             if [ "$enabled" = "True" ] && [ "$hour" != "$last_paper" ] && [ "$(date -u +%M)" -ge 5 ]; then
@@ -45,7 +54,7 @@ jobs:
               timeout 600 python -m quantdesk.cli -v paper >> "$plog" 2>&1 || echo "::warning::paper cycle reported errors"
               last_paper="$hour"
             fi
-            .github/scripts/commit_push.sh "Bots cycle $(date -u +%Y-%m-%dT%H:%MZ)" state docs reports || true
+            .github/scripts/commit_push.sh "Research agents $(date -u +%Y-%m-%dT%H:%MZ)" state docs/classic.html reports || true
             # sleep until 2 minutes past the next quarter hour (candles are closed and published by then)
             now=$(date +%s); next=$(( (now / 900 + 1) * 900 + 120 ))
             [ "$next" -lt "$stop_at" ] && sleep $(( next - now )) || break
@@ -53,7 +62,7 @@ jobs:
       - name: Publish log tail on failure
         if: failure()
         shell: bash
-        run: .github/scripts/annotate_tail.sh "state/logs/bots-$(date -u +%Y-%m-%d).log" 60
+        run: .github/scripts/annotate_tail.sh "state/bots/logs/bots-$(date -u +%Y-%m-%d).log" 60
       - name: Start the next run
         if: always()
         env:

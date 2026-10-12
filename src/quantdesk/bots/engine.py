@@ -164,7 +164,7 @@ class BotEngine:
             bot.on_bar(ctx, bars)
             meta["last_ts"] = ts.isoformat()
             close_ts = ts + tf
-            if close_ts.minute == 0 or tf >= pd.Timedelta(hours=1):
+            if close_ts.minute == 0 and close_ts.hour % 4 == 0:      # equity snapshot every 4 hours
                 self.equity_rows.append({"ts": close_ts.isoformat(), "bot": bot.id,
                                          "equity_eur": round(ledger.equity(self.fx), 4),
                                          "cash_eur": round(ledger.cash_eur(self.fx), 4),

@@ -1,4 +1,8 @@
-"""Bots dashboard (docs/index.html), status table (reports/BOTS.md) and the end-of-month results."""
+"""Bots dashboard (docs/index.html) and status table (reports/BOTS.md).
+
+With ~900 bots the page is organised by strategy family: a family's bots run the same published
+rules on different markets, so the page shows each family's median result and how many of its
+variants made money, plus a luck yardstick for the whole league table."""
 from __future__ import annotations
 
 import json
@@ -10,26 +14,12 @@ import pandas as pd
 
 from ..reporting import _eur, _esc, _page, _pct, _cls
 
-COLORS = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)", "var(--s7)"]
+COLORS = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)", "var(--s6)", "var(--s7)", "var(--s8)"]
 SINGLE_POSITION = {"BinHV45Bot", "SupertrendBot", "EmaMacdBot", "ORBBot", "VolBreakoutBot", "TimeOfDayBot",
                    "MomentumRotationBot", "IBSBot", "OvernightBot", "TurnOfMonthBot", "LeverageRotationBot",
-                   "TurtleBot", "SqueezeBot", "RSIBot"}
-GROUPS = {"popular": "Most used bot strategies", "alternative": "Less common strategies",
-          "classic": "Classic trader systems and market anomalies"}
-
-
-def colors(cfg: dict) -> dict[str, str]:
-    """Colour per bot, counted within its group (each group has its own chart)."""
-    out, seen = {}, {}
-    for bid, spec in cfg["bots"].items():
-        g = spec.get("group", "popular")
-        out[bid] = COLORS[seen.get(g, 0) % len(COLORS)]
-        seen[g] = seen.get(g, 0) + 1
-    return out
-
-
-def groups(cfg: dict) -> list[str]:
-    return list(dict.fromkeys(spec.get("group", "popular") for spec in cfg["bots"].values()))
+                   "TurtleBot", "SqueezeBot", "RSIBot", "SignalBot", "EtfDailyBot", "IntradayEtfBot", "TPSBot",
+                   "PreFomcBot"}
+GROUP_ORDER = ["popular", "alternative", "classic", "repos", "ta", "crypto_research", "equity_research", "ml"]
 
 
 def load(state: Path) -> dict:
@@ -51,27 +41,48 @@ def load(state: Path) -> dict:
 
 def summary_table(data: dict, cfg: dict) -> pd.DataFrame:
     st, fills, eq = data["status"], data["fills"], data["equity"]
+    cap = float(cfg.get("initial_capital", 1000.0))
+    fb = fills.groupby("bot") if len(fills) else None
+    eb = eq.groupby("bot")["equity_eur"] if len(eq) else None
     rows = []
     for bid, spec in cfg["bots"].items():
         s = (st.get("bots") or {}).get(bid, {})
-        f = fills[fills["bot"] == bid] if len(fills) else fills
-        e = eq[eq["bot"] == bid]["equity_eur"] if len(eq) else pd.Series(dtype=float)
-        curve = pd.concat([pd.Series([float(cfg.get("initial_capital", 1000.0))]), e])
+        f = fb.get_group(bid) if fb is not None and bid in fb.groups else pd.DataFrame(columns=["side", "pnl_eur", "fee_eur"])
+        e = eb.get_group(bid) if eb is not None and bid in eb.groups else pd.Series(dtype=float)
+        curve = pd.concat([pd.Series([cap]), e])
         mdd = float((curve / curve.cummax() - 1).min()) if len(curve) else float("nan")
-        sells = f[f["side"] == "sell"] if len(f) else f
-        realised = float(sells["pnl_eur"].sum()) if len(sells) else 0.0
+        sells = f[f["side"] == "sell"]
         win = float((sells["pnl_eur"] > 0).mean()) if len(sells) and spec["class"] in SINGLE_POSITION else float("nan")
-        equity = s.get("equity_eur", float(cfg.get("initial_capital", 1000.0)))
+        equity = s.get("equity_eur", cap)
         rows.append({
-            "bot": bid, "name": spec.get("name", bid), "class": spec["class"], "group": spec.get("group", "popular"),
-            "equity": equity,
-            "return": equity / float(cfg.get("initial_capital", 1000.0)) - 1, "max_dd": mdd,
-            "buys": int((f["side"] == "buy").sum()) if len(f) else 0, "sells": int(len(sells)),
-            "realised": realised, "fees": float(f["fee_eur"].sum()) if len(f) else 0.0, "win_rate": win,
-            "positions": len(s.get("positions") or {}), "open_orders": len(s.get("open_orders") or []),
-            "error": s.get("error"),
+            "bot": bid, "family": spec.get("family", bid), "variant": spec.get("variant", ""),
+            "group": spec.get("group", "popular"), "name": spec.get("name", bid), "class": spec["class"],
+            "equity": equity, "return": equity / cap - 1, "max_dd": mdd,
+            "buys": int((f["side"] == "buy").sum()), "sells": int(len(sells)),
+            "realised": float(sells["pnl_eur"].sum()) if len(sells) else 0.0,
+            "fees": float(f["fee_eur"].sum()) if len(f) else 0.0, "win_rate": win,
+            "positions": len(s.get("positions") or {}), "error": s.get("error"),
         })
     return pd.DataFrame(rows)
+
+
+def family_table(table: pd.DataFrame, cfg: dict) -> pd.DataFrame:
+    if table.empty:
+        return pd.DataFrame()
+    g = table.groupby("family", sort=False)
+    out = pd.DataFrame({
+        "group": g["group"].first(), "bots": g.size(), "median": g["return"].median(), "mean": g["return"].mean(),
+        "best": g["return"].max(), "worst": g["return"].min(),
+        "share_up": g["return"].apply(lambda r: float((r > 0).mean())),
+        "trades": g["buys"].sum() + g["sells"].sum(), "fees": g["fees"].sum(),
+        "errors": g["error"].apply(lambda e: int(e.notna().sum())),
+    })
+    fams = cfg.get("families", {})
+    out["name"] = [fams.get(f, {}).get("name", f) for f in out.index]
+    out["source"] = [fams.get(f, {}).get("source", "") for f in out.index]
+    out["rules"] = [fams.get(f, {}).get("rules", "") for f in out.index]
+    out["timeframe"] = [fams.get(f, {}).get("timeframe") or "" for f in out.index]
+    return out
 
 
 def hodl(prices: pd.DataFrame, cols: list[str], start: pd.Timestamp, capital: float) -> pd.Series:
@@ -83,145 +94,184 @@ def hodl(prices: pd.DataFrame, cols: list[str], start: pd.Timestamp, capital: fl
     return (p / p.iloc[0]).mean(axis=1) * capital
 
 
+def _group_curves(eq: pd.DataFrame, table: pd.DataFrame, start, cap) -> dict[str, pd.Series]:
+    """Median equity of each group's bots at each 4-hour snapshot (forward-filled per bot)."""
+    if eq.empty:
+        return {}
+    wide = eq.pivot_table(index="ts", columns="bot", values="equity_eur", aggfunc="last").sort_index()
+    wide = wide[wide.index >= start].ffill().fillna(cap)
+    out = {}
+    for grp, bots in table.groupby("group")["bot"]:
+        cols = [b for b in bots if b in wide.columns]
+        if cols:
+            out[grp] = wide[cols].median(axis=1)
+    return out
+
+
+def _pts(s: pd.Series, start, cap) -> list:
+    pts = [[int(start.timestamp() * 1000), cap]] + [[int(t.timestamp() * 1000), round(float(v), 2)] for t, v in s.items()]
+    return _thin(pts)
+
+
 def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "index.html",
           md_name: str = "BOTS.md", preview: bool = False) -> pd.DataFrame:
     data = load(state)
     table = summary_table(data, cfg)
+    fam = family_table(table, cfg)
     st = data["status"]
     start, end = pd.Timestamp(cfg["start"]), pd.Timestamp(cfg["end"])
     now = pd.Timestamp(st.get("ts")) if st.get("ts") else None
     cap = float(cfg.get("initial_capital", 1000.0))
+    gnames = cfg.get("group_names", {})
     refs = {"BTC buy-and-hold": hodl(data["prices"], ["BTC_SPOT"], start, cap),
             "BTC/ETH/SOL buy-and-hold": hodl(data["prices"], ["BTC_SPOT", "ETH_SPOT", "SOL_SPOT"], start, cap)}
-
-    col = colors(cfg)
-    bench = [{"id": label, "label": label, "color": "var(--bench)", "bench": True,
-              "points": _thin([[int(t.timestamp() * 1000), round(float(v), 2)] for t, v in ser.items()])}
-             for label, ser in refs.items() if len(ser)]
-    charts = []
-    for g in groups(cfg):
-        series = []
-        for bid, spec in cfg["bots"].items():
-            if spec.get("group", "popular") != g:
-                continue
-            e = data["equity"][data["equity"]["bot"] == bid] if len(data["equity"]) else pd.DataFrame()
-            pts = [[int(start.timestamp() * 1000), cap]] + [[int(t.timestamp() * 1000), round(float(v), 2)]
-                                                          for t, v in zip(e.get("ts", []), e.get("equity_eur", []))]
-            series.append({"id": bid, "label": _short(spec), "color": col[bid], "points": _thin(pts)})
-        charts.append({"id": f"chart-{g}", "title": GROUPS.get(g, g), "series": series + bench})
-
     ref_now = {k: (float(v.iloc[-1]) / cap - 1 if len(v) else float("nan")) for k, v in refs.items()}
-    rows = []
-    for i, r in table.iterrows():
-        if i == 0 or table.loc[i - 1, "group"] != r["group"]:
-            rows.append(f"<tr><td colspan='11' class='l'><b>{_esc(GROUPS.get(r['group'], r['group']))}</b></td></tr>")
-        rows.append(
-            f"<tr><td><span class='key' style='background:{col[r['bot']]}'></span>{_esc(r['name'])}"
-            + (f" <span class='badge fail'>error</span>" if r["error"] else "") + "</td>"
-            f"<td class='num'>{_eur(r['equity'])}</td><td class='{_cls(r['return'])}'>{_pct(r['return'], 2)}</td>"
-            f"<td class='num'>{r['buys']}</td><td class='num'>{r['sells']}</td>"
-            f"<td class='{_cls(r['realised'])}'>{_eur(r['realised'])}</td><td class='num'>{_eur(r['fees'])}</td>"
-            f"<td class='num'>{_pct(r['win_rate'], 0, False)}</td><td class='num'>{_pct(r['max_dd'], 1, False)}</td>"
-            f"<td class='num'>{r['positions']}</td><td class='num'>{r['open_orders']}</td></tr>")
-    ref_rows = "".join(f"<tr><td class='muted'>{_esc(k)} (reference, no costs)</td><td class='num'>"
-                       f"{_eur(cap * (1 + v)) if math.isfinite(v) else '–'}</td><td class='{_cls(v)}'>{_pct(v, 2)}</td>"
-                       + "<td></td>" * 8 + "</tr>" for k, v in ref_now.items())
 
-    cards = []
-    fills = data["fills"]
-    for i, (bid, spec) in enumerate(cfg["bots"].items()):
-        if i == 0 or list(cfg["bots"].values())[i - 1].get("group", "popular") != spec.get("group", "popular"):
-            cards.append(f"<h3 style='margin-top:20px'>{_esc(GROUPS.get(spec.get('group', 'popular'), ''))}</h3>")
-        s = (st.get("bots") or {}).get(bid, {})
-        f = fills[fills["bot"] == bid].tail(12).iloc[::-1] if len(fills) else pd.DataFrame()
-        frows = "".join(
-            f"<tr><td class='l'>{_esc(str(x['ts'])[:16].replace('T', ' '))}</td><td class='l'>{_esc(x['inst'])}</td>"
-            f"<td class='l'>{_esc(x['side'])}</td><td class='num'>{x['qty']:.6g}</td><td class='num'>{x['price']:,.4f}</td>"
-            f"<td class='num'>{_eur(x['value_eur'])}</td><td class='num'>{_eur(x['fee_eur'], 3)}</td>"
-            f"<td class='{_cls(x['pnl_eur']) if pd.notna(x['pnl_eur']) else 'num'}'>"
-            f"{_eur(x['pnl_eur']) if pd.notna(x['pnl_eur']) else ''}</td><td class='l small'>{_esc(x['tag'])}</td></tr>"
-            for _, x in f.iterrows()) or "<tr><td class='l muted' colspan='9'>No trades yet</td></tr>"
-        orows = "".join(f"<li>{_esc(o['side'])} {_esc(o['type'])} {_esc(o['inst'])}"
-                        + (f" @ {o['price']:,.4f}" if o.get("price") else "") + f" <span class='muted'>({_esc(o['tag'])})</span></li>"
-                        for o in (s.get("open_orders") or [])[:12])
-        more = len(s.get("open_orders") or []) - 12
-        notes = "".join(f"<li>{_esc(n)}</li>" for n in (s.get("notes") or [])[-6:])
-        cards.append(f"""
-<details class='card'{' open' if i == 0 else ''}><summary><span class='key' style='background:{col[bid]}'></span>
-<b>{_esc(spec.get('name', bid))}</b> · {_esc(spec.get('timeframe', ''))} candles</summary>
-<p class='small'>{_esc(spec.get('source', ''))}</p>
-<pre class='small' style='white-space:pre-wrap'>{_esc(spec.get('rules', ''))}</pre>
-<h3>Resting orders</h3><ul class='small'>{orows or "<li class='muted'>none</li>"}{f"<li class='muted'>... and {more} more</li>" if more > 0 else ''}</ul>
-{f"<h3>Latest events</h3><ul class='small'>{notes}</ul>" if notes else ''}
-<h3>Latest trades</h3><div class='tablewrap'><table><thead><tr><th class='l'>Candle (UTC)</th><th class='l'>Market</th>
-<th class='l'>Side</th><th>Qty</th><th>Price</th><th>Value</th><th>Fee</th><th>P&amp;L</th><th class='l'>Why</th></tr></thead>
-<tbody>{frows}</tbody></table></div></details>""")
+    curves = _group_curves(data["equity"], table, start, cap)
+    groups = [g for g in GROUP_ORDER if g in curves] + [g for g in curves if g not in GROUP_ORDER]
+    series = [{"id": g, "label": f"{gnames.get(g, g)} (median bot)", "color": COLORS[i % len(COLORS)],
+               "points": _pts(curves[g], start, cap)} for i, g in enumerate(groups)]
+    for label, s in refs.items():
+        if len(s):
+            series.append({"id": label, "label": label, "color": "var(--bench)", "bench": True,
+                           "points": _thin([[int(t.timestamp() * 1000), round(float(v), 2)] for t, v in s.items()])})
 
+    n = len(table)
+    up = int((table["return"] > 0).sum()) if n else 0
+    btc = ref_now.get("BTC buy-and-hold", float("nan"))
+    beat = int((table["return"] > btc).sum()) if n and math.isfinite(btc) else 0
+    trades = int(table["buys"].sum() + table["sells"].sum()) if n else 0
+    fees = float(table["fees"].sum()) if n else 0.0
+    big = fam[fam["bots"] >= 3] if len(fam) else fam
+    best_f = (big if len(big) else fam).sort_values("median", ascending=False).iloc[0] if len(fam) else None
     days = (min(now, end) - start).days if now is not None and now > start else 0
     total_days = (end - start).days
-    best = table.sort_values("return", ascending=False).iloc[0] if len(table) else None
-    errs = "".join(f"<div class='warn'>{_esc(e)}</div>" for e in st.get("errors", []))
     finished = now is not None and now >= end
+    errs = st.get("errors", [])
+    err_html = (f"<div class='warn'>{len(errs)} bot error(s) in the last cycle: " +
+                _esc("; ".join(errs[:5])) + ("…" if len(errs) > 5 else "") + "</div>") if errs else ""
+    order = groups or [g for g in GROUP_ORDER if len(fam) and g in set(fam["group"])]
+
+    frows = []
+    for g in order:
+        sub = fam[fam["group"] == g].sort_values("median", ascending=False)
+        if sub.empty:
+            continue
+        frows.append(f"<tr class='grp'><td colspan='10' class='l'><b>{_esc(gnames.get(g, g))}</b> "
+                     f"<span class='muted'>({len(sub)} families, {int(sub['bots'].sum())} bots)</span></td></tr>")
+        for fid, r in sub.iterrows():
+            frows.append(
+                f"<tr><td class='l'><a href='#f-{_esc(fid)}'>{_esc(r['name'])}</a>"
+                + (" <span class='badge fail'>error</span>" if r["errors"] else "") + "</td>"
+                f"<td class='l small'>{_esc(r['timeframe'])}</td><td class='num'>{int(r['bots'])}</td>"
+                f"<td class='{_cls(r['median'])}'>{_pct(r['median'], 2)}</td>"
+                f"<td class='num'>{_pct(r['share_up'], 0, False)}</td>"
+                f"<td class='{_cls(r['best'])}'>{_pct(r['best'], 1)}</td><td class='{_cls(r['worst'])}'>{_pct(r['worst'], 1)}</td>"
+                f"<td class='num'>{int(r['trades'])}</td><td class='num'>{_eur(r['fees'])}</td>"
+                f"<td class='num'>{_eur(r['fees'] / max(1, r['bots']))}</td></tr>")
+    ref_rows = "".join(f"<tr><td class='l muted'>{_esc(k)} (no costs)</td><td></td><td></td><td class='{_cls(v)}'>{_pct(v, 2)}</td>"
+                       + "<td></td>" * 6 + "</tr>" for k, v in ref_now.items())
+
+    details = []
+    tb = table.set_index("bot")
+    for g in order:
+        sub = fam[fam["group"] == g].sort_values("median", ascending=False)
+        if sub.empty:
+            continue
+        details.append(f"<h3 style='margin-top:22px'>{_esc(gnames.get(g, g))}</h3>")
+        for fid, r in sub.iterrows():
+            bots = cfg.get("families", {}).get(fid, {}).get("bots", [])
+            vrows = "".join(
+                f"<tr><td class='l'>{_esc(tb.at[b, 'variant'] or b)}</td><td class='num'>{_eur(tb.at[b, 'equity'])}</td>"
+                f"<td class='{_cls(tb.at[b, 'return'])}'>{_pct(tb.at[b, 'return'], 2)}</td>"
+                f"<td class='num'>{int(tb.at[b, 'buys'])}</td><td class='num'>{int(tb.at[b, 'sells'])}</td>"
+                f"<td class='num'>{_pct(tb.at[b, 'win_rate'], 0, False)}</td><td class='num'>{_eur(tb.at[b, 'fees'])}</td>"
+                f"<td class='num'>{_pct(tb.at[b, 'max_dd'], 1, False)}</td></tr>"
+                for b in bots if b in tb.index)
+            src = str(r["source"])
+            src_html = f"<a href='{_esc(src)}'>{_esc(src)}</a>" if src.startswith("http") else _esc(src)
+            details.append(f"""
+<details class='card' id='f-{_esc(fid)}'><summary><b>{_esc(r['name'])}</b> · {_esc(r['timeframe'])} ·
+median {_pct(r['median'], 2)} · {_pct(r['share_up'], 0, False)} of {int(r['bots'])} up</summary>
+<p class='small'>{_esc(r['rules'])}</p><p class='small muted'>Source: {src_html}</p>
+<div class='tablewrap'><table><thead><tr><th class='l'>Market</th><th>Equity</th><th>Return</th><th>Buys</th><th>Sells</th>
+<th>Win rate</th><th>Fees</th><th>Max DD</th></tr></thead><tbody>{vrows}</tbody></table></div></details>""")
+
+    fills = data["fills"]
+    last = fills.tail(40).iloc[::-1] if len(fills) else pd.DataFrame()
+    trows = "".join(
+        f"<tr><td class='l'>{_esc(str(x['ts'])[:16].replace('T', ' '))}</td><td class='l'>{_esc(x['bot'])}</td>"
+        f"<td class='l'>{_esc(x['side'])}</td><td class='num'>{x['price']:,.4f}</td><td class='num'>{_eur(x['value_eur'])}</td>"
+        f"<td class='{_cls(x['pnl_eur']) if pd.notna(x['pnl_eur']) else 'num'}'>{_eur(x['pnl_eur']) if pd.notna(x['pnl_eur']) else ''}</td>"
+        f"<td class='l small'>{_esc(x['tag'])}</td></tr>" for _, x in last.iterrows()) \
+        or "<tr><td class='l muted' colspan='7'>No trades yet</td></tr>"
+
+    # luck yardstick: the expected best of n draws of pure noise sits about sqrt(2 ln n) standard
+    # deviations above the average, so a top bot that far ahead is no evidence of skill
+    spread = float(table["return"].std()) if n > 2 else float("nan")
+    luck = spread * math.sqrt(2 * math.log(max(n, 2))) if math.isfinite(spread) else float("nan")
+
     body = f"""
 <button class='toggle' onclick='toggleTheme()'>Light / dark</button>
-<h1>{'Preview: what the bots would have done last month' if preview else 'Trading bots: one-month demo'}</h1>
-{"<div class='warn'>Replay of the month <b>before</b> the live test, with the same code, data and costs. It shows how the bots behave; it is not the test.</div>" if preview else ''}
-<p class='sub'>{len(cfg['bots'])} bots, each trading its own simulated €1,000: {sum(1 for b in cfg['bots'].values() if b.get('group', 'popular') == 'popular')} on the strategies most used and
-recommended online, {sum(1 for b in cfg['bots'].values() if b.get('group') == 'alternative')} on less common published strategies and {sum(1 for b in cfg['bots'].values() if b.get('group') == 'classic')} on classic trader systems and
-market anomalies (one with 2x leverage). They trade from {start:%d %b %Y %H:%M} to {end:%d %b %Y %H:%M} UTC. Every real market candle is replayed in order: orders fill
-when the market trades through them, with Bitvavo or IBKR fees, the spread and slippage. On the last day every bot sells
-what it holds, so the final result is realised. Last update: {f"{now:%d %b %Y %H:%M} UTC" if now is not None else 'never'}.</p>
-{errs}
+<h1>{'Preview: what the bots would have done in the month before the test' if preview else 'Trading bots: live demo'}</h1>
+{"<div class='warn'>Replay of the month <b>before</b> the live test, same code, data and costs. It shows behaviour; it is not the test.</div>" if preview else ''}
+<p class='sub'>{n} bots in {len(fam)} strategy families, each trading its own simulated €1,000 from {start:%d %b %Y %H:%M} to
+{end:%d %b %Y %H:%M} UTC. A family is one published strategy (open-source bot, research paper or classic system), run with
+its default rules on several markets: judge a family by its median and by how many of its bots made money, not by its best
+bot. Real candles, Bitvavo / IBKR fees, spread and slippage on every fill. Last update:
+{f"{now:%d %b %Y %H:%M} UTC" if now is not None else 'never'}.</p>
+{err_html}
 <div class='tiles'>
  <div class='tile'><div class='label'>{'Test finished' if finished else 'Day'}</div><div class='value'>{min(days, total_days)} / {total_days}</div><div class='note'>{'results are final' if finished else 'results are provisional'}</div></div>
- <div class='tile'><div class='label'>Trades so far</div><div class='value'>{int(table['buys'].sum() + table['sells'].sum()) if len(table) else 0}</div><div class='note'>buys and sells, all bots</div></div>
- <div class='tile'><div class='label'>Fees paid</div><div class='value'>{_eur(float(table['fees'].sum()) if len(table) else 0)}</div><div class='note'>exchange and broker fees</div></div>
- <div class='tile'><div class='label'>Leading bot</div><div class='value'>{_pct(best['return'], 1) if best is not None else '–'}</div><div class='note'>{_esc(_short(cfg['bots'][best['bot']])) if best is not None else ''}</div></div>
+ <div class='tile'><div class='label'>Bots in profit</div><div class='value'>{up} / {n}</div><div class='note'>{beat} ahead of BTC buy-and-hold</div></div>
+ <div class='tile'><div class='label'>Trades / fees</div><div class='value'>{trades:,}</div><div class='note'>{_eur(fees)} paid in fees</div></div>
+ <div class='tile'><div class='label'>Best family (median)</div><div class='value'>{_pct(best_f['median'], 1) if best_f is not None else '–'}</div><div class='note'>{_esc(str(best_f['name'])[:60]) if best_f is not None else ''}</div></div>
+ <div class='tile'><div class='label'>Luck yardstick</div><div class='value'>{_pct(luck, 1)}</div><div class='note'>how far the best of {n} bots would sit above the average by chance alone</div></div>
 </div>
-<h2>Equity</h2>{''.join(f"<h3>{_esc(c['title'])}</h3><div class='card' id='{c['id']}'></div>" for c in charts)}
-<h2>Scoreboard</h2>
-<div class='tablewrap'><table><thead><tr><th>Bot</th><th>Equity</th><th>Return</th><th>Buys</th><th>Sells</th>
-<th>Realised P&amp;L</th><th>Fees</th><th>Win rate</th><th>Max drawdown</th><th>Positions</th><th>Resting orders</th></tr></thead>
-<tbody>{''.join(rows)}{ref_rows}</tbody></table></div>
-<p class='small muted'>Realised P&amp;L is net of all fees of the sold units (average-cost basis). Win rate is shown for bots that
-hold one position per market; for the grid and DCA bots it is not meaningful. The buy-and-hold lines pay no fees.</p>
-<h2>The bots</h2>{''.join(cards)}
+<h2>Median bot of each group</h2><div class='card' id='chart'></div>
+<h2>Families</h2>
+<p class='small muted'>Median, best and worst are the family's bots' returns after all costs; "up" = share of its bots in profit.
+Click a family for its rules, source and every bot.</p>
+<div class='tablewrap'><table><thead><tr><th class='l'>Family</th><th class='l'>Candles</th><th>Bots</th><th>Median</th>
+<th>Up</th><th>Best</th><th>Worst</th><th>Trades</th><th>Fees</th><th>Fees / bot</th></tr></thead>
+<tbody>{''.join(frows)}{ref_rows}</tbody></table></div>
+<h2>Latest trades</h2>
+<div class='tablewrap'><table><thead><tr><th class='l'>Candle (UTC)</th><th class='l'>Bot</th><th class='l'>Side</th><th>Price</th>
+<th>Value</th><th>P&amp;L</th><th class='l'>Why</th></tr></thead><tbody>{trows}</tbody></table></div>
+<h2>Family details</h2>{''.join(details)}
 <p class='small muted' style='margin-top:28px'>Simulated trading on real market data; not investment advice. Every fill:
-<a href='https://github.com/jcosta92/trading-agents/blob/main/state/bots/fills.csv'>state/bots/fills.csv</a> ·
+<a href='https://github.com/jcosta92/trading-agents/blob/bot-state/state/bots/fills.csv'>state/bots/fills.csv</a> (bot-state branch) ·
 <a href='index.html'>Live test</a> · <a href='preview.html'>Last-month preview</a> ·
 <a href='classic.html'>Research agents</a> · <a href='backtest.html'>Backtest report</a></p>
 """
-    page = _page("Trading bots", body, {"charts": charts}).replace(
+    page = _page("Trading bots", body, {"series": series}).replace(
         "(window.__init||function(){})(D);",
-        "D.charts.forEach(c=>lineChart(document.getElementById(c.id),{series:c.series,title:c.title,prefix:'€',"
-        "decimals:2,baseline:1000,intraday:true}));")
+        "lineChart(document.getElementById('chart'),{series:D.series,title:'Equity',prefix:'€',decimals:2,baseline:1000,intraday:true});")
+    page = page.replace("</style>", "tr.grp td{background:var(--page)} details summary{cursor:pointer}</style>", 1)
     docs.mkdir(parents=True, exist_ok=True)
     (docs / page_name).write_text(page, encoding="utf-8")
     (docs / ".nojekyll").write_text("")
     reports.mkdir(parents=True, exist_ok=True)
-    (reports / md_name).write_text(markdown(table, cfg, st, ref_now), encoding="utf-8")
+    (reports / md_name).write_text(markdown(table, fam, cfg, st, ref_now), encoding="utf-8")
     return table
 
 
-def markdown(table: pd.DataFrame, cfg: dict, st: dict, ref_now: dict) -> str:
+def markdown(table: pd.DataFrame, fam: pd.DataFrame, cfg: dict, st: dict, ref_now: dict) -> str:
+    gn = cfg.get("group_names", {})
     lines = [f"# Trading bots: {pd.Timestamp(cfg['start']):%d %b} - {pd.Timestamp(cfg['end']):%d %b %Y}", "",
-             f"Last update: {st.get('ts', '–')[:16].replace('T', ' ')} UTC. Each bot started with EUR 1,000.", "",
-             "| Bot | Equity | Return | Buys | Sells | Realised P&L | Fees | Win rate | Max drawdown |",
-             "|---|---|---|---|---|---|---|---|---|"]
-    for i, r in table.iterrows():
-        if i == 0 or table.loc[i - 1, "group"] != r["group"]:
-            lines.append(f"| **{GROUPS.get(r['group'], r['group'])}** | | | | | | | | |")
-        lines.append(f"| {r['name']} | {_eur(r['equity'])} | {_pct(r['return'], 2)} | {r['buys']} | {r['sells']} | "
-                     f"{_eur(r['realised'])} | {_eur(r['fees'])} | {_pct(r['win_rate'], 0, False)} | {_pct(r['max_dd'], 1, False)} |")
+             f"Last update: {str(st.get('ts', '–'))[:16].replace('T', ' ')} UTC. {len(table)} bots in {len(fam)} families, "
+             "each started with EUR 1,000.", ""]
     for k, v in ref_now.items():
-        lines.append(f"| {k} (reference, no costs) | | {_pct(v, 2)} | | | | | | |")
+        lines.append(f"- {k} (reference, no costs): {_pct(v, 2)}")
+    lines += ["", "| Family | Group | Bots | Median | Up | Best | Worst | Trades | Fees |", "|---|---|---|---|---|---|---|---|---|"]
+    if len(fam):
+        for fid, r in fam.sort_values("median", ascending=False).iterrows():
+            lines.append(f"| {r['name']} | {gn.get(r['group'], r['group'])} | {int(r['bots'])} | {_pct(r['median'], 2)} | "
+                         f"{_pct(r['share_up'], 0, False)} | {_pct(r['best'], 1)} | {_pct(r['worst'], 1)} | {int(r['trades'])} | "
+                         f"{_eur(r['fees'])} |")
     if st.get("errors"):
-        lines += ["", "Errors in the last cycle:", ""] + [f"- {e}" for e in st["errors"]]
+        lines += ["", f"Errors in the last cycle ({len(st['errors'])}):", ""] + [f"- {e}" for e in st["errors"][:30]]
     return "\n".join(lines) + "\n"
-
-
-def _short(spec: dict) -> str:
-    return spec.get("name", "").split(" (")[0].split(":")[0][:48]
 
 
 def _thin(pts: list, max_points: int = 1500) -> list:

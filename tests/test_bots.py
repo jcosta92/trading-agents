@@ -85,7 +85,7 @@ class FakeSource:
 
 @pytest.fixture()
 def cfg(tmp_path):
-    c = load_config()
+    c = load_config(families=False)
     c["start"], c["end"] = "2026-09-01T00:00:00Z", "2026-09-21T00:00:00Z"
     uni = tmp_path / "llm" / "universe.json"
     uni.parent.mkdir(parents=True)
@@ -261,7 +261,7 @@ def test_dashboard_and_status_table(tmp_path, cfg):
     t = report.write(state, cfg, tmp_path / "docs", tmp_path / "reports")
     assert set(t["bot"]) == set(cfg["bots"])
     html = (tmp_path / "docs" / "index.html").read_text()
-    assert "Scoreboard" in html and "BTC buy-and-hold" in html
+    assert "Families" in html and "BTC buy-and-hold" in html
     md = (tmp_path / "reports" / "BOTS.md").read_text()
     assert md.startswith("# Trading bots")
     p = pd.read_csv(state / "prices.csv")
