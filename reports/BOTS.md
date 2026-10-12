@@ -1,6 +1,6 @@
 # Trading bots: 12 Oct - 12 Nov 2026
 
-Last update: 2026-10-12 16:47 UTC. Each bot started with EUR 1,000.
+Last update: 2026-10-12 17:02 UTC. Each bot started with EUR 1,000.
 
 | Bot | Equity | Return | Buys | Sells | Realised P&L | Fees | Win rate | Max drawdown |
 |---|---|---|---|---|---|---|---|---|
@@ -17,5 +17,5 @@ Last update: 2026-10-12 16:47 UTC. Each bot started with EUR 1,000.
 | Rebalancing bot, equal-weight BTC/ETH/SOL/XRP (Pionex / Shrimpy style) | €1,000.00 | +0.00% | 0 | 0 | €0.00 | €0.00 | – | 0.0% |
 | Momentum rotation: all-in on the best coin of the last 24h (Pionex Momentum Rebalancing) | €1,000.00 | +0.00% | 0 | 0 | €0.00 | €0.00 | – | 0.0% |
 | Internal Bar Strength mean reversion on SPY/QQQ/IWM/DIA (US index ETFs), IBKR | €1,000.00 | +0.00% | 0 | 0 | €0.00 | €0.00 | – | 0.0% |
-| BTC buy-and-hold (reference, no costs) | | – | | | | | | |
-| BTC/ETH/SOL buy-and-hold (reference, no costs) | | – | | | | | | |
+| BTC buy-and-hold (reference, no costs) | | +0.00% | | | | | | |
+| BTC/ETH/SOL buy-and-hold (reference, no costs) | | +0.00% | | | | | | |
