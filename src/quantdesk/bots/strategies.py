@@ -472,17 +472,27 @@ class MomentumRotationBot(Bot):
 
 
 # ============================================================================================ IBS on US ETFs
-class IBSBot(Bot):
-    """Internal Bar Strength mean reversion on US index ETFs: buy into a close near the day's low,
-    sell into a close near the day's high. Orders go in 5 minutes before the close."""
+class UsEtfBot(Bot):
+    """Base for bots that trade US ETFs on 5-minute candles. The runner sets `sessions` (NYSE open/close
+    times in UTC, indexed by the New York date) and, if `needs_daily`, `daily` (daily candles).
+    `on_close` is called on the candle that ends 5 minutes before the close, so a market order placed
+    there fills at the open of the session's last 5-minute candle (15:55 New York time). If that candle
+    is missing from the data, the day is skipped rather than traded after the close."""
     timeframe = "5m"
+    needs_daily = False
 
     def __init__(self, bot_id, spec):
         super().__init__(bot_id, spec)
         self.sessions = None
+        self.daily: dict[str, pd.DataFrame] = {}
 
     def warmup(self) -> int:
         return 0
+
+    def data_tickers(self) -> list[str]:
+        """Tickers whose candles are needed (traded ones plus any signal ticker)."""
+        sig = self.p.get("signal")
+        return list(dict.fromkeys(self.instruments() + ([sig] if sig else [])))
 
     def _session(self, ts: pd.Timestamp):
         if self.sessions is None:
@@ -496,16 +506,37 @@ class IBSBot(Bot):
             return
         tf = TF[self.timeframe]
         day = sess["open"].strftime("%Y-%m-%d")
-        # decide on the candle that ends 5 minutes before the close; the order fills at the last candle's open
-        # (if that candle is missing from the data, the day is skipped rather than traded after the close)
+        if ctx.ts + tf == sess["close"]:
+            self.on_last_candle(ctx, bars, sess, day)
         if ctx.ts + 2 * tf != sess["close"] or ctx.state.get("done_day") == day:
             return
         ctx.state["done_day"] = day
+        self.on_close(ctx, bars, sess, day)
+
+    def on_close(self, ctx, bars: dict, sess, day: str) -> None: ...
+    def on_last_candle(self, ctx, bars: dict, sess, day: str) -> None: ...
+
+    def day_range(self, ctx, iid: str, sess) -> pd.DataFrame:
+        h = ctx.hist(iid)
+        return h[h.index >= sess["open"]]
+
+    def trading_day_position(self, day: str) -> tuple[int, int]:
+        """(n-th trading day of its month, counted from 1; trading days left in the month after it)."""
+        d = pd.Timestamp(day)
+        idx = self.sessions.index
+        month = idx[(idx.year == d.year) & (idx.month == d.month)]
+        return int((month <= d).sum()), int((month > d).sum())
+
+
+class IBSBot(UsEtfBot):
+    """Internal Bar Strength mean reversion on US index ETFs: buy into a close near the day's low,
+    sell into a close near the day's high. Orders go in 5 minutes before the close."""
+
+    def on_close(self, ctx, bars: dict, sess, day: str) -> None:
         n = len(self.instruments())
         ibs_all = {}
         for iid in self.instruments():
-            h = ctx.hist(iid)
-            d = h[h.index >= sess["open"]]
+            d = self.day_range(ctx, iid, sess)
             if d.empty:
                 continue
             hi, lo, c = float(d["high"].max()), float(d["low"].min()), float(d["close"].iloc[-1])
@@ -520,9 +551,143 @@ class IBSBot(Bot):
         ctx.state["last_ibs"] = {"day": day, **ibs_all}
 
 
-CLASSES = {c.__name__: c for c in (GridBot, DCABot, BinHV45Bot, SupertrendBot, EmaMacdBot, ORBBot,
-                                   VolBreakoutBot, TimeOfDayBot, RebalanceBot, MomentumRotationBot, IBSBot)}
+class OvernightBot(UsEtfBot):
+    """Overnight anomaly: own the ETF from the close to the next open."""
 
+    def on_close(self, ctx, bars: dict, sess, day: str) -> None:
+        n = len(self.instruments())
+        for iid in self.instruments():
+            if ctx.qty(iid) <= 0 and iid in bars:
+                ctx.place(iid, "buy", "market", eur=ctx.equity() / n * 0.99, tag="on:buy at the close")
+
+    def on_last_candle(self, ctx, bars: dict, sess, day: str) -> None:
+        for iid in self.instruments():
+            if ctx.qty(iid) > 0 and not ctx.orders("on:sell", iid):
+                ctx.place(iid, "sell", "market", qty=ctx.qty(iid), tag="on:sell at the next open")
+
+
+class TurnOfMonthBot(UsEtfBot):
+    """Turn-of-the-month effect: hold the index ETF over the last trading days of the month and the
+    first days of the next one."""
+
+    def on_close(self, ctx, bars: dict, sess, day: str) -> None:
+        nth, left = self.trading_day_position(day)
+        ctx.state["day_position"] = {"day": day, "nth": nth, "left_in_month": left}
+        for iid in self.instruments():
+            if left == int(self.p["days_before_end"]) and ctx.qty(iid) <= 0 and iid in bars:
+                ctx.place(iid, "buy", "market", eur=ctx.equity() / len(self.instruments()) * 0.99,
+                          tag=f"tom:buy ({left} trading days left in the month)")
+            elif nth == int(self.p["exit_day"]) and ctx.qty(iid) > 0:
+                ctx.place(iid, "sell", "market", qty=ctx.qty(iid), tag=f"tom:sell (trading day {nth} of the month)")
+
+
+class LeverageRotationBot(UsEtfBot):
+    """Gayed & Bilello 'Leverage for the Long Run': hold a leveraged S&P 500 ETF while the S&P 500 is
+    above its 200-day average, cash otherwise. Decided on the day's price 5 minutes before the close."""
+    needs_daily = True
+
+    def on_close(self, ctx, bars: dict, sess, day: str) -> None:
+        sig, iid = self.p["signal"], self.p["instrument"]
+        d = self.daily.get(sig)
+        if d is None or sig not in bars or iid not in bars:
+            return
+        prior = d[d.index < pd.Timestamp(day)]["close"]
+        n = int(self.p["sma_days"])
+        if len(prior) < n - 1:
+            return
+        price = float(bars[sig]["close"])
+        sma = (prior.iloc[-(n - 1):].sum() + price) / n
+        above = price > sma
+        ctx.state["signal"] = {"day": day, "spy": round(price, 2), "sma200": round(sma, 2), "above": bool(above)}
+        if above and ctx.qty(iid) <= 0:
+            ctx.place(iid, "buy", "market", eur=ctx.equity() * 0.99, tag=f"lr:buy ({sig} {price:.2f} > SMA {sma:.2f})")
+        elif not above and ctx.qty(iid) > 0:
+            ctx.place(iid, "sell", "market", qty=ctx.qty(iid), tag=f"lr:sell ({sig} {price:.2f} < SMA {sma:.2f})")
+
+
+# ============================================================================================ classic crypto
+class TurtleBot(Bot):
+    """Turtle Traders System 1 on 4-hour candles: buy a 20-candle high breakout, exit on a 10-candle low,
+    stop 2N (N = 20-candle ATR) below the entry."""
+    timeframe = "4h"
+
+    def warmup(self) -> int:
+        return int(self.p["entry_n"]) + 30
+
+    def on_candle(self, ctx, iid: str) -> None:
+        p = self.p
+        h = ctx.hist(iid)
+        if len(h) < int(p["entry_n"]) + 2:
+            return
+        if ctx.qty(iid) <= 0:
+            if ctx.orders("tt:exit", iid):
+                ctx.cancel("tt:exit", iid)
+            hi = float(h["high"].iloc[-int(p["entry_n"]):].max())
+            n_atr = float(ta.atr(h, int(p["atr_n"])).iloc[-1])
+            ctx.cancel("tt:entry", iid)
+            ctx.place(iid, "buy", "stop", eur=self.slot_eur_total(ctx), price=hi * 1.0001,
+                      tag=f"tt:entry (20-candle high {hi:,.4g})")
+            ctx.state.setdefault("n", {})[iid] = n_atr
+            return
+        # in a position: the exit is the higher of the 10-candle low and the 2N stop
+        lo = float(h["low"].iloc[-int(p["exit_n"]):].min())
+        entry = ctx.state.get("entry", {}).get(iid, ctx.avg_price(iid))
+        stop = max(lo, entry - float(p["stop_n"]) * ctx.state.get("n", {}).get(iid, 0.0))
+        ctx.cancel("tt:exit", iid)
+        ctx.place(iid, "sell", "stop", qty=ctx.qty(iid), price=stop * 0.9999, tag=f"tt:exit (stop {stop:,.4g})")
+
+    def slot_eur_total(self, ctx) -> float:
+        return ctx.equity() / len(self.instruments()) * 0.99
+
+    def on_fill(self, ctx, order, fill) -> None:
+        if order["tag"].startswith("tt:entry"):
+            ctx.state.setdefault("entry", {})[order["inst"]] = fill.price
+
+
+class SqueezeBot(Bot):
+    """LazyBear Squeeze Momentum: buy when a squeeze fires with rising positive momentum,
+    sell when momentum starts to fade."""
+    timeframe = "1h"
+
+    def warmup(self) -> int:
+        return 80
+
+    def on_candle(self, ctx, iid: str) -> None:
+        h = ctx.hist(iid)
+        if len(h) < 45:
+            return
+        on, val = ta.squeeze_momentum(h)
+        v0, v1 = float(val.iloc[-1]), float(val.iloc[-2])
+        if np.isnan(v0) or np.isnan(v1):
+            return
+        fired = bool(on.iloc[-2]) and not bool(on.iloc[-1])
+        if ctx.qty(iid) <= 0 and not ctx.orders("sq:", iid) and fired and v0 > 0 and v0 > v1:
+            ctx.place(iid, "buy", "market", eur=self.slot_eur(ctx, len(self.instruments())), tag="sq:buy (squeeze fired up)")
+        elif ctx.qty(iid) > 0 and v0 < v1:
+            ctx.place(iid, "sell", "market", qty=ctx.qty(iid), tag="sq:sell (momentum fading)")
+
+
+class RSIBot(Bot):
+    """Classic RSI(14) bot: buy oversold (< 30), sell overbought (> 70)."""
+    timeframe = "1h"
+
+    def warmup(self) -> int:
+        return 100
+
+    def on_candle(self, ctx, iid: str) -> None:
+        h = ctx.hist(iid)
+        if len(h) < 30:
+            return
+        r = float(ta.rsi(h["close"], int(self.p["period"])).iloc[-1])
+        if ctx.qty(iid) <= 0 and not ctx.orders("rsi:", iid) and r < float(self.p["buy_below"]):
+            ctx.place(iid, "buy", "market", eur=self.slot_eur(ctx, len(self.instruments())), tag=f"rsi:buy (RSI {r:.1f})")
+        elif ctx.qty(iid) > 0 and r > float(self.p["sell_above"]):
+            ctx.place(iid, "sell", "market", qty=ctx.qty(iid), tag=f"rsi:sell (RSI {r:.1f})")
+
+
+CLASSES = {c.__name__: c for c in (GridBot, DCABot, BinHV45Bot, SupertrendBot, EmaMacdBot, ORBBot,
+                                   VolBreakoutBot, TimeOfDayBot, RebalanceBot, MomentumRotationBot, IBSBot,
+                                   OvernightBot, TurnOfMonthBot, LeverageRotationBot, TurtleBot, SqueezeBot, RSIBot)}
 
 def build_bot(bot_id: str, spec: dict) -> Bot:
     return CLASSES[spec["class"]](bot_id, spec)

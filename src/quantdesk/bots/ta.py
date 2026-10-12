@@ -57,3 +57,37 @@ def supertrend(df: pd.DataFrame, period: int = 10, mult: float = 3.0) -> pd.Seri
     out = pd.Series(d, index=df.index)
     out.iloc[:period] = np.nan
     return out
+
+
+def rsi(close: pd.Series, n: int = 14) -> pd.Series:
+    """Wilder RSI (TradingView `ta.rsi`)."""
+    d = close.diff()
+    up, down = rma(d.clip(lower=0), n), rma((-d).clip(lower=0), n)
+    rs = up / down.replace(0, np.nan)
+    return (100 - 100 / (1 + rs)).fillna(100.0).where(up.notna())
+
+
+def linreg_last(s: pd.Series, n: int) -> pd.Series:
+    """TradingView `ta.linreg(s, n, 0)`: the least-squares line over the last n values, evaluated at the last one."""
+    x = np.arange(n, dtype=float)
+    xm = x.mean()
+    den = ((x - xm) ** 2).sum()
+
+    def f(w: np.ndarray) -> float:
+        b = ((x - xm) * (w - w.mean())).sum() / den
+        return w.mean() + b * (x[-1] - xm)
+    return s.rolling(n).apply(f, raw=True)
+
+
+def squeeze_momentum(df: pd.DataFrame, n_bb: int = 20, k_bb: float = 2.0, n_kc: int = 20,
+                     k_kc: float = 1.5) -> tuple[pd.Series, pd.Series]:
+    """LazyBear's Squeeze Momentum (TradingView): (squeeze_on, momentum value).
+    Squeeze is on while the Bollinger bands are inside the Keltner channel."""
+    c = df["close"]
+    basis = c.rolling(n_bb).mean()
+    dev = k_bb * c.rolling(n_bb).std(ddof=0)
+    ma = c.rolling(n_kc).mean()
+    rng = true_range(df).rolling(n_kc).mean()
+    on = ((basis - dev) > (ma - k_kc * rng)) & ((basis + dev) < (ma + k_kc * rng))
+    mid = ((df["high"].rolling(n_kc).max() + df["low"].rolling(n_kc).min()) / 2 + ma) / 2
+    return on, linreg_last(c - mid, n_kc)

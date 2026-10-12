@@ -32,7 +32,9 @@ stock_costs: {half_spread_bps: 3, slippage_bps: 2}
 
 # Two groups: "popular" = the strategies bot platforms and trading communities rank highest;
 # "alternative" = less common strategies with published, rule-based definitions (added 12 Oct 2026,
-# before the test started; rules taken from the sources as published, no tuning on data).
+# before the test started; rules taken from the sources as published, no tuning on data);
+# "classic" = textbook trader systems and documented market anomalies, incl. a leveraged ETF
+# (added 12 Oct 2026 at 17:20 UTC, 20 minutes into the test; they replay from the same start).
 bots:
 
   grid_btc:
@@ -229,3 +231,97 @@ bots:
       SELL   IBS at or above 0.8 (market order at 15:55 New York time)
       SIZE   one quarter of equity per ETF, long only; positions are held overnight
     params: {instruments: [SPY, QQQ, IWM, DIA], entry: 0.2, exit: 0.8}
+
+  # ------------------------------------------------------------------------------ classic systems and anomalies
+
+  turtle_crypto:
+    group: classic
+    name: "Turtle Traders System 1 breakout on BTC/ETH/SOL, 4-hour"
+    class: TurtleBot
+    timeframe: 4h
+    source: >
+      The Turtle Traders' System 1 (Dennis & Eckhardt, 1983; published in Curtis Faith's "The Original
+      Turtle Trading Rules"): 20-period breakout entry, 10-period exit, 2N stop. Originally daily
+      futures; run here on 4-hour crypto candles so that it trades within a month.
+    rules: |
+      BUY    stop order 0.01% above the highest high of the last 20 candles
+      SELL   stop at the higher of the lowest low of the last 10 candles and entry - 2 x N
+             (N = ATR(20) when the order was placed); moved up every candle
+      SIZE   one third of equity per coin, long only
+    params: {instruments: [BTC_SPOT, ETH_SPOT, SOL_SPOT], entry_n: 20, exit_n: 10, atr_n: 20, stop_n: 2.0}
+
+  squeeze:
+    group: classic
+    name: "Squeeze Momentum (LazyBear) on BTC/ETH/SOL, 1-hour"
+    class: SqueezeBot
+    timeframe: 1h
+    source: >
+      LazyBear's Squeeze Momentum indicator (John Carter's TTM Squeeze) is one of the most-used community
+      indicators on TradingView. A squeeze is Bollinger bands (20, 2) inside the Keltner channel
+      (20, 1.5 x range); the traditional trade is the first bar after it "fires", in the direction
+      of the momentum histogram, exiting when the histogram fades (luxalgo.com library description).
+    rules: |
+      BUY    the squeeze turns off on this candle and the momentum value is positive and rising
+      SELL   the momentum value falls below the previous candle's
+      SIZE   one third of equity per coin, long only
+    params: {instruments: [BTC_SPOT, ETH_SPOT, SOL_SPOT]}
+
+  rsi_classic:
+    group: classic
+    name: "RSI(14) 30/70 on BTC/ETH/SOL, 1-hour"
+    class: RSIBot
+    timeframe: 1h
+    source: >
+      The textbook Welles Wilder RSI rule, and the default "RSI" signal bot on 3Commas, Pionex and
+      Cryptohopper: buy oversold, sell overbought.
+    rules: |
+      BUY    RSI(14) below 30
+      SELL   RSI(14) above 70
+      SIZE   one third of equity per coin, long only, no stop
+    params: {instruments: [BTC_SPOT, ETH_SPOT, SOL_SPOT], period: 14, buy_below: 30, sell_above: 70}
+
+  overnight_spy:
+    group: classic
+    name: "Overnight anomaly: own SPY from the close to the next open, IBKR"
+    class: OvernightBot
+    timeframe: 5m
+    source: >
+      Most of the S&P 500's long-run gain has come overnight, between the close and the next open
+      (QuantConnect strategy library "Overnight Anomaly", Quantpedia, Alpha Architect). QuantConnect
+      notes that IBKR fees cancel most of it; this test charges those fees.
+    rules: |
+      BUY    SPY at 15:55 New York time (market order, ~5 minutes before the close)
+      SELL   at the next session's open (market order)
+      SIZE   all equity
+    params: {instruments: [SPY]}
+
+  turn_of_month:
+    group: classic
+    name: "Turn-of-the-month effect on SPY, IBKR"
+    class: TurnOfMonthBot
+    timeframe: 5m
+    source: >
+      Stocks have earned most of their return over the last trading days of a month and the first days
+      of the next (Ariel 1987; Quantpedia; quantifiedstrategies.com tests "the last four and first three
+      trading days"). In this test window that is one trade: end of October into early November.
+    rules: |
+      BUY    SPY at 15:55 New York time on the day with 4 trading days left in the month
+      SELL   at 15:55 on the 3rd trading day of the next month
+      SIZE   all equity
+    params: {instruments: [SPY], days_before_end: 4, exit_day: 3}
+
+  leverage_rotation:
+    group: classic
+    name: "Leverage rotation: 2x S&P 500 (SSO) above the 200-day average, else cash (Gayed & Bilello)"
+    class: LeverageRotationBot
+    timeframe: 5m
+    source: >
+      Gayed & Bilello, "Leverage for the Long Run" (2016, NAAIM/CMT award): hold the S&P 500 with 2x
+      leverage while it is above its 200-day moving average, T-bills (here cash, no interest) below.
+      SSO is the 2x daily-leveraged S&P 500 ETF. This is the test's leveraged agent.
+    rules: |
+      CHECK  every day at 15:55 New York time: SPY's price against its 200-day average (today's
+             price counted as today's close)
+      BUY    all equity in SSO when SPY is above the average
+      SELL   all SSO when SPY falls below it
+    params: {instrument: SSO, signal: SPY, sma_days: 200}

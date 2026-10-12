@@ -12,8 +12,10 @@ from ..reporting import _eur, _esc, _page, _pct, _cls
 
 COLORS = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)", "var(--s7)"]
 SINGLE_POSITION = {"BinHV45Bot", "SupertrendBot", "EmaMacdBot", "ORBBot", "VolBreakoutBot", "TimeOfDayBot",
-                   "MomentumRotationBot", "IBSBot"}
-GROUPS = {"popular": "Most used bot strategies", "alternative": "Less common strategies"}
+                   "MomentumRotationBot", "IBSBot", "OvernightBot", "TurnOfMonthBot", "LeverageRotationBot",
+                   "TurtleBot", "SqueezeBot", "RSIBot"}
+GROUPS = {"popular": "Most used bot strategies", "alternative": "Less common strategies",
+          "classic": "Classic trader systems and market anomalies"}
 
 
 def colors(cfg: dict) -> dict[str, str]:
@@ -165,7 +167,8 @@ def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "i
 <h1>{'Preview: what the bots would have done last month' if preview else 'Trading bots: one-month demo'}</h1>
 {"<div class='warn'>Replay of the month <b>before</b> the live test, with the same code, data and costs. It shows how the bots behave; it is not the test.</div>" if preview else ''}
 <p class='sub'>{len(cfg['bots'])} bots, each trading its own simulated €1,000: {sum(1 for b in cfg['bots'].values() if b.get('group', 'popular') == 'popular')} on the strategies most used and
-recommended online and {sum(1 for b in cfg['bots'].values() if b.get('group') == 'alternative')} on less common, published rule-based strategies. They trade from {start:%d %b %Y %H:%M} to {end:%d %b %Y %H:%M} UTC. Every real market candle is replayed in order: orders fill
+recommended online, {sum(1 for b in cfg['bots'].values() if b.get('group') == 'alternative')} on less common published strategies and {sum(1 for b in cfg['bots'].values() if b.get('group') == 'classic')} on classic trader systems and
+market anomalies (one with 2x leverage). They trade from {start:%d %b %Y %H:%M} to {end:%d %b %Y %H:%M} UTC. Every real market candle is replayed in order: orders fill
 when the market trades through them, with Bitvavo or IBKR fees, the spread and slippage. On the last day every bot sells
 what it holds, so the final result is realised. Last update: {f"{now:%d %b %Y %H:%M} UTC" if now is not None else 'never'}.</p>
 {errs}

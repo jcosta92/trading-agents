@@ -91,6 +91,9 @@ def cfg(tmp_path):
     uni.parent.mkdir(parents=True)
     uni.write_text(json.dumps({"tickers": ["AAA", "BBB", "CCC"]}))
     c["bots"]["ibs_etf"]["params"]["instruments"] = ["AAA", "BBB", "CCC"]
+    c["bots"]["overnight_spy"]["params"]["instruments"] = ["AAA"]
+    c["bots"]["turn_of_month"]["params"]["instruments"] = ["BBB"]
+    c["bots"]["leverage_rotation"]["params"].update({"instrument": "CCC", "signal": "AAA", "sma_days": 20})
     return c
 
 
@@ -366,3 +369,56 @@ def test_sells_fill_before_buys_in_the_same_candle():
     eng.run(Switch("t", {}), led, c, T[0], T[-1] + pd.Timedelta(hours=1))
     assert led.qty("BTC_SPOT") == 0
     assert led.qty("ETH_SPOT") * 2500 > 970
+
+
+# ------------------------------------------------------------------------------ classic systems and anomalies
+def test_turtle_enters_on_breakouts_and_exits_on_stops(tmp_path, cfg):
+    s, f = _run_alt(tmp_path, cfg, ["turtle_crypto"])
+    f = f[f.bot == "turtle_crypto"]
+    buys, sells = f[f.side == "buy"], f[f.side == "sell"]
+    assert len(buys) > 0 and len(sells) > 0
+    assert (f.liquidity == "taker").all() and buys.tag.str.startswith("tt:entry").all()
+    src = FakeSource()
+    for _, b in buys.iterrows():
+        sym = {"BTC_SPOT": "BTC/EUR", "ETH_SPOT": "ETH/EUR", "SOL_SPOT": "SOL/EUR"}[b.inst]
+        df = src._series(sym, "4h")
+        prev = df[df.index < b.ts].iloc[-20:]          # the 20 candles up to the one the order was placed on
+        assert b.price >= prev.high.max() * 0.999
+
+
+def test_squeeze_and_rsi_bots_trade_on_their_signals(tmp_path, cfg):
+    s, f = _run_alt(tmp_path, cfg, ["squeeze", "rsi_classic"], now="2026-09-20T12:00:00Z")
+    sq, rs = f[f.bot == "squeeze"], f[f.bot == "rsi_classic"]
+    assert len(sq[sq.side == "buy"]) > 0 and len(rs[rs.side == "buy"]) > 0
+    rsi_in = rs[rs.side == "buy"].tag.str.extract(r"RSI ([\d.]+)")[0].astype(float)
+    assert (rsi_in < 30).all()
+    rsi_out = rs[rs.side == "sell"].tag.str.extract(r"RSI ([\d.]+)")[0].astype(float)
+    assert (rsi_out > 70).all()
+
+
+def test_overnight_buys_at_the_close_and_sells_at_the_open(tmp_path, cfg):
+    s, f = _run_alt(tmp_path, cfg, ["overnight_spy"])
+    f = f[f.bot == "overnight_spy"]
+    ny = f.ts.dt.tz_convert("America/New_York")
+    b, sl = f.side == "buy", f.side == "sell"
+    assert b.sum() >= 8 and sl.sum() >= 8
+    assert ((ny[b].dt.hour == 15) & (ny[b].dt.minute == 55)).all()
+    assert ((ny[sl].dt.hour == 9) & (ny[sl].dt.minute == 30)).all()
+
+
+def test_turn_of_month_holds_over_the_month_end(tmp_path, cfg):
+    cfg["start"], cfg["end"] = "2026-09-01T00:00:00Z", "2026-10-30T00:00:00Z"
+    s, f = _run_alt(tmp_path, cfg, ["turn_of_month"], now="2026-10-10T00:00:00Z")
+    f = f[f.bot == "turn_of_month"]
+    days = f.assign(d=f.ts.dt.tz_convert("America/New_York").dt.strftime("%Y-%m-%d"))
+    assert list(days[days.side == "buy"].d) == ["2026-09-24"]      # 4 trading days left in September
+    assert list(days[days.side == "sell"].d) == ["2026-10-05"]     # 3rd trading day of October
+
+
+def test_leverage_rotation_follows_the_moving_average(tmp_path, cfg):
+    s, f = _run_alt(tmp_path, cfg, ["leverage_rotation"], now="2026-09-20T12:00:00Z")
+    sig = s["bots"]["leverage_rotation"]["state"]["signal"]
+    pos = s["bots"]["leverage_rotation"]["positions"]
+    assert ("CCC" in pos) == sig["above"]
+    f = f[f.bot == "leverage_rotation"]
+    assert set(f.inst) <= {"CCC"}

@@ -13,7 +13,7 @@ from ..costs import CostModel
 from ..ledger import FxRates
 from .data import TF, CandleSource
 from .engine import BotEngine, Market, append_csv, load_ledger, save_ledger
-from .strategies import IBSBot, ORBBot, build_bot
+from .strategies import ORBBot, UsEtfBot, build_bot
 
 log = logging.getLogger(__name__)
 DEFAULT_UNIVERSE = ["NVDA", "AAPL", "MSFT", "AMZN", "META", "GOOGL", "AVGO", "TSLA", "AMD", "MU", "PLTR", "NFLX",
@@ -74,7 +74,7 @@ def run_cycle(state_dir: str | Path, now: pd.Timestamp | None = None, source=Non
             last = pd.Timestamp(led.meta["last_ts"]) if led.meta.get("last_ts") else None
             if isinstance(bot, ORBBot):
                 candles = _orb_inputs(bot, led, source, cfg, state, markets, now, t0, last)
-            elif isinstance(bot, IBSBot):
+            elif isinstance(bot, UsEtfBot):
                 candles = _etf_inputs(bot, source, cfg, markets, now, t0, last)
             else:
                 symbols = {k: m["symbol"] for k, m in (cfg.get("markets") or {}).items()}
@@ -147,24 +147,27 @@ def _orb_inputs(bot: ORBBot, led, source, cfg, state, markets, now, t0, last) ->
 def _sessions(t0: pd.Timestamp, now: pd.Timestamp) -> pd.DataFrame:
     import exchange_calendars as xcals
     sched = xcals.get_calendar("XNYS").schedule.loc[(t0 - pd.Timedelta(days=40)).tz_localize(None).normalize():
-                                                    (now + pd.Timedelta(days=1)).tz_localize(None).normalize()]
-    return sched[["open", "close"]]
+                                                    (now + pd.Timedelta(days=45)).tz_localize(None).normalize()]
+    return sched[["open", "close"]]          # future sessions too: turn-of-month bots count trading days ahead
 
 
-def _etf_inputs(bot: IBSBot, source, cfg, markets, now, t0, last) -> dict[str, pd.DataFrame]:
+def _etf_inputs(bot: UsEtfBot, source, cfg, markets, now, t0, last) -> dict[str, pd.DataFrame]:
     """5-minute candles of the bot's US ETFs from the open of the earliest session not yet processed."""
     bot.sessions = _sessions(t0, now)
     started = bot.sessions[bot.sessions["open"] <= now]
     if started.empty or (last is not None and last >= started["close"].iloc[-1] - pd.Timedelta(minutes=5)):
         return {}
     stock = cfg.get("stock_costs", {})
-    for t in bot.instruments():
+    tickers = bot.data_tickers()
+    for t in tickers:
         if t not in markets:
             markets[t] = Market(stock_instrument(t), float(stock.get("half_spread_bps", 3)) / 1e4,
                                 float(stock.get("slippage_bps", 2)) / 1e4)
     first = last if last is not None else t0
     since = min(first, started["open"].iloc[-1]) - pd.Timedelta(days=1)
-    return source.stocks(bot.instruments(), bot.timeframe, since, now)
+    if bot.needs_daily:
+        bot.daily = source.stock_daily(tickers, int(bot.p.get("sma_days", 200)) + 60, now)
+    return source.stocks(tickers, bot.timeframe, since, now)
 
 
 def _status(bot, led, fx: FxRates, engine: BotEngine) -> dict:
@@ -180,7 +183,8 @@ def _status(bot, led, fx: FxRates, engine: BotEngine) -> dict:
         "costs_eur": {k: round(v, 4) for k, v in led.costs.items()},
         "notes": engine.notes.get(bot.id, [])[-20:],
         "state": {k: v for k, v in st.items() if k in ("completed_deals", "resets", "deal", "center", "last_selection",
-                                                       "targets", "rebalances", "switches", "holding", "last_ibs")},
+                                                       "targets", "rebalances", "switches", "holding", "last_ibs",
+                                                       "signal", "day_position")},
     }
 
 
