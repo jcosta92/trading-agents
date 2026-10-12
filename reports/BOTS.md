@@ -1,12 +1,12 @@
 # Trading bots: 12 Oct - 12 Nov 2026
 
-Last update: 2026-10-12 17:32 UTC. Each bot started with EUR 1,000.
+Last update: 2026-10-12 17:47 UTC. Each bot started with EUR 1,000.
 
 | Bot | Equity | Return | Buys | Sells | Realised P&L | Fees | Win rate | Max drawdown |
 |---|---|---|---|---|---|---|---|---|
 | **Most used bot strategies** | | | | | | | | |
-| Grid bot on BTC/EUR (Pionex / Binance / Bybit spot grid) | €998.02 | -0.20% | 1 | 0 | €0.00 | €1.03 | – | 0.0% |
-| DCA bot with safety orders on ETH/EUR (3Commas-style) | €999.54 | -0.05% | 1 | 0 | €0.00 | €0.17 | – | 0.0% |
+| Grid bot on BTC/EUR (Pionex / Binance / Bybit spot grid) | €998.08 | -0.19% | 1 | 0 | €0.00 | €1.03 | – | 0.0% |
+| DCA bot with safety orders on ETH/EUR (3Commas-style) | €999.47 | -0.05% | 1 | 0 | €0.00 | €0.17 | – | 0.0% |
 | BinHV45 Bollinger mean reversion on 8 coins (Freqtrade community strategy) | €1,000.00 | +0.00% | 0 | 0 | €0.00 | €0.00 | – | 0.0% |
 | Supertrend (10, 3) trend following on BTC/ETH/SOL, 1-hour | €1,000.00 | +0.00% | 0 | 0 | €0.00 | €0.00 | – | 0.0% |
 | EMA 9/21 crossover + MACD confirmation, EMA200 filter, ATR stop (1-hour) | €1,000.00 | +0.00% | 0 | 0 | €0.00 | €0.00 | – | 0.0% |
@@ -14,7 +14,7 @@ Last update: 2026-10-12 17:32 UTC. Each bot started with EUR 1,000.
 | **Less common strategies** | | | | | | | | |
 | Volatility breakout on BTC/ETH/XRP (Larry Williams, as run by Korean Upbit bots) | €1,000.00 | +0.00% | 0 | 0 | €0.00 | €0.00 | – | 0.0% |
 | Bitcoin time-of-day seasonality: hold 21:00-23:00 UTC only (Quantpedia) | €1,000.00 | +0.00% | 0 | 0 | €0.00 | €0.00 | – | 0.0% |
-| Rebalancing bot, equal-weight BTC/ETH/SOL/XRP (Pionex / Shrimpy style) | €993.54 | -0.65% | 4 | 0 | €0.00 | €2.48 | – | 0.0% |
+| Rebalancing bot, equal-weight BTC/ETH/SOL/XRP (Pionex / Shrimpy style) | €992.99 | -0.70% | 4 | 0 | €0.00 | €2.48 | – | 0.0% |
 | Momentum rotation: all-in on the best coin of the last 24h (Pionex Momentum Rebalancing) | €1,000.00 | +0.00% | 0 | 0 | €0.00 | €0.00 | – | 0.0% |
 | Internal Bar Strength mean reversion on SPY/QQQ/IWM/DIA (US index ETFs), IBKR | €1,000.00 | +0.00% | 0 | 0 | €0.00 | €0.00 | – | 0.0% |
 | **Classic trader systems and market anomalies** | | | | | | | | |
