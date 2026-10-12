@@ -33,19 +33,13 @@ jobs:
       - name: Job summary
         if: always()
         run: cat reports/backtest/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+      - name: Publish log tails on failure
+        if: failure()
+        shell: bash
+        run: |
+          .github/scripts/annotate_tail.sh reports/backtest/fetch.log 25
+          .github/scripts/annotate_tail.sh reports/backtest/run.log 60
       - name: Commit data and results
         if: always()
         shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          find data/history -type f -size +90M -print -delete || true
-          git add -A reports docs data/history
-          git commit -m "Backtest results $(date -u +%Y-%m-%dT%H:%MZ)" || { echo "nothing to commit"; exit 0; }
-          ok=0
-          for i in 1 2 3 4 5; do
-            if git pull -q --rebase && git push -q; then ok=1; break; fi
-            git rebase --abort 2>/dev/null || true
-            sleep $((i*5))
-          done
-          if [ "$ok" != 1 ]; then echo "::error::push failed after 5 attempts"; exit 1; fi
+        run: .github/scripts/commit_push.sh "Backtest results $(date -u +%Y-%m-%dT%H:%MZ)" reports docs data/history

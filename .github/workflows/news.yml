@@ -39,15 +39,4 @@ jobs:
       - name: Commit inbox
         if: steps.flag.outputs.enabled == 'true'
         shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A state/llm
-          git commit -q -m "News inbox $(date -u +%Y-%m-%d)" || { echo "nothing to commit"; exit 0; }
-          ok=0
-          for i in 1 2 3 4 5; do
-            if git pull -q --rebase && git push -q; then ok=1; break; fi
-            git rebase --abort 2>/dev/null || true
-            sleep $((i*5))
-          done
-          if [ "$ok" != 1 ]; then echo "::error::push failed after 5 attempts"; exit 1; fi
+        run: .github/scripts/commit_push.sh "News inbox $(date -u +%Y-%m-%d)" state/llm

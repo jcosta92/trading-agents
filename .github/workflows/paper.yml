@@ -44,18 +44,11 @@ jobs:
       - name: Job summary
         if: always() && steps.flag.outputs.enabled == 'true'
         run: cat reports/STATUS.md >> "$GITHUB_STEP_SUMMARY" || true
+      - name: Publish log tail on failure
+        if: failure() && steps.flag.outputs.enabled == 'true'
+        shell: bash
+        run: .github/scripts/annotate_tail.sh "state/logs/$(date -u +%Y-%m-%d).log" 60
       - name: Commit state and dashboard
         if: always() && steps.flag.outputs.enabled == 'true'
         shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A state docs reports/STATUS.md
-          git commit -q -m "Paper cycle $(date -u +%Y-%m-%dT%H:%MZ)" || { echo "nothing to commit"; exit 0; }
-          ok=0
-          for i in 1 2 3 4 5; do
-            if git pull -q --rebase && git push -q; then ok=1; break; fi
-            git rebase --abort 2>/dev/null || true
-            sleep $((i*5))
-          done
-          if [ "$ok" != 1 ]; then echo "::error::push failed after 5 attempts"; exit 1; fi
+        run: .github/scripts/commit_push.sh "Paper cycle $(date -u +%Y-%m-%dT%H:%MZ)" state docs reports/STATUS.md
