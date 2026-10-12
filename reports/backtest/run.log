@@ -1,80 +1,55 @@
-2026-10-12 14:23:05,832 INFO quantdesk.backtest.runner: bench_sp500/main x0: CAGR 15.11% Sharpe 0.96 MDD -33.7% (1s)
-2026-10-12 14:23:06,588 INFO quantdesk.backtest.runner: bench_sp500/main x1: CAGR 15.11% Sharpe 0.96 MDD -33.7% (1s)
-2026-10-12 14:23:07,246 INFO quantdesk.backtest.runner: bench_sp500/main x2: CAGR 15.11% Sharpe 0.96 MDD -33.8% (1s)
-2026-10-12 14:23:07,826 INFO quantdesk.backtest.runner: bench_btc/main x0: CAGR 27.77% Sharpe 0.71 MDD -73.5% (1s)
-2026-10-12 14:23:08,446 INFO quantdesk.backtest.runner: bench_btc/main x1: CAGR 27.76% Sharpe 0.71 MDD -73.6% (1s)
-2026-10-12 14:23:09,005 INFO quantdesk.backtest.runner: bench_btc/main x2: CAGR 27.72% Sharpe 0.71 MDD -73.6% (1s)
-2026-10-12 14:23:32,831 INFO quantdesk.backtest.runner: trend_etf/main x0: CAGR 2.08% Sharpe 0.50 MDD -9.5% (24s)
-2026-10-12 14:23:55,775 INFO quantdesk.backtest.runner: trend_etf/main x1: CAGR -12.34% Sharpe -2.35 MDD -87.5% (23s)
-2026-10-12 14:24:16,745 INFO quantdesk.backtest.runner: trend_etf/main x2: CAGR -14.83% Sharpe -2.37 MDD -92.0% (21s)
-2026-10-12 14:24:37,787 INFO quantdesk.backtest.runner: trend_etf/stop_2atr x1: CAGR -14.57% Sharpe -2.95 MDD -91.7% (21s)
-2026-10-12 14:25:01,647 INFO quantdesk.backtest.runner: trend_etf_t212/main x0: CAGR 2.39% Sharpe 0.54 MDD -10.6% (24s)
-2026-10-12 14:25:25,864 INFO quantdesk.backtest.runner: trend_etf_t212/main x1: CAGR 1.16% Sharpe 0.27 MDD -12.3% (24s)
-2026-10-12 14:25:49,666 INFO quantdesk.backtest.runner: trend_etf_t212/main x2: CAGR -0.18% Sharpe -0.01 MDD -15.6% (24s)
-2026-10-12 14:27:32,252 INFO quantdesk.backtest.runner: factor_equity/main x0: CAGR 2.39% Sharpe 0.22 MDD -48.8% (103s)
-2026-10-12 14:29:15,199 INFO quantdesk.backtest.runner: factor_equity/main x1: CAGR -5.89% Sharpe -0.18 MDD -73.0% (103s)
-2026-10-12 14:30:44,425 INFO quantdesk.backtest.runner: factor_equity/main x2: CAGR -8.85% Sharpe -0.48 MDD -83.7% (89s)
-2026-10-12 14:32:35,520 INFO quantdesk.backtest.runner: factor_equity/holdings_20 x1: CAGR -5.28% Sharpe -0.25 MDD -66.4% (111s)
-2026-10-12 14:32:36,305 INFO quantdesk.backtest.runner: factor_ucits_proxy/main x0: CAGR 12.68% Sharpe 0.80 MDD -32.3% (1s)
-2026-10-12 14:32:37,157 INFO quantdesk.backtest.runner: factor_ucits_proxy/main x1: CAGR 12.53% Sharpe 0.79 MDD -32.0% (1s)
-2026-10-12 14:32:37,948 INFO quantdesk.backtest.runner: factor_ucits_proxy/main x2: CAGR 12.50% Sharpe 0.79 MDD -32.2% (1s)
-2026-10-12 14:32:45,694 INFO quantdesk.backtest.runner: crypto_trend/main x0: CAGR 15.10% Sharpe 0.98 MDD -15.9% (8s)
-2026-10-12 14:32:53,474 INFO quantdesk.backtest.runner: crypto_trend/main x1: CAGR 14.84% Sharpe 0.97 MDD -16.2% (8s)
-2026-10-12 14:33:01,135 INFO quantdesk.backtest.runner: crypto_trend/main x2: CAGR 14.58% Sharpe 0.95 MDD -16.5% (8s)
-2026-10-12 14:33:08,656 INFO quantdesk.backtest.runner: crypto_trend/donchian_55_20 x1: CAGR 12.16% Sharpe 0.74 MDD -20.8% (8s)
-2026-10-12 14:33:20,588 INFO quantdesk.backtest.runner: rsi2_meanrev/main x0: CAGR 3.20% Sharpe 0.72 MDD -9.5% (12s)
-2026-10-12 14:33:32,632 INFO quantdesk.backtest.runner: rsi2_meanrev/main x1: CAGR 0.49% Sharpe 0.13 MDD -10.5% (12s)
-2026-10-12 14:33:44,591 INFO quantdesk.backtest.runner: rsi2_meanrev/main x2: CAGR -1.79% Sharpe -0.37 MDD -29.6% (12s)
-2026-10-12 14:33:56,393 INFO quantdesk.backtest.runner: rsi2_meanrev/rsi_5 x1: CAGR 0.61% Sharpe 0.19 MDD -9.4% (12s)
-2026-10-12 14:33:58,241 INFO quantdesk.backtest.runner: funding_carry/main x0: CAGR 4.82% Sharpe 0.81 MDD -14.6% (2s)
-2026-10-12 14:34:00,137 INFO quantdesk.backtest.runner: funding_carry/main x1: CAGR 4.03% Sharpe 0.67 MDD -15.8% (2s)
-2026-10-12 14:34:01,992 INFO quantdesk.backtest.runner: funding_carry/main x2: CAGR 3.24% Sharpe 0.53 MDD -17.3% (2s)
-2026-10-12 14:34:04,064 INFO quantdesk.backtest.runner: funding_carry/entry_8pct x1: CAGR 4.40% Sharpe 0.41 MDD -27.9% (2s)
-2026-10-12 14:34:30,842 INFO quantdesk.backtest.runner: vrp_spreads/main x0: CAGR 1.46% Sharpe 0.18 MDD -36.9% (27s)
-2026-10-12 14:34:55,929 INFO quantdesk.backtest.runner: vrp_spreads/main x1: CAGR -4.11% Sharpe -0.42 MDD -60.3% (25s)
-2026-10-12 14:35:20,712 INFO quantdesk.backtest.runner: vrp_spreads/main x2: CAGR -4.37% Sharpe -0.47 MDD -63.6% (25s)
-2026-10-12 14:35:45,622 INFO quantdesk.backtest.runner: vrp_spreads/delta_10 x1: CAGR -0.24% Sharpe -0.24 MDD -5.7% (25s)
-Traceback (most recent call last):
-  File "<frozen runpy>", line 203, in _run_module_as_main
-  File "<frozen runpy>", line 88, in _run_code
-  File "/home/runner/work/trading-agents/trading-agents/src/quantdesk/cli.py", line 251, in <module>
-    sys.exit(main())
-             ~~~~^^
-  File "/home/runner/work/trading-agents/trading-agents/src/quantdesk/cli.py", line 245, in main
-    return {"fetch-history": cmd_fetch_history, "backtest": cmd_backtest, "paper": cmd_paper,
-           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            "dashboard": cmd_dashboard, "selftest": cmd_selftest, "news-inbox": cmd_news_inbox,
-            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            "validate-labels": cmd_validate_labels}[args.cmd](args)
-            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
-  File "/home/runner/work/trading-agents/trading-agents/src/quantdesk/cli.py", line 81, in cmd_backtest
-    write_backtest_html(out_dir, settings)
-    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/trading-agents/trading-agents/src/quantdesk/reporting.py", line 559, in write_backtest_html
-    data_notes.append(f"Funding for {k}: source {v.get('chosen')} " + ", ".join(
-                                                                      ~~~~~~~~~^
-        f"{s}: {i.get('events')} events from {str(i.get('first'))[:10]}" for s, i in v.get("sources", {}).items()))
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/trading-agents/trading-agents/src/quantdesk/reporting.py", line 560, in <genexpr>
-    f"{s}: {i.get('events')} events from {str(i.get('first'))[:10]}" for s, i in v.get("sources", {}).items()))
-            ^^^^^
-AttributeError: 'int' object has no attribute 'get'
+2026-10-12 15:03:07,367 INFO quantdesk.backtest.runner: bench_sp500/main x0: CAGR 15.11% Sharpe 0.96 MDD -33.7% (1s)
+2026-10-12 15:03:08,149 INFO quantdesk.backtest.runner: bench_sp500/main x1: CAGR 15.10% Sharpe 0.96 MDD -33.7% (1s)
+2026-10-12 15:03:08,821 INFO quantdesk.backtest.runner: bench_sp500/main x2: CAGR 15.10% Sharpe 0.96 MDD -33.8% (1s)
+2026-10-12 15:03:09,389 INFO quantdesk.backtest.runner: bench_btc/main x0: CAGR 27.73% Sharpe 0.71 MDD -73.5% (1s)
+2026-10-12 15:03:10,026 INFO quantdesk.backtest.runner: bench_btc/main x1: CAGR 27.72% Sharpe 0.71 MDD -73.6% (1s)
+2026-10-12 15:03:10,597 INFO quantdesk.backtest.runner: bench_btc/main x2: CAGR 27.67% Sharpe 0.71 MDD -73.6% (1s)
+2026-10-12 15:03:35,668 INFO quantdesk.backtest.runner: trend_etf/main x0: CAGR 2.07% Sharpe 0.50 MDD -9.5% (25s)
+2026-10-12 15:03:59,866 INFO quantdesk.backtest.runner: trend_etf/main x1: CAGR -12.34% Sharpe -2.35 MDD -87.5% (24s)
+2026-10-12 15:04:22,056 INFO quantdesk.backtest.runner: trend_etf/main x2: CAGR -14.83% Sharpe -2.37 MDD -92.0% (22s)
+2026-10-12 15:04:44,498 INFO quantdesk.backtest.runner: trend_etf/stop_2atr x1: CAGR -14.57% Sharpe -2.95 MDD -91.8% (22s)
+2026-10-12 15:05:09,906 INFO quantdesk.backtest.runner: trend_etf_t212/main x0: CAGR 2.39% Sharpe 0.54 MDD -10.6% (25s)
+2026-10-12 15:05:35,289 INFO quantdesk.backtest.runner: trend_etf_t212/main x1: CAGR 1.17% Sharpe 0.27 MDD -12.3% (25s)
+2026-10-12 15:06:00,654 INFO quantdesk.backtest.runner: trend_etf_t212/main x2: CAGR -0.17% Sharpe -0.01 MDD -15.6% (25s)
+2026-10-12 15:07:59,334 INFO quantdesk.backtest.runner: factor_equity/main x0: CAGR 2.44% Sharpe 0.22 MDD -48.8% (119s)
+2026-10-12 15:09:56,532 INFO quantdesk.backtest.runner: factor_equity/main x1: CAGR -5.74% Sharpe -0.17 MDD -72.1% (117s)
+2026-10-12 15:11:40,743 INFO quantdesk.backtest.runner: factor_equity/main x2: CAGR -9.17% Sharpe -0.51 MDD -84.7% (104s)
+2026-10-12 15:13:47,173 INFO quantdesk.backtest.runner: factor_equity/holdings_20 x1: CAGR -5.28% Sharpe -0.25 MDD -66.4% (126s)
+2026-10-12 15:13:47,982 INFO quantdesk.backtest.runner: factor_ucits_proxy/main x0: CAGR 12.66% Sharpe 0.80 MDD -32.3% (1s)
+2026-10-12 15:13:48,860 INFO quantdesk.backtest.runner: factor_ucits_proxy/main x1: CAGR 12.51% Sharpe 0.79 MDD -32.0% (1s)
+2026-10-12 15:13:49,665 INFO quantdesk.backtest.runner: factor_ucits_proxy/main x2: CAGR 12.48% Sharpe 0.79 MDD -32.2% (1s)
+2026-10-12 15:13:57,706 INFO quantdesk.backtest.runner: crypto_trend/main x0: CAGR 15.10% Sharpe 0.98 MDD -15.9% (8s)
+2026-10-12 15:14:05,894 INFO quantdesk.backtest.runner: crypto_trend/main x1: CAGR 14.84% Sharpe 0.97 MDD -16.2% (8s)
+2026-10-12 15:14:13,913 INFO quantdesk.backtest.runner: crypto_trend/main x2: CAGR 14.57% Sharpe 0.95 MDD -16.5% (8s)
+2026-10-12 15:14:21,770 INFO quantdesk.backtest.runner: crypto_trend/donchian_55_20 x1: CAGR 12.15% Sharpe 0.74 MDD -20.8% (8s)
+2026-10-12 15:14:34,564 INFO quantdesk.backtest.runner: rsi2_meanrev/main x0: CAGR 3.20% Sharpe 0.72 MDD -9.5% (13s)
+2026-10-12 15:14:47,397 INFO quantdesk.backtest.runner: rsi2_meanrev/main x1: CAGR 0.49% Sharpe 0.13 MDD -10.5% (13s)
+2026-10-12 15:15:00,050 INFO quantdesk.backtest.runner: rsi2_meanrev/main x2: CAGR -1.79% Sharpe -0.37 MDD -29.6% (13s)
+2026-10-12 15:15:12,677 INFO quantdesk.backtest.runner: rsi2_meanrev/rsi_5 x1: CAGR 0.61% Sharpe 0.19 MDD -9.4% (13s)
+2026-10-12 15:15:14,606 INFO quantdesk.backtest.runner: funding_carry/main x0: CAGR 4.82% Sharpe 0.81 MDD -14.6% (2s)
+2026-10-12 15:15:16,593 INFO quantdesk.backtest.runner: funding_carry/main x1: CAGR 4.03% Sharpe 0.67 MDD -15.8% (2s)
+2026-10-12 15:15:19,712 INFO quantdesk.backtest.runner: funding_carry/main x2: CAGR 3.24% Sharpe 0.53 MDD -17.3% (3s)
+2026-10-12 15:15:21,871 INFO quantdesk.backtest.runner: funding_carry/entry_8pct x1: CAGR 4.40% Sharpe 0.41 MDD -27.9% (2s)
+2026-10-12 15:15:51,176 INFO quantdesk.backtest.runner: vrp_spreads/main x0: CAGR 1.46% Sharpe 0.18 MDD -36.9% (29s)
+2026-10-12 15:16:20,524 INFO quantdesk.backtest.runner: vrp_spreads/main x1: CAGR -4.12% Sharpe -0.42 MDD -60.3% (29s)
+2026-10-12 15:16:49,223 INFO quantdesk.backtest.runner: vrp_spreads/main x2: CAGR -4.37% Sharpe -0.47 MDD -63.6% (29s)
+2026-10-12 15:17:18,318 INFO quantdesk.backtest.runner: vrp_spreads/delta_10 x1: CAGR -0.24% Sharpe -0.24 MDD -5.7% (29s)
 # Backtest results
 
-Generated 2026-10-12T14:35:45.650669+00:00 from commit `9d9d012`; data through 2026-10-12. Distinct configurations tested so far (for the Deflated Sharpe Ratio): 16.
+Generated 2026-10-12T15:17:18.351483+00:00 from commit `d6f7e10`; data through 2026-10-12. Distinct configurations tested so far (for the Deflated Sharpe Ratio): 16.
 
 Costs: x0 = no trading costs, x1 = modelled fees + spread + slippage + FX, x2 = those trading costs doubled. Decisions are identical at every level (made with x1 costs); perp funding is market data and applies unscaled at every level.
 
 | Agent | Period | CAGR x0 | CAGR x1 | CAGR x2 | Sharpe x1 (90% CI) | Max DD x1 | Cost drag/yr | vs benchmark (excess CAGR) | Kill switch would fire in | DSR | Gate |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | B0 Benchmark: S&P 500 UCITS ETF, buy and hold | 2011-01-03 to 2026-10-12 | 15.1% | 15.1% | 15.1% | 0.96 (0.52 to 1.38) | -33.7% | 0.01% | n/a | n/a | n/a | benchmark |
-| B1 Benchmark: Bitcoin spot, buy and hold | 2018-03-01 to 2026-10-12 | 27.8% | 27.8% | 27.7% | 0.71 (0.08 to 1.38) | -73.6% | 0.01% | n/a | n/a | n/a | benchmark |
+| B1 Benchmark: Bitcoin spot, buy and hold | 2018-03-01 to 2026-10-12 | 27.7% | 27.7% | 27.7% | 0.71 (0.08 to 1.38) | -73.6% | 0.01% | n/a | n/a | n/a | benchmark |
 | A1 ETF trend: SMA 50/200 + 12-month momentum, ATR trailing stop (IBKR) | 2011-01-03 to 2026-10-12 | 2.1% | -12.3% | -14.8% | -2.35 (-2.77 to -1.94) | -87.5% | 11.92% | -27.5% | 0% of months | 0.00 | FAIL (Sharpe at 2x costs <= 0) |
 | A1b Same ETF trend rules, Trading 212 cost model | 2011-01-03 to 2026-10-12 | 2.4% | 1.2% | -0.2% | 0.27 (-0.12 to 0.68) | -12.3% | 1.29% | -14.0% | 0% of months | 0.00 | FAIL (Sharpe at 2x costs <= 0) |
-| A2 Stock factor ranking + SMA(200) filter, ATR trailing stop (US large caps, IBKR) | 2008-01-02 to 2026-10-12 | 2.4% | -5.9% | -8.8% | -0.18 (-0.52 to 0.16) | -73.0% | 7.99% | -17.5% | 0% of months | 0.00 | FAIL (Sharpe at 2x costs <= 0) |
+| A2 Stock factor ranking + SMA(200) filter, ATR trailing stop (US large caps, IBKR) | 2008-01-02 to 2026-10-12 | 2.4% | -5.7% | -9.2% | -0.17 (-0.51 to 0.16) | -72.1% | 7.89% | -17.3% | 0% of months | 0.00 | FAIL (Sharpe at 2x costs <= 0) |
 | R1 Research only: UCITS factor ETFs (momentum/value/quality), equal weight | 2015-01-02 to 2026-10-12 | 12.7% | 12.5% | 12.5% | 0.79 (0.33 to 1.23) | -32.0% | 0.05% | -1.8% | n/a | 0.00 | WEAK (DSR 0.00 < 0.95) |
 | A3 Crypto breakout: Donchian 20/10 with 2N stop (BTC/ETH perps, Kraken EEA, 1x) | 2018-03-01 to 2026-10-12 | 15.1% | 14.8% | 14.6% | 0.97 (0.43 to 1.51) | -16.2% | 0.26% | -13.0% | 0% of months | 0.00 | WEAK (DSR 0.00 < 0.95) |
-| A7 RSI(2) mean reversion on the S&P 500 UCITS ETF (Trading 212) | 2011-01-03 to 2026-10-12 | 3.2% | 0.5% | -1.8% | 0.13 (-0.25 to 0.53) | -10.5% | 2.22% | -14.7% | 0% of months | 0.00 | FAIL (Sharpe at 2x costs <= 0) |
+| A7 RSI(2) mean reversion on the S&P 500 UCITS ETF (Trading 212) | 2011-01-03 to 2026-10-12 | 3.2% | 0.5% | -1.8% | 0.13 (-0.25 to 0.53) | -10.5% | 2.22% | -14.6% | 0% of months | 0.00 | FAIL (Sharpe at 2x costs <= 0) |
 | A4 Funding carry: long spot / short perp when funding > 12%/yr (Bitvavo + Kraken) | 2020-01-01 to 2026-10-12 | 4.8% | 4.0% | 3.2% | 0.67 (0.05 to 1.32) | -15.8% | 0.72% | -39.4% | 0% of months | 0.00 | WEAK (DSR 0.00 < 0.95) |
 | A5 Put credit spreads on XSP: VIX filter, 50% take-profit, 2x stop (IBKR) | 2008-01-02 to 2026-10-12 | 1.5% | -4.1% | -4.4% | -0.42 (-0.82 to 0.02) | -60.3% | 3.15% | -18.3% | 0% of months | 0.00 | FAIL (Sharpe at 2x costs <= 0) |
 
@@ -82,7 +57,7 @@ Costs: x0 = no trading costs, x1 = modelled fees + spread + slippage + FX, x2 = 
 
 | Agent | Variant | CAGR | Sharpe | Max DD |
 |---|---|---|---|---|
-| trend_etf | stop_2atr | -14.6% | -2.95 | -91.7% |
+| trend_etf | stop_2atr | -14.6% | -2.95 | -91.8% |
 | factor_equity | holdings_20 | -5.3% | -0.25 | -66.4% |
 | crypto_trend | donchian_55_20 | 12.2% | 0.74 | -20.8% |
 | rsi2_meanrev | rsi_5 | 0.6% | 0.19 | -9.4% |
