@@ -1,6 +1,6 @@
 # Trading bots: 12 Oct - 12 Nov 2026
 
-Last update: 2026-10-12 16:02 UTC. Each bot started with EUR 1,000.
+Last update: 2026-10-12 16:17 UTC. Each bot started with EUR 1,000.
 
 | Bot | Equity | Return | Buys | Sells | Realised P&L | Fees | Win rate | Max drawdown |
 |---|---|---|---|---|---|---|---|---|
