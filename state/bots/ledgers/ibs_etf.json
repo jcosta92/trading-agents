@@ -3,9 +3,21 @@
 "base": "EUR",
 "initial_capital": 1000.0,
 "cash": {
-"EUR": 1000.0
+"EUR": 752.1090767337531,
+"USD": -7.216449660063518e-15
 },
-"positions": {},
+"positions": {
+"IWM": {
+"inst_id": "IWM",
+"qty": 0.9930814931701789,
+"avg_price": 278.0589734344482,
+"currency": "USD",
+"multiplier": 1.0,
+"kind": "stock",
+"opened": "2026-10-12T19:55:00+00:00",
+"last_mark": 277.8800048828125
+}
+},
 "journal": [
 {
 "type": "deposit",
@@ -13,13 +25,64 @@
 "ccy": "EUR",
 "amount": 1000.0,
 "seq": 0
+},
+{
+"type": "fx",
+"ts": "2026-10-12T19:55:00+00:00",
+"from_ccy": "EUR",
+"to_ccy": "USD",
+"amount_from": 247.8909232662469,
+"amount_to": 276.48840136767154,
+"rate": 1.1156978607177734,
+"fee_rate": 0.0003,
+"fee_eur": 0.07436727697987067,
+"reason": "FX for stock purchase",
+"seq": 1
+},
+{
+"type": "trade",
+"ts": "2026-10-12T19:55:00+00:00",
+"inst": "IWM",
+"kind": "stock",
+"qty": 0.9930814931701789,
+"price": 278.0589734344482,
+"mid": 277.9200134277344,
+"ccy": "USD",
+"multiplier": 1.0,
+"fees": {
+"USD": 0.35318084002262407
+},
+"fees_eur": 0.3165559892670302,
+"spread_cost_eur": 0.12368815592200622,
+"value_eur": 247.5,
+"eur_rate": 1.1156978607177734,
+"reason": "ibs:buy (IBS 0.11)",
+"seq": 2
 }
 ],
-"costs": {},
+"costs": {
+"fx": 0.07436727697987067,
+"commissions": 0.3165559892670302,
+"spread_slippage": 0.12368815592200622
+},
 "realized": [],
 "meta": {
-"state": {},
-"last_ts": "2026-10-12T19:40:00+00:00"
+"state": {
+"done_day": "2026-10-12",
+"last_ibs": {
+"day": "2026-10-12",
+"SPY": 0.362,
+"QQQ": 0.203,
+"IWM": 0.107,
+"DIA": 0.62
+}
+},
+"last_ts": "2026-10-12T19:55:00+00:00",
+"orders": [],
+"order_seq": 1,
+"open_buy_fees": {
+"IWM": 0.35318084002262407
+}
 },
 "halted": false,
 "halt_reason": null
