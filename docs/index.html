@@ -50,10 +50,10 @@ pre.rules{white-space:pre-wrap;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo
 <button class='toggle' onclick='toggleTheme()'>Light / dark</button>
 <h1>Trading bots: one-month demo</h1>
 
-<p class='sub'>Six bots built on the strategies most used and recommended online, each trading its own simulated
-€1,000 from 12 Oct 2026 17:00 to 12 Nov 2026 17:00 UTC. Every real market candle is replayed in order: orders fill
+<p class='sub'>11 bots, each trading its own simulated €1,000: 6 on the strategies most used and
+recommended online and 5 on less common, published rule-based strategies. They trade from 12 Oct 2026 17:00 to 12 Nov 2026 17:00 UTC. Every real market candle is replayed in order: orders fill
 when the market trades through them, with Bitvavo or IBKR fees, the spread and slippage. On the last day every bot sells
-what it holds, so the final result is realised. Last update: 12 Oct 2026 16:32 UTC.</p>
+what it holds, so the final result is realised. Last update: 12 Oct 2026 16:47 UTC.</p>
 
 <div class='tiles'>
  <div class='tile'><div class='label'>Day</div><div class='value'>0 / 31</div><div class='note'>results are provisional</div></div>
@@ -61,14 +61,14 @@ what it holds, so the final result is realised. Last update: 12 Oct 2026 16:32 U
  <div class='tile'><div class='label'>Fees paid</div><div class='value'>€0.00</div><div class='note'>exchange and broker fees</div></div>
  <div class='tile'><div class='label'>Leading bot</div><div class='value'>+0.0%</div><div class='note'>Grid bot on BTC/EUR</div></div>
 </div>
-<h2>Equity</h2><div class='card' id='chart'></div>
+<h2>Equity</h2><h3>Most used bot strategies</h3><div class='card' id='chart-popular'></div><h3>Less common strategies</h3><div class='card' id='chart-alternative'></div>
 <h2>Scoreboard</h2>
 <div class='tablewrap'><table><thead><tr><th>Bot</th><th>Equity</th><th>Return</th><th>Buys</th><th>Sells</th>
 <th>Realised P&amp;L</th><th>Fees</th><th>Win rate</th><th>Max drawdown</th><th>Positions</th><th>Resting orders</th></tr></thead>
-<tbody><tr><td><span class='key' style='background:var(--s1)'></span>Grid bot on BTC/EUR (Pionex / Binance / Bybit spot grid)</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s2)'></span>DCA bot with safety orders on ETH/EUR (3Commas-style)</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s3)'></span>BinHV45 Bollinger mean reversion on 8 coins (Freqtrade community strategy)</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s4)'></span>Supertrend (10, 3) trend following on BTC/ETH/SOL, 1-hour</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s5)'></span>EMA 9/21 crossover + MACD confirmation, EMA200 filter, ATR stop (1-hour)</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s7)'></span>Opening Range Breakout on US &#x27;stocks in play&#x27; (Zarattini, Barbon &amp; Aziz 2024), IBKR</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td class='muted'>BTC buy-and-hold (reference, no costs)</td><td class='num'>–</td><td class='num'>–</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td class='muted'>BTC/ETH/SOL buy-and-hold (reference, no costs)</td><td class='num'>–</td><td class='num'>–</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></div>
+<tbody><tr><td colspan='11' class='l'><b>Most used bot strategies</b></td></tr><tr><td><span class='key' style='background:var(--s1)'></span>Grid bot on BTC/EUR (Pionex / Binance / Bybit spot grid)</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s2)'></span>DCA bot with safety orders on ETH/EUR (3Commas-style)</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s3)'></span>BinHV45 Bollinger mean reversion on 8 coins (Freqtrade community strategy)</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s4)'></span>Supertrend (10, 3) trend following on BTC/ETH/SOL, 1-hour</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s5)'></span>EMA 9/21 crossover + MACD confirmation, EMA200 filter, ATR stop (1-hour)</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s7)'></span>Opening Range Breakout on US &#x27;stocks in play&#x27; (Zarattini, Barbon &amp; Aziz 2024), IBKR</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td colspan='11' class='l'><b>Less common strategies</b></td></tr><tr><td><span class='key' style='background:var(--s1)'></span>Volatility breakout on BTC/ETH/XRP (Larry Williams, as run by Korean Upbit bots)</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s2)'></span>Bitcoin time-of-day seasonality: hold 21:00-23:00 UTC only (Quantpedia)</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s3)'></span>Rebalancing bot, equal-weight BTC/ETH/SOL/XRP (Pionex / Shrimpy style)</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s4)'></span>Momentum rotation: all-in on the best coin of the last 24h (Pionex Momentum Rebalancing)</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td><span class='key' style='background:var(--s5)'></span>Internal Bar Strength mean reversion on SPY/QQQ/IWM/DIA (US index ETFs), IBKR</td><td class='num'>€1,000.00</td><td class='num'>+0.00%</td><td class='num'>0</td><td class='num'>0</td><td class='num'>€0.00</td><td class='num'>€0.00</td><td class='num'>–</td><td class='num'>0.0%</td><td class='num'>0</td><td class='num'>0</td></tr><tr><td class='muted'>BTC buy-and-hold (reference, no costs)</td><td class='num'>–</td><td class='num'>–</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td class='muted'>BTC/ETH/SOL buy-and-hold (reference, no costs)</td><td class='num'>–</td><td class='num'>–</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></div>
 <p class='small muted'>Realised P&amp;L is net of all fees of the sold units (average-cost basis). Win rate is shown for bots that
 hold one position per market; for the grid and DCA bots it is not meaningful. The buy-and-hold lines pay no fees.</p>
-<h2>The bots</h2>
+<h2>The bots</h2><h3 style='margin-top:20px'>Most used bot strategies</h3>
 <details class='card' open><summary><span class='key' style='background:var(--s1)'></span>
 <b>Grid bot on BTC/EUR (Pionex / Binance / Bybit spot grid)</b> · 15m candles</summary>
 <p class='small'>The spot grid is the most widely used bot type on Pionex, Binance and Bybit, and the first item in most &quot;best crypto bot&quot; lists (e.g. gainium.io/best/grid, bingx.com &quot;Top 10 crypto trading bots of 2026&quot;). It profits from price oscillation inside a range.
@@ -161,12 +161,79 @@ SIZE   one fifth of equity per name
 
 <h3>Latest trades</h3><div class='tablewrap'><table><thead><tr><th class='l'>Candle (UTC)</th><th class='l'>Market</th>
 <th class='l'>Side</th><th>Qty</th><th>Price</th><th>Value</th><th>Fee</th><th>P&amp;L</th><th class='l'>Why</th></tr></thead>
+<tbody><tr><td class='l muted' colspan='9'>No trades yet</td></tr></tbody></table></div></details><h3 style='margin-top:20px'>Less common strategies</h3>
+<details class='card'><summary><span class='key' style='background:var(--s1)'></span>
+<b>Volatility breakout on BTC/ETH/XRP (Larry Williams, as run by Korean Upbit bots)</b> · 15m candles</summary>
+<p class='small'>Larry Williams&#x27; volatility breakout is the standard first bot of the Korean crypto community (Upbit, pyupbit tutorials; wikidocs.net &quot;파이썬을 이용한 비트코인 자동매매&quot;, target = today&#x27;s open + (yesterday&#x27;s high - yesterday&#x27;s low) x 0.5). Rarely seen in Western bot lists.
+</p>
+<pre class='small' style='white-space:pre-wrap'>DAY    00:00-24:00 UTC (= 09:00-09:00 Korea time, Upbit&#x27;s daily candle)
+BUY    stop order at today&#x27;s open + 0.5 x yesterday&#x27;s range (high - low); fills when the price
+       breaks above it during the day
+SELL   everything at the next day&#x27;s open (00:00 UTC); an unfilled buy order expires
+SIZE   one third of equity per coin, long only
+</pre>
+<h3>Resting orders</h3><ul class='small'><li class='muted'>none</li></ul>
+
+<h3>Latest trades</h3><div class='tablewrap'><table><thead><tr><th class='l'>Candle (UTC)</th><th class='l'>Market</th>
+<th class='l'>Side</th><th>Qty</th><th>Price</th><th>Value</th><th>Fee</th><th>P&amp;L</th><th class='l'>Why</th></tr></thead>
+<tbody><tr><td class='l muted' colspan='9'>No trades yet</td></tr></tbody></table></div></details>
+<details class='card'><summary><span class='key' style='background:var(--s2)'></span>
+<b>Bitcoin time-of-day seasonality: hold 21:00-23:00 UTC only (Quantpedia)</b> · 1h candles</summary>
+<p class='small'>Quantpedia, &quot;Are There Seasonal Intraday or Overnight Anomalies in Bitcoin?&quot; (2022) and &quot;The Seasonality of Bitcoin&quot; (2023 update): the highest average hourly returns fall at 22:00 and 23:00 UTC; the rule &quot;buy at 21:00, sell at 23:00 UTC&quot; earned ~33-41% a year in 2015-2023 before costs. The published tests ignore fees, which this test charges on ~60 trades.
+</p>
+<pre class='small' style='white-space:pre-wrap'>BUY    all cash into BTC at 21:00 UTC (market order)
+SELL   everything at 23:00 UTC (market order)
+Otherwise flat: in cash 22 hours a day
+</pre>
+<h3>Resting orders</h3><ul class='small'><li class='muted'>none</li></ul>
+
+<h3>Latest trades</h3><div class='tablewrap'><table><thead><tr><th class='l'>Candle (UTC)</th><th class='l'>Market</th>
+<th class='l'>Side</th><th>Qty</th><th>Price</th><th>Value</th><th>Fee</th><th>P&amp;L</th><th class='l'>Why</th></tr></thead>
+<tbody><tr><td class='l muted' colspan='9'>No trades yet</td></tr></tbody></table></div></details>
+<details class='card'><summary><span class='key' style='background:var(--s3)'></span>
+<b>Rebalancing bot, equal-weight BTC/ETH/SOL/XRP (Pionex / Shrimpy style)</b> · 15m candles</summary>
+<p class='small'>Rebalancing bots (Pionex &quot;Rebalancing Bot&quot;, KuCoin &quot;Smart Rebalance&quot;, Shrimpy) keep fixed target weights and sell what has risen to buy what has fallen. Pionex rebalances when a coin&#x27;s weight drifts past a threshold; the 2.5% band is the example from Shrimpy&#x27;s guide.
+</p>
+<pre class='small' style='white-space:pre-wrap'>SETUP  25% in each of BTC, ETH, SOL, XRP (1% kept in cash for fees)
+REBAL  when any coin&#x27;s weight is more than 2.5 percentage points away from its target, sell
+       the overweight coins and buy the underweight ones back to the targets (market orders)
+</pre>
+<h3>Resting orders</h3><ul class='small'><li class='muted'>none</li></ul>
+
+<h3>Latest trades</h3><div class='tablewrap'><table><thead><tr><th class='l'>Candle (UTC)</th><th class='l'>Market</th>
+<th class='l'>Side</th><th>Qty</th><th>Price</th><th>Value</th><th>Fee</th><th>P&amp;L</th><th class='l'>Why</th></tr></thead>
+<tbody><tr><td class='l muted' colspan='9'>No trades yet</td></tr></tbody></table></div></details>
+<details class='card'><summary><span class='key' style='background:var(--s4)'></span>
+<b>Momentum rotation: all-in on the best coin of the last 24h (Pionex Momentum Rebalancing)</b> · 1h candles</summary>
+<p class='small'>Pionex&#x27;s &quot;Momentum Rebalancing&quot; mode: at each interval the bot ranks the coins by performance and moves all funds into the top one. Pionex&#x27;s example uses 4 hours; at 4 hours the fees of up to six switches a day would dominate, so this test uses the daily interval.
+</p>
+<pre class='small' style='white-space:pre-wrap'>EVERY  day at 00:00 UTC, rank BTC, ETH, SOL, XRP, DOGE, ADA, LINK, AVAX by their 24-hour return
+SWITCH if the best coin is not the one held: sell it and buy the best one (market orders)
+</pre>
+<h3>Resting orders</h3><ul class='small'><li class='muted'>none</li></ul>
+
+<h3>Latest trades</h3><div class='tablewrap'><table><thead><tr><th class='l'>Candle (UTC)</th><th class='l'>Market</th>
+<th class='l'>Side</th><th>Qty</th><th>Price</th><th>Value</th><th>Fee</th><th>P&amp;L</th><th class='l'>Why</th></tr></thead>
+<tbody><tr><td class='l muted' colspan='9'>No trades yet</td></tr></tbody></table></div></details>
+<details class='card'><summary><span class='key' style='background:var(--s5)'></span>
+<b>Internal Bar Strength mean reversion on SPY/QQQ/IWM/DIA (US index ETFs), IBKR</b> · 5m candles</summary>
+<p class='small'>IBS = (close - low) / (high - low) of the day. Buying index ETFs that close near the day&#x27;s low and selling when they close near the high is a documented short-term edge (quantifiedstrategies.com IBS articles; TradingView &quot;Internal Bar Strength (IBS) Strategy&quot;, default thresholds 0.2 / 0.8). Note: EU retail accounts cannot buy US-domiciled ETFs (PRIIPs rules); the same trades would be done with UCITS index ETFs or index options. The simulation uses the US ETFs&#x27; prices and IBKR fees.
+</p>
+<pre class='small' style='white-space:pre-wrap'>WHEN   5 minutes before the US close, using the day&#x27;s high, low and price so far
+BUY    IBS below 0.2 (market order at 15:55 New York time)
+SELL   IBS at or above 0.8 (market order at 15:55 New York time)
+SIZE   one quarter of equity per ETF, long only; positions are held overnight
+</pre>
+<h3>Resting orders</h3><ul class='small'><li class='muted'>none</li></ul>
+
+<h3>Latest trades</h3><div class='tablewrap'><table><thead><tr><th class='l'>Candle (UTC)</th><th class='l'>Market</th>
+<th class='l'>Side</th><th>Qty</th><th>Price</th><th>Value</th><th>Fee</th><th>P&amp;L</th><th class='l'>Why</th></tr></thead>
 <tbody><tr><td class='l muted' colspan='9'>No trades yet</td></tr></tbody></table></div></details>
 <p class='small muted' style='margin-top:28px'>Simulated trading on real market data; not investment advice. Every fill:
 <a href='https://github.com/jcosta92/trading-agents/blob/main/state/bots/fills.csv'>state/bots/fills.csv</a> ·
 <a href='index.html'>Live test</a> · <a href='preview.html'>Last-month preview</a> ·
 <a href='classic.html'>Research agents</a> · <a href='backtest.html'>Backtest report</a></p>
-</main><script id='data' type='application/json'>{"series": [{"id": "grid_btc", "label": "Grid bot on BTC/EUR", "color": "var(--s1)", "points": [[1791824400000, 1000.0]]}, {"id": "dca_eth", "label": "DCA bot with safety orders on ETH/EUR", "color": "var(--s2)", "points": [[1791824400000, 1000.0]]}, {"id": "bb_meanrev", "label": "BinHV45 Bollinger mean reversion on 8 coins", "color": "var(--s3)", "points": [[1791824400000, 1000.0]]}, {"id": "supertrend", "label": "Supertrend", "color": "var(--s4)", "points": [[1791824400000, 1000.0]]}, {"id": "ema_macd", "label": "EMA 9/21 crossover + MACD confirmation, EMA200 f", "color": "var(--s5)", "points": [[1791824400000, 1000.0]]}, {"id": "orb_stocks", "label": "Opening Range Breakout on US 'stocks in play'", "color": "var(--s7)", "points": [[1791824400000, 1000.0]]}]}</script><script>
+</main><script id='data' type='application/json'>{"charts": [{"id": "chart-popular", "title": "Most used bot strategies", "series": [{"id": "grid_btc", "label": "Grid bot on BTC/EUR", "color": "var(--s1)", "points": [[1791824400000, 1000.0]]}, {"id": "dca_eth", "label": "DCA bot with safety orders on ETH/EUR", "color": "var(--s2)", "points": [[1791824400000, 1000.0]]}, {"id": "bb_meanrev", "label": "BinHV45 Bollinger mean reversion on 8 coins", "color": "var(--s3)", "points": [[1791824400000, 1000.0]]}, {"id": "supertrend", "label": "Supertrend", "color": "var(--s4)", "points": [[1791824400000, 1000.0]]}, {"id": "ema_macd", "label": "EMA 9/21 crossover + MACD confirmation, EMA200 f", "color": "var(--s5)", "points": [[1791824400000, 1000.0]]}, {"id": "orb_stocks", "label": "Opening Range Breakout on US 'stocks in play'", "color": "var(--s7)", "points": [[1791824400000, 1000.0]]}]}, {"id": "chart-alternative", "title": "Less common strategies", "series": [{"id": "vol_breakout", "label": "Volatility breakout on BTC/ETH/XRP", "color": "var(--s1)", "points": [[1791824400000, 1000.0]]}, {"id": "btc_night", "label": "Bitcoin time-of-day seasonality", "color": "var(--s2)", "points": [[1791824400000, 1000.0]]}, {"id": "rebalance", "label": "Rebalancing bot, equal-weight BTC/ETH/SOL/XRP", "color": "var(--s3)", "points": [[1791824400000, 1000.0]]}, {"id": "momentum_rotation", "label": "Momentum rotation", "color": "var(--s4)", "points": [[1791824400000, 1000.0]]}, {"id": "ibs_etf", "label": "Internal Bar Strength mean reversion on SPY/QQQ/", "color": "var(--s5)", "points": [[1791824400000, 1000.0]]}]}]}</script><script>
 (function(){
 const NS='http://www.w3.org/2000/svg';
 function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
@@ -242,4 +309,4 @@ window.toggleTheme=function(){const r=document.documentElement;const cur=r.getAt
  const nx=cur==='dark'?'light':'dark';r.setAttribute('data-theme',nx);try{localStorage.setItem('theme',nx);}catch(e){}};
 try{const t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}
 })();
-</script><script>{const D=JSON.parse(document.getElementById('data').textContent);lineChart(document.getElementById('chart'),{series:D.series,title:'Equity',prefix:'€',decimals:2,baseline:1000,intraday:true});}</script></body></html>
+</script><script>{const D=JSON.parse(document.getElementById('data').textContent);D.charts.forEach(c=>lineChart(document.getElementById(c.id),{series:c.series,title:c.title,prefix:'€',decimals:2,baseline:1000,intraday:true}));}</script></body></html>
