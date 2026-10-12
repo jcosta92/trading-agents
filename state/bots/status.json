@@ -1,19 +1,19 @@
 {
- "ts": "2026-10-12T20:02:01.071118+00:00",
+ "ts": "2026-10-12T20:17:00.770163+00:00",
  "start": "2026-10-12T17:00:00+00:00",
  "end": "2026-11-12T17:00:00+00:00",
  "bots": {
   "grid_btc": {
    "name": "Grid bot on BTC/EUR (Pionex / Binance / Bybit spot grid)",
    "timeframe": "15m",
-   "equity_eur": 1000.5274,
-   "return": 0.000527,
+   "equity_eur": 1001.2401,
+   "return": 0.00124,
    "cash_eur": 524.107,
    "positions": {
     "BTC_SPOT": {
      "qty": 0.006420154533154357,
      "avg": 73949.51234286877,
-     "mark": 74207.0
+     "mark": 74318.0
     }
    },
    "open_orders": [
@@ -162,7 +162,7 @@
      "tag": "grid:sell:9"
     }
    ],
-   "last_candle": "2026-10-12T19:45:00+00:00",
+   "last_candle": "2026-10-12T20:00:00+00:00",
    "finished": null,
    "costs_eur": {
     "commissions": 1.1257,
@@ -176,14 +176,14 @@
   "dca_eth": {
    "name": "DCA bot with safety orders on ETH/EUR (3Commas-style)",
    "timeframe": "15m",
-   "equity_eur": 999.9016,
-   "return": -9.8e-05,
+   "equity_eur": 999.9761,
+   "return": -2.4e-05,
    "cash_eur": 929.825,
    "positions": {
     "ETH_SPOT": {
      "qty": 0.03103438685166381,
      "avg": 2255.5625259999997,
-     "mark": 2258.03
+     "mark": 2260.43
     }
    },
    "open_orders": [
@@ -242,7 +242,7 @@
      "tag": "dca:tp"
     }
    ],
-   "last_candle": "2026-10-12T19:45:00+00:00",
+   "last_candle": "2026-10-12T20:00:00+00:00",
    "finished": null,
    "costs_eur": {
     "commissions": 0.175,
@@ -264,7 +264,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T19:45:00+00:00",
+   "last_candle": "2026-10-12T20:00:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -320,7 +320,7 @@
    "cash_eur": 1000.0,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T19:45:00+00:00",
+   "last_candle": "2026-10-12T20:00:00+00:00",
    "finished": null,
    "costs_eur": {},
    "notes": [],
@@ -343,33 +343,33 @@
   "rebalance": {
    "name": "Rebalancing bot, equal-weight BTC/ETH/SOL/XRP (Pionex / Shrimpy style)",
    "timeframe": "15m",
-   "equity_eur": 998.7115,
-   "return": -0.001288,
+   "equity_eur": 1000.8063,
+   "return": 0.000806,
    "cash_eur": 7.525,
    "positions": {
     "BTC_SPOT": {
      "qty": 0.00334527386601501,
      "avg": 73984.974,
-     "mark": 74207.0
+     "mark": 74318.0
     },
     "ETH_SPOT": {
      "qty": 0.10972872493981133,
      "avg": 2255.5625259999997,
-     "mark": 2258.03
+     "mark": 2260.43
     },
     "SOL_SPOT": {
      "qty": 2.555240611109073,
      "avg": 96.859763,
-     "mark": 96.991
+     "mark": 97.298
     },
     "XRP_SPOT": {
      "qty": 202.27159087415308,
      "avg": 1.22360238,
-     "mark": 1.2228
+     "mark": 1.22614
     }
    },
    "open_orders": [],
-   "last_candle": "2026-10-12T19:45:00+00:00",
+   "last_candle": "2026-10-12T20:00:00+00:00",
    "finished": null,
    "costs_eur": {
     "commissions": 2.475,
@@ -397,8 +397,8 @@
   "ibs_etf": {
    "name": "Internal Bar Strength mean reversion on SPY/QQQ/IWM/DIA (US index ETFs), IBKR",
    "timeframe": "5m",
-   "equity_eur": 999.4498,
-   "return": -0.00055,
+   "equity_eur": 999.4774,
+   "return": -0.000523,
    "cash_eur": 752.1091,
    "positions": {
     "IWM": {
@@ -480,8 +480,8 @@
   "overnight_spy": {
    "name": "Overnight anomaly: own SPY from the close to the next open, IBKR",
    "timeframe": "5m",
-   "equity_eur": 999.081,
-   "return": -0.000919,
+   "equity_eur": 999.1915,
+   "return": -0.000809,
    "cash_eur": 9.385,
    "positions": {
     "SPY": {
@@ -534,8 +534,8 @@
   "leverage_rotation": {
    "name": "Leverage rotation: 2x S&P 500 (SSO) above the 200-day average, else cash (Gayed & Bilello)",
    "timeframe": "5m",
-   "equity_eur": 999.1251,
-   "return": -0.000875,
+   "equity_eur": 999.2356,
+   "return": -0.000764,
    "cash_eur": 9.3451,
    "positions": {
     "SSO": {
@@ -564,7 +564,7 @@
   }
  },
  "errors": [],
- "eurusd": 1.1156978607177734,
+ "eurusd": 1.1155734062194824,
  "data_sources": {
   "BTC/EUR": "bitvavo",
   "ETH/EUR": "bitvavo",
@@ -575,5 +575,5 @@
   "LINK/EUR": "bitvavo",
   "AVAX/EUR": "bitvavo"
  },
- "n_fills": 4
+ "n_fills": 0
 }
