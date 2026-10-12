@@ -413,7 +413,7 @@ class RebalanceBot(Bot):
         eq = ctx.equity()
         tgt = (1 - float(self.p["cash_buffer"])) / len(ins)
         val = {i: ctx.qty(i) * px[i] for i in ins}
-        drift = max(abs(val[i] / eq - tgt) for i in ins)
+        drift = max(abs(val[i] / eq / tgt - 1) for i in ins)        # relative to the target weight
         first = not ctx.state.get("started")
         if not first and drift <= float(self.p["band"]):
             return
@@ -431,7 +431,7 @@ class RebalanceBot(Bot):
         ctx.state["started"] = True
         ctx.state["rebalances"] = int(ctx.state.get("rebalances", 0)) + (0 if first else 1)
         if not first:
-            ctx.note(f"rebalance: largest drift {drift:.1%} from the {tgt:.1%} target")
+            ctx.note(f"rebalance: a coin's weight was {drift:.1%} away from its {tgt:.2%} target")
 
 
 # ============================================================================================ momentum rotation

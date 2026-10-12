@@ -188,11 +188,13 @@ bots:
     source: >
       Rebalancing bots (Pionex "Rebalancing Bot", KuCoin "Smart Rebalance", Shrimpy) keep fixed
       target weights and sell what has risen to buy what has fallen. Pionex rebalances when a coin's
-      weight drifts past a threshold; the 2.5% band is the example from Shrimpy's guide.
+      weight drifts past a threshold; its help page example is a 10% weight rebalanced at 10.25% or
+      9.75%, i.e. 2.5% of the target weight, used here.
     rules: |
       SETUP  25% in each of BTC, ETH, SOL, XRP (1% kept in cash for fees)
-      REBAL  when any coin's weight is more than 2.5 percentage points away from its target, sell
-             the overweight coins and buy the underweight ones back to the targets (market orders)
+      REBAL  when any coin's weight is more than 2.5% away from its target (e.g. above 25.37% or below
+             24.13%), sell the overweight coins and buy the underweight ones back to the targets
+             (market orders; trades under the EUR 5 exchange minimum are skipped)
     params: {instruments: [BTC_SPOT, ETH_SPOT, SOL_SPOT, XRP_SPOT], band: 0.025, cash_buffer: 0.01}
 
   momentum_rotation:
