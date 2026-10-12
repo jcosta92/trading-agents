@@ -1,0 +1,19 @@
+name: pages-config
+# One-off: serve GitHub Pages from the bot-state branch (/docs), where the trading loop publishes
+# the dashboard. Run manually; harmless to re-run.
+on:
+  workflow_dispatch:
+permissions:
+  pages: write
+  contents: read
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/${{ github.repository }}/pages --jq '{source, build_type}' || true
+          gh api -X PUT repos/${{ github.repository }}/pages -f "source[branch]=bot-state" -f "source[path]=/docs" \
+            -f build_type=legacy && echo "::notice::Pages now served from bot-state:/docs"
+          gh api repos/${{ github.repository }}/pages --jq '{source, build_type}'
