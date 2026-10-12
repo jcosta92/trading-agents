@@ -1,5 +1,5 @@
 {
- "ts": "2026-10-12T16:47:33.457221+00:00",
+ "ts": "2026-10-12T16:51:15.618753+00:00",
  "start": "2026-09-12T17:00:00+00:00",
  "end": "2026-10-12T17:00:00+00:00",
  "bots": {
@@ -284,9 +284,9 @@
   "orb_stocks": {
    "name": "Opening Range Breakout on US 'stocks in play' (Zarattini, Barbon & Aziz 2024), IBKR",
    "timeframe": "5m",
-   "equity_eur": 924.5105,
-   "return": -0.075489,
-   "cash_eur": 924.5105,
+   "equity_eur": 924.7007,
+   "return": -0.075299,
+   "cash_eur": 924.7007,
    "positions": {},
    "open_orders": [
     {
@@ -294,23 +294,23 @@
      "side": "buy",
      "type": "stop",
      "price": 311.7279052734375,
-     "qty": 0.6620230114728891,
+     "qty": 0.6620851976187996,
      "eur": null,
      "tag": "orb:entry 2026-10-12"
     }
    ],
-   "last_candle": "2026-10-12T16:40:00+00:00",
+   "last_candle": "2026-10-12T16:45:00+00:00",
    "finished": null,
    "costs_eur": {
     "fx": 0.2977,
-    "commissions": 53.6268,
-    "spread_slippage": 16.1703
+    "commissions": 52.9843,
+    "spread_slippage": 15.9797
    },
    "notes": [
     "2026-09-15 13:30 ORB 2026-09-15: watching MS, ACN, WFC, COHR, VLO",
     "2026-09-16 13:30 ORB 2026-09-16: watching UNH, IBM, INTC, DELL, HPE",
     "2026-09-17 13:30 ORB 2026-09-17: watching HD, TJX, AMZN, VLO, BSX",
-    "2026-09-18 13:30 ORB 2026-09-18: watching NFLX, CSCO, NEE, AMGN, PM",
+    "2026-09-18 13:30 ORB 2026-09-18: watching CSCO, NEE, AMGN, PM, HD",
     "2026-09-21 13:30 ORB 2026-09-21: watching ACN, CRWD, AMD, META, AMAT",
     "2026-09-22 13:30 ORB 2026-09-22: watching MPWR, META, AMD, AMZN, MCD",
     "2026-09-23 13:30 ORB 2026-09-23: watching BA, VLO, TMO, IBM, MRNA",
@@ -324,7 +324,7 @@
     "2026-10-05 13:30 ORB 2026-10-05: watching WDC, STX, UBER, MSFT, APP",
     "2026-10-06 13:30 ORB 2026-10-06: watching MRVL, CSCO, PG, MS, PANW",
     "2026-10-07 13:30 ORB 2026-10-07: watching TJX, CIEN, KLAC, PM, INTC",
-    "2026-10-08 13:30 ORB 2026-10-08: watching PLTR, PEP, ADBE, GOOGL, DDOG",
+    "2026-10-08 13:30 ORB 2026-10-08: watching PLTR, PEP, ADBE, DDOG, GOOGL",
     "2026-10-09 13:30 ORB 2026-10-09: watching T, COHR, APH, AAPL, PM",
     "2026-10-12 13:30 ORB 2026-10-12: watching INTU, ADBE, JNJ, GE, CRM"
    ],
@@ -436,28 +436,28 @@
   "rebalance": {
    "name": "Rebalancing bot, equal-weight BTC/ETH/SOL/XRP (Pionex / Shrimpy style)",
    "timeframe": "15m",
-   "equity_eur": 1069.1626,
-   "return": 0.069163,
-   "cash_eur": 7.525,
+   "equity_eur": 1070.4202,
+   "return": 0.07042,
+   "cash_eur": 10.3303,
    "positions": {
     "BTC_SPOT": {
-     "qty": 0.0037066785316323234,
-     "avg": 66771.36899999999,
+     "qty": 0.0036106571954688453,
+     "avg": 67029.75291466394,
      "mark": 74132.0
     },
     "ETH_SPOT": {
-     "qty": 0.11322718947823456,
-     "avg": 2185.870736,
+     "qty": 0.11901381474791148,
+     "avg": 2195.864471293812,
      "mark": 2263.6
     },
     "SOL_SPOT": {
-     "qty": 2.806787835905453,
-     "avg": 88.17909099999999,
+     "qty": 2.6603736315723623,
+     "avg": 88.71509350527234,
      "mark": 97.3
     },
     "XRP_SPOT": {
-     "qty": 209.3995843837049,
-     "avg": 1.18195077,
+     "qty": 214.86370475030998,
+     "avg": 1.1938854019958627,
      "mark": 1.22948
     }
    },
@@ -465,12 +465,33 @@
    "last_candle": "2026-10-12T16:30:00+00:00",
    "finished": null,
    "costs_eur": {
-    "commissions": 2.475,
-    "spread_slippage": 0.7666
+    "commissions": 2.9455,
+    "spread_slippage": 0.9242
    },
-   "notes": [],
+   "notes": [
+    "2026-09-15 19:00 rebalance: a coin's weight was 3.0% away from its 24.75% target",
+    "2026-09-17 14:00 rebalance: a coin's weight was 2.7% away from its 24.75% target",
+    "2026-09-18 01:45 rebalance: a coin's weight was 2.6% away from its 24.75% target",
+    "2026-09-18 11:00 rebalance: a coin's weight was 2.7% away from its 24.75% target",
+    "2026-09-18 17:00 rebalance: a coin's weight was 2.5% away from its 24.75% target",
+    "2026-09-18 19:15 rebalance: a coin's weight was 2.6% away from its 24.75% target",
+    "2026-09-19 05:30 rebalance: a coin's weight was 2.7% away from its 24.75% target",
+    "2026-09-20 16:00 rebalance: a coin's weight was 2.6% away from its 24.75% target",
+    "2026-09-21 21:30 rebalance: a coin's weight was 2.6% away from its 24.75% target",
+    "2026-09-22 13:30 rebalance: a coin's weight was 2.6% away from its 24.75% target",
+    "2026-09-23 04:00 rebalance: a coin's weight was 2.7% away from its 24.75% target",
+    "2026-09-23 14:45 rebalance: a coin's weight was 2.6% away from its 24.75% target",
+    "2026-09-25 11:00 rebalance: a coin's weight was 2.9% away from its 24.75% target",
+    "2026-09-25 12:15 rebalance: a coin's weight was 2.8% away from its 24.75% target",
+    "2026-09-25 21:00 rebalance: a coin's weight was 2.6% away from its 24.75% target",
+    "2026-09-27 08:00 rebalance: a coin's weight was 2.6% away from its 24.75% target",
+    "2026-09-29 02:15 rebalance: a coin's weight was 2.5% away from its 24.75% target",
+    "2026-10-02 20:45 rebalance: a coin's weight was 2.5% away from its 24.75% target",
+    "2026-10-07 17:15 rebalance: a coin's weight was 2.6% away from its 24.75% target",
+    "2026-10-08 15:00 rebalance: a coin's weight was 2.5% away from its 24.75% target"
+   ],
    "state": {
-    "rebalances": 0
+    "rebalances": 22
    }
   },
   "momentum_rotation": {
@@ -523,16 +544,16 @@
   "ibs_etf": {
    "name": "Internal Bar Strength mean reversion on SPY/QQQ/IWM/DIA (US index ETFs), IBKR",
    "timeframe": "5m",
-   "equity_eur": 997.9093,
-   "return": -0.002091,
-   "cash_eur": 997.9093,
+   "equity_eur": 997.9013,
+   "return": -0.002099,
+   "cash_eur": 997.9013,
    "positions": {},
    "open_orders": [],
-   "last_candle": "2026-10-12T16:40:00+00:00",
+   "last_candle": "2026-10-12T16:45:00+00:00",
    "finished": null,
    "costs_eur": {
     "fx": 0.2969,
-    "commissions": 6.9877,
+    "commissions": 6.9885,
     "spread_slippage": 2.7269
    },
    "notes": [],
@@ -548,7 +569,7 @@
   }
  },
  "errors": [],
- "eurusd": 1.116071343421936,
+ "eurusd": 1.115946888923645,
  "data_sources": {
   "BTC/EUR": "bitvavo",
   "ETH/EUR": "bitvavo",
@@ -559,5 +580,5 @@
   "LINK/EUR": "bitvavo",
   "AVAX/EUR": "bitvavo"
  },
- "n_fills": 634
+ "n_fills": 660
 }
