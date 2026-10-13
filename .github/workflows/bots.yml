@@ -5,6 +5,7 @@ name: bots
 #   - the bots' state and the dashboard go to the single-commit branch `bot-state` (served by
 #     GitHub Pages), so ~900 ledgers updated every cycle do not bloat the repository
 #   - once an hour, one paper cycle of the research agents (committed to main as before)
+#   - on weekdays from 12:13 UTC, today's headline inbox for the LLM news agent, if missing
 # Minutes are free for public repositories. The cron line is only a backup to restart the chain.
 on:
   workflow_dispatch:
@@ -36,6 +37,7 @@ jobs:
         run: |
           stop_at=$(( $(date +%s) + 20400 ))          # 5h40m
           last_paper=""
+          last_news=""
           mkdir -p state/logs
           while [ "$(date +%s)" -lt "$stop_at" ]; do
             git pull -q --rebase || git rebase --abort 2>/dev/null || true
@@ -48,6 +50,18 @@ jobs:
               copy:docs/backtest.html:docs/backtest.html copy:site:docs copy:reports/BOTS.md:reports/BOTS.md || true
             hour=$(date -u +%Y-%m-%dT%H)
             enabled=$(python -c "import yaml;print(bool(yaml.safe_load(open('config/agents.yaml'))['paper'].get('enabled')))")
+            # Today's headline inbox for the LLM news agent. The news workflow's cron is not reliable
+            # here (12 Oct's 12:13 UTC run started at 21:16; 13 Oct's never started), so the loop builds
+            # it too: weekdays from 12:13 UTC, one try per hour until the file exists. The command skips
+            # NYSE holidays; the news workflow does nothing once the inbox exists.
+            hm=$(date -u +%H%M)
+            if [ "$enabled" = "True" ] && [ "$(date -u +%u)" -le 5 ] && [ "$hm" -ge 1213 ] && [ "$hm" -lt 2000 ] \
+                && [ ! -f "state/llm/inbox/$(date -u +%Y-%m-%d).json" ] && [ "$hour" != "$last_news" ]; then
+              nlog="state/logs/$(date -u +%Y-%m-%d).log"
+              echo "===== news inbox $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$nlog"
+              timeout 900 python -m quantdesk.cli -v news-inbox >> "$nlog" 2>&1 || echo "::warning::news inbox reported errors"
+              last_news="$hour"
+            fi
             if [ "$enabled" = "True" ] && [ "$hour" != "$last_paper" ] && [ "$(date -u +%M)" -ge 5 ]; then
               plog="state/logs/$(date -u +%Y-%m-%d).log"
               echo "===== $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$plog"

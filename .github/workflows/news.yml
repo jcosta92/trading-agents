@@ -5,6 +5,8 @@ name: news
 # (config/llm_prompt.md; it waits for a late inbox) - no paid API. The first possible US trade is
 # the 14:07 UTC cycle (15:07 in winter). The second cron is a fallback in case GitHub skips the
 # first run; the command does nothing if today's inbox already exists or if the NYSE is closed.
+# The cron is not reliable for this repository, so the `bots` loop also builds the inbox from 12:13
+# UTC if it is missing; this workflow stays as a backup and for manual runs.
 on:
   schedule:
     - cron: "13 12 * * 1-5"
