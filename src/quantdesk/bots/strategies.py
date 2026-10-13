@@ -699,10 +699,10 @@ CLASSES = {c.__name__: c for c in (GridBot, DCABot, BinHV45Bot, SupertrendBot, E
 
 def all_classes() -> dict:
     """Bot classes by name, including the generic family bots (imported lazily: they import this module)."""
-    from . import generic
+    from . import generic, llm_agent
     from .families import custom  # noqa: F401  (also registers every signal / weight function)
     out = dict(CLASSES)
-    for mod in (generic, custom):
+    for mod in (generic, custom, llm_agent):
         for name in dir(mod):
             obj = getattr(mod, name)
             if isinstance(obj, type) and issubclass(obj, Bot) and obj is not Bot:

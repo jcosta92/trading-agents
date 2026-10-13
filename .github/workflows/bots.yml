@@ -33,6 +33,7 @@ jobs:
         shell: bash
         env:
           QD_CACHE: ${{ runner.temp }}/qd-cache
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}      # optional: the Grok trader holds cash without it
         run: |
           stop_at=$(( $(date +%s) + 20400 ))          # 5h40m
           last_paper=""

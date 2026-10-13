@@ -18,8 +18,8 @@ COLORS = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)", "var(
 SINGLE_POSITION = {"BinHV45Bot", "SupertrendBot", "EmaMacdBot", "ORBBot", "VolBreakoutBot", "TimeOfDayBot",
                    "MomentumRotationBot", "IBSBot", "OvernightBot", "TurnOfMonthBot", "LeverageRotationBot",
                    "TurtleBot", "SqueezeBot", "RSIBot", "SignalBot", "EtfDailyBot", "IntradayEtfBot", "TPSBot",
-                   "PreFomcBot"}
-GROUP_ORDER = ["popular", "alternative", "classic", "repos", "ta", "crypto_research", "equity_research", "ml"]
+                   "PreFomcBot", "LLMAgentBot"}
+GROUP_ORDER = ["popular", "alternative", "classic", "repos", "ta", "crypto_research", "equity_research", "ml", "llm"]
 
 
 def load(state: Path) -> dict:

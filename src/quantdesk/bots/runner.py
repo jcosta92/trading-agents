@@ -179,7 +179,7 @@ def run_cycle(state_dir: str | Path, now: pd.Timestamp | None = None, source=Non
                 summary["bots"][bid] = _status(bot, led, fx, engine)
                 continue
             last = pd.Timestamp(led.meta["last_ts"]) if led.meta.get("last_ts") else None
-            candles = _inputs(bot, led, hub, cfg, state, markets, now, t0, last)
+            candles = _inputs(bot, led, hub, cfg, state, markets, now, t0, last, fx)
             if candles:
                 engine.run(bot, led, candles, t0, t1)
             save_ledger(path, led)
@@ -207,9 +207,16 @@ def run_cycle(state_dir: str | Path, now: pd.Timestamp | None = None, source=Non
     return summary
 
 
-def _inputs(bot, led, hub: DataHub, cfg, state, markets, now, t0, last) -> dict[str, pd.DataFrame]:
+def _inputs(bot, led, hub: DataHub, cfg, state, markets, now, t0, last, fx=None) -> dict[str, pd.DataFrame]:
     from .generic import IntradayEtfBot, SignalBot, WeightBot
+    from .llm_agent import LLMAgentBot
     first = last if last is not None else t0
+    if isinstance(bot, LLMAgentBot):
+        h1 = {i: hub.crypto(i, "1h", min(first, now - TF["1h"] * 300)) for i in bot.instruments()}
+        h4 = {i: hub.crypto(i, "4h", now - TF["4h"] * 300) for i in bot.instruments()}
+        msg = bot.maybe_decide(state, now, h1, h4, led, fx, start=t0)
+        led.meta.setdefault("state", {})["llm_status"] = f"{now:%Y-%m-%d %H:%M} {msg}"
+        return {i: d[d.index >= first - TF["1h"]] for i, d in h1.items() if len(d)}
     if isinstance(bot, ORBBot):
         return _orb_inputs(bot, led, hub, cfg, state, markets, now, t0, last)
     if isinstance(bot, UsEtfBot):
@@ -313,7 +320,7 @@ def _status(bot, led, fx: FxRates, engine: BotEngine) -> dict:
         "state": {k: v for k, v in st.items() if k in ("completed_deals", "resets", "deal", "center", "last_selection",
                                                        "targets", "rebalances", "switches", "holding", "last_ibs",
                                                        "signal", "day_position", "last_target", "steps", "trails",
-                                                       "last_quote")},
+                                                       "last_quote", "llm_status", "last_decision", "plans")},
     }
 
 
