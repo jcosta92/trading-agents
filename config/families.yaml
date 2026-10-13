@@ -29,6 +29,7 @@ groups:
   crypto_research: "Crypto research papers"
   equity_research: "Stock and ETF research"
   ml: "Machine learning"
+  social: "Reddit, social media and quant blogs"
 
 families:
 
@@ -1850,3 +1851,250 @@ families:
     weights: hrp
     schedule: monthly
     params: {universe: [SPY, EFA, EWJ, EEM, IYR, RWX, IEF, TLT, DBC, GLD]}
+
+  # =========================================================================== Reddit / X / Instagram / YouTube / quant blogs (13 Oct 2026)
+  # Found with the free Reddit API (Composio), web search of X/Instagram/TikTok/YouTube/TradingView,
+  # and quant blogs/papers. Where a source leaves a detail open, the choice made is stated in `rules`.
+  ibs_lower_band:
+    group: social
+    name: "IBS lower-band mean reversion (Quantitativo; top r/Daytrading and r/algotrading posts)"
+    source: "https://www.reddit.com/r/Daytrading/comments/1rktyiu/ (1,090 upvotes); https://www.reddit.com/r/algotrading/comments/1cwsco8/ ; https://www.quantitativo.com/p/robustness-of-the-211-sharpe-mean"
+    rules: "Buy at the close when it is below (10-day highest high - 2.5 x the 25-day average high-low range) and IBS = (close - low) / (high - low) < 0.3; sell when a close is above the previous day's high. Decided at 15:55 New York time."
+    class: EtfDailyBot
+    signal: ibs_lower_band
+    variants: etf10
+
+  lower_highs_breakout:
+    group: social
+    name: "Multiple lower highs breakout (r/algotrading, russs123)"
+    source: "https://www.reddit.com/r/algotrading/comments/1gcoq4m/ ; code: https://github.com/russs123/lower_highs"
+    rules: "After at least 4 lower daily highs in a row, place a buy stop at the latest high (filled at the open if it gaps above); exit at the close the same day. An unfilled order moves to the new high the next day. 5-minute candles; the order goes in after the first 5-minute candle."
+    class: IntradayEtfBot
+    signal: lower_highs_breakout
+    variants: [SPY, QQQ, IWM, DIA]
+    intraday_days: 12
+    risk: {entry: stop, entry_valid: 80}
+
+  reversal_day_breakout:
+    group: social
+    name: "Simple reversal: break of an inside-down day's high (r/algotrading, russs123)"
+    source: "https://www.reddit.com/r/algotrading/comments/1f8v70e/ (363 upvotes)"
+    rules: "After a day with a lower low and a lower high than the day before, buy a break of that day's high the next day; sell at the close. 5-minute candles; the order goes in after the first 5-minute candle."
+    class: IntradayEtfBot
+    signal: reversal_day_breakout
+    variants: [SPY, QQQ, IWM, DIA]
+    intraday_days: 8
+    risk: {entry: stop, entry_valid: 80}
+
+  spy_band_tqqq:
+    group: social
+    name: "SPY 200-day +4%/-3% band, TQQQ or QQQ (r/LETFs)"
+    source: "https://www.reddit.com/r/LETFs/comments/1nhye66/ (136 upvotes, 203 comments); https://bestfolio.app/strategies/tqqq-qqq-band"
+    rules: "Hold TQQQ after SPY closes 4% above its 200-day average; switch to QQQ after SPY closes 3% below it; keep the holding in between. If QQQ is 30% above its own 200-day average, hold QQQ instead of TQQQ. (The post's slow DCA back into QQQ is simplified to an immediate switch.)"
+    class: EtfWeightBot
+    weights: spy_band_tqqq
+    schedule: daily
+    params: {universe: [TQQQ, QQQ], signal_tickers: [SPY]}
+
+  hfea:
+    group: social
+    name: "Hedgefundie's Excellent Adventure: 55% UPRO / 45% TMF (r/LETFs, Bogleheads)"
+    source: "https://www.reddit.com/r/HFEA/wiki/faq ; https://www.reddit.com/r/LETFs/comments/r8h4he/letf_faqs/ ; https://www.bogleheads.org/forum/viewtopic.php?t=272007"
+    rules: "55% UPRO (3x S&P 500) and 45% TMF (3x long Treasuries), rebalanced on the first trading day of each quarter (no rebalance falls inside the test, so it holds the starting mix)."
+    class: EtfWeightBot
+    weights: static_mix
+    schedule: quarterly
+    band: 0.0
+    params: {universe: [UPRO, TMF], mix: {UPRO: 0.55, TMF: 0.45}}
+
+  nine_sig:
+    group: social
+    name: "9Sig: Jason Kelly's quarterly TQQQ signal (r/LETFs)"
+    source: "https://jasonkelly.com/2017/01/how-my-signal-system-works/ ; https://www.reddit.com/r/LETFs/comments/1snyos2/ ; rules summary: https://www.cxoadvisory.com/?p=26873"
+    rules: "Start 60% TQQQ / 40% AGG. At each quarter's last close, the TQQQ target is last quarter's ending TQQQ balance + 9%: sell the surplus into AGG, or buy the shortfall from AGG (at most what AGG holds). 30 down, stick around: after SPY's quarterly close falls 30% below its highest quarterly close of the past 2 years, ignore the next 4 sell signals. The first quarter-end (31 Dec) falls after the test ends."
+    class: NineSigBot
+    schedule: daily
+    band: 0.0
+    params: {universe: [TQQQ, AGG], signal_tickers: [SPY], risky: TQQQ, safe: AGG}
+
+  golden_butterfly:
+    group: social
+    name: "Golden Butterfly lazy portfolio (r/Bogleheads, Portfolio Charts)"
+    source: "https://portfoliocharts.com/portfolios/golden-butterfly-portfolio/ ; https://freenance.io/strategies/golden-butterfly-portfolio/"
+    rules: "20% each in US stocks (VTI), small-cap value (VBR), long Treasuries (TLT), gold (GLD) and short Treasuries (SHV); an asset is rebalanced when it drifts outside 15-25%."
+    class: EtfWeightBot
+    weights: static_mix
+    schedule: daily
+    band: 0.05
+    params: {universe: [VTI, VBR, TLT, GLD, SHV], mix: {VTI: 0.2, VBR: 0.2, TLT: 0.2, GLD: 0.2, SHV: 0.2}}
+
+  top1_market_cap:
+    group: social
+    name: "Hold the #1 company by market cap (r/Daytrading)"
+    source: "https://www.reddit.com/r/Daytrading/comments/1u7r3oy/ (1,391 upvotes); market caps on 12 Oct 2026: https://www.finhacker.cz/en/largest-us-companies-by-market-cap/"
+    rules: "On the first trading day of each month hold only the largest US company by market cap; switch when it is dethroned. Market cap = the 12 Oct 2026 value scaled by the share price since (buybacks ignored)."
+    class: EtfWeightBot
+    weights: top1_market_cap
+    schedule: first_day
+    params: {universe: [NVDA, AAPL, GOOGL, MSFT, AMZN, META, AVGO, TSLA], ref_date: "2026-10-12",
+             ref_caps: {NVDA: 5.467e12, AAPL: 4.982e12, GOOGL: 4.314e12, MSFT: 4.019e12, AMZN: 2.799e12,
+                        META: 1.892e12, AVGO: 1.693e12, TSLA: 1.494e12}}
+
+  minervini_template:
+    group: social
+    name: "Mark Minervini's Trend Template on the 40 largest US stocks"
+    source: "Minervini, 'Trade Like a Stock Market Wizard' (2013); https://www.tradingview.com/script/22JWROvE-Mark-Minervini-s-Trend-Template ; https://prorealcode.com/prorealtime-market-screeners/trend-template-mark-minervini"
+    rules: "A stock qualifies when its close is above the 50-, 150- and 200-day averages, 50 > 150 > 200, the 200-day is higher than a month ago, it is at least 30% above its 52-week low and within 25% of its 52-week high, and its relative strength (IBD-style weighted 12-month return) is in the top 30% of the universe. Hold up to 10 qualifiers with the best relative strength, equal weight, reviewed weekly. (The template is a screen; the weekly holding rule is this test's.)"
+    class: EtfWeightBot
+    weights: minervini_template
+    schedule: weekly
+    lookback: 420
+    params: {universe: megacaps40}
+
+  orb_5min:
+    group: social
+    name: "5-minute opening range breakout (Zarattini & Aziz 2023; a TikTok/Instagram day-trading staple)"
+    source: "https://papers.ssrn.com/abstract=4416622 (46,000+ downloads)"
+    rules: "If the 09:30-09:35 candle closes up, buy at the next open; stop at that candle's low; target 10 x the risk; otherwise sell at the close (15:55). Long only, no leverage (the paper sizes by 1% risk with up to 4x)."
+    class: IntradayEtfBot
+    signal: orb_5min
+    variants: [QQQ, SPY, IWM, TQQQ]
+    intraday_days: 2
+    risk: {stop_col: orb_low, bracket: true}
+
+  turnaround_tuesday:
+    group: social
+    name: "Turnaround Tuesday (QuantifiedStrategies, StrategyQuant)"
+    source: "https://quantifiedstrategies.substack.com/p/turnaround-tuesday-strategy-backtest ; https://s2nnavigator.substack.com/p/turnaround-tuesday-an-anomaly-that"
+    rules: "Buy at Monday's close if it is below Friday's close; sell at Tuesday's close. Decided at 15:55 New York time."
+    class: EtfDailyBot
+    signal: turnaround_tuesday
+    variants: etf3
+
+  fomc_even_weeks:
+    group: social
+    name: "FOMC-cycle even weeks (Cieslak, Morse & Vissing-Jorgensen 2019)"
+    source: "https://papers.ssrn.com/abstract=2687614 (Journal of Finance 2019); FOMC dates: federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    rules: "Count weekdays from each scheduled FOMC announcement (day 0). Hold the index over days -1 to 3, 9 to 13, 19 to 23 and 29 to 33 (the even weeks); cash otherwise."
+    class: EtfWeightBot
+    weights: fomc_even_weeks
+    schedule: daily
+    params: {fomc_days: ["2026-01-28", "2026-03-18", "2026-04-29", "2026-06-17", "2026-07-29", "2026-09-16",
+                         "2026-10-28", "2026-12-09", "2027-01-27"]}
+    variants: [{id: SPY, params: {universe: [SPY], asset: SPY}}, {id: QQQ, params: {universe: [QQQ], asset: QQQ}},
+               {id: IWM, params: {universe: [IWM], asset: IWM}}]
+
+  halloween:
+    group: social
+    name: "Halloween indicator / Sell in May (Bouman & Jacobsen 2002)"
+    source: "https://www.bnains.org/backtest/periode/The_Halloween_Indicator_everywhere_and_all_the_time_-_Ben_Jacobsen_%26_Cherry_Y._Zhang.pdf"
+    rules: "Hold the market from the last close of October to the end of April; cash from May to October. In this test: cash until 30 Oct, then invested."
+    class: EtfWeightBot
+    weights: halloween
+    schedule: daily
+    variants: [{id: SPY, params: {universe: [SPY], asset: SPY}}, {id: QQQ, params: {universe: [QQQ], asset: QQQ}},
+               {id: IWM, params: {universe: [IWM], asset: IWM}}, {id: DIA, params: {universe: [DIA], asset: DIA}},
+               {id: EFA, params: {universe: [EFA], asset: EFA}}, {id: EEM, params: {universe: [EEM], asset: EEM}}]
+
+  santa_claus_rally:
+    group: social
+    name: "Santa Claus rally (Hirsch 1972; Washer, Nippani & Johnson 2016)"
+    source: "https://www.financialplanningassociation.org/article/journal/MAR15-yes-virginia-there-santa-claus-rally-statistical-evidence-supports-higher-returns-globally"
+    rules: "Hold over the last 5 trading days of December and the first 2 of January (bought at the close before them); cash otherwise. Small caps are the strongest leg."
+    class: EtfWeightBot
+    weights: santa_claus_rally
+    schedule: daily
+    variants: [{id: SPY, params: {universe: [SPY], asset: SPY}}, {id: IWM, params: {universe: [IWM], asset: IWM}}]
+
+  payday_16th:
+    group: social
+    name: "Payday anomaly: hold over the 16th (Ma & Pratt 2018)"
+    source: "https://ssrn.com/abstract=3257064 ; https://quantpedia.com/strategies/payday-anomaly"
+    rules: "Buy at the close of the trading day before the 16th of the month, sell at the close on the 16th; nothing when the 16th is not a trading day. The paper notes the effect has weakened."
+    class: EtfWeightBot
+    weights: payday_16th
+    schedule: daily
+    variants: [{id: SPY, params: {universe: [SPY], asset: SPY}}]
+
+  utilities_rotation:
+    group: social
+    name: "Utilities beta rotation (Bilello & Gayed 2014, Dow Award)"
+    source: "https://cmtassociation.org/wp-content/uploads/2025/08/2014-bilello-gayed.pdf ; independent test: https://www.cxoadvisory.com/equity-premium/utilities-sector-as-stock-market-tell"
+    rules: "At each week's last close, if utilities (XLU) returned more than the market (VTI) over the prior 4 weeks, hold XLU for the next week, otherwise VTI."
+    class: EtfWeightBot
+    weights: utilities_rotation
+    schedule: weekly
+    params: {universe: [XLU, VTI]}
+
+  sector_seasonality:
+    group: social
+    name: "Front-running sector seasonality (Quantpedia; Keloharju, Linnainmaa & Nyberg 2016)"
+    source: "https://quantpedia.com/front-running-seasonality-in-us-stock-sectors/ ; https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2224246"
+    rules: "At each month-end hold the 2 sector SPDRs (of XLB, XLE, XLF, XLI, XLK, XLP, XLU, XLV, XLY) with the best return in the calendar month 11 months before the holding month, equal weight."
+    class: EtfWeightBot
+    weights: sector_seasonality
+    schedule: monthly
+    params: {universe: [XLB, XLE, XLF, XLI, XLK, XLP, XLU, XLV, XLY], k: 2}
+
+  multi_asset_pullback:
+    group: social
+    name: "Multi-asset 3-day pullback, 1-day hold (Quantpedia 2026)"
+    source: "https://quantpedia.com/testing-an-ai-assisted-research-workflow-for-multi-asset-pullback-strategy-discovery/"
+    rules: "Each day at the close, buy each of SPY, EEM, IEF, FXE, GLD, DBC that is above its 200-day average after three down days in a row, equal weight among them; sell at the next close unless the signal is still on."
+    class: EtfWeightBot
+    weights: multi_asset_pullback
+    schedule: daily
+    params: {universe: [SPY, EEM, IEF, FXE, GLD, DBC]}
+
+  crypto_turn_of_month:
+    group: social
+    name: "Crypto turn of the month (Unger Academy)"
+    source: "https://ungeracademy.com/?p=6680 ; https://macrohive.com/hive-exclusives/does-turn-of-the-month-stock-trading-work-for-crypto"
+    rules: "1-hour candles: buy when the 02:00 UTC candle of the 25th closes, sell when the 12:00 UTC candle of the 3rd closes (the source does not state its time zone; UTC is used)."
+    class: SignalBot
+    timeframe: 1h
+    signal: crypto_turn_of_month
+    variants: crypto8
+
+  bull_market_support_band:
+    group: social
+    name: "Bull Market Support Band: 20-week SMA / 21-week EMA (Crypto Twitter, Benjamin Cowen)"
+    source: "https://www.bullmarketsupportband.com/bitcoin-bull-market-support-band ; https://rosetta.to/u/intothecryptoverse/bitcoin-bull-market-support-band-2025-06-30"
+    rules: "At each weekly close (Sunday 24:00 UTC) go long if the close is above both the 20-week SMA and the 21-week EMA, go to cash if it is below both; inside the band keep the position. (The exit rule is the common reading; the source states only that weekly closes above the band keep the bull market intact.)"
+    class: SignalBot
+    timeframe: 1d
+    signal: bull_market_support_band
+    variants: crypto8
+
+  ict_silver_bullet:
+    group: social
+    name: "ICT Silver Bullet: fair value gap after a liquidity sweep (Inner Circle Trader; Instagram/TikTok/YouTube)"
+    source: "https://www.tradingview.com/script/XEd7YlQe-JadeCap-ICT-Silver-Bullet-Strategy-PickMyTrade/ ; https://www.tradingview.com/script/fq4wSUev/"
+    rules: "5-minute candles. In the 10:00-11:00 and 14:00-15:00 New York windows, once price has swept the Asian-session low (20:00-24:00 NY), the London-session low (02:00-05:00 NY) or the 9:00 NY hour's low, the first bullish fair value gap (candle 3 low above candle 1 high) gets a limit buy at its top, stop under candle 1, target 2R; one trade per window; flat at 16:00 NY. The order stays live for an hour. Session times and the entry level are this test's reading of the source."
+    class: SignalBot
+    timeframe: 5m
+    signal: ict_silver_bullet
+    variants: crypto8
+    risk: {entry: limit, entry_valid: 12, bracket: true}
+
+  pos_5ema:
+    group: social
+    name: "Power of Stocks '5 EMA' buy setup (Subasish Pani; 2M+ YouTube, 450K Instagram)"
+    source: "https://www.tradingview.com/script/EaZHR7q6-5-ema-strategy/ ; https://my.tradingview.com/script/Izq4mHhD-FalconRed-5-EMA-Indicator-Powerofstocks"
+    rules: "15-minute candles. An alert candle closes completely below the 5 EMA (its high under the EMA); a buy stop at its high is valid for the next candle; stop under the alert low, target 3R. A newer alert candle replaces the old one."
+    class: SignalBot
+    timeframe: 15m
+    signal: pos_5ema
+    variants: crypto8
+    risk: {entry: stop, entry_valid: 1, bracket: true}
+
+  trading_rush_macd200:
+    group: social
+    name: "MACD + 200 EMA (Trading Rush, YouTube '100 trades' test)"
+    source: "https://tradingrush.net/i-risked-macd-trading-strategy-100-times-heres-what-happened/ ; https://usethinkscript.com/threads/trading-rush-macd-200-ema-strategy-62-win-rate-for-thinkorswim.7944/"
+    rules: "1-hour candles (the video used 30 minutes). Price above EMA 200 and MACD (12, 26, 9) crossing above its signal line below zero: buy; stop under the pullback (lowest low of the last 10 candles, this test's reading), target 1.5 x risk."
+    class: SignalBot
+    timeframe: 1h
+    signal: trading_rush_macd200
+    variants: crypto8
+    risk: {bracket: true}

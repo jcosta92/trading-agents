@@ -1,5 +1,5 @@
 """Strategies that need their own order logic: infinity grid, Avellaneda-Stoikov style quoting,
-Connors TPS scale-in, the pre-FOMC drift, and OctoBot's Dip Analyser."""
+Connors TPS scale-in, the pre-FOMC drift, OctoBot's Dip Analyser and Jason Kelly's 9Sig."""
 from __future__ import annotations
 
 import math
@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from ..data import TF
-from ..generic import EtfDailyBot, SignalBot, _truthy
+from ..generic import EtfDailyBot, EtfWeightBot, SignalBot, WeightBot, _truthy, proxy_daily
 from ..strategies import Bot, UsEtfBot
 
 
@@ -172,3 +172,45 @@ class DipAnalyserBot(SignalBot):
         for k in range(1, n + 1):
             ctx.place(order["inst"], "sell", "limit", qty=fill.qty / n,
                       price=fill.price * (1 + (m - 1) * k / n), tag=f"das:lot {order['id']} target {k}/{n}")
+
+
+class NineSigBot(EtfWeightBot):
+    """Jason Kelly's 9Sig (r/LETFs): start 60% TQQQ / 40% bonds (AGG). At each quarter's last close
+    the TQQQ 'signal line' is last quarter's ending TQQQ balance + 9%: sell the surplus above it into
+    bonds, or buy the shortfall from the bond balance (never more than the bonds hold). '30 down,
+    stick around': when SPY's quarterly close is 30% below its highest quarterly close of the previous
+    two years, the next four sell signals are ignored."""
+
+    def on_close(self, ctx, bars, sess, day: str) -> None:
+        risky, safe = self.p.get("risky", "TQQQ"), self.p.get("safe", "AGG")
+        px = {i: float(bars[i]["close"]) for i in (risky, safe) if i in bars}
+        if len(px) < 2:
+            return
+        st = ctx.state.setdefault("ninesig", {})
+        if not ctx.state.get("started"):
+            w0 = float(self.p.get("start_risky", 0.6))
+            WeightBot.rebalance(self, ctx, {risky: w0, safe: 1 - w0}, px)
+            ctx.state["started"] = True
+            st.update({"base": ctx.equity() * w0, "skip_sells": 0})
+            return
+        nth, left = self.trading_day_position(day)
+        if left != 0 or pd.Timestamp(day).month not in (3, 6, 9, 12):
+            return
+        spy = proxy_daily(self.daily.get("SPY"), ctx._hist.get("SPY"), sess, ctx.ts + TF["5m"])
+        if len(spy):
+            q = spy["close"].groupby(spy.index.to_period("Q")).last()
+            if len(q) >= 2 and q.iloc[-1] <= 0.70 * q.iloc[-9:-1].max():
+                st["skip_sells"] = 4
+        val, bond = ctx.qty(risky) * px[risky], ctx.qty(safe) * px[safe]
+        target = float(st.get("base", val)) * 1.09
+        if val > target and int(st.get("skip_sells", 0)) > 0:
+            st["skip_sells"] = int(st["skip_sells"]) - 1
+            new_val = val
+        elif val > target:
+            new_val = target
+        else:
+            new_val = val + min(target - val, bond)
+        eq = ctx.equity()
+        # TQQQ goes exactly to its signal line; the rebalancer's 1.5% cash buffer comes out of bonds
+        WeightBot.rebalance(self, ctx, {risky: new_val / eq, safe: max(0.0, 0.985 - new_val / eq)}, px)
+        st["base"] = new_val

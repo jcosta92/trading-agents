@@ -481,7 +481,8 @@ class WeightBot(Bot):
 class EtfWeightBot(UsEtfBot):
     """Target weights for US ETFs, decided 5 minutes before the close on the day's prices so far
     and traded at 15:55 New York time. schedule: daily | weekly (last session of the week) |
-    monthly (last session of the month) | first_day (first session of the month)."""
+    monthly (last session of the month) | first_day (first session of the month) | quarterly
+    (first session of each quarter)."""
     needs_daily = True
 
     def __init__(self, bot_id, spec):
@@ -509,6 +510,9 @@ class EtfWeightBot(UsEtfBot):
         if sch == "first_day":
             nth, left = self.trading_day_position(day)
             return nth == 1
+        if sch == "quarterly":                          # first session of January, April, July, October
+            nth, left = self.trading_day_position(day)
+            return nth == 1 and d.month in (1, 4, 7, 10)
         return False
 
     def on_close(self, ctx, bars: dict, sess, day: str) -> None:

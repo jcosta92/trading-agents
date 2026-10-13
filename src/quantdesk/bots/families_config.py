@@ -28,7 +28,7 @@ def expand(fam_cfg: dict) -> tuple[dict, dict]:
         base["family"] = fid
         base.setdefault("params", {})
         cls = f["class"]
-        if cls in SINGLE_ETF | {"EtfWeightBot"}:
+        if cls in SINGLE_ETF | {"EtfWeightBot", "NineSigBot"}:
             base.setdefault("timeframe", "5m")
         uni = f.get("universe")
         if isinstance(uni, str):
