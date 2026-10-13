@@ -15,7 +15,7 @@
    "multiplier": 100.0,
    "kind": "option",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 4.08
+   "last_mark": 3.94
   },
   "XSP:2026-11-20:P:741": {
    "inst_id": "XSP:2026-11-20:P:741",
@@ -25,7 +25,7 @@
    "multiplier": 100.0,
    "kind": "option",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 3.705
+   "last_mark": 3.565
   }
  },
  "journal": [
@@ -108,26 +108,24 @@
     "opened": "2026-10-11",
     "short_delta": -0.16,
     "vix": 14.84,
-    "last_debit_mid": 0.405
+    "last_debit_mid": 0.375
    }
   ],
-  "last_decision": "2026-10-11",
+  "last_decision": "2026-10-12",
   "last_entry": "2026-10-11",
   "signals": {
    "XSP put spread": {
-    "state": "ENTRY",
-    "index": 781.07,
-    "open_spreads": 0,
+    "state": "WAIT",
+    "index": 780.98,
+    "open_spreads": 1,
     "buy_rule": "VIX between 13.0 and its 1-year 95% percentile, at most 3 open, 5 business days apart",
-    "sell_rule": "take-profit at 50% of credit, stop at 2.0x credit or index <= short strike, time exit at 21 DTE",
-    "vix": 14.84,
-    "vix_cap": 25.32
+    "sell_rule": "take-profit at 50% of credit, stop at 2.0x credit or index <= short strike, time exit at 21 DTE"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-10-13",
-   "equity": 996.296
+   "equity": 996.2914
   }
  },
  "halted": false,
