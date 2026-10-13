@@ -10,10 +10,6 @@ Every bot trades its own simulated **EUR 1,000** on real candles, buying and sel
   research paper, or a small machine-learning model. Each family runs its source's default rules, unchanged, on
   several markets (usually 8 coins or 10 ETFs). That is a robustness check, not parameter fishing: a family is judged
   by its median bot and by how many of its bots make money, never by its single best bot.
-- **Grok trader.** xAI's Grok trades 5 coins in the style of nof1's Alpha Arena (where Grok was among the leading
-  models): every 4 hours it reads indicator series and its account, and answers buy / hold / close with a target, a
-  stop and an invalidation condition. It needs an xAI API key stored as the repository secret `XAI_API_KEY`
-  (pay-per-use, capped at $8 for the whole test); without it the bot holds cash.
 - **The original 17 bots** (6 most-used bot strategies, 5 less common ones, 6 classic systems) are in
   [`config/bots.yaml`](config/bots.yaml); the 146 other families, with source links and rules, in
   [`config/families.yaml`](config/families.yaml).

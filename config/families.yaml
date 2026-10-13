@@ -29,7 +29,6 @@ groups:
   crypto_research: "Crypto research papers"
   equity_research: "Stock and ETF research"
   ml: "Machine learning"
-  llm: "AI model traders"
 
 families:
 
@@ -1607,14 +1606,3 @@ families:
     weights: ols_pairs_switch
     schedule: daily
     params: {universe: [PEP, KO], p0: PEP, p1: KO}
-
-  # =========================================================================== AI model traders
-  grok_trader:
-    group: llm
-    name: "Grok trader: xAI's Grok as an Alpha-Arena-style crypto trader"
-    source: "nof1 Alpha Arena (Season 1, Oct-Nov 2025: models trading $10k each on Hyperliquid; Grok among the leaders; Grok 4.20 won Season 1.5, Dec 2025). Prompt format follows the community reconstruction https://gist.github.com/wquguru/7d268099b8c04b7e5b6ad6fae922ae83 (nof1 never published its prompts)."
-    rules: "Every 4 hours Grok (grok-4.3, xAI API) sees price, EMA20, MACD, RSI series on 1h candles and 4h context for BTC, ETH, SOL, XRP, DOGE plus its account and open positions; per coin it answers buy_to_enter / hold / close with a profit target, stop loss and invalidation condition. Bitvavo spot, long only, max 40% per coin. Live decisions only (none in the preview replay); spending capped at $8 for the whole test."
-    class: LLMAgentBot
-    timeframe: 1h
-    params: {coins: [BTC_SPOT, ETH_SPOT, SOL_SPOT, XRP_SPOT, DOGE_SPOT], interval_hours: 4, provider: xai,
-             model: grok-4.3, budget_usd: 8.0, price_in: 1.25, price_out: 2.5, api_key_env: XAI_API_KEY}
