@@ -37,7 +37,7 @@ def _same(a, b) -> bool:
 def _crypto_families():
     out = {}
     for fid, f in FAM["families"].items():
-        if f["class"] == "SignalBot":
+        if f["class"] in ("SignalBot", "DipAnalyserBot"):
             out[fid] = f
     return out
 

@@ -1,19 +1,28 @@
 # trading-agents
 
-## The bot test (12 Oct - 31 Dec 2026): 910 bots, 163 strategy families
+## The bot test (12 Oct - 31 Dec 2026): 1,047 bots, 186 strategy families
 
 Every bot trades its own simulated **EUR 1,000** on real candles, buying and selling throughout the test; on
 31 Dec every bot sells what it holds. A mid-point review runs on 12 Nov, the final review on 31 Dec.
 
 - **Families, not bots.** A family is one published strategy: an open-source bot (Freqtrade, Jesse, QuantConnect,
-  Hummingbot, Pionex/KuCoin bot types, ai-hedge-fund), a classic or TradingView system, a crypto or stock/ETF
-  research paper, or a small machine-learning model. Each family runs its source's default rules, unchanged, on
+  Hummingbot, Gekko, Zenbot, OctoBot, NautilusTrader, backtesting.py, Pionex/KuCoin bot types, ai-hedge-fund), a
+  classic or TradingView system, a crypto or stock/ETF research paper or allocation model, or a small
+  machine-learning model. Each family runs its source's default rules, unchanged, on
   several markets (usually 8 coins or 10 ETFs). That is a robustness check, not parameter fishing: a family is judged
   by its median bot and by how many of its bots make money, never by its single best bot.
 - **The original 17 bots** (6 most-used bot strategies, 5 less common ones, 6 classic systems) are in
-  [`config/bots.yaml`](config/bots.yaml); the 146 other families, with source links and rules, in
+  [`config/bots.yaml`](config/bots.yaml); the 169 other families, with source links and rules, in
   [`config/families.yaml`](config/families.yaml).
-- **Luck.** With ~900 bots, dozens will beat the market by chance. The dashboard shows a luck yardstick (how far the
+- **Final GitHub sweep (13 Oct).** 23 more families, rules read from each project's source file: Freqtrade's
+  sample strategy, Strategy002, UniversalMACD, MultiRSI, VolatilitySystem, NostalgiaForInfinity V1, ichiV1 and
+  Obelisk Ichimoku Slow; Gekko's RSI Bull/Bear, TSI and Ultimate Oscillator; Zenbot's trend_ema; Hummingbot's
+  MACD + Bollinger controller; NautilusTrader's EMA cross with ATR trailing stop; OctoBot's Dip Analyser;
+  backtesting.py's multi-timeframe system (on ETFs); and the allocation models HAA, AAA, KDA, FAA, Composite and
+  Accelerating Dual Momentum and Hierarchical Risk Parity. They start from the same 12 Oct replay start as the rest.
+- **Everything is free.** No paid API or subscription: public-repository GitHub Actions minutes, free market data
+  (Bitvavo, Kraken, Yahoo) and scheduled Claude tasks.
+- **Luck.** With ~1,000 bots, dozens will beat the market by chance. The dashboard shows a luck yardstick (how far the
   best bot would sit above the average with no skill at all) and the reviews correct for multiple testing.
 - **No look-ahead.** Every signal and weight function is checked by `tests/test_families.py`: its value at a candle
   must be identical whether computed with or without the later candles.
@@ -22,7 +31,7 @@ Every bot trades its own simulated **EUR 1,000** on real candles, buying and sel
   FX, plus spread and slippage, on every fill. Long only: a strategy's short signal means "go to cash".
 - **Where things are.** The bots' state, every fill (`state/bots/fills.csv`), the status table (`reports/BOTS.md`)
   and the dashboard pages live on the branch **`bot-state`**, which holds a single commit replaced every 15 minutes,
-  so ~900 ledgers do not bloat the repository. The GitHub Pages site loads the latest page from that branch:
+  so ~1,000 ledgers do not bloat the repository. The GitHub Pages site loads the latest page from that branch:
   `index.html` (live) and `preview.html` (the same bots replayed over the month before the test).
 - **Running it.** The `bots` workflow loops every 15 minutes for ~5h40m, then starts its next run (free for a public
   repository); a scheduled check restarts it if the chain ever breaks.

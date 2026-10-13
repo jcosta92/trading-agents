@@ -1,5 +1,5 @@
 """Strategies that need their own order logic: infinity grid, Avellaneda-Stoikov style quoting,
-Connors TPS scale-in, and the pre-FOMC drift."""
+Connors TPS scale-in, the pre-FOMC drift, and OctoBot's Dip Analyser."""
 from __future__ import annotations
 
 import math
@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from ..data import TF
-from ..generic import EtfDailyBot
+from ..generic import EtfDailyBot, SignalBot, _truthy
 from ..strategies import Bot, UsEtfBot
 
 
@@ -140,3 +140,35 @@ class PreFomcBot(UsEtfBot):
         if len(nxt) and nxt[0] in dates and ctx.ts + 2 * tf == sess["close"] and ctx.qty(iid) <= 0 \
                 and not ctx.orders("fomc:", iid):
             ctx.place(iid, "buy", "market", eur=ctx.equity() * 0.99, tag="fomc:buy the day before")
+
+
+class DipAnalyserBot(SignalBot):
+    """OctoBot's Dip Analyser trading mode (default config), on the `octobot_dip_analyser` signal:
+    each signal cancels the unfilled buy and places a limit buy 0.5% below the close for 50% of the
+    available EUR times the volume weight (0.5 / 0.7 / 1.0). Each filled buy gets three equal limit
+    sells spread up to +4% / +7% / +10% (price weight 1 / 2 / 3). No stop loss, no time limit;
+    positions from several signals can be open at once."""
+    VOLUME = {1: 0.5, 2: 0.7, 3: 1.0}
+    PRICE = {1: 1.04, 2: 1.07, 3: 1.10}
+
+    def on_candle(self, ctx, iid: str) -> None:
+        bar = ctx.candle(iid)
+        r = self.sig.get(ctx.ts)
+        if bar is None or r is None or not _truthy(r.get("entry")):
+            return
+        ctx.cancel("dab:", iid)
+        vw, pw = int(r.get("volume_weight") or 1), int(r.get("price_weight") or 1)
+        eur = ctx.cash_eur() * 0.5 * self.VOLUME.get(vw, 0.4)
+        if eur >= 5.0:
+            ctx.place(iid, "buy", "limit", eur=eur, price=float(bar["close"]) * 0.995, tag=f"dab:buy weight {pw}")
+            ctx.state["signals"] = int(ctx.state.get("signals", 0)) + 1
+
+    def on_fill(self, ctx, order, fill) -> None:
+        if order["side"] != "buy":
+            return
+        pw = int(order["tag"].rsplit(" ", 1)[-1]) if order["tag"].startswith("dab:") else 1
+        m = self.PRICE.get(pw, 1.04)
+        n = 3
+        for k in range(1, n + 1):
+            ctx.place(order["inst"], "sell", "limit", qty=fill.qty / n,
+                      price=fill.price * (1 + (m - 1) * k / n), tag=f"das:lot {order['id']} target {k}/{n}")

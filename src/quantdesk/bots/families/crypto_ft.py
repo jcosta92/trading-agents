@@ -11,9 +11,9 @@ import pandas as pd
 import talib as tl
 
 from ..generic import signal
-from ..lib import (S, adx, atr, bb_qtpy, cci, cmo, crossed_above, crossed_below, ema, f, heikin_ashi, highest,
-                   ichimoku, linreg, lowest, macd, merge_informative, mfi, minus_di, mom, plus_di, rsi, sar, sma,
-                   stochf, tema, typical)
+from ..lib import (S, adx, atr, bb_qtpy, cci, cmo, cross_above_level, crossed_above, crossed_below, ema, f,
+                   heikin_ashi, highest, ichimoku, linreg, lowest, macd, merge_informative, mfi, minus_di, mom,
+                   plus_di, resample_closed, rsi, sar, sma, stoch, stochf, tema, typical)
 from ..data import TF
 
 
@@ -443,3 +443,181 @@ def macd_crossed(df, p, info):
     m, s, _ = macd(df["close"])
     cc = cci(df, 14)
     return _out(df, crossed_above(m, s) & (cc <= -50), crossed_below(m, s) & (cc >= 100))
+
+
+# ======================================================================================= added 13 Oct 2026
+def _tl_ema(s: pd.Series, n: int) -> pd.Series:
+    """TA-Lib EMA (seeded with an SMA), as `ta.EMA` in Freqtrade strategies."""
+    return S(tl.EMA(f(s), n), s.index)
+
+
+def _ssl_atr(df: pd.DataFrame, length: int, atr_s: pd.Series):
+    """SSL channel around SMA(high/low) +- ATR (NostalgiaForInfinity / Obelisk `SSLChannels`)."""
+    sma_hi = df["high"].rolling(length).mean() + atr_s
+    sma_lo = df["low"].rolling(length).mean() - atr_s
+    hlv = pd.Series(np.where(df["close"] > sma_hi, 1.0, np.where(df["close"] < sma_lo, -1.0, np.nan)),
+                    index=df.index).ffill()
+    down = pd.Series(np.where(hlv < 0, sma_hi, sma_lo), index=df.index)
+    up = pd.Series(np.where(hlv < 0, sma_lo, sma_hi), index=df.index)
+    return down, up
+
+
+# --------------------------------------------------------------------------------------- Freqtrade sample
+@signal("ft_sample_strategy")
+def ft_sample_strategy(df, p, info):
+    """freqtrade/templates/sample_strategy.py (the official template, long side)."""
+    c = df["close"]
+    r = rsi(c, 14)
+    _, mid, _ = bb_qtpy(typical(df), 20, 2)
+    t = tema(c, 9)
+    v = _vol_ok(df)
+    entry = cross_above_level(r, 30) & (t <= mid) & (t > t.shift(1)) & v
+    exit_ = cross_above_level(r, 70) & (t > mid) & (t < t.shift(1)) & v
+    return _out(df, entry, exit_)
+
+
+# --------------------------------------------------------------------------------------- Strategy002
+@signal("strategy002")
+def strategy002(df, p, info):
+    """freqtrade-strategies Strategy002: oversold hammer below the lower band; exit on SAR + Fisher RSI."""
+    c = df["close"]
+    slowk, _ = stoch(df, 5, 3, 3)                       # ta.STOCH defaults
+    r = rsi(c, 14)
+    fisher = np.tanh(0.1 * (r - 50))                    # (e^2x - 1) / (e^2x + 1)
+    lower, _, _ = bb_qtpy(typical(df), 20, 2)
+    hammer = S(tl.CDLHAMMER(f(df["open"]), f(df["high"]), f(df["low"]), f(c)), df.index)
+    entry = (r < 30) & (slowk < 20) & (lower > c) & (hammer == 100)
+    return _out(df, entry, (sar(df) > c) & (fisher > 0.3))
+
+
+# --------------------------------------------------------------------------------------- UniversalMACD
+@signal("universal_macd")
+def universal_macd(df, p, info):
+    """freqtrade-strategies UniversalMACD (mablue): EMA12 / EMA26 - 1 in a band. The published exit
+    band has min > max, so it never fires: trades end on the ROI table or the stop, as in the source."""
+    c = df["close"]
+    u = _tl_ema(c, 12) / _tl_ema(c, 26) - 1
+    return _out(df, u.between(-0.01416, -0.01176), u.between(-0.00707, -0.02323))
+
+
+# --------------------------------------------------------------------------------------- MultiRSI
+@signal("multi_rsi")
+def multi_rsi(df, p, info):
+    """freqtrade-strategies berlinguyinca/MultiRSI: 5m RSI against RSI(14) of 10m and 40m candles
+    resampled from the 5m ones (a resampled candle is used once it has closed)."""
+    c = df["close"]
+    r = rsi(c, 14)
+    rr = {}
+    for mins in (10, 40):
+        big = resample_closed(df, f"{mins}min")
+        big["rsi"] = rsi(big["close"], 14)
+        rr[mins] = merge_informative(df[[]], big[["rsi"]], TF["5m"], pd.Timedelta(minutes=mins))["rsi_inf"]
+    entry = (sma(c, 5) >= sma(c, 200)) & (r < rr[40] - 20)
+    return _out(df, entry, (r > rr[10]) & (r > rr[40]))
+
+
+# --------------------------------------------------------------------------------------- VolatilitySystem
+@signal("volatility_system")
+def volatility_system(df, p, info):
+    """freqtrade-strategies futures/VolatilitySystem (long side): a 3-hour close-to-close move larger
+    than 2 x ATR(14) of 3-hour candles. Exit on the opposite move. `add` = a fresh signal, used to add
+    the second half-stake (adjust_trade_position)."""
+    big = resample_closed(df, "3h")
+    big["atr"] = atr(big, 14) * 2.0
+    big["chg"] = big["close"].diff()
+    m = merge_informative(df[[]], big[["atr", "chg"]], TF["1h"], pd.Timedelta(hours=3))
+    a, chg = m["atr_inf"], m["chg_inf"]
+    entry = (chg > a.shift(1)).fillna(False)
+    exit_ = (-chg > a.shift(1)).fillna(False)
+    return _out(df, entry, exit_, add=entry & ~entry.shift(1, fill_value=False))
+
+
+# --------------------------------------------------------------------------------------- NostalgiaForInfinityV1
+@signal("nfi_v1")
+def nfi_v1(df, p, info):
+    """NostalgiaForInfinityV1 (iterativ), 5m with 1h informative candles: three dip-buy conditions,
+    three exit conditions. `roi_exit` reproduces the ROI veto (no ROI exit while RSI > 50 or while the
+    buy signal is on)."""
+    c, v = df["close"], df["volume"]
+    inf = info.get("1h")
+    cols = ["ema_50", "ema_200", "rsi", "ssl_down", "ssl_up"]
+    if inf is not None and len(inf):
+        h = pd.DataFrame(index=inf.index)
+        h["ema_50"], h["ema_200"] = _tl_ema(inf["close"], 50), _tl_ema(inf["close"], 200)
+        h["rsi"] = rsi(inf["close"], 14)
+        h["ssl_down"], h["ssl_up"] = _ssl_atr(inf, 20, atr(inf, 14))
+        m = merge_informative(df[[]], h, TF["5m"], TF["1h"])
+    else:
+        m = pd.DataFrame({k + "_inf": np.nan for k in cols}, index=df.index)
+    e50h, e200h, rsih = m["ema_50_inf"], m["ema_200_inf"], m["rsi_inf"]
+    lower, mid, _ = bb_qtpy(c, 40, 2)
+    bbdelta = (mid - lower).abs()
+    closedelta = (c - c.shift()).abs()
+    tail = (c - df["low"]).abs()
+    bb_lower, _, bb_upper = bb_qtpy(typical(df), 20, 2)
+    ema_slow = _tl_ema(c, 50)
+    vol_mean_slow = v.rolling(30).mean()
+    e50, e200 = _tl_ema(c, 50), _tl_ema(c, 200)
+    sma5, sma9 = _tl_ema(c, 5), _tl_ema(c, 9)              # named sma_5 / sma_9 in the source, but EMAs
+    r = rsi(c, 14)
+    a = (c < sma9) & (c > e200h) & (e50 > e200) & (e50h > e200h) & (lower.shift() > 0) \
+        & (bbdelta > c * 0.045) & (closedelta > c * 0.023) & (tail < bbdelta * 0.266) \
+        & (c < lower.shift()) & (c <= c.shift()) & (v > 0)
+    b = (c < sma9) & (c > e200) & (c > e200h) & (c < ema_slow) & (c < 0.992 * bb_lower) \
+        & (v < vol_mean_slow.shift(1) * 34)
+    cc = (c < sma5) & (m["ssl_up_inf"] > m["ssl_down_inf"]) & (e50 > e200) & (e50h > e200h) \
+        & (r < rsih - 36.815) & (v > 0)
+    entry = (a | b | cc).fillna(False)
+    above = c > bb_upper
+    exit_ = (above & above.shift(1, fill_value=False) & above.shift(2, fill_value=False) & (v > 0)) \
+        | ((r > 78) & (v > 0)) | ((c < e200) & (c > e50) & (r > 50) & (v > 0))
+    return _out(df, entry, exit_, roi_exit=(r <= 50) & ~entry)
+
+
+# --------------------------------------------------------------------------------------- ichiV1
+@signal("ichiv1")
+def ichiv1(df, p, info):
+    """IchisV1 (Freqtrade community): Heikin-Ashi open/high/low with the real close; close above the
+    Ichimoku cloud (20/60/120, displacement 30), close above open on 5 EMA scales, and a rising
+    EMA12/EMA96 'fan'. Exit when the close crosses below EMA24."""
+    c = df["close"]
+    ha = heikin_ashi(df)
+    o = ha["open"]
+    tc = {n: _tl_ema(c, n) for n in (3, 6, 12, 24, 48, 96)}
+    to = {n: _tl_ema(o, n) for n in (3, 6, 12, 24, 48)}
+    fan = tc[12] / tc[96]
+    gain = fan / fan.shift(1)
+    _, _, sa, sb = ichimoku(pd.DataFrame({"high": ha["high"], "low": ha["low"]}, index=df.index), 20, 60, 120, 29)
+    entry = (c > sa) & (c > sb) & (c > o)
+    for n in (3, 6, 12, 24, 48):
+        entry &= tc[n] > to[n]
+    entry &= (gain >= 1.002) & (fan > 1) & (fan.shift(1) < fan) & (fan.shift(2) < fan) & (fan.shift(3) < fan)
+    return _out(df, entry, crossed_below(c, tc[24]))
+
+
+# --------------------------------------------------------------------------------------- Obelisk Ichimoku Slow
+@signal("obelisk_ichimoku_slow")
+def obelisk_ichimoku_slow(df, p, info):
+    """Obelisk_Ichimoku_Slow_v1_3 (brookmiles/freqtrade-stuff), 1h: a trend state switched on when
+    Ichimoku (20/60/120, displacement 30), the SSL channel and EMA50 > EMA200 all agree, and off when
+    the SSL channel turns down; buy pullbacks (Elder force index > 0, candle below the SSL top)."""
+    c, o = df["close"], df["open"]
+    tenkan, kijun, sa, sb = ichimoku(df, 20, 60, 120, 29)
+    lead_a = (tenkan + kijun) / 2
+    lead_b = (highest(df["high"], 120) + lowest(df["low"], 120)) / 2
+    cloud_top = pd.concat([sa, sb], axis=1).max(axis=1)          # NaN-skipping, as DataFrame.max
+    future_green = lead_a > lead_b
+    # source: ((close.shift(-29) > senkou) ...).shift(30), i.e. the previous close vs the cloud 30 candles ago
+    chikou_high = (c.shift(1) > sa.shift(30)) & (c.shift(1) > sb.shift(30))
+    e50, e200 = _tl_ema(c, 50), _tl_ema(c, 200)
+    ema_ok = (c > e50) & (e50 > e200)
+    efi = _tl_ema((c - c.shift()) * df["volume"], 13)
+    ssl_down, ssl_up = _ssl_atr(df, 10, atr(df, 14))
+    ssl_ok = ssl_up > ssl_down
+    ichimoku_ok = (tenkan > kijun) & (c > cloud_top) & future_green & chikou_high
+    entry_ok = (efi > 0) & (o < ssl_up) & (c < ssl_up)
+    trending = pd.Series(np.nan, index=df.index)
+    trending[ichimoku_ok & ssl_ok & ema_ok] = 3.0
+    trending[~ssl_ok] = 0.0
+    trending = trending.ffill()
+    return _out(df, (trending > 0) & entry_ok, trending == 0)

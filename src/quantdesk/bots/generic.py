@@ -68,6 +68,10 @@ class RiskMixin:
         exits: [{col: exit, min_profit: 0}]   signal exits (default: column "exit")
         stop_col / tp_col: price levels from the signal frame, re-read every candle
         bracket: true                   sl_dist / tp_dist columns fixed at the entry signal
+        trail_dist column               a trailing stop that distance (price units, fixed at the entry
+                                        signal) below the highest price since entry (always applied)
+        scale_in: {col: add, max_entries: 2}   add one more `size` stake on a later candle whose
+                                        `col` is true (Freqtrade adjust_trade_position)
         trail_close_pct: 0.05           exit when the close is 5% below the highest close since entry
         size_col: weight                share of equity from the signal row (e.g. volatility target)
         time_stop: 10                   bars after the entry
@@ -103,6 +107,8 @@ class RiskMixin:
                 if pmax > thr:
                     stops.append(entry * (1 + base + slope * (pmax - thr)))
                     break
+        if st.get("trail_dist"):
+            stops.append(hi - float(st["trail_dist"]))
         if st.get("fixed_sl"):
             stops.append(st["fixed_sl"])
         if st.get("fixed_tp"):
@@ -151,7 +157,7 @@ class RiskMixin:
                 if eur < 5.0:
                     return
             kind = self.risk("entry", "market")
-            st[iid] = {"sig": {k: _num(r.get(k)) for k in ("sl_dist", "tp_dist", "sl_pct", "tp_pct")}}
+            st[iid] = {"sig": {k: _num(r.get(k)) for k in ("sl_dist", "tp_dist", "sl_pct", "tp_pct", "trail_dist")}}
             if kind == "market":
                 ctx.place(iid, "buy", "market", eur=eur, tag="sbe:buy")
             else:
@@ -183,6 +189,13 @@ class RiskMixin:
             ctx.cancel("sbx:", iid)
             ctx.place(iid, "sell", "market", qty=ctx.qty(iid), tag=f"sbx:time stop ({ts_bars} bars)")
             return
+        sc = self.risk("scale_in")
+        if sc and r is not None and _truthy(r.get(sc.get("col", "add"))) and not ctx.orders("sbe:", iid):
+            n, last = int(p.get("entries", 1)), p.get("last_entry_ts", p["entry_ts"])
+            if n < int(sc.get("max_entries", 2)) and pd.Timestamp(last) < ctx.ts - tf:
+                eur = self.entry_eur(ctx, iid)
+                if eur >= 5.0:
+                    ctx.place(iid, "buy", "market", eur=eur, tag="sbe:add to the position")
         stop, tp = self._profit_targets(p, ctx.ts, tf, r)
         ctx.cancel("sbx:", iid)
         if stop and stop > 0:
@@ -204,6 +217,8 @@ class RiskMixin:
             if "entry_px" not in p:
                 p.update({"entry_px": fill.price, "entry_ts": ctx.ts.isoformat(), "hi": fill.price, "bars": 0})
                 sig = p.get("sig") or {}
+                if sig.get("trail_dist"):
+                    p["trail_dist"] = sig["trail_dist"]
                 if self.risk("bracket"):
                     if sig.get("sl_dist"):
                         p["fixed_sl"] = fill.price - sig["sl_dist"]
@@ -215,6 +230,8 @@ class RiskMixin:
                         p["fixed_tp"] = fill.price * (1 + sig["tp_pct"])
             else:                                       # scale-in: blend the entry price
                 p["entry_px"] = ctx.avg_price(iid) or p["entry_px"]
+                p["entries"] = int(p.get("entries", 1)) + 1
+                p["last_entry_ts"] = ctx.ts.isoformat()
         elif ctx.qty(iid) <= 1e-12:
             ctx.cancel("sbx:", iid)
             ctx.cancel("sbe:", iid)

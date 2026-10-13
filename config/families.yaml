@@ -1606,3 +1606,247 @@ families:
     weights: ols_pairs_switch
     schedule: daily
     params: {universe: [PEP, KO], p0: PEP, p1: KO}
+
+  # =========================================================================== final GitHub sweep (13 Oct 2026)
+  # Rules read from each project's source file; parameters are the published defaults.
+  ft_sample_strategy:
+    group: repos
+    name: "Freqtrade sample strategy (the official template)"
+    source: "https://github.com/freqtrade/freqtrade/blob/develop/freqtrade/templates/sample_strategy.py"
+    rules: "Buy when RSI(14) crosses above 30 with TEMA(9) below the Bollinger mid band (20, 2, typical price) and rising; sell when RSI crosses above 70 with TEMA above the mid band and falling. ROI 4% / 2% after 30 min / 1% after 60 min, stop -10%."
+    class: SignalBot
+    timeframe: 5m
+    signal: ft_sample_strategy
+    variants: crypto8
+    risk: {roi: {0: 0.04, 30: 0.02, 60: 0.01}, stoploss: 0.10}
+
+  strategy002:
+    group: repos
+    name: "Strategy002 oversold hammer (freqtrade-strategies)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Strategy002.py"
+    rules: "Buy RSI(14) < 30, slow stochastic %K < 20, close below the lower Bollinger band (20, 2) and a TA-Lib hammer candle; sell when Parabolic SAR is above the close and Fisher RSI > 0.3, only in profit. ROI 5/4/3/1% (0/20/30/60 min), stop -10%."
+    class: SignalBot
+    timeframe: 5m
+    signal: strategy002
+    variants: crypto8
+    risk: {roi: {0: 0.05, 20: 0.04, 30: 0.03, 60: 0.01}, stoploss: 0.10, exits: [{col: exit, min_profit: 0.0}]}
+
+  universal_macd:
+    group: repos
+    name: "UniversalMACD (freqtrade-strategies, mablue)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/UniversalMACD.py"
+    rules: "Buy when EMA12 / EMA26 - 1 is between -1.416% and -1.176%. The published exit band is empty (min > max), so trades end on the ROI table (21.3% / 9.9% after 27 min / 3% after 60 min / 0% after 164 min) or the -31.8% stop."
+    class: SignalBot
+    timeframe: 5m
+    signal: universal_macd
+    variants: crypto8
+    risk: {roi: {0: 0.213, 27: 0.099, 60: 0.03, 164: 0}, stoploss: 0.318}
+
+  multi_rsi:
+    group: repos
+    name: "MultiRSI 5m / 10m / 40m RSI (freqtrade-strategies, berlinguyinca)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/MultiRSI.py"
+    rules: "With SMA5 >= SMA200, buy when the 5m RSI(14) is 20 points below the RSI(14) of 40-minute candles; sell when the 5m RSI is above both the 10-minute and 40-minute RSI. ROI 1%, stop -5%."
+    class: SignalBot
+    timeframe: 5m
+    signal: multi_rsi
+    variants: crypto8
+    risk: {roi: {0: 0.01}, stoploss: 0.05}
+
+  volatility_system:
+    group: repos
+    name: "Volatility System (freqtrade-strategies futures folder, long side)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/futures/VolatilitySystem.py"
+    rules: "On 3-hour candles, buy when the close-to-close move exceeds 2 x ATR(14); exit on the same move downwards. Half the stake on entry, the other half on a later fresh signal (adjust_trade_position). Spot at 1x instead of the source's 2x futures leverage; no ROI or stop."
+    class: SignalBot
+    timeframe: 1h
+    signal: volatility_system
+    variants: crypto8
+    risk: {size: 0.495, scale_in: {col: add, max_entries: 2}}
+
+  nfi_v1:
+    group: repos
+    name: "NostalgiaForInfinity V1 (the first NFI, iterativ)"
+    source: "https://github.com/PeetCrypto/freqtrade-stuff/blob/main/NostalgiaForInfinityV1.py (mirror; the NFI repository's history starts later)"
+    rules: "Three dip buys in an uptrend (5m and 1h EMA50 > EMA200): a BinH-style Bollinger (40) dip, a close 0.8% under the lower band (20) on low volume, or RSI 37 points below the 1h RSI with the 1h SSL channel up. Sell on three closes above the upper band, RSI > 78, or close between EMA50 and EMA200 with RSI > 50. ROI 25% (not while RSI > 50), stop -36%, trail 2% after +30%."
+    class: SignalBot
+    timeframe: 5m
+    signal: nfi_v1
+    informative: [1h]
+    variants: crypto8
+    risk: {stoploss: 0.36, trailing: {positive: 0.02, offset: 0.30, only_offset: true},
+           exits: [{col: exit}, {col: roi_exit, min_profit: 0.25}]}
+
+  ichiv1:
+    group: repos
+    name: "ichiV1 Ichimoku + EMA fan (Freqtrade community)"
+    source: "https://github.com/PeetCrypto/freqtrade-stuff/blob/main/IchisV1.py"
+    rules: "Heikin-Ashi candles: close above the Ichimoku cloud (20/60/120, displacement 30), close above open on 5 EMA scales (3 to 48), EMA12/EMA96 fan above 1 and rising for 3 candles by at least 0.2%. Sell when the close crosses below EMA24. ROI 5.9/3.7/1.2/0% (0/10/41/114 min), stop -27.5%."
+    class: SignalBot
+    timeframe: 5m
+    signal: ichiv1
+    variants: crypto8
+    risk: {roi: {0: 0.059, 10: 0.037, 41: 0.012, 114: 0}, stoploss: 0.275}
+
+  obelisk_ichimoku_slow:
+    group: repos
+    name: "Obelisk Ichimoku Slow v1.3 (Freqtrade community)"
+    source: "https://github.com/brookmiles/freqtrade-stuff/blob/main/strategies/Obelisk_Ichimoku_Slow_v1_3.py"
+    rules: "A trend state turns on when Ichimoku (20/60/120, displacement 30: tenkan > kijun, close above the cloud, future cloud green, chikou above the cloud), the SSL channel (10, ATR) and EMA50 > EMA200 all agree, and off when the SSL channel turns down. Buy pullbacks in the trend (Elder force index > 0, candle below the SSL top); sell when the trend turns off. No ROI, stop -99%."
+    class: SignalBot
+    timeframe: 1h
+    signal: obelisk_ichimoku_slow
+    variants: crypto8
+    risk: {stoploss: 0.99}
+
+  rsi_bull_bear:
+    group: repos
+    name: "RSI Bull and Bear (Gekko, Tommie Hansen)"
+    source: "https://github.com/tommiehansen/gekko_tools/blob/master/strategies/RSI_BULL_BEAR.js (parameters: RSI_BULL_BEAR.toml)"
+    rules: "SMA50 vs SMA1000 picks the regime. Bull: buy RSI(10) < 60, sell RSI(10) > 80. Bear: buy RSI(15) < 20, sell RSI(15) > 50. No stop or target."
+    class: SignalBot
+    timeframe: 5m
+    signal: rsi_bull_bear
+    variants: crypto8
+
+  gekko_tsi:
+    group: repos
+    name: "TSI oscillator (Gekko built-in strategy)"
+    source: "https://github.com/askmike/gekko/blob/develop/strategies/TSI.js (defaults: config/strategies/TSI.toml)"
+    rules: "True Strength Index (EMA 25, then EMA 13 of price changes): buy on the first candle below -25, sell on the first candle above +25 (persistence 1). No stop or target. Gekko's default 1-hour candles."
+    class: SignalBot
+    timeframe: 1h
+    signal: gekko_tsi
+    variants: crypto8
+
+  gekko_uo:
+    group: repos
+    name: "Ultimate Oscillator (Gekko built-in strategy)"
+    source: "https://github.com/askmike/gekko/blob/develop/strategies/UO.js (defaults: config/strategies/UO.toml)"
+    rules: "Ultimate Oscillator (7/14/28, weights 4/2/1): buy on the first candle below 30, sell on the first candle above 70 (persistence 1). No stop or target. Gekko's default 1-hour candles."
+    class: SignalBot
+    timeframe: 1h
+    signal: gekko_uo
+    variants: crypto8
+
+  zenbot_trend_ema:
+    group: repos
+    name: "trend_ema, Zenbot's default strategy"
+    source: "https://github.com/DeviaVir/zenbot/blob/unstable/extensions/strategies/trend_ema/strategy.js"
+    rules: "Rate of change of EMA(26) against its own 13-period standard deviation: buy when it rises above the band, sell when it falls below minus the band. RSI(14) <= 10 buys the dip and blocks trend sells until the rate turns up. 5-minute candles (source default 2 minutes, not available here); no stops."
+    class: SignalBot
+    timeframe: 5m
+    signal: zenbot_trend_ema
+    variants: crypto8
+
+  hb_macd_bb:
+    group: repos
+    name: "MACD + Bollinger directional controller (Hummingbot V2 macd_bb_v1)"
+    source: "https://github.com/hummingbot/hummingbot/blob/master/controllers/directional_trading/macd_bb_v1.py (barriers: strategy_v2/controllers/directional_trading_controller_base.py)"
+    rules: "Long when Bollinger %B (100, 2) < 0 while MACD (21, 42, 9) is below zero with a positive histogram. Triple barrier from the controller defaults: stop -3%, take profit +2%, time limit 45 minutes. 5-minute candles (source default 3 minutes); spot at 1x; one full-size position instead of up to two half-size executors."
+    class: SignalBot
+    timeframe: 5m
+    signal: hb_macd_bb
+    variants: crypto8
+    risk: {bracket: true, time_stop: 9}
+
+  nautilus_ema_cross_trailing:
+    group: repos
+    name: "EMA cross with ATR trailing stop (NautilusTrader example)"
+    source: "https://github.com/nautechsystems/nautilus_trader/blob/v1.231.0/nautilus_trader/examples/strategies/ema_cross_trailing_stop.py"
+    rules: "When flat and EMA(10) >= EMA(20), buy at market; the only exit is a trailing stop 3 x ATR(20) below the highest price since entry (the example's backtest settings). 5-minute candles."
+    class: SignalBot
+    timeframe: 5m
+    signal: nautilus_ema_cross_trailing
+    variants: crypto8
+
+  octobot_dip_analyser:
+    group: repos
+    name: "Dip Analyser (OctoBot's flagship trading mode)"
+    source: "https://github.com/Drakkar-Software/OctoBot-Tentacles/tree/master/Trading/Mode/dip_analyser_trading_mode (signal: Evaluator/Strategies/dip_analyser_strategy_evaluator, Evaluator/TA/momentum_evaluator)"
+    rules: "4-hour candles. Signal: a Klinger oscillator reversal (KVO 35/55 vs EMA13) confirmed by an RSI(14) low just reached; RSI averages pick a price weight and a volume weight. Each signal places a limit buy 0.5% below the close for 50% of available cash x 0.5/0.7/1.0, and each fill gets 3 equal limit sells up to +4/+7/+10%. No stop loss; positions can overlap."
+    class: DipAnalyserBot
+    timeframe: 4h
+    signal: octobot_dip_analyser
+    variants: crypto8
+
+  bt_mtf_system:
+    group: repos
+    name: "Multiple-time-frame RSI trend system (backtesting.py example)"
+    source: "https://github.com/kernc/backtesting.py/blob/master/doc/examples/Multiple%20Time%20Frames.py"
+    rules: "Daily and weekly RSI(30) both above 70 (weekly above daily), SMA10 > SMA20 > SMA50 > SMA100 and the close above SMA10: buy with a stop 8% below; sell when the close is 2% below SMA10. Decided at 15:55 New York time."
+    class: EtfDailyBot
+    signal: bt_mtf_system
+    variants: etf10
+    lookback: 1500
+    risk: {bracket: true}
+
+  haa:
+    group: equity_research
+    name: "Hybrid Asset Allocation, balanced (Keller & Keuning 2023)"
+    source: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4346906 ; code: https://github.com/SimonKreis/keller-strategies"
+    rules: "13612U momentum (average of 1/3/6/12-month returns). TIP <= 0: all in the better of BIL/IEF. Otherwise the top 4 of SPY, IWM, VEA, VWO, VNQ, DBC, IEF, TLT at 25%; a pick with momentum <= 0 goes to the better of BIL/IEF. Monthly."
+    class: EtfWeightBot
+    weights: haa
+    schedule: monthly
+    params: {universe: [SPY, IWM, VEA, VWO, VNQ, DBC, IEF, TLT, BIL], signal_tickers: [TIP]}
+
+  aaa:
+    group: equity_research
+    name: "Adaptive Asset Allocation (Butler, Philbrick, Gordillo & Varadi 2012)"
+    source: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2328254 ; code: https://github.com/systematicinvestor/SIT/blob/master/R/bt.test.r (bt.aaa.test)"
+    rules: "Top 5 of SPY, EFA, EWJ, EEM, IYR, RWX, IEF, TLT, DBC, GLD by 6-month return, weighted by long-only minimum variance on the last 22 daily returns. Always invested. Monthly."
+    class: EtfWeightBot
+    weights: aaa
+    schedule: monthly
+    params: {universe: [SPY, EFA, EWJ, EEM, IYR, RWX, IEF, TLT, DBC, GLD]}
+
+  kda:
+    group: equity_research
+    name: "Kipnis Defensive Adaptive asset allocation (Kipnis 2019)"
+    source: "https://quantstrattrader.com/2019/01/24/right-now-its-kda-asset-allocation/ (R code in the post)"
+    rules: "Top 5 of SPY, VGK, EWJ, EEM, VNQ, RWX, IEF, TLT, DBC, GLD by 13612W momentum that are also positive, minimum-variance weights (1-month volatility, blended 1/3/6/12-month correlation); canaries VWO and BND set the risky share to 100/50/0%; the rest in IEF if its momentum is positive, else cash. No leverage. Monthly."
+    class: EtfWeightBot
+    weights: kda
+    schedule: monthly
+    params: {universe: [SPY, VGK, EWJ, EEM, VNQ, RWX, IEF, TLT, DBC, GLD], signal_tickers: [VWO, BND]}
+
+  faa:
+    group: equity_research
+    name: "Flexible Asset Allocation (Keller & van Putten 2012)"
+    source: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2193735 ; code: https://github.com/IlyaKipnis/IKTrading/blob/master/R/FAA.R"
+    rules: "Over 4 months, rank VTI, VEA, VWO, SHY, BND, GSG, VNQ by return (high best), volatility and average correlation (low best); score = R + 0.5 V + 0.5 C; hold the best 3 at 1/3; a pick with a negative 4-month return goes to SHY. Monthly."
+    class: EtfWeightBot
+    weights: faa
+    schedule: monthly
+    params: {universe: [VTI, VEA, VWO, SHY, BND, GSG, VNQ]}
+
+  composite_dual_momentum:
+    group: equity_research
+    name: "Composite Dual Momentum (Antonacci 2012)"
+    source: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2042750 ; code: https://github.com/rubetron/AssetAllocation"
+    rules: "Four 25% modules: SPY/EFA, HYG/LQD, VNQ/REM, GLD/TLT. Each holds the asset with the higher 12-month return if it beats T-bills (BIL), else BIL. Monthly."
+    class: EtfWeightBot
+    weights: composite_dual_momentum
+    schedule: monthly
+    params: {universe: [SPY, EFA, HYG, LQD, VNQ, REM, GLD, TLT, BIL]}
+
+  accelerating_dual_momentum:
+    group: equity_research
+    name: "Accelerating Dual Momentum (EngineeredPortfolio 2018)"
+    source: "https://engineeredportfolio.com/2018/05/02/accelerating-dual-momentum-investing/ ; code: PyPI package acdumo"
+    rules: "Score = 1 + 3 + 6-month return of SPY and SCZ (US vs international small caps); hold the higher one if its score is positive, otherwise long Treasuries (TLT). Monthly."
+    class: EtfWeightBot
+    weights: accelerating_dual_momentum
+    schedule: monthly
+    params: {universe: [SPY, SCZ, TLT]}
+
+  hrp:
+    group: equity_research
+    name: "Hierarchical Risk Parity (Lopez de Prado 2016)"
+    source: "https://papers.ssrn.com/abstract=2708678 ; code: https://github.com/robertmartin8/PyPortfolioOpt/blob/master/pypfopt/hierarchical_portfolio.py"
+    rules: "Single-linkage clustering of AAA's 10 asset-class ETFs on 260 daily returns, then top-down inverse-variance splits (PyPortfolioOpt HRPOpt). A risk-based benchmark: always invested, no timing. Monthly."
+    class: EtfWeightBot
+    weights: hrp
+    schedule: monthly
+    params: {universe: [SPY, EFA, EWJ, EEM, IYR, RWX, IEF, TLT, DBC, GLD]}
