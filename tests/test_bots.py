@@ -264,6 +264,21 @@ def test_dashboard_and_status_table(tmp_path, cfg):
     assert "Families" in html and "BTC buy-and-hold" in html
     md = (tmp_path / "reports" / "BOTS.md").read_text()
     assert md.startswith("# Trading bots")
+    # P/L before fees - fees = P/L after fees = equity - starting capital, per bot and per family
+    cap = float(cfg["initial_capital"])
+    f = pd.read_csv(state / "fills.csv")
+    assert len(f) and f["fee_eur"].sum() > 0
+    assert (t["pnl_net"] - (t["equity"] - cap)).abs().max() < 1e-9
+    assert (t["pnl_gross"] - t["fees"] - t["pnl_net"]).abs().max() < 1e-9
+    fees = f.groupby("bot")["fee_eur"].sum()
+    assert (t.set_index("bot")["fees"].reindex(fees.index) - fees).abs().max() < 1e-9
+    fam = report.family_table(t, cfg)
+    assert abs(fam["pnl_net"].sum() - t["pnl_net"].sum()) < 1e-6 and abs(fam["fees"].sum() - f["fee_eur"].sum()) < 1e-6
+    assert ((fam["pl_pct"] - fam["pnl_net"] / (fam["bots"] * cap)).abs() < 1e-12).all()
+    tot = report.money(t, cap)
+    assert tot["pct"] == pytest.approx(t["return"].mean(), abs=1e-12)
+    assert "P/L €<br><span class='small'>before fees</span>" in html and "All families" in html
+    assert "| P/L % after fees | P/L before fees | Fees | P/L after fees |" in md and "**All families**" in md
     p = pd.read_csv(state / "prices.csv")
     assert {"BTC_SPOT", "ETH_SPOT", "SOL_SPOT"} <= set(p.columns) and p["ts"].is_monotonic_increasing
 
