@@ -1,6 +1,7 @@
 # TRADING BOTS: one-month demo of the strategies most used and recommended online
 # ---------------------------------------------------------------------------------
-# Each bot trades its own simulated EUR 1,000 account for one month, buying and selling on its
+# Each bot trades its own simulated EUR 5,000 account (EUR 1,000 until 13 Oct 2026, when every bot was
+# restarted from the 12 Oct start with EUR 5,000), buying and selling on its
 # own rules. The engine replays every real market candle in order as it arrives (15-minute,
 # 1-hour or 5-minute candles from Bitvavo / Kraken / Yahoo), so a bot's decision on a candle
 # only ever sees data up to that candle, and resting orders (grid levels, take-profits, stops)
@@ -16,7 +17,7 @@
 start: "2026-10-12T17:00:00Z"
 end: "2026-12-31T17:00:00Z"
 review: "2026-11-12T17:00:00Z"        # mid-point review (one month)
-initial_capital: 1000.0
+initial_capital: 5000.0
 
 markets:
   BTC_SPOT: {symbol: BTC/EUR, half_spread_bps: 2, slippage_bps: 3}
@@ -77,13 +78,13 @@ bots:
       Bitsgap and Gainium (gainium.io/best/dca). Settings below are the common community template:
       1.5% take-profit, safety orders 1.5% apart with volume scale 1.5 and step scale 1.2.
     rules: |
-      BUY    base order of EUR 70 at market as soon as no deal is open ("start ASAP")
+      BUY    base order of EUR 350 at market as soon as no deal is open ("start ASAP")
       BUY    up to 5 safety orders below the entry: first at -1.5%, each next step 1.2x wider,
-             each order 1.5x larger (70, 70, 105, 158, 236, 354 EUR; covers a ~11% drop)
+             each order 1.5x larger (350, 350, 525, 788, 1,181, 1,772 EUR; covers a ~11% drop)
       SELL   take-profit limit order at +1.5% above the average entry price, moved after every
              safety order; when it fills, a new deal starts on the next candle
       STOP   none (classic template)
-    params: {instrument: ETH_SPOT, base_eur: 70, so_eur: 70, max_so: 5, deviation: 0.015,
+    params: {instrument: ETH_SPOT, base_eur: 350, so_eur: 350, max_so: 5, deviation: 0.015,
              step_scale: 1.2, volume_scale: 1.5, take_profit: 0.015}
 
   bb_meanrev:
@@ -148,7 +149,7 @@ bots:
       "A Profitable Day Trading Strategy for the U.S. Equity Market" (Zarattini, Barbon & Aziz,
       2024; concretumgroup.com) reports a 5-minute opening range breakout on the 20 most active
       'stocks in play' with a 2.81 Sharpe ratio for 2016-2023; replicated on QuantConnect. Adapted
-      here for a EUR 1,000 cash account: long only, no leverage, 5 names.
+      here for a EUR 5,000 cash account: long only, no leverage, 5 names.
     rules: |
       SELECT at 09:35 New York time, the 5 names (of the 100 most liquid S&P 500 stocks) with the
              highest volume in the first 5 minutes relative to their 14-day average, whose first

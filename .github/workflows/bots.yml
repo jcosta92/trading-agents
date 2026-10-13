@@ -42,7 +42,7 @@ jobs:
             mkdir -p state/bots/logs
             log="state/bots/logs/bots-$(date -u +%Y-%m-%d).log"
             echo "===== $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$log"
-            timeout 840 python -m quantdesk.cli bots --docs site >> "$log" 2>&1 || echo "::warning::bots cycle reported errors (see $log)"
+            timeout 1500 python -m quantdesk.cli bots --docs site >> "$log" 2>&1 || echo "::warning::bots cycle reported errors (see $log)"
             .github/scripts/push_state.sh "Bots state $(date -u +%Y-%m-%dT%H:%MZ)" mirror:state/bots:state/bots \
               copy:docs/classic.html:docs/classic.html \
               copy:docs/backtest.html:docs/backtest.html copy:site:docs copy:reports/BOTS.md:reports/BOTS.md || true

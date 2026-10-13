@@ -1,9 +1,20 @@
 # trading-agents
 
+### 🔴 Live link: **[jcosta92.github.io/trading-agents](https://jcosta92.github.io/trading-agents/)**
+
+The live dashboard, updated every 15 minutes. Also:
+[last-month preview](https://jcosta92.github.io/trading-agents/preview.html) ·
+[research agents](https://jcosta92.github.io/trading-agents/classic.html) ·
+[backtest report](https://jcosta92.github.io/trading-agents/backtest.html) ·
+[status table](https://github.com/jcosta92/trading-agents/blob/bot-state/reports/BOTS.md) ·
+[every fill](https://github.com/jcosta92/trading-agents/blob/bot-state/state/bots/fills.csv)
+
 ## The bot test (12 Oct - 31 Dec 2026): 1,133 bots, 209 strategy families
 
-Every bot trades its own simulated **EUR 1,000** on real candles, buying and selling throughout the test; on
-31 Dec every bot sells what it holds. A mid-point review runs on 12 Nov, the final review on 31 Dec.
+Every bot trades its own simulated **EUR 5,000** on real candles, buying and selling throughout the test; on
+31 Dec every bot sells what it holds. A mid-point review runs on 12 Nov, the final review on 31 Dec. (Until
+13 Oct the bots had EUR 1,000 each; that day every bot was restarted from the 12 Oct start with EUR 5,000, so
+all results cover the same window at the same size.)
 
 - **Families, not bots.** A family is one published strategy: an open-source bot (Freqtrade, Jesse, QuantConnect,
   Hummingbot, Gekko, Zenbot, OctoBot, NautilusTrader, backtesting.py, Pionex/KuCoin bot types, ai-hedge-fund), a

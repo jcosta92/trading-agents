@@ -215,7 +215,7 @@ median {_pct(r['median'], 2)} · {_pct(r['share_up'], 0, False)} of {int(r['bots
 <button class='toggle' onclick='toggleTheme()'>Light / dark</button>
 <h1>{'Preview: what the bots would have done in the month before the test' if preview else 'Trading bots: live demo'}</h1>
 {"<div class='warn'>Replay of the month <b>before</b> the live test, same code, data and costs. It shows behaviour; it is not the test.</div>" if preview else ''}
-<p class='sub'>{n} bots in {len(fam)} strategy families, each trading its own simulated €1,000 from {start:%d %b %Y %H:%M} to
+<p class='sub'>{n} bots in {len(fam)} strategy families, each trading its own simulated €{float(cfg.get('initial_capital', 1000.0)):,.0f} from {start:%d %b %Y %H:%M} to
 {end:%d %b %Y %H:%M} UTC. A family is one published strategy (open-source bot, research paper or classic system), run with
 its default rules on several markets: judge a family by its median and by how many of its bots made money, not by its best
 bot. Real candles, Bitvavo / IBKR fees, spread and slippage on every fill. Last update:
@@ -246,7 +246,7 @@ Click a family for its rules, source and every bot.</p>
 """
     page = _page("Trading bots", body, {"series": series}).replace(
         "(window.__init||function(){})(D);",
-        "lineChart(document.getElementById('chart'),{series:D.series,title:'Equity',prefix:'€',decimals:2,baseline:1000,intraday:true});")
+        "lineChart(document.getElementById('chart'),{series:D.series,title:'Equity',prefix:'€',decimals:2,baseline:" + str(float(cfg.get("initial_capital", 1000.0))) + ",intraday:true});")
     page = page.replace("</style>", "tr.grp td{background:var(--page)} details summary{cursor:pointer}</style>", 1)
     docs.mkdir(parents=True, exist_ok=True)
     (docs / page_name).write_text(page, encoding="utf-8")
@@ -260,7 +260,7 @@ def markdown(table: pd.DataFrame, fam: pd.DataFrame, cfg: dict, st: dict, ref_no
     gn = cfg.get("group_names", {})
     lines = [f"# Trading bots: {pd.Timestamp(cfg['start']):%d %b} - {pd.Timestamp(cfg['end']):%d %b %Y}", "",
              f"Last update: {str(st.get('ts', '–'))[:16].replace('T', ' ')} UTC. {len(table)} bots in {len(fam)} families, "
-             "each started with EUR 1,000.", ""]
+             f"each started with EUR {float(cfg.get('initial_capital', 1000.0)):,.0f}.", ""]
     for k, v in ref_now.items():
         lines.append(f"- {k} (reference, no costs): {_pct(v, 2)}")
     lines += ["", "| Family | Group | Bots | Median | Up | Best | Worst | Trades | Fees |", "|---|---|---|---|---|---|---|---|---|"]

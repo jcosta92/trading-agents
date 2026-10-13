@@ -167,14 +167,19 @@ def run_cycle(state_dir: str | Path, now: pd.Timestamp | None = None, source=Non
     symbols = {k: m["symbol"] for k, m in (cfg.get("markets") or {}).items()}
     hub = DataHub(source, now, symbols, cache_dir if cache_dir is not None else os.environ.get("QD_CACHE"))
 
+    capital = float(cfg.get("initial_capital", 1000.0))
+    reset = restart_on_capital_change(state, capital, now)
+    if reset:
+        summary["capital_reset"] = reset
     bots = {bid: build_bot(bid, spec) for bid, spec in cfg["bots"].items() if not only or bid in only}
     engine = BotEngine(markets, cm, fx)
     timing = {}
+    n_fills = n_eq = 0
     for bid, bot in bots.items():
         path = state / "ledgers" / f"{bid}.json"
         t_bot = time.time()
         try:
-            led = load_ledger(path, bid, float(cfg.get("initial_capital", 1000.0)), t0.isoformat())
+            led = load_ledger(path, bid, capital, t0.isoformat())
             if led.meta.get("finished"):
                 summary["bots"][bid] = _status(bot, led, fx, engine)
                 continue
@@ -183,19 +188,23 @@ def run_cycle(state_dir: str | Path, now: pd.Timestamp | None = None, source=Non
             if candles:
                 engine.run(bot, led, candles, t0, t1)
             save_ledger(path, led)
+            # write this bot's fills and equity right after its ledger, so a cycle cut short (time
+            # limit) never leaves a saved ledger without its fills
+            append_csv(state / "fills.csv", [f.__dict__ for f in engine.fills[n_fills:]])
+            append_csv(state / "equity.csv", engine.equity_rows[n_eq:])
+            n_fills, n_eq = len(engine.fills), len(engine.equity_rows)
             summary["bots"][bid] = _status(bot, led, fx, engine)
         except Exception as exc:
             log.exception("bot %s failed", bid)
             summary["errors"].append(f"{bid}: {exc!r}")
             summary["bots"][bid] = {"name": bot.name, "error": repr(exc), "trace": traceback.format_exc()[-1500:]}
+            n_fills, n_eq = len(engine.fills), len(engine.equity_rows)   # a failed bot's partial replay is not saved
         timing[bid] = round(time.time() - t_bot, 3)
     _record_prices(state, hub, t0)
     try:
         _record_all_prices(state, hub, t0, list(markets_cfg_keys(cfg)))
     except Exception as exc:                       # reference data only; never fail the cycle for it
         log.warning("price snapshot failed: %s", exc)
-    append_csv(state / "fills.csv", [f.__dict__ for f in engine.fills])
-    append_csv(state / "equity.csv", engine.equity_rows)
     summary["data_sources"] = getattr(source, "used", {})
     summary["n_fills"] = len(engine.fills)
     summary["seconds"] = round(time.time() - tic, 1)
@@ -206,6 +215,40 @@ def run_cycle(state_dir: str | Path, now: pd.Timestamp | None = None, source=Non
                              "n_errors": len(summary["errors"]), "seconds": summary["seconds"]}) + "\n")
     return summary
 
+
+
+def restart_on_capital_change(state: Path, capital: float, now: pd.Timestamp) -> dict | None:
+    """When the configured starting capital changes, every ledger opened with another amount is
+    discarded (with its fills and equity rows) so that bot replays from the test start with the new
+    capital. Ledgers of bots no longer in the config are cleared the same way. Runs once per change;
+    state/bots/capital.json records the amount in force."""
+    marker = state / "capital.json"
+    if marker.exists():
+        try:
+            if float(json.loads(marker.read_text()).get("initial_capital")) == capital:
+                return None
+        except (ValueError, TypeError):
+            pass
+    stale = []
+    for path in sorted((state / "ledgers").glob("*.json")) if (state / "ledgers").exists() else []:
+        try:
+            old = float(json.loads(path.read_text()).get("initial_capital", 1000.0))
+        except (ValueError, TypeError, OSError):
+            old = None
+        if old != capital:
+            stale.append(path.stem)
+            path.unlink()
+    if stale:
+        for name in ("fills.csv", "equity.csv"):
+            f = state / name
+            if f.exists() and f.stat().st_size:
+                df = pd.read_csv(f)
+                if "bot" in df.columns:
+                    df[~df["bot"].isin(stale)].to_csv(f, index=False)
+        log.warning("starting capital is now %.2f: %d bots restart from the test start", capital, len(stale))
+    state.mkdir(parents=True, exist_ok=True)
+    marker.write_text(json.dumps({"initial_capital": capital, "since": now.isoformat(), "restarted_bots": len(stale)}))
+    return {"initial_capital": capital, "restarted_bots": len(stale)} if stale else None
 
 def _inputs(bot, led, hub: DataHub, cfg, state, markets, now, t0, last, fx=None) -> dict[str, pd.DataFrame]:
     from .generic import IntradayEtfBot, SignalBot, WeightBot

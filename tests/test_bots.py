@@ -431,3 +431,36 @@ def test_single_ticker_yfinance_frames_are_read():
     flat = pd.DataFrame([[1, 2, 0.5, 1.5, 10]], columns=fields)
     for raw in (multi, flat):
         assert float(_ticker_frame(raw, "SPY").rename(columns=str.lower)["close"].iloc[0]) == 1.5
+
+
+def test_capital_change_restarts_every_bot_from_the_start(tmp_path, cfg):
+    """Changing initial_capital discards ledgers, fills and equity rows opened with the old amount, so
+    the next cycle replays from the test start; the result equals a fresh run at the new amount."""
+    import copy
+    bots = ["grid_btc", "dca_eth", "bb_meanrev", "supertrend", "ema_macd"]
+    T = pd.Timestamp("2026-09-08T09:00:00Z")
+    old = copy.deepcopy(cfg)
+    old["initial_capital"] = 1000.0
+    new = copy.deepcopy(cfg)
+    new["initial_capital"] = 5000.0
+    a, b = tmp_path / "a", tmp_path / "b"
+    run_cycle(a, now=T - pd.Timedelta(days=2), source=FakeSource(), cfg=old, only=bots)
+    (a / "ledgers" / "gone_bot.json").write_text((a / "ledgers" / "grid_btc.json").read_text())  # bot no longer in config
+    assert len(_fills(a)) > 0
+    s = run_cycle(a, now=T, source=FakeSource(), cfg=new, only=bots)
+    assert s["capital_reset"] == {"initial_capital": 5000.0, "restarted_bots": len(bots) + 1}
+    assert not (a / "ledgers" / "gone_bot.json").exists()
+    run_cycle(b, now=T, source=FakeSource(), cfg=new, only=bots)
+    key = ["bot", "ts", "inst", "side", "tag", "qty"]
+    fa = _fills(a).sort_values(key, kind="stable").reset_index(drop=True)
+    fb = _fills(b).sort_values(key, kind="stable").reset_index(drop=True)
+    pd.testing.assert_frame_equal(fa, fb)
+    for bid in bots:
+        la = json.loads((a / "ledgers" / f"{bid}.json").read_text())
+        assert la["initial_capital"] == 5000.0
+        assert la["cash"] == pytest.approx(json.loads((b / "ledgers" / f"{bid}.json").read_text())["cash"]), bid
+    ea, eb = pd.read_csv(a / "equity.csv"), pd.read_csv(b / "equity.csv")
+    assert len(ea) == len(eb) and ea["equity_eur"].sum() == pytest.approx(eb["equity_eur"].sum())
+    # no further restart once the new amount is in force
+    s2 = run_cycle(a, now=T + pd.Timedelta(hours=1), source=FakeSource(), cfg=new, only=bots)
+    assert "capital_reset" not in s2
