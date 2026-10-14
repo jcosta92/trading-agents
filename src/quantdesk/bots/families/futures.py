@@ -159,8 +159,9 @@ def level_signal(bars: pd.DataFrame, levels: dict) -> dict | None:
 # ------------------------------------------------------------------------------------- base bot
 class FuturesBot(Bot):
     """One gold-futures trade at a time, in whole contracts, long or short. Risk per trade: `risk`
-    (default 1%) of equity at the stop; with only EUR 5,000 the smallest size is one Micro Gold
-    contract, so a trade whose one-contract risk is above `max_risk` (default 3%) is skipped."""
+    (default 1%) of equity at the stop, at least one contract; with only EUR 5,000 one Micro Gold
+    contract often risks more than that, and a trade whose one-contract risk is above `max_risk`
+    (default 5%) is skipped."""
     timeframe = "5m"
     history_days = 5
 
@@ -188,7 +189,7 @@ class FuturesBot(Bot):
             return 0
         eq_usd = ctx.engine.fx.from_eur(ctx.equity(), "USD")
         n = int(math.floor(float(self.p.get("risk", 0.01)) * eq_usd / risk_per_contract_usd + 1e-9))
-        if n < 1 and risk_per_contract_usd <= float(self.p.get("max_risk", 0.03)) * eq_usd:
+        if n < 1 and risk_per_contract_usd <= float(self.p.get("max_risk", 0.05)) * eq_usd:
             n = 1
         return n
 
