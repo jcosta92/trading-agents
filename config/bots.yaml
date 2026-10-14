@@ -12,6 +12,9 @@
 #     (market and stop orders) + half the bid-ask spread + slippage on taker orders
 #   US stocks (IBKR Tiered): USD 0.0035/share, USD 0.35 minimum, exchange/clearing/SEC fees,
 #     0.03% EUR->USD conversion, spread + slippage on market and stop orders
+#   gold futures (IBKR Tiered, COMEX Micro Gold): USD 0.96 per contract per side (commission 0.25,
+#     exchange 0.70, NFA 0.01) + half the spread + slippage on market and stop orders; margin
+#     positions (long or short), P&L in USD
 # At the end of the month every bot sells what it holds at market, so the result is realised.
 
 start: "2026-10-12T17:00:00Z"
@@ -42,6 +45,22 @@ markets:
 
 crypto_fees: {maker: 0.0015, taker: 0.0025}     # Bitvavo, checked 2026-10-10
 stock_costs: {half_spread_bps: 3, slippage_bps: 2}
+
+# Futures (added 14 Oct 2026 for the two gold-futures strategies from r/Daytrading). Traded as COMEX
+# Micro Gold (MGC, 10 troy oz, USD 1 per USD 0.10 tick) in whole contracts at IBKR; candles are
+# Yahoo's GC=F (the same gold futures, delayed 10 minutes by CME, so only candles that closed at
+# least 15 minutes ago are used). Spread: half a USD 0.10 tick; slippage: one tick on market/stop fills.
+futures:
+  MGC:
+    description: "COMEX Micro Gold futures (10 troy oz, front month), IBKR; candles from Yahoo GC=F"
+    yf: GC=F
+    currency: USD
+    venue: ibkr_comex_micro
+    multiplier: 10
+    lot_size: 1
+    tick: 0.10
+    half_spread_bps: 0.12
+    data_delay_minutes: 15
 
 # Two groups: "popular" = the strategies bot platforms and trading communities rank highest;
 # "alternative" = less common strategies with published, rule-based definitions (added 12 Oct 2026,

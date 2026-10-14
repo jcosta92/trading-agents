@@ -1,4 +1,5 @@
-"""Candle data for the bots: crypto from Bitvavo (Kraken as fallback) via ccxt, US stocks from Yahoo.
+"""Candle data for the bots: crypto from Bitvavo (Kraken as fallback) via ccxt, US stocks and gold
+futures from Yahoo.
 
 All frames are indexed by the candle's OPEN time (UTC, tz-aware) with columns open/high/low/close/volume.
 Only CLOSED candles are returned (open time + timeframe <= now).
@@ -102,6 +103,27 @@ class CandleSource:
             df = df[(df.index >= since)]
             out[t] = closed_only(df.astype(float), timeframe, now)
         return out
+
+    def futures(self, symbol: str, timeframe: str, since: pd.Timestamp, now: pd.Timestamp,
+                delay: pd.Timedelta = pd.Timedelta(minutes=15)) -> pd.DataFrame:
+        """Intraday futures candles from Yahoo (every Globex hour). CME data on Yahoo is delayed, so a
+        candle is only returned once it closed at least `delay` ago (a fresher one may be incomplete)."""
+        import yfinance as yf
+        days = max(2, int((now - since).total_seconds() // 86400) + 2)
+        raw = yf.download(symbol, period=f"{min(days, 59)}d", interval=timeframe, auto_adjust=False, prepost=True,
+                          progress=False, threads=False, group_by="ticker", timeout=30)
+        try:
+            df = _ticker_frame(raw, symbol).rename(columns=str.lower)[["open", "high", "low", "close", "volume"]].dropna(
+                subset=["open", "high", "low", "close"])
+        except (KeyError, TypeError) as exc:
+            raise RuntimeError(f"no {timeframe} candles for {symbol}: {exc}") from exc
+        if df.empty:
+            raise RuntimeError(f"no {timeframe} candles for {symbol}")
+        idx = pd.DatetimeIndex(df.index)
+        df.index = idx.tz_convert("UTC") if idx.tz is not None else idx.tz_localize("UTC")
+        df = df[~df.index.duplicated(keep="last")].sort_index()
+        self.used[symbol] = "yahoo"
+        return closed_only(df[df.index >= since].astype(float), timeframe, now - delay)
 
     def stock_daily(self, tickers: list[str], days: int, now: pd.Timestamp) -> dict[str, pd.DataFrame]:
         import yfinance as yf

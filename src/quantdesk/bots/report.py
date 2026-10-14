@@ -18,7 +18,7 @@ COLORS = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)", "var(
 SINGLE_POSITION = {"BinHV45Bot", "SupertrendBot", "EmaMacdBot", "ORBBot", "VolBreakoutBot", "TimeOfDayBot",
                    "MomentumRotationBot", "IBSBot", "OvernightBot", "TurnOfMonthBot", "LeverageRotationBot",
                    "TurtleBot", "SqueezeBot", "RSIBot", "SignalBot", "EtfDailyBot", "IntradayEtfBot", "TPSBot",
-                   "PreFomcBot"}
+                   "PreFomcBot", "GoldIfvgBot", "GoldLevelBot"}
 GROUP_ORDER = ["popular", "alternative", "classic", "repos", "ta", "crypto_research", "equity_research", "ml", "social"]
 
 
@@ -52,7 +52,8 @@ def summary_table(data: dict, cfg: dict) -> pd.DataFrame:
         curve = pd.concat([pd.Series([cap]), e])
         mdd = float((curve / curve.cummax() - 1).min()) if len(curve) else float("nan")
         sells = f[f["side"] == "sell"]
-        win = float((sells["pnl_eur"] > 0).mean()) if len(sells) and spec["class"] in SINGLE_POSITION else float("nan")
+        closes = f[f["pnl_eur"].notna()] if "pnl_eur" in f else sells      # closing fills (a short closes with a buy)
+        win = float((closes["pnl_eur"] > 0).mean()) if len(closes) and spec["class"] in SINGLE_POSITION else float("nan")
         equity = float(s.get("equity_eur", cap))
         fees = float(f["fee_eur"].sum()) if len(f) else 0.0
         rows.append({
@@ -60,7 +61,7 @@ def summary_table(data: dict, cfg: dict) -> pd.DataFrame:
             "group": spec.get("group", "popular"), "name": spec.get("name", bid), "class": spec["class"],
             "equity": equity, "return": equity / cap - 1, "max_dd": mdd,
             "buys": int((f["side"] == "buy").sum()), "sells": int(len(sells)),
-            "realised": float(sells["pnl_eur"].sum()) if len(sells) else 0.0,
+            "realised": float(closes["pnl_eur"].sum()) if len(closes) else 0.0,
             # equity is net of every fee paid, so P/L before fees adds them back; spread and slippage
             # are inside the fill prices and stay in both figures
             "fees": fees, "pnl_net": equity - cap, "pnl_gross": equity - cap + fees, "win_rate": win,

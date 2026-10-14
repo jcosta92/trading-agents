@@ -16,6 +16,10 @@
 #   Kraken Pro:                  kraken.com/features/fee-schedule (spot 0.40%/0.80%, futures 0.02%/0.05%)
 #   Bitvavo:                     bitvavo.com/en/fees (EUR markets 0.15% maker / 0.25% taker)
 #   Trading 212:                 commission-free stocks/ETFs, 0.15% FX fee
+#   IBKR US futures (micro):     interactivebrokers.co.uk/en/pricing/commissions-futures.php (checked 2026-10-14:
+#                                USD 0.25/contract Micro Gold, <= 1,000 contracts/month, Tiered and Fixed)
+#   IBKR COMEX fees:             interactivebrokers.ie/en/accounts/fees/COMEX.php (checked 2026-10-14:
+#                                MGC exchange fee USD 0.70, NFA regulatory fee USD 0.01)
 
 ibkr_xetra:
   label: IBKR Ireland - Xetra, Tiered pricing
@@ -93,6 +97,19 @@ kraken_eea_perp:
   margin: true
   maintenance_margin: 0.01       # liquidation when collateral < 1% of notional (assumption; Kraken tiers vary)
   liquidation_fee: 0.01          # charged on liquidated notional (conservative assumption)
+
+ibkr_comex_micro:
+  label: IBKR Ireland - COMEX Micro Gold futures (MGC), Tiered, <= 1,000 contracts/month
+  fees:
+    - {name: ibkr_commission, basis: units, rate: 0.25}
+    - {name: comex_exchange_fee, basis: units, rate: 0.70}
+    - {name: nfa_regulatory_fee, basis: units, rate: 0.01}
+  slippage_bps: 0.24             # about one USD 0.10 tick at USD 4,000-4,500 an ounce
+  fx_conversion: 0.0             # P&L and fees stay in USD (variation margin)
+  auto_fx: false
+  allow_negative_cash: true      # USD P&L can go negative against EUR collateral
+  margin: true
+  max_leverage: 15               # new exposure capped at 15x equity (about the intraday margin for MGC)
 
 none:
   label: not tradable

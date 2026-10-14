@@ -56,7 +56,18 @@ class DataHub:
         self.us_intraday: dict[str, pd.DataFrame] = {}
         self.us_since: pd.Timestamp | None = None
         self.us_daily: dict[str, pd.DataFrame] | None = None
+        self.fut_since: dict[tuple, pd.Timestamp] = {}
         self.used = getattr(source, "used", {})
+
+    def futures(self, iid: str, spec: dict, tf: str, since: pd.Timestamp) -> pd.DataFrame:
+        """Futures candles (Yahoo), downloaded once per cycle for the earliest start any bot asks for."""
+        key = (iid, tf)
+        if key not in self.mem or since < self.fut_since[key]:
+            delay = pd.Timedelta(minutes=float(spec.get("data_delay_minutes", 15)))
+            self.mem[key] = self.source.futures(spec["yf"], tf, since, self.now, delay)
+            self.fut_since[key] = since
+        df = self.mem[key]
+        return df[df.index >= since]
 
     def crypto(self, iid: str, tf: str, since: pd.Timestamp | None = None) -> pd.DataFrame:
         key = (iid, tf)
@@ -203,6 +214,7 @@ def run_cycle(state_dir: str | Path, now: pd.Timestamp | None = None, source=Non
     _record_prices(state, hub, t0)
     try:
         _record_all_prices(state, hub, t0, list(markets_cfg_keys(cfg)))
+        _record_futures_prices(state, hub, t0, list((cfg.get("futures") or {}).keys()))
     except Exception as exc:                       # reference data only; never fail the cycle for it
         log.warning("price snapshot failed: %s", exc)
     summary["data_sources"] = getattr(source, "used", {})
@@ -251,8 +263,17 @@ def restart_on_capital_change(state: Path, capital: float, now: pd.Timestamp) ->
     return {"initial_capital": capital, "restarted_bots": len(stale)} if stale else None
 
 def _inputs(bot, led, hub: DataHub, cfg, state, markets, now, t0, last, fx=None) -> dict[str, pd.DataFrame]:
+    from .families.futures import FuturesBot
     from .generic import IntradayEtfBot, SignalBot, WeightBot
     first = last if last is not None else t0
+    if isinstance(bot, FuturesBot):
+        iid = bot.instruments()[0]
+        spec = cfg["futures"][iid]
+        _futures_market(markets, iid, spec)
+        bot.contract = spec
+        df = hub.futures(iid, spec, bot.timeframe, first - pd.Timedelta(days=bot.history_days))
+        bot.prepare(df)
+        return {iid: df} if len(df) else {}
     if isinstance(bot, ORBBot):
         return _orb_inputs(bot, led, hub, cfg, state, markets, now, t0, last)
     if isinstance(bot, UsEtfBot):
@@ -293,6 +314,17 @@ def _sessions(t0: pd.Timestamp, now: pd.Timestamp) -> pd.DataFrame:
     sched = xcals.get_calendar("XNYS").schedule.loc[(t0 - pd.Timedelta(days=40)).tz_localize(None).normalize():
                                                     (now + pd.Timedelta(days=45)).tz_localize(None).normalize()]
     return sched[["open", "close"]]          # future sessions too: calendar bots count trading days ahead
+
+
+def _futures_market(markets, iid: str, spec: dict) -> None:
+    """Market for a futures contract from the `futures` section of bots.yaml."""
+    if iid in markets:
+        return
+    inst = Instrument(id=iid, kind="future", currency=spec.get("currency", "USD"), venue=spec["venue"], calendar="CME",
+                      lot_size=float(spec.get("lot_size", 1)), half_spread_bps=float(spec.get("half_spread_bps", 0.12)),
+                      yf=(spec["yf"],), multiplier=float(spec.get("multiplier", 1)), description=spec.get("description", iid))
+    slip = float(load_venues()[spec["venue"]].get("slippage_bps", 0.0))
+    markets[iid] = Market(inst, inst.half_spread_bps / 1e4, slip / 1e4)
 
 
 def _us_market(markets, cfg, t):
@@ -397,6 +429,30 @@ def _record_all_prices(state: Path, hub: DataHub, t0: pd.Timestamp, coins: list[
                 old = pd.read_csv(path, index_col=0, parse_dates=True)
                 wide = old.combine_first(wide)
             wide[wide.index >= start].sort_index().to_csv(path)
+
+
+def _record_futures_prices(state: Path, hub: DataHub, t0: pd.Timestamp, ids: list[str]) -> None:
+    """Hourly closes of the futures the bots trade (buy-and-hold reference for the reviews)."""
+    cols = {}
+    for iid in ids:
+        for tf in ("5m", "15m", "1h"):
+            df = hub.mem.get((iid, tf))
+            if df is not None and len(df):
+                s = df["close"].resample("1h").last().dropna()
+                s.index = s.index + pd.Timedelta(hours=1)
+                cols[iid] = s
+                break
+    if not cols:
+        return
+    p = pd.DataFrame(cols).reindex(columns=ids)
+    p = p[p.index >= t0].dropna(how="all")
+    path = state / "futures_prices.csv"
+    if path.exists():
+        old = pd.read_csv(path)
+        if len(old):
+            p = p[p.index > pd.Timestamp(old["ts"].iloc[-1])]
+    append_csv(path, [{"ts": t.isoformat(), **{k: (round(float(v), 4) if pd.notna(v) else "") for k, v in r.items()}}
+                      for t, r in p.iterrows()])
 
 
 def _record_prices(state: Path, hub: DataHub, t0: pd.Timestamp) -> None:

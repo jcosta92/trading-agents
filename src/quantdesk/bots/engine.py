@@ -10,7 +10,11 @@ in time order. For each candle it
      both a stop and a take-profit, the stop is assumed to have filled first. Within a candle all
      sell orders (of every market) are handled before buy orders, so a switch from one coin to
      another can be paid with the proceeds of the sale, as on a real exchange a moment later.
+     Exception: a stop or take-profit placed (with same_bar=True) when a market order fills at a
+     candle's open protects the position from that open, so it is checked against the same candle.
   2. lets the bot look at the candle (and all earlier ones) and place or cancel orders.
+Futures (instrument kind "future") are margin positions: they can be short, only their P&L and fees
+move cash, and new exposure is capped at the venue's max_leverage times equity.
 Because only closed candles are used and they are processed strictly in order, nothing depends
 on when the cycle runs: a cycle delayed by an hour produces exactly the same trades.
 """
@@ -27,7 +31,7 @@ import pandas as pd
 
 from ..config import Instrument
 from ..costs import CostModel
-from ..ledger import FxRates, Ledger
+from ..ledger import MARGIN_KINDS, FxRates, Ledger
 from .data import TF
 
 log = logging.getLogger(__name__)
@@ -100,7 +104,9 @@ class BotContext:
                 if o["tag"].startswith(tag_prefix) and (iid is None or o["inst"] == iid)]
 
     def place(self, iid: str, side: str, type_: str, *, qty: float | None = None, eur: float | None = None,
-              price: float | None = None, tag: str = "") -> dict:
+              price: float | None = None, tag: str = "", reduce_only: bool = False, same_bar: bool = False) -> dict:
+        """reduce_only: may only shrink an open position (margin instruments). same_bar: placed from
+        on_fill of a market order, the order also applies to the rest of the fill's candle."""
         assert side in ("buy", "sell") and type_ in ("market", "limit", "stop")
         if type_ != "market" and not (price and price > 0):
             raise ValueError(f"{type_} order needs a positive price")
@@ -108,6 +114,10 @@ class BotContext:
         meta["order_seq"] = int(meta.get("order_seq", 0)) + 1
         o = {"id": meta["order_seq"], "inst": iid, "side": side, "type": type_, "price": price,
              "qty": qty, "eur": eur, "tag": tag, "placed": self.ts.isoformat()}
+        if reduce_only:
+            o["reduce_only"] = True
+        if same_bar:
+            o["same_bar"] = True
         meta.setdefault("orders", []).append(o)
         return o
 
@@ -186,6 +196,27 @@ class BotEngine:
             f = self._execute(bot, ledger, o, px, mid, liq, ts)
             if f is not None:
                 bot.on_fill(ctx, o, f)
+                if o["type"] == "market":
+                    self._fill_same_bar(bot, ledger, ctx, iid, bar, ts)
+
+    def _fill_same_bar(self, bot, ledger: Ledger, ctx: BotContext, iid: str, bar, ts: pd.Timestamp) -> None:
+        """Protective orders placed when a market order filled at this candle's open: the whole
+        candle comes after the fill, so they are checked against it (stop before take-profit)."""
+        rank = {"market": 0, "stop": 1, "limit": 2}
+        stamp = ts.isoformat()
+        kids = [o for o in ledger.meta.get("orders", []) if o.get("same_bar") and o["placed"] == stamp
+                and o["inst"] == iid]
+        for o in sorted(kids, key=lambda o: (rank[o["type"]], o["id"])):
+            if o not in ledger.meta.get("orders", []):
+                continue
+            o.pop("same_bar", None)
+            px, mid, liq = self._trigger(o, bar)
+            if px is None:
+                continue
+            ledger.meta["orders"] = [x for x in ledger.meta["orders"] if x["id"] != o["id"]]
+            f = self._execute(bot, ledger, o, px, mid, liq, ts)
+            if f is not None:
+                bot.on_fill(ctx, o, f)
 
     def _trigger(self, o: dict, bar) -> tuple[float | None, float | None, str]:
         m = self.markets[o["inst"]]
@@ -222,6 +253,8 @@ class BotEngine:
                  ts: pd.Timestamp) -> Fill | None:
         m = self.markets[o["inst"]]
         inst, fx = m.inst, self.fx
+        if inst.kind in MARGIN_KINDS:
+            return self._execute_margin(bot, ledger, o, px, mid, liq, ts)
         if o["side"] == "sell":
             held = ledger.qty(inst.id)
             qty = min(float(o["qty"]) if o.get("qty") else held, held)
@@ -256,6 +289,54 @@ class BotEngine:
         buy_fees[inst.id] = buy_fees.get(inst.id, 0.0) + fee
         return self._record(bot, inst, "buy", qty, px, fee, liq, o["tag"], ts, None)
 
+    def _execute_margin(self, bot, ledger: Ledger, o: dict, px: float, mid: float, liq: str,
+                        ts: pd.Timestamp) -> Fill | None:
+        """Futures: buys and sells open, add to, reduce or flip a signed position. Sized in contracts
+        (`qty`) or by EUR notional (`eur`), rounded down to the lot size; new exposure is capped at the
+        venue's max_leverage x equity. The P&L of the closed part is net of its share of the opening
+        fees and of this fill's fee."""
+        m = self.markets[o["inst"]]
+        inst, fx = m.inst, self.fx
+        sgn = 1.0 if o["side"] == "buy" else -1.0
+        held = ledger.qty(inst.id)
+        unit_eur = fx.to_eur(px * inst.multiplier, inst.currency)
+        qty = float(o["qty"]) if o.get("qty") else float(o.get("eur") or 0.0) / unit_eur
+        if o.get("reduce_only"):
+            if held * sgn >= 0:
+                return None
+            qty = min(qty, abs(held))
+        lot = float(inst.lot_size or 0.0)
+        if lot > 0:
+            qty = math.floor(qty / lot + 1e-9) * lot
+        closing = min(qty, abs(held)) if held * sgn < 0 else 0.0
+        if qty - closing > EPS:                          # opens or adds exposure: margin check
+            cap = float(self.cm.venue(inst).get("max_leverage", 1.0)) * max(ledger.equity(fx), 0.0) / unit_eur
+            if lot > 0:
+                cap = math.floor(cap / lot + 1e-9) * lot
+            qty = min(qty, max(0.0, cap - abs(held))) if held * sgn >= 0 else closing + min(qty - closing, cap)
+            if qty <= EPS:
+                ctx_note = f"{o['tag']}: not enough margin for one contract"
+                self.notes.setdefault(bot.id, []).append(f"{ts:%Y-%m-%d %H:%M} {ctx_note}")
+                return None
+        if qty <= EPS:
+            return None
+        fee = self._fee(m, qty, px, o["side"], liq)
+        open_fees = ledger.meta.setdefault("open_fees", {})
+        pnl = None
+        if closing > 0:
+            pos = ledger.positions[inst.id]
+            share = open_fees.get(inst.id, 0.0) * closing / abs(held)
+            open_fees[inst.id] = open_fees.get(inst.id, 0.0) - share
+            pnl = ((px - pos.avg_price) * closing * (1.0 if held > 0 else -1.0) * inst.multiplier
+                   - fee * closing / qty - share)
+        if qty - closing > EPS:
+            open_fees[inst.id] = open_fees.get(inst.id, 0.0) + fee * (qty - closing) / qty
+        if abs(held + sgn * qty) < EPS:
+            open_fees.pop(inst.id, None)
+        ledger.trade(ts.isoformat(), inst, sgn * qty, px, {inst.currency: fee}, fx, mid, reason=o["tag"])
+        return self._record(bot, inst, o["side"], qty, px, fee, liq, o["tag"], ts,
+                            fx.to_eur(pnl, inst.currency) if pnl is not None else None)
+
     def _spendable(self, ledger: Ledger, ccy: str) -> float:
         own = max(0.0, ledger.cash.get(ccy, 0.0))
         if ccy == ledger.base:
@@ -265,19 +346,24 @@ class BotEngine:
 
     def _record(self, bot, inst, side, qty, px, fee, liq, tag, ts, pnl) -> Fill:
         f = Fill(ts.isoformat(), bot.id, inst.id, side, qty, round(px, 8),
-                 round(self.fx.to_eur(fee, inst.currency), 6), round(self.fx.to_eur(qty * px, inst.currency), 4),
+                 round(self.fx.to_eur(fee, inst.currency), 6),
+                 round(self.fx.to_eur(qty * px * inst.multiplier, inst.currency), 4),
                  liq, tag, round(pnl, 4) if pnl is not None else None)
         self.fills.append(f)
         return f
 
     def _liquidate(self, bot, ledger: Ledger, bars: dict, ts: pd.Timestamp) -> None:
-        """End of the month: cancel every order and sell all holdings at this candle's open."""
+        """End of the test: cancel every order and close every position at this candle's open."""
         ledger.meta["orders"] = []
         for iid, pos in list(ledger.positions.items()):
             bar = bars.get(iid)
-            if bar is None or pos.qty <= 0:
+            if bar is None or abs(pos.qty) <= EPS:
                 continue
-            o = {"id": -1, "inst": iid, "side": "sell", "type": "market", "qty": pos.qty, "tag": "end of test: sell all"}
+            if pos.qty > 0:
+                o = {"id": -1, "inst": iid, "side": "sell", "type": "market", "qty": pos.qty, "tag": "end of test: sell all"}
+            else:
+                o = {"id": -1, "inst": iid, "side": "buy", "type": "market", "qty": -pos.qty, "reduce_only": True,
+                     "tag": "end of test: buy back the short"}
             px, mid, liq = self._trigger(o, bar)
             self._execute(bot, ledger, o, px, mid, liq, ts)
         self.equity_rows.append({"ts": ts.isoformat(), "bot": bot.id, "equity_eur": round(ledger.equity(self.fx), 4),

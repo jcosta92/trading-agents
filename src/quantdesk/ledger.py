@@ -19,6 +19,8 @@ from collections import defaultdict
 from dataclasses import asdict, dataclass, field
 
 EPS = 1e-9
+# settled by variation margin: only the P&L moves cash (perpetual swaps, exchange-traded futures)
+MARGIN_KINDS = ("perp", "future")
 
 
 @dataclass
@@ -53,7 +55,7 @@ class Position:
 
     def market_value(self, mark: float) -> float:
         """Contribution to equity in the position currency."""
-        if self.kind == "perp":
+        if self.kind in MARGIN_KINDS:
             return self.qty * (mark - self.avg_price) * self.multiplier
         return self.qty * mark * self.multiplier
 
@@ -126,7 +128,7 @@ class Ledger:
         if pos and old * qty < 0:                         # reducing or flipping
             closed = min(abs(qty), abs(old))
             realized = closed * (px - pos.avg_price) * (1.0 if old > 0 else -1.0) * mult
-        if kind == "perp":
+        if kind in MARGIN_KINDS:
             self.cash[ccy] += realized
         else:
             self.cash[ccy] -= qty * px * mult
