@@ -9,7 +9,7 @@ The live dashboard, updated every 15 minutes. Also:
 [status table](https://github.com/jcosta92/trading-agents/blob/bot-state/reports/BOTS.md) ·
 [every fill](https://github.com/jcosta92/trading-agents/blob/bot-state/state/bots/fills.csv)
 
-## The bot test (12 Oct - 31 Dec 2026): 1,133 bots, 209 strategy families
+## The bot test (12 Oct - 31 Dec 2026): 1,136 bots, 211 strategy families
 
 Every bot trades its own simulated **EUR 5,000** on real candles, buying and selling throughout the test; on
 31 Dec every bot sells what it holds. A mid-point review runs on 12 Nov, the final review on 31 Dec. (Until
@@ -23,7 +23,7 @@ all results cover the same window at the same size.)
   several markets (usually 8 coins or 10 ETFs). That is a robustness check, not parameter fishing: a family is judged
   by its median bot and by how many of its bots make money, never by its single best bot.
 - **The original 17 bots** (6 most-used bot strategies, 5 less common ones, 6 classic systems) are in
-  [`config/bots.yaml`](config/bots.yaml); the 192 other families, with source links and rules, in
+  [`config/bots.yaml`](config/bots.yaml); the 194 other families, with source links and rules, in
   [`config/families.yaml`](config/families.yaml).
 - **Final GitHub sweep (13 Oct).** 23 more families, rules read from each project's source file: Freqtrade's
   sample strategy, Strategy002, UniversalMACD, MultiRSI, VolatilitySystem, NostalgiaForInfinity V1, ichiV1 and
@@ -40,15 +40,24 @@ all results cover the same window at the same size.)
   seasonality, a multi-asset pullback, crypto turn of the month, the Bull Market Support Band, ICT Silver
   Bullet, Power of Stocks' 5 EMA and Trading Rush's MACD + 200 EMA. Where a source leaves a detail open, the
   choice made is written in the family's rules.
+- **Gold futures from r/Daytrading (14 Oct).** Two day-trading setups on COMEX gold futures, long and short,
+  with the rules taken from the posts and the authors' own replies: the first 15-minute inverse fair value gap
+  of the Asia session with a 1:1 target and breakeven at 68% of the way
+  ([u/Current_Heron3284](https://www.reddit.com/r/Daytrading/comments/1x3vqat/); two readings of "Asia"), and a
+  candle fully outside yesterday's or the overnight high/low followed by a close back inside, 96/48 ticks,
+  9-11 am New York ([u/tiffarooner](https://www.reddit.com/r/Daytrading/comments/1x5qopq/)). They trade COMEX
+  Micro Gold (10 oz) in whole contracts at IBKR futures fees (USD 0.96 a contract per side) on 5-minute Yahoo
+  GC=F candles; one contract is the smallest size, so with EUR 5,000 a trade usually risks 2-4% of equity.
 - **Everything is free.** No paid API or subscription: public-repository GitHub Actions minutes, free market data
-  (Bitvavo, Kraken, Yahoo) and scheduled Claude tasks.
+  (Bitvavo, Kraken, Yahoo, including Yahoo's delayed gold futures) and scheduled Claude tasks.
 - **Luck.** With ~1,100 bots, dozens will beat the market by chance. The dashboard shows a luck yardstick (how far the
   best bot would sit above the average with no skill at all) and the reviews correct for multiple testing.
 - **No look-ahead.** Every signal and weight function is checked by `tests/test_families.py`: its value at a candle
   must be identical whether computed with or without the later candles.
 - **Simulation.** Candles from Bitvavo (Kraken fallback) and Yahoo are replayed in order; resting orders fill when a
   candle trades through them, market orders at the next candle's open. Bitvavo fees (0.15% / 0.25%) or IBKR fees and
-  FX, plus spread and slippage, on every fill. Long only: a strategy's short signal means "go to cash".
+  FX, plus spread and slippage, on every fill. Long only: a strategy's short signal means "go to cash" (except
+  the two gold-futures families, which go long and short on margin; only their P&L and fees move cash).
 - **Where things are.** The bots' state, every fill (`state/bots/fills.csv`), the status table (`reports/BOTS.md`)
   and the dashboard pages live on the branch **`bot-state`**, which holds a single commit replaced every 15 minutes,
   so ~1,100 ledgers do not bloat the repository. The GitHub Pages site loads the latest page from that branch:

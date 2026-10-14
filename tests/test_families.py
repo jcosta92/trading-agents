@@ -133,10 +133,14 @@ def test_every_bot_runs_without_errors(run_all):
 
 
 def test_ledgers_consistent_and_long_only(run_all):
+    """Every ledger replays from its journal; every bot except the gold-futures ones (long/short by
+    design) stays long only and never overdraws EUR."""
     cfg, state, s = run_all
-    for bid in cfg["bots"]:
+    for bid, spec in cfg["bots"].items():
         led = Ledger.from_dict(json.loads((state / "ledgers" / f"{bid}.json").read_text()))
         assert led.verify()[0], bid
+        if spec["class"] in ("GoldIfvgBot", "GoldLevelBot"):
+            continue
         assert all(p.qty > -1e-9 for p in led.positions.values()), f"{bid} went short"
         assert led.cash.get("EUR", 0) > -1e-6, f"{bid} overdrew EUR"
 

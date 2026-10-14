@@ -50,6 +50,18 @@ class FamilySource:
     def eurusd(self):
         return 1.16
 
+    def futures(self, symbol, timeframe, since, now, delay=pd.Timedelta(0)):
+        """Gold-futures-like candles: every Globex hour (no 17:00-18:00 New York break, no weekend)."""
+        key = ("fut", symbol, timeframe)
+        if key not in self._c:
+            idx = pd.date_range(pd.Timestamp(START[timeframe], tz="UTC"), END, freq=TF[timeframe], inclusive="left")
+            ny = idx.tz_convert("America/New_York")
+            wk = ny.dayofweek
+            open_ = (ny.hour != 17) & (wk != 5) & ~((wk == 4) & (ny.hour >= 17)) & ~((wk == 6) & (ny.hour < 18))
+            self._c[key] = _ohlcv(idx[open_], _seed(symbol, timeframe), 4100.0, 0.0009)
+        df = self._c[key]
+        return df[(df.index >= since) & (df.index + TF[timeframe] <= now - delay)]
+
     def _sched(self):
         if "sched" not in self._c:
             import exchange_calendars as xcals
