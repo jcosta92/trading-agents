@@ -14,7 +14,7 @@
    "multiplier": 1.0,
    "kind": "etf",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 38.04
+   "last_mark": 37.5925
   },
   "WORLD_EQ": {
    "inst_id": "WORLD_EQ",
@@ -24,7 +24,7 @@
    "multiplier": 1.0,
    "kind": "etf",
    "opened": "2026-10-14T08:18:07.755023+00:00",
-   "last_mark": 131.7875
+   "last_mark": 130.19
   }
  },
  "journal": [
@@ -93,9 +93,9 @@
    "COMMOD": {
     "entry": 38.02037200000001,
     "opened": "2026-10-12",
-    "stop": 36.69456888625609,
+    "stop": 36.783458628678105,
     "target": null,
-    "hwm": 38.060001373291016,
+    "hwm": 38.13999938964844,
     "spec": {
      "stop_atr": 3.0,
      "atr": 0.4533735256813622,
@@ -103,12 +103,12 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
    },
    "WORLD_EQ": {
     "entry": 132.23068800000001,
     "opened": "2026-10-14",
-    "stop": 129.36358568218256,
+    "stop": 129.3969061516382,
     "target": null,
     "hwm": 132.23068800000001,
     "spec": {
@@ -118,62 +118,62 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-13"
+    "updated": "2026-10-14"
    }
   },
-  "last_decision": "2026-10-13",
+  "last_decision": "2026-10-14",
   "signals": {
    "WORLD_EQ": {
-    "close": 132.25,
-    "sma50": 128.1588,
-    "sma200": 120.189,
-    "roc252": 0.2012,
-    "atr20": 0.9559,
-    "high_close20": 131.835,
+    "close": 131.74,
+    "sma50": 128.2378,
+    "sma200": 120.2898,
+    "roc252": 0.2207,
+    "atr20": 0.9446,
+    "high_close20": 132.25,
     "buy_rule": "close > SMA50 > SMA200, ROC252 > 0 and a new 20-day closing high",
     "sell_rule": "SMA50 < SMA200",
-    "state": "BUY"
+    "state": "HOLD"
    },
    "EM_EQ": {
-    "close": 48.749,
-    "sma50": 47.8086,
-    "sma200": 44.9528,
-    "roc252": 0.2854,
-    "atr20": 0.68,
+    "close": 48.111,
+    "sma50": 47.8355,
+    "sma200": 45.0026,
+    "roc252": 0.3091,
+    "atr20": 0.6875,
     "high_close20": 50.15,
     "buy_rule": "close > SMA50 > SMA200, ROC252 > 0 and a new 20-day closing high",
     "sell_rule": "SMA50 < SMA200",
     "state": "FLAT"
    },
    "EUR_GOVT": {
-    "close": 104.545,
-    "sma50": 105.9354,
-    "sma200": 107.4723,
-    "roc252": -0.0326,
-    "atr20": 0.4647,
+    "close": 104.76,
+    "sma50": 105.8734,
+    "sma200": 107.4567,
+    "roc252": -0.0339,
+    "atr20": 0.4629,
     "high_close20": 105.465,
     "buy_rule": "close > SMA50 > SMA200, ROC252 > 0 and a new 20-day closing high",
     "sell_rule": "SMA50 < SMA200",
     "state": "FLAT"
    },
    "GOLD": {
-    "close": 120.02,
-    "sma50": 121.4524,
-    "sma200": 125.3686,
-    "roc252": 0.0754,
-    "atr20": 1.7817,
+    "close": 119.58,
+    "sma50": 121.566,
+    "sma200": 125.3733,
+    "roc252": 0.0756,
+    "atr20": 1.7391,
     "high_close20": 122.17,
     "buy_rule": "close > SMA50 > SMA200, ROC252 > 0 and a new 20-day closing high",
     "sell_rule": "SMA50 < SMA200",
     "state": "FLAT"
    },
    "COMMOD": {
-    "close": 38.06,
-    "sma50": 35.9284,
-    "sma200": 32.9817,
-    "roc252": 0.4596,
-    "atr20": 0.4552,
-    "high_close20": 37.93,
+    "close": 38.14,
+    "sma50": 36.0386,
+    "sma200": 33.0352,
+    "roc252": 0.472,
+    "atr20": 0.4522,
+    "high_close20": 38.06,
     "buy_rule": "close > SMA50 > SMA200, ROC252 > 0 and a new 20-day closing high",
     "sell_rule": "SMA50 < SMA200",
     "state": "HOLD"
@@ -182,7 +182,7 @@
   "pending": [],
   "last_equity": {
    "date": "2026-10-15",
-   "equity": 999.1383
+   "equity": 992.2219
   }
  },
  "halted": false,
