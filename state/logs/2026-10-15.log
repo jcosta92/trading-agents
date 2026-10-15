@@ -182,3 +182,32 @@
 - funding_carry: equity 1000.0 open=True decided=True fills=0 rejects=0 
 - vrp_spreads: equity 968.2032 open=False decided=False fills=0 rejects=0 
 - llm_news: equity 979.1206 open=False decided=False fills=0 rejects=0 
+===== 2026-10-15T07:17:53Z
+2026-10-15 07:17:56,624 WARNING quantdesk.data.crypto: funding history failed krakenfutures BTC/USD:USD: krakenfutures GET https://futures.kraken.com/derivatives/api/v3/instruments 503 Service Unavailable <html><body><h1>503 Service Unavailable</h1>
+No server is available to handle this request.
+</body></html>
+2026-10-15 07:18:05,427 WARNING quantdesk.data.crypto: funding history failed krakenfutures ETH/USD:USD: krakenfutures GET https://futures.kraken.com/derivatives/api/v3/instruments 503 Service Unavailable <html><body><h1>503 Service Unavailable</h1>
+No server is available to handle this request.
+</body></html>
+{
+ "ts": "2026-10-15T07:17:54.080086+00:00",
+ "asof": "2026-10-14",
+ "errors": [],
+ "paper": {
+  "start": "2026-10-12T14:57:36.390767+00:00",
+  "end": "2026-11-12T14:57:36.390767+00:00",
+  "status": "running"
+ },
+ "fx_eurusd": 1.1218308210372925,
+ "fx_source": "live"
+}
+- bench_sp500: equity 994.6832 open=False decided=False fills=0 rejects=0 
+- bench_btc: equity 974.5632 open=True decided=True fills=0 rejects=0 
+- trend_etf: equity 995.2048 open=False decided=False fills=0 rejects=0 
+- trend_etf_t212: equity 999.1383 open=False decided=False fills=0 rejects=0 
+- factor_equity: equity 981.8124 open=False decided=False fills=0 rejects=0 
+- crypto_trend: equity 1000.0 open=True decided=True fills=0 rejects=0 
+- rsi2_meanrev: equity 1000.0 open=False decided=False fills=0 rejects=0 
+- funding_carry: equity 1000.0 open=True decided=True fills=0 rejects=0 
+- vrp_spreads: equity 973.5695 open=False decided=False fills=0 rejects=0 
+- llm_news: equity 978.7616 open=False decided=False fills=0 rejects=0 
