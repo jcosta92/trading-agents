@@ -1,5 +1,6 @@
 """Strategies that need their own order logic: infinity grid, Avellaneda-Stoikov style quoting,
-Connors TPS scale-in, the pre-FOMC drift, OctoBot's Dip Analyser and Jason Kelly's 9Sig."""
+Connors TPS scale-in, the pre-FOMC drift, OctoBot's Dip Analyser, Grid and DCA trading modes, and
+Jason Kelly's 9Sig."""
 from __future__ import annotations
 
 import math
@@ -214,3 +215,69 @@ class NineSigBot(EtfWeightBot):
         # TQQQ goes exactly to its signal line; the rebalancer's 1.5% cash buffer comes out of bonds
         WeightBot.rebalance(self, ctx, {risky: new_val / eq, safe: max(0.0, 0.985 - new_val / eq)}, px)
         st["base"] = new_val
+
+
+class OctoGridBot(Bot):
+    """OctoBot's Grid Trading mode with the settings it applies to a pair that has no configuration of
+    its own (GridTradingMode._apply_default_symbol_config / get_default_pair_config): spread 1.5% and
+    increment 0.5% of the starting price, 20 buy and 20 sell orders, all available funds, equal order
+    sizes ("flat" mode), exchange fees ignored when sizing mirror orders, no trailing. Starting with
+    EUR only, only the buy side can be funded: 20 limit buys from 0.75% below the price, 0.5% apart.
+    Every filled order is mirrored (spread - increment) = 1% of the starting price away: a buy filled
+    at B becomes a sell at B + 1%, a sell filled at S a buy at S - 1% for the same EUR amount."""
+    timeframe = "15m"
+
+    def warmup(self) -> int:
+        return 2
+
+    def on_candle(self, ctx, iid: str) -> None:
+        st = ctx.state
+        if "p0" in st:
+            return
+        p0 = float(ctx.candle(iid)["close"])
+        inc = p0 * float(self.p.get("increment_pct", 0.5)) / 100
+        spread = p0 * float(self.p.get("spread_pct", 1.5)) / 100
+        n = int(self.p.get("buy_orders", 20))
+        st.update({"p0": p0, "increment": inc, "spread": spread, "mirrors": 0})
+        qty = ctx.cash_eur() * 0.999 / p0 / n              # flat mode: the same coin amount per order
+        for k in range(n):
+            ctx.place(iid, "buy", "limit", qty=qty, price=p0 - spread / 2 - k * inc, tag=f"og:buy {k + 1}")
+
+    def on_fill(self, ctx, order, fill) -> None:
+        st = ctx.state
+        diff = float(st["spread"]) - float(st["increment"])
+        origin = float(order["price"]) if order.get("price") else fill.price
+        st["mirrors"] = int(st.get("mirrors", 0)) + 1
+        if order["side"] == "buy":
+            ctx.place(order["inst"], "sell", "limit", qty=fill.qty, price=origin + diff, tag="og:mirror sell")
+        else:
+            target = origin - diff
+            if target > 0:
+                ctx.place(order["inst"], "buy", "limit", qty=origin / target * fill.qty, price=target,
+                          tag="og:mirror buy")
+
+
+class OctoDcaBot(Bot):
+    """OctoBot's DCA Trading mode with its default configuration (DCATradingMode.json): 'Time based'
+    trigger, a market buy at start and then every 10,080 minutes (weekly), no take-profit, no stop
+    loss, no secondary orders, open orders cancelled at each entry: an accumulation plan held to the
+    end. OctoBot's default amount ("50q", 50 units of the quote currency) would leave 90% of EUR 5,000
+    idle, so each buy is `amount_frac` (default 1/12) of the starting capital: the test window holds
+    12 weekly buys."""
+    timeframe = "1h"
+
+    def warmup(self) -> int:
+        return 1
+
+    def on_candle(self, ctx, iid: str) -> None:
+        st = ctx.state
+        now = ctx.ts + TF[self.timeframe]
+        every = pd.Timedelta(minutes=int(self.p.get("minutes_before_next_buy", 10080)))
+        if st.get("last_buy") and now - pd.Timestamp(st["last_buy"]) < every:
+            return
+        ctx.cancel("dca:", iid)
+        eur = min(float(self.p.get("amount_frac", 1 / 12)) * ctx.ledger.initial_capital, ctx.cash_eur() * 0.995)
+        st["last_buy"] = now.isoformat()
+        if eur >= 5.0:
+            ctx.place(iid, "buy", "market", eur=eur, tag="dca:time-based buy")
+            st["buys"] = int(st.get("buys", 0)) + 1

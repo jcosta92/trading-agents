@@ -184,3 +184,38 @@ def test_dip_analyser_limit_buy_then_three_take_profit_sells():
     sells = sorted(f.price for f in eng.fills if f.side == "sell")
     assert sells == pytest.approx([99.5 * (1 + 0.07 * k / 3) for k in (1, 2, 3)])
     assert not led.positions
+
+
+# ------------------------------------------------------------------------------- OctoBot Grid and DCA modes
+def test_octobot_grid_default_orders_and_mirrors():
+    rows = [[100, 100.1, 99.9, 100, 1]] * 2 + [[100, 100, 98.5, 98.8, 1], [98.8, 100.2, 98.8, 100.1, 1],
+                                               [100.1, 100.1, 98.0, 98.2, 1]] + [[98.2, 98.3, 98.1, 98.2, 1]] * 2
+    bars, idx = _bars(rows, "15min")
+    bot = custom.OctoGridBot("t", {"timeframe": "15m", "params": {"instrument": "BTC_SPOT"}})
+    led = Ledger("t", 1000.0)
+    eng = _engine()
+    eng.run(bot, led, bars, idx[0], idx[-1] + pd.Timedelta(days=1))
+    st = led.meta["state"]
+    assert st["p0"] == 100 and st["increment"] == pytest.approx(0.5) and st["spread"] == pytest.approx(1.5)
+    f = eng.fills
+    # candle 2 (low 98.5) fills the buys at 99.25, 98.75; candle 3 sells them 1.0 higher (100.25 missed, 99.75 hit)
+    buys = [x for x in f if x.side == "buy"]
+    assert [round(x.price, 2) for x in buys[:2]] == [99.25, 98.75] and buys[0].qty == pytest.approx(1000 * 0.999 / 100 / 20)
+    sells = [x for x in f if x.side == "sell"]
+    assert [round(x.price, 2) for x in sells] == [99.75] and sells[0].tag == "og:mirror sell"
+    # that sell is mirrored by a buy 1.0 lower (98.75) for the same EUR, filled by candle 4 (low 98.0)
+    mb = [x for x in f if x.tag == "og:mirror buy"]
+    assert len(mb) == 1 and mb[0].price == pytest.approx(98.75) and mb[0].qty == pytest.approx(99.75 / 98.75 * sells[0].qty, rel=1e-3)
+
+
+def test_octobot_dca_buys_at_start_then_weekly_and_never_sells():
+    rows = [[100, 101, 99, 100, 1]] * (24 * 22)
+    bars, idx = _bars(rows, "1h")
+    bot = custom.OctoDcaBot("t", {"timeframe": "1h", "params": {"instrument": "BTC_SPOT"}})
+    led = Ledger("t", 5000.0)
+    eng = _engine()
+    eng.run(bot, led, bars, idx[0], idx[-1] + pd.Timedelta(days=1))
+    buys = [x for x in eng.fills if x.side == "buy"]
+    assert [pd.Timestamp(x.ts) - idx[1] for x in buys] == [pd.Timedelta(days=d) for d in (0, 7, 14, 21)]
+    assert all(x.value_eur == pytest.approx(5000 / 12, rel=0.01) for x in buys)
+    assert not [x for x in eng.fills if x.side == "sell"]

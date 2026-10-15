@@ -9,7 +9,7 @@ The live dashboard, updated every 15 minutes. Also:
 [status table](https://github.com/jcosta92/trading-agents/blob/bot-state/reports/BOTS.md) ·
 [every fill](https://github.com/jcosta92/trading-agents/blob/bot-state/state/bots/fills.csv)
 
-## The bot test (12 Oct - 31 Dec 2026): 1,136 bots, 211 strategy families
+## The bot test (12 Oct - 31 Dec 2026): 1,152 bots, 213 strategy families
 
 Every bot trades its own simulated **EUR 5,000** on real candles, buying and selling throughout the test; on
 31 Dec every bot sells what it holds. A mid-point review runs on 12 Nov, the final review on 31 Dec. (Until
@@ -23,7 +23,7 @@ all results cover the same window at the same size.)
   several markets (usually 8 coins or 10 ETFs). That is a robustness check, not parameter fishing: a family is judged
   by its median bot and by how many of its bots make money, never by its single best bot.
 - **The original 17 bots** (6 most-used bot strategies, 5 less common ones, 6 classic systems) are in
-  [`config/bots.yaml`](config/bots.yaml); the 194 other families, with source links and rules, in
+  [`config/bots.yaml`](config/bots.yaml); the 196 other families, with source links and rules, in
   [`config/families.yaml`](config/families.yaml).
 - **Final GitHub sweep (13 Oct).** 23 more families, rules read from each project's source file: Freqtrade's
   sample strategy, Strategy002, UniversalMACD, MultiRSI, VolatilitySystem, NostalgiaForInfinity V1, ichiV1 and
@@ -48,6 +48,10 @@ all results cover the same window at the same size.)
   9-11 am New York ([u/tiffarooner](https://www.reddit.com/r/Daytrading/comments/1x5qopq/)). They trade COMEX
   Micro Gold (10 oz) in whole contracts at IBKR futures fees (USD 0.96 a contract per side) on 5-minute Yahoo
   GC=F candles; one contract is the smallest size, so with EUR 5,000 a trade usually risks 2-4% of equity.
+- **OctoBot Grid and DCA modes (15 Oct).** OctoBot's two no-code modes with the defaults from its source: the grid
+  (spread 1.5%, steps 0.5%, 20 buy orders, each fill mirrored 1% away) and the time-based DCA (a market buy every
+  week, no exit; 1/12 of the capital per buy instead of OctoBot's fixed 50 units, which would leave 90% idle),
+  each on the 8 coins. With them the test runs 37 Freqtrade, 5 Jesse and 3 OctoBot families.
 - **Everything is free.** No paid API or subscription: public-repository GitHub Actions minutes, free market data
   (Bitvavo, Kraken, Yahoo, including Yahoo's delayed gold futures) and scheduled Claude tasks.
 - **Luck.** With ~1,100 bots, dozens will beat the market by chance. The dashboard shows a luck yardstick (how far the

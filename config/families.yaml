@@ -2101,6 +2101,27 @@ families:
     variants: crypto8
     risk: {bracket: true}
 
+  # =========================================================================== OctoBot Grid and DCA modes (15 Oct 2026)
+  # Instagram post (diego.spanevello, 24 Sep 2026) on Freqtrade, Jesse and OctoBot: the test already runs
+  # 37 Freqtrade, 5 Jesse and OctoBot's Dip Analyser families; these add the two OctoBot modes it shows.
+  octobot_grid:
+    group: repos
+    name: "OctoBot Grid Trading mode, default settings"
+    source: "https://github.com/Drakkar-Software/OctoBot-Tentacles/blob/master/Trading/Mode/grid_trading_mode/grid_trading.py (default pair config; spread/increment defaults in staggered_orders_trading.py)"
+    rules: "OctoBot's defaults for a pair without its own grid configuration: spread 1.5% and increment 0.5% of the starting price, 20 buy and 20 sell orders using all available funds, equal coin amounts per order, no trailing. Starting with EUR only, only the 20 buy orders can be funded (from 0.75% below the price, 0.5% apart). Each filled order is mirrored 1% (spread minus increment) away: a filled buy becomes a sell 1% higher, a filled sell a buy 1% lower for the same EUR. No stop: below the grid it holds the coins, above it holds EUR."
+    class: OctoGridBot
+    timeframe: 15m
+    variants: crypto8
+
+  octobot_dca:
+    group: repos
+    name: "OctoBot DCA Trading mode, default settings (weekly buy, no exit)"
+    source: "https://github.com/Drakkar-Software/OctoBot-Tentacles/blob/master/Trading/Mode/dca_trading_mode/config/DCATradingMode.json"
+    rules: "OctoBot's default DCA configuration: 'Time based' trigger, a market buy at the start and then every 10,080 minutes (weekly), no take-profit, no stop loss, no secondary orders: an accumulation plan held until the end of the test. OctoBot's default amount is 50 units of the quote currency per buy; with EUR 5,000 that would leave 90% idle, so each buy here is 1/12 of the starting capital (12 weekly buys fit in the test window)."
+    class: OctoDcaBot
+    timeframe: 1h
+    variants: crypto8
+
   # =========================================================================== r/Daytrading gold futures (14 Oct 2026)
   # Two gold-futures day-trading setups posted on r/Daytrading, rules from the posts and the authors'
   # replies in the comments (read with the free Reddit API via Composio). Both trade long and short.

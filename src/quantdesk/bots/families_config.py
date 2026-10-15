@@ -5,7 +5,8 @@ import copy
 
 from ..config import CONFIG_DIR, load_yaml
 
-SINGLE_CRYPTO = {"SignalBot", "InfinityGridBot", "AvellanedaBot", "GridBot", "DipAnalyserBot"}
+SINGLE_CRYPTO = {"SignalBot", "InfinityGridBot", "AvellanedaBot", "GridBot", "DipAnalyserBot", "OctoGridBot",
+                 "OctoDcaBot"}
 SINGLE_ETF = {"EtfDailyBot", "IntradayEtfBot", "TPSBot", "PreFomcBot"}
 
 
