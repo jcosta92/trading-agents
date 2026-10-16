@@ -3,31 +3,10 @@
  "base": "EUR",
  "initial_capital": 1000.0,
  "cash": {
-  "EUR": 1000.0,
-  "USD": 33.349399999999974
+  "EUR": 336.54890570526345,
+  "USD": 632.6747
  },
- "positions": {
-  "XSP:2026-11-20:P:745": {
-   "inst_id": "XSP:2026-11-20:P:745",
-   "qty": -1.0,
-   "avg_price": 4.07,
-   "currency": "USD",
-   "multiplier": 100.0,
-   "kind": "option",
-   "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 6.425
-  },
-  "XSP:2026-11-20:P:741": {
-   "inst_id": "XSP:2026-11-20:P:741",
-   "qty": 1.0,
-   "avg_price": 3.71,
-   "currency": "USD",
-   "multiplier": 100.0,
-   "kind": "option",
-   "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 5.8100000000000005
-  }
- },
+ "positions": {},
  "journal": [
   {
    "type": "deposit",
@@ -77,13 +56,86 @@
    "reason": "ENTRY signal: VIX 14.8 within [13, 25.3], 2026-11-20 expiry, credit 0.36 for 4 wide - BUY 741P wing",
    "combo": "open-XSP:2026-11-20:P:745-2026-10-11",
    "seq": 2
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-16T18:07:46.147437+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 663.4510942947365,
+   "amount_to": 744.9759,
+   "rate": 1.1232168674468994,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.19903532828845982,
+   "reason": "auto FX for XSP:2026-11-20:P:745",
+   "seq": 3
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-16T18:07:46.147437+00:00",
+   "inst": "XSP:2026-11-20:P:745",
+   "kind": "option",
+   "qty": 1.0,
+   "price": 7.77,
+   "mid": 7.404999999999999,
+   "ccy": "USD",
+   "multiplier": 100.0,
+   "fees": {
+    "USD": 1.3253
+   },
+   "fees_eur": 1.1799146170342336,
+   "spread_cost_eur": 32.49595074454807,
+   "value_eur": 691.7631158496941,
+   "eur_rate": 1.1232168674468994,
+   "reason": "STOP-LOSS: spread at 0.72 >= 2.0x credit 0.36",
+   "combo": "close-XSP:2026-11-20:P:745-2026-10-16T18",
+   "seq": 4
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-16T18:07:46.147437+00:00",
+   "inst": "XSP:2026-11-20:P:741",
+   "kind": "option",
+   "qty": -1.0,
+   "price": 6.34,
+   "mid": 6.68,
+   "ccy": "USD",
+   "multiplier": 100.0,
+   "fees": {
+    "USD": 1.3253
+   },
+   "fees_eur": 1.1799146170342336,
+   "spread_cost_eur": 30.270200693551597,
+   "value_eur": 564.4502129326977,
+   "eur_rate": 1.1232168674468994,
+   "reason": "STOP-LOSS: spread at 0.72 >= 2.0x credit 0.36",
+   "combo": "close-XSP:2026-11-20:P:745-2026-10-16T18",
+   "seq": 5
   }
  ],
  "costs": {
-  "commissions": 2.3720221221868245,
-  "spread_slippage": 4.474500343670937
+  "commissions": 4.731851356255292,
+  "spread_slippage": 67.24065178177061,
+  "fx": 0.19903532828845982
  },
- "realized": [],
+ "realized": [
+  {
+   "ts": "2026-10-16T18:07:46.147437+00:00",
+   "inst": "XSP:2026-11-20:P:745",
+   "qty": 1.0,
+   "pnl": -369.99999999999994,
+   "ccy": "USD",
+   "pnl_eur": -329.41100754747333
+  },
+  {
+   "ts": "2026-10-16T18:07:46.147437+00:00",
+   "inst": "XSP:2026-11-20:P:741",
+   "qty": 1.0,
+   "pnl": 263.0,
+   "ccy": "USD",
+   "pnl_eur": 234.14890536482568
+  }
+ ],
  "meta": {
   "splits_applied": {},
   "split_suspect": {},
@@ -108,7 +160,7 @@
     "opened": "2026-10-11",
     "short_delta": -0.16,
     "vix": 14.84,
-    "last_debit_mid": 0.615
+    "last_debit_mid": 0.725
    }
   ],
   "last_decision": "2026-10-15",
@@ -125,7 +177,7 @@
   "pending": [],
   "last_equity": {
    "date": "2026-10-16",
-   "equity": 974.9178
+   "equity": 899.8192
   }
  },
  "halted": false,
