@@ -3,19 +3,29 @@
  "base": "EUR",
  "initial_capital": 1000.0,
  "cash": {
-  "EUR": 338.8396050687745,
-  "USD": 328.0879819986886
+  "EUR": 326.67884879332865,
+  "USD": -1.73749903353837e-14
  },
  "positions": {
-  "MRNA": {
-   "inst_id": "MRNA",
-   "qty": 1.66049943,
-   "avg_price": 222.26106889343262,
+  "LLY": {
+   "inst_id": "LLY",
+   "qty": 0.28488015,
+   "avg_price": 1254.877125,
    "currency": "USD",
    "multiplier": 1.0,
    "kind": "stock",
-   "opened": "2026-10-12T15:14:21.224948+00:00",
-   "last_mark": 224.7808074951172
+   "opened": "2026-10-19T14:06:33.719585+00:00",
+   "last_mark": 1254.25
+  },
+  "XOM": {
+   "inst_id": "XOM",
+   "qty": 1.99810391,
+   "avg_price": 178.91440944671632,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-19T14:06:33.719585+00:00",
+   "last_mark": 178.8249969482422
   }
  },
  "journal": [
@@ -111,12 +121,85 @@
    "eur_rate": 1.1217050552368164,
    "reason": "STOP-LOSS hit: price 878 <= stop 917.1 (stop -7%, take-profit +10%, time exit 5 days)",
    "seq": 5
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-19T14:06:33.719585+00:00",
+   "inst": "MRNA",
+   "kind": "stock",
+   "qty": -1.66049943,
+   "price": 225.42722328948975,
+   "mid": 225.5399932861328,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.3630296082553308
+   },
+   "fees_eur": 0.3235682859228833,
+   "spread_cost_eur": 0.1668999473309984,
+   "value_eur": 333.6329947146644,
+   "eur_rate": 1.121956706047058,
+   "reason": "TIME EXIT: held 5 business days (max 5)",
+   "seq": 6
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-19T14:06:33.719585+00:00",
+   "inst": "LLY",
+   "kind": "stock",
+   "qty": 0.28488015,
+   "price": 1254.877125,
+   "mid": 1254.25,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35091247112045
+   },
+   "fees_eur": 0.3127682817252413,
+   "spread_cost_eur": 0.15923561319776136,
+   "value_eur": 318.63046200873157,
+   "eur_rate": 1.121956706047058,
+   "reason": "BUY signal: regulatory_legal news, materiality 2, direction +1 (\"Lilly\u2019s Foundayo Pill Gets European Regulatory Backing \u2013 LLY Stock Heads For Bes\"), 1-month return +9.1%",
+   "seq": 7
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-19T14:06:33.719585+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 12.160756275445856,
+   "amount_to": 13.63974890122417,
+   "rate": 1.121956706047058,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.0036482268826354414,
+   "reason": "auto FX for XOM",
+   "seq": 8
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-19T14:06:33.719585+00:00",
+   "inst": "XOM",
+   "kind": "stock",
+   "qty": 1.99810391,
+   "price": 178.91440944671632,
+   "mid": 178.8249969482422,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35639992682372995
+   },
+   "fees_eur": 0.31765925093439523,
+   "spread_cost_eur": 0.15923561207052475,
+   "value_eur": 318.63045975307955,
+   "eur_rate": 1.121956706047058,
+   "reason": "BUY signal: earnings news, materiality 2, direction +1 (\"ExxonMobil\u2019s Refining Profits Are Set to Jump $4.5 Billion. Here\u2019s What XOM Inve\"), 1-month return +9.6%",
+   "seq": 9
   }
  ],
  "costs": {
-  "fx": 0.19834811847937317,
-  "commissions": 0.9511759112651357,
-  "spread_slippage": 0.476478009655132
+  "fx": 0.2019963453620086,
+  "commissions": 1.9051717298476554,
+  "spread_slippage": 0.9618491822544165
  },
  "realized": [
   {
@@ -126,6 +209,14 @@
    "pnl": -40.618429658126644,
    "ccy": "USD",
    "pnl_eur": -36.211327985458
+  },
+  {
+   "ts": "2026-10-19T14:06:33.719585+00:00",
+   "inst": "MRNA",
+   "qty": 1.66049943,
+   "pnl": 5.257397569944848,
+   "ccy": "USD",
+   "pnl_eur": 4.6859183973934355
   }
  ],
  "meta": {
@@ -140,71 +231,211 @@
    "equity": 954.0579
   },
   "protect": {
-   "MRNA": {
-    "entry": 222.26106889343262,
-    "opened": "2026-10-12",
-    "stop": 206.70279407089234,
-    "target": 244.4871757827759,
-    "hwm": 236.5,
+   "LLY": {
+    "entry": 1254.877125,
+    "opened": "2026-10-19",
+    "stop": 1167.03572625,
+    "target": 1380.3648375,
+    "hwm": 1254.877125,
     "spec": {
      "stop_pct": 0.07,
      "target_pct": 0.1,
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-15"
+    "updated": ""
+   },
+   "XOM": {
+    "entry": 178.91440944671632,
+    "opened": "2026-10-19",
+    "stop": 166.39040078544616,
+    "target": 196.80585039138796,
+    "hwm": 178.91440944671632,
+    "spec": {
+     "stop_pct": 0.07,
+     "target_pct": 0.1,
+     "max_days": 5,
+     "label": "stop -7%, take-profit +10%, time exit 5 days"
+    },
+    "updated": ""
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-10-19",
-   "equity": 963.59
+   "equity": 963.6213
   },
-  "last_decision": "2026-10-11",
+  "last_decision": "2026-10-18",
   "last_candidates": {
-   "MU": {
+   "INTC": {
     "event": {
-     "id": "cf41f0e4b48f",
-     "ticker": "MU",
-     "event_type": "capital_return",
+     "id": "2f8078472ce6",
+     "ticker": "INTC",
+     "event_type": "product",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Board raises buyback authorization to about $35bn",
-     "title": "Micron board raises buyback ceiling to $35.16bn",
-     "published": "2026-10-12T14:20:57+00:00"
+     "confidence": 0.65,
+     "rationale": "Tesla signs as 14A foundry customer, key external validation",
+     "title": "Intel (INTC) Lands A Major Customer For Its 14A Foundry Process",
+     "published": "2026-10-18T15:12:09+00:00"
     },
-    "check": "1-month return +5.3% - BUY"
+    "check": "1-month return -17.4% - skipped"
    },
-   "MRNA": {
+   "BE": {
     "event": {
-     "id": "98ee8d0766eb",
-     "ticker": "MRNA",
+     "id": "b5acf1e045b0",
+     "ticker": "BE",
      "event_type": "product",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.6,
-     "rationale": "Cancer vaccine breakthrough driving sharp rally",
-     "title": "Moderna\u2019s (MRNA) Cancer Vaccine Breakthrough Drives Sharp Stock Rally",
-     "published": "2026-10-12T14:27:07+00:00"
+     "rationale": "AEP plans 702 MW Bloom fuel cell plant under 20-year PPA",
+     "title": "Fuel Cell Deal Could Be A Game Changer For American Electric Power Company (AEP)",
+     "published": "2026-10-19T02:07:58+00:00"
     },
-    "check": "1-month return +64.7% - BUY"
+    "check": null
+   },
+   "LLY": {
+    "event": {
+     "id": "e628499f00a4",
+     "ticker": "LLY",
+     "event_type": "regulatory_legal",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.7,
+     "rationale": "EMA committee recommends approval of Foundayo obesity pill",
+     "title": "Lilly\u2019s Foundayo Pill Gets European Regulatory Backing \u2013 LLY Stock Heads For Best Week In Nearly Four Months",
+     "published": "2026-10-16T15:41:59+00:00"
+    },
+    "check": "1-month return +9.1% - BUY"
+   },
+   "XOM": {
+    "event": {
+     "id": "eaea673b1468",
+     "ticker": "XOM",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.65,
+     "rationale": "Filing flags $4.5B Q3 refining boost; Goldman sees EPS beat",
+     "title": "ExxonMobil\u2019s Refining Profits Are Set to Jump $4.5 Billion. Here\u2019s What XOM Investors Need to Know.",
+     "published": "2026-10-16T19:05:01+00:00"
+    },
+    "check": "1-month return +9.6% - BUY"
+   },
+   "QCOM": {
+    "event": {
+     "id": "306907103319",
+     "ticker": "QCOM",
+     "event_type": "regulatory_legal",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.6,
+     "rationale": "Delaware jury finds Arm breached Qualcomm license agreement",
+     "title": "Arm and AMD Fall 5% as Qualcomm Verdict Adds to Chip Selloff; Taiwan Semiconductor Slips",
+     "published": "2026-10-16T18:10:37+00:00"
+    },
+    "check": null
+   },
+   "KO": {
+    "event": {
+     "id": "ce13cc6c8898",
+     "ticker": "KO",
+     "event_type": "product",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.55,
+     "rationale": "Wins exclusive KFC U.S. fountain contract from PepsiCo",
+     "title": "Coca-Cola (KO) Will Supply Drinks At KFC U.S. Starting In 2027",
+     "published": "2026-10-17T06:07:54+00:00"
+    },
+    "check": null
+   },
+   "BA": {
+    "event": {
+     "id": "f08cb0e07c2f",
+     "ticker": "BA",
+     "event_type": "regulatory_legal",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.6,
+     "rationale": "FAA reportedly set to approve 737 MAX 10 soon",
+     "title": "FAA Set to Clear Boeing\u2019s 737 MAX 10. Why Analysts Are Cutting Targets Anyway",
+     "published": "2026-10-16T21:02:24+00:00"
+    },
+    "check": null
+   },
+   "RTX": {
+    "event": {
+     "id": "5b0a2bc17378",
+     "ticker": "RTX",
+     "event_type": "product",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.55,
+     "rationale": "$8B nuclear command contract plus $729M counter-drone deal",
+     "title": "RTX Locks In a Decade of Defense Dominance",
+     "published": "2026-10-16T13:40:00+00:00"
+    },
+    "check": null
    }
   },
   "signals": {
-   "MU": {
+   "LLY": {
     "state": "BUY",
-    "event": "capital_return",
+    "event": "regulatory_legal",
     "materiality": 2,
-    "confidence": 0.6,
-    "check": "1-month return +5.3% - BUY"
+    "confidence": 0.7,
+    "check": "1-month return +9.1% - BUY"
    },
-   "MRNA": {
+   "INTC": {
+    "state": "SKIP",
+    "event": "product",
+    "materiality": 2,
+    "confidence": 0.65,
+    "check": "1-month return -17.4% - skipped"
+   },
+   "XOM": {
     "state": "BUY",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.65,
+    "check": "1-month return +9.6% - BUY"
+   },
+   "BE": {
+    "state": "NO SLOT",
     "event": "product",
     "materiality": 2,
     "confidence": 0.6,
-    "check": "1-month return +64.7% - BUY"
+    "check": "not checked (positions full)"
+   },
+   "QCOM": {
+    "state": "NO SLOT",
+    "event": "regulatory_legal",
+    "materiality": 2,
+    "confidence": 0.6,
+    "check": "not checked (positions full)"
+   },
+   "BA": {
+    "state": "NO SLOT",
+    "event": "regulatory_legal",
+    "materiality": 2,
+    "confidence": 0.6,
+    "check": "not checked (positions full)"
+   },
+   "KO": {
+    "state": "NO SLOT",
+    "event": "product",
+    "materiality": 2,
+    "confidence": 0.55,
+    "check": "not checked (positions full)"
+   },
+   "RTX": {
+    "state": "NO SLOT",
+    "event": "product",
+    "materiality": 2,
+    "confidence": 0.55,
+    "check": "not checked (positions full)"
    }
   }
  },
