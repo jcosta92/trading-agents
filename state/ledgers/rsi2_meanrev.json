@@ -3,9 +3,20 @@
  "base": "EUR",
  "initial_capital": 1000.0,
  "cash": {
-  "EUR": 1000.0
+  "EUR": 49.168722716620096
  },
- "positions": {},
+ "positions": {
+  "SP500": {
+   "inst_id": "SP500",
+   "qty": 7.132935,
+   "avg_price": 133.301548,
+   "currency": "EUR",
+   "multiplier": 1.0,
+   "kind": "etf",
+   "opened": "2026-10-19T08:17:57.224953+00:00",
+   "last_mark": 133.185
+  }
+ },
  "journal": [
   {
    "type": "deposit",
@@ -13,9 +24,30 @@
    "ccy": "EUR",
    "amount": 1000.0,
    "seq": 0
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-19T08:17:57.224953+00:00",
+   "inst": "SP500",
+   "kind": "etf",
+   "qty": 7.132935,
+   "price": 133.301548,
+   "mid": 133.185,
+   "ccy": "EUR",
+   "multiplier": 1.0,
+   "fees": {},
+   "fees_eur": 0,
+   "spread_cost_eur": 0.8313293083799611,
+   "value_eur": 950.8312772833799,
+   "eur_rate": 1.0,
+   "reason": "BUY signal: RSI(2) 4.6 < 10 with close 132.80 > SMA200 121.37",
+   "seq": 1
   }
  ],
- "costs": {},
+ "costs": {
+  "commissions": 0.0,
+  "spread_slippage": 0.8313293083799611
+ },
  "realized": [],
  "meta": {
   "splits_applied": {},
@@ -26,24 +58,40 @@
    "date": "2026-10-19",
    "equity": 1000.0
   },
-  "protect": {},
-  "last_decision": "2026-10-15",
+  "protect": {
+   "SP500": {
+    "entry": 133.301548,
+    "opened": "2026-10-19",
+    "stop": 130.22881595392514,
+    "target": 134.21099853515625,
+    "hwm": 133.301548,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 1.024244015358291,
+     "target_sma": 5,
+     "max_days": 10,
+     "label": "stop 3.0xATR(10), take-profit at SMA5 (when above entry), time exit 10 days"
+    },
+    "updated": ""
+   }
+  },
+  "last_decision": "2026-10-18",
   "signals": {
    "SP500": {
-    "close": 134.735,
-    "sma200": 121.1655,
-    "rsi2": 44.22,
-    "sma5": 134.759,
-    "atr10": 0.8857,
+    "close": 132.8,
+    "sma200": 121.3703,
+    "rsi2": 4.62,
+    "sma5": 134.211,
+    "atr10": 1.0242,
     "buy_rule": "close > SMA200 and RSI(2) < 10",
     "sell_rule": "close > SMA5; take-profit order at SMA5 while above the entry",
-    "state": "FLAT"
+    "state": "BUY"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-10-19",
-   "equity": 1000.0
+   "equity": 999.1687
   }
  },
  "halted": false,
