@@ -275,10 +275,12 @@ def test_dashboard_and_status_table(tmp_path, cfg):
     fam = report.family_table(t, cfg)
     assert abs(fam["pnl_net"].sum() - t["pnl_net"].sum()) < 1e-6 and abs(fam["fees"].sum() - f["fee_eur"].sum()) < 1e-6
     assert ((fam["pl_pct"] - fam["pnl_net"] / (fam["bots"] * cap)).abs() < 1e-12).all()
+    assert ((fam["avg_gross"] - fam["avg_fees"] - fam["avg_net"]).abs() < 1e-9).all()
     tot = report.money(t, cap)
     assert tot["pct"] == pytest.approx(t["return"].mean(), abs=1e-12)
+    assert tot["net"] == pytest.approx(t["pnl_net"].mean()) and tot["net_total"] == pytest.approx(t["pnl_net"].sum())
     assert "P/L €<br><span class='small'>before fees</span>" in html and "All families" in html
-    assert "| P/L % after fees | P/L before fees | Fees | P/L after fees |" in md and "**All families**" in md
+    assert "| P/L % after fees | P/L before fees | Fees | P/L after fees |" in md and "**All families**" in md and "Average bot since the start" in md
     p = pd.read_csv(state / "prices.csv")
     assert {"BTC_SPOT", "ETH_SPOT", "SOL_SPOT"} <= set(p.columns) and p["ts"].is_monotonic_increasing
 

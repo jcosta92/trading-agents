@@ -71,12 +71,17 @@ def summary_table(data: dict, cfg: dict) -> pd.DataFrame:
 
 
 def money(t: pd.DataFrame, cap: float) -> dict:
-    """P/L of a set of bots added up since the start: before fees, fees, after fees, and the after-fees
-    P/L as a share of their starting capital (= the bots' average return, since all start equal)."""
+    """Average bot of a set of bots since the start: P/L before fees, fees, P/L after fees (EUR per bot)
+    and the average return after fees. Every bot starts with the same capital, so the average return
+    is also the set's total P/L / total capital. `*_total` keep the sums."""
     n = len(t)
-    net = float(t["pnl_net"].sum()) if n else 0.0
-    return {"bots": n, "capital": n * cap, "gross": float(t["pnl_gross"].sum()) if n else 0.0,
-            "fees": float(t["fees"].sum()) if n else 0.0, "net": net, "pct": net / (n * cap) if n else float("nan")}
+    if not n:
+        return {"bots": 0, "capital": 0.0, "gross": 0.0, "fees": 0.0, "net": 0.0, "pct": float("nan"),
+                "gross_total": 0.0, "fees_total": 0.0, "net_total": 0.0}
+    return {"bots": n, "capital": n * cap, "gross": float(t["pnl_gross"].mean()), "fees": float(t["fees"].mean()),
+            "net": float(t["pnl_net"].mean()), "pct": float(t["pnl_net"].mean()) / cap,
+            "gross_total": float(t["pnl_gross"].sum()), "fees_total": float(t["fees"].sum()),
+            "net_total": float(t["pnl_net"].sum())}
 
 
 def family_table(table: pd.DataFrame, cfg: dict) -> pd.DataFrame:
@@ -90,9 +95,10 @@ def family_table(table: pd.DataFrame, cfg: dict) -> pd.DataFrame:
         "share_up": g["return"].apply(lambda r: float((r > 0).mean())),
         "trades": g["buys"].sum() + g["sells"].sum(), "fees": g["fees"].sum(),
         "pnl_gross": g["pnl_gross"].sum(), "pnl_net": g["pnl_net"].sum(),
+        "avg_gross": g["pnl_gross"].mean(), "avg_fees": g["fees"].mean(), "avg_net": g["pnl_net"].mean(),
         "errors": g["error"].apply(lambda e: int(e.notna().sum())),
     })
-    out["pl_pct"] = out["pnl_net"] / (out["bots"] * cap)
+    out["pl_pct"] = out["avg_net"] / cap              # the family's average return after fees
     fams = cfg.get("families", {})
     out["name"] = [fams.get(f, {}).get("name", f) for f in out.index]
     out["source"] = [fams.get(f, {}).get("source", "") for f in out.index]
@@ -186,26 +192,25 @@ def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "i
         frows.append(f"<tr class='grp'><td colspan='3' class='l'><b>{_esc(gnames.get(g, g))}</b> "
                      f"<span class='muted'>({len(sub)} families, {int(sub['bots'].sum())} bots)</span></td>"
                      + _money_cells(gm["pct"], gm["gross"], gm["fees"], gm["net"], strong=True)
-                     + "<td colspan='6'></td></tr>")
+                     + "<td colspan='5'></td></tr>")
         for fid, r in sub.iterrows():
             frows.append(
                 f"<tr><td class='l'><a href='#f-{_esc(fid)}'>{_esc(r['name'])}</a>"
                 + (" <span class='badge fail'>error</span>" if r["errors"] else "") + "</td>"
                 f"<td class='l small'>{_esc(r['timeframe'])}</td><td class='num'>{int(r['bots'])}</td>"
-                + _money_cells(r["pl_pct"], r["pnl_gross"], r["fees"], r["pnl_net"]) +
+                + _money_cells(r["pl_pct"], r["avg_gross"], r["avg_fees"], r["avg_net"]) +
                 f"<td class='{_cls(r['median'])}'>{_pct(r['median'], 2)}</td>"
                 f"<td class='num'>{_pct(r['share_up'], 0, False)}</td>"
                 f"<td class='{_cls(r['best'])}'>{_pct(r['best'], 1)}</td><td class='{_cls(r['worst'])}'>{_pct(r['worst'], 1)}</td>"
-                f"<td class='num'>{int(r['trades'])}</td>"
-                f"<td class='num'>{_eur(r['fees'] / max(1, r['bots']))}</td></tr>")
+                f"<td class='num'>{int(r['trades'])}</td></tr>")
     if n:
         frows.append(f"<tr class='grp'><td colspan='2' class='l'><b>All families</b></td><td class='num'><b>{n}</b></td>"
                      + _money_cells(tot["pct"], tot["gross"], tot["fees"], tot["net"], strong=True)
                      + f"<td class='{_cls(float(table['return'].median()))}'><b>{_pct(float(table['return'].median()), 2)}</b></td>"
                      f"<td class='num'><b>{_pct(up / n, 0, False)}</b></td><td></td><td></td>"
-                     f"<td class='num'><b>{trades:,}</b></td><td class='num'><b>{_eur(fees / n)}</b></td></tr>")
+                     f"<td class='num'><b>{trades:,}</b></td></tr>")
     ref_rows = "".join(f"<tr><td class='l muted'>{_esc(k)} (no costs)</td><td></td><td></td><td class='{_cls(v)}'>{_pct(v, 2)}</td>"
-                       f"<td></td><td></td><td></td><td class='{_cls(v)}'>{_pct(v, 2)}</td>" + "<td></td>" * 5 + "</tr>"
+                       f"<td></td><td></td><td></td><td class='{_cls(v)}'>{_pct(v, 2)}</td>" + "<td></td>" * 4 + "</tr>"
                        for k, v in ref_now.items())
 
     details = []
@@ -224,15 +229,15 @@ def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "i
                 f"<td class='num'>{_pct(tb.at[b, 'win_rate'], 0, False)}</td>"
                 f"<td class='num'>{_pct(tb.at[b, 'max_dd'], 1, False)}</td></tr>"
                 for b in bots)
-            vrows += (f"<tr class='grp'><td class='l'><b>Family</b></td><td class='num'><b>{_eur(r['bots'] * cap + r['pnl_net'])}</b></td>"
-                      + _money_cells(r["pl_pct"], r["pnl_gross"], r["fees"], r["pnl_net"], strong=True)
+            vrows += (f"<tr class='grp'><td class='l'><b>Average bot</b></td><td class='num'><b>{_eur(cap + r['avg_net'])}</b></td>"
+                      + _money_cells(r["pl_pct"], r["avg_gross"], r["avg_fees"], r["avg_net"], strong=True)
                       + f"<td class='num'><b>{int(tb.loc[bots, 'buys'].sum())}</b></td>"
                       f"<td class='num'><b>{int(tb.loc[bots, 'sells'].sum())}</b></td><td></td><td></td></tr>")
             src = str(r["source"])
             src_html = f"<a href='{_esc(src)}'>{_esc(src)}</a>" if src.startswith("http") else _esc(src)
             details.append(f"""
 <details class='card' id='f-{_esc(fid)}'><summary><b>{_esc(r['name'])}</b> · {_esc(r['timeframe'])} ·
-{_eur(r['pnl_net'])} after fees ({_pct(r['pl_pct'], 2)}) · median {_pct(r['median'], 2)} ·
+average bot {_eur(r['avg_net'])} after fees ({_pct(r['pl_pct'], 2)}) · median {_pct(r['median'], 2)} ·
 {_pct(r['share_up'], 0, False)} of {int(r['bots'])} up</summary>
 <p class='small'>{_esc(r['rules'])}</p><p class='small muted'>Source: {src_html}</p>
 <div class='tablewrap'><table><thead><tr><th class='l'>Market</th><th>Equity</th><th>P/L %<br><span class='small'>after fees</span></th>
@@ -266,22 +271,22 @@ bot. Real candles, Bitvavo / IBKR fees, spread and slippage on every fill. Last 
 <div class='tiles'>
  <div class='tile'><div class='label'>{'Test finished' if finished else 'Day'}</div><div class='value'>{min(days, total_days)} / {total_days}</div><div class='note'>{'results are final' if finished else 'results are provisional'}</div></div>
  <div class='tile'><div class='label'>Bots in profit</div><div class='value'>{up} / {n}</div><div class='note'>{beat} ahead of BTC buy-and-hold</div></div>
- <div class='tile'><div class='label'>All bots: P/L after fees</div><div class='value {_cls(tot['net']).replace('num', '').strip()}'>{_eur(tot['net'], 0)}</div><div class='note'>{_pct(tot['pct'], 2)} of {_eur(tot['capital'], 0)}. Before fees {_eur(tot['gross'], 0)}; fees {_eur(-tot['fees'], 0)}</div></div>
+ <div class='tile'><div class='label'>Average bot: P/L after fees</div><div class='value {_cls(tot['net']).replace('num', '').strip()}'>{_eur(tot['net'])}</div><div class='note'>{_pct(tot['pct'], 2)} of €{cap:,.0f}. Before fees {_eur(tot['gross'])}; fees {_eur(-tot['fees'])}</div></div>
  <div class='tile'><div class='label'>Trades / fees</div><div class='value'>{trades:,}</div><div class='note'>{_eur(fees)} paid in fees ({_eur(fees / n if n else 0)} per bot)</div></div>
  <div class='tile'><div class='label'>Best family (median)</div><div class='value'>{_pct(best_f['median'], 1) if best_f is not None else '–'}</div><div class='note'>{_esc(_short(str(best_f['name']), 60)) if best_f is not None else ''}</div></div>
  <div class='tile'><div class='label'>Luck yardstick</div><div class='value'>{_pct(luck, 1)}</div><div class='note'>how far the best of {n} bots would sit above the average by chance alone</div></div>
 </div>
 <h2>Median bot of each group</h2><div class='card' id='chart'></div>
 <h2>Families</h2>
-<p class='small muted'>P/L columns: all of the family's bots added up, since the start ({start:%d %b %H:%M} UTC).
-P/L before fees + fees = P/L after fees. P/L % = P/L after fees ÷ the family's starting money (bots × €{cap:,.0f}), which is
-also its bots' average return. "Before fees" means before Bitvavo / IBKR commissions; spread and slippage are inside the fill
+<p class='small muted'>P/L columns: the family's average bot since the start ({start:%d %b %H:%M} UTC), per €{cap:,.0f}
+account; group and "All families" rows average over all their bots. P/L before fees + fees = P/L after fees; P/L % = the
+average return after fees. "Before fees" means before Bitvavo / IBKR commissions; spread and slippage are inside the fill
 prices, so they count in both P/L columns. Median, best and worst are single bots' returns after all costs; "up" = share of its
 bots in profit. Sorted by median within each group. Click a family for its rules, source and every bot.</p>
 <div class='tablewrap'><table class='fam'><thead><tr><th class='l'>Family</th><th class='l'>Candles</th><th>Bots</th>
 <th>P/L %<br><span class='small'>after fees</span></th><th>P/L €<br><span class='small'>before fees</span></th><th>Fees €</th>
 <th>P/L €<br><span class='small'>after fees</span></th><th>Median</th>
-<th>Up</th><th>Best</th><th>Worst</th><th>Trades</th><th>Fees €<br><span class='small'>per bot</span></th></tr></thead>
+<th>Up</th><th>Best</th><th>Worst</th><th>Trades</th></tr></thead>
 <tbody>{''.join(frows)}{ref_rows}</tbody></table></div>
 <h2>Latest trades</h2>
 <div class='tablewrap'><table><thead><tr><th class='l'>Candle (UTC)</th><th class='l'>Bot</th><th class='l'>Side</th><th>Price</th>
@@ -313,12 +318,12 @@ def markdown(table: pd.DataFrame, fam: pd.DataFrame, cfg: dict, st: dict, ref_no
     lines = [f"# Trading bots: {pd.Timestamp(cfg['start']):%d %b} - {pd.Timestamp(cfg['end']):%d %b %Y}", "",
              f"Last update: {str(st.get('ts', '–'))[:16].replace('T', ' ')} UTC. {len(table)} bots in {len(fam)} families, "
              f"each started with EUR {cap:,.0f}.", "",
-             f"- All bots since the start: {_eur(tot['gross'])} before fees, {_eur(-tot['fees'])} fees, "
-             f"**{_eur(tot['net'])} after fees** ({_pct(tot['pct'], 2)} of {_eur(tot['capital'], 0)})"]
+             f"- Average bot since the start: {_eur(tot['gross'])} before fees, {_eur(-tot['fees'])} fees, "
+             f"**{_eur(tot['net'])} after fees** ({_pct(tot['pct'], 2)} of EUR {cap:,.0f})"]
     for k, v in ref_now.items():
         lines.append(f"- {k} (reference, no costs): {_pct(v, 2)}")
-    lines += ["", "P/L columns add up all of a family's bots since the start: before fees + fees = after fees. P/L % = P/L "
-              f"after fees / the family's starting money (bots x EUR {cap:,.0f}). Before fees = before commissions; spread "
+    lines += ["", f"P/L columns are the family's average bot (per EUR {cap:,.0f} account) since the start: before fees + "
+              "fees = after fees; P/L % = the average return after fees. Before fees = before commissions; spread "
               "and slippage are in the fill prices, so they count in both. Median, best and worst are single bots' returns "
               "after all costs. Sorted by median.", "",
               "| Family | Group | Bots | P/L % after fees | P/L before fees | Fees | P/L after fees | Median | Up | Best | Worst | Trades |",
@@ -326,7 +331,7 @@ def markdown(table: pd.DataFrame, fam: pd.DataFrame, cfg: dict, st: dict, ref_no
     if len(fam):
         for fid, r in fam.sort_values("median", ascending=False).iterrows():
             lines.append(f"| {r['name']} | {gn.get(r['group'], r['group'])} | {int(r['bots'])} | {_pct(r['pl_pct'], 2)} | "
-                         f"{_eur(r['pnl_gross'])} | {_eur(-r['fees'])} | {_eur(r['pnl_net'])} | {_pct(r['median'], 2)} | "
+                         f"{_eur(r['avg_gross'])} | {_eur(-r['avg_fees'])} | {_eur(r['avg_net'])} | {_pct(r['median'], 2)} | "
                          f"{_pct(r['share_up'], 0, False)} | {_pct(r['best'], 1)} | {_pct(r['worst'], 1)} | {int(r['trades'])} |")
         lines.append(f"| **All families** | | {tot['bots']} | **{_pct(tot['pct'], 2)}** | **{_eur(tot['gross'])}** | "
                      f"**{_eur(-tot['fees'])}** | **{_eur(tot['net'])}** | {_pct(float(table['return'].median()), 2)} | "
