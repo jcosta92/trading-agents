@@ -3,8 +3,8 @@
  "base": "EUR",
  "initial_capital": 1000.0,
  "cash": {
-  "EUR": 326.67884879332865,
-  "USD": -1.73749903353837e-14
+  "EUR": 7.874373021528697,
+  "USD": -1.0325074129013956e-14
  },
  "positions": {
   "LLY": {
@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-19T14:06:33.719585+00:00",
-   "last_mark": 1283.6600341796875
+   "last_mark": 1266.2249755859375
   },
   "XOM": {
    "inst_id": "XOM",
@@ -25,7 +25,17 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-19T14:06:33.719585+00:00",
-   "last_mark": 178.125
+   "last_mark": 177.80999755859375
+  },
+  "TMO": {
+   "inst_id": "TMO",
+   "qty": 0.51778446,
+   "avg_price": 690.4550403442382,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-21T14:08:03.164407+00:00",
+   "last_mark": 690.1099853515625
   }
  },
  "journal": [
@@ -194,12 +204,45 @@
    "eur_rate": 1.121956706047058,
    "reason": "BUY signal: earnings news, materiality 2, direction +1 (\"ExxonMobil\u2019s Refining Profits Are Set to Jump $4.5 Billion. Here\u2019s What XOM Inve\"), 1-month return +9.6%",
    "seq": 9
+  },
+  {
+   "type": "fx",
+   "ts": "2026-10-21T14:08:03.164407+00:00",
+   "from_ccy": "EUR",
+   "to_ccy": "USD",
+   "amount_from": 318.80447577179996,
+   "amount_to": 357.85854868254495,
+   "rate": 1.1228384971618652,
+   "fee_rate": 0.0003,
+   "fee_eur": 0.09564134273148284,
+   "reason": "auto FX for TMO",
+   "seq": 10
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-21T14:08:03.164407+00:00",
+   "inst": "TMO",
+   "kind": "stock",
+   "qty": 0.51778446,
+   "price": 690.4550403442382,
+   "mid": 690.1099853515625,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35165846362538
+   },
+   "fees_eur": 0.3131870384870549,
+   "spread_cost_eur": 0.15911826456298447,
+   "value_eur": 318.3956473905814,
+   "eur_rate": 1.1228384971618652,
+   "reason": "BUY signal: earnings news, materiality 2, direction +1 (\"Thermo Fisher beats profit, revenue expectations in Q3\"), 1-month return +4.3%",
+   "seq": 11
   }
  ],
  "costs": {
-  "fx": 0.2019963453620086,
-  "commissions": 1.9051717298476554,
-  "spread_slippage": 0.9618491822544165
+  "fx": 0.29763768809349145,
+  "commissions": 2.2183587683347104,
+  "spread_slippage": 1.120967446817401
  },
  "realized": [
   {
@@ -237,14 +280,14 @@
     "opened": "2026-10-19",
     "stop": 1167.03572625,
     "target": 1380.3648375,
-    "hwm": 1254.877125,
+    "hwm": 1283.6600341796875,
     "spec": {
      "stop_pct": 0.07,
      "target_pct": 0.1,
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-19"
+    "updated": "2026-10-20"
    },
    "XOM": {
     "entry": 178.91440944671632,
@@ -258,80 +301,157 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-19"
+    "updated": "2026-10-20"
+   },
+   "TMO": {
+    "entry": 690.4550403442382,
+    "opened": "2026-10-21",
+    "stop": 642.1231875201415,
+    "target": 759.5005443786621,
+    "hwm": 690.4550403442382,
+    "spec": {
+     "stop_pct": 0.07,
+     "target_pct": 0.1,
+     "max_days": 5,
+     "label": "stop -7%, take-profit +10%, time exit 5 days"
+    },
+    "updated": ""
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-10-21",
-   "equity": 969.1928
+   "equity": 963.7852
   },
-  "last_decision": "2026-10-19",
+  "last_decision": "2026-10-20",
   "last_candidates": {
-   "INTC": {
+   "TSLA": {
     "event": {
-     "id": "14fd9e7110a6",
-     "ticker": "INTC",
-     "event_type": "product",
+     "id": "699f724350ab",
+     "ticker": "TSLA",
+     "event_type": "m&a",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.55,
+     "rationale": "Musk backs SpaceX-Tesla merger; boards form special committees",
+     "title": "Musk backs SpaceX-Tesla merger idea as both boards form special committees",
+     "published": "2026-10-21T11:32:19+00:00"
+    },
+    "check": null
+   },
+   "SMCI": {
+    "event": {
+     "id": "d3b5ba52c148",
+     "ticker": "SMCI",
+     "event_type": "guidance",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.65,
+     "rationale": "Preliminary revenue far above own forecast on AI demand",
+     "title": "Super Micro Says AI Demand Is So Strong It Blew Past Its Own Forecast by 25%",
+     "published": "2026-10-21T12:05:43+00:00"
+    },
+    "check": "1-month return -21.2% - skipped"
+   },
+   "BA": {
+    "event": {
+     "id": "ad3e325c9f2f",
+     "ticker": "BA",
+     "event_type": "regulatory_legal",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.55,
+     "rationale": "FAA certifies 737 MAX 10, clearing deliveries",
+     "title": "Boeing Finally Gets FAA Approval for Its 737 Max 10 Jet. This Is Big.",
+     "published": "2026-10-20T22:08:00+00:00"
+    },
+    "check": null
+   },
+   "TMO": {
+    "event": {
+     "id": "c3adeecb0425",
+     "ticker": "TMO",
+     "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.6,
-     "rationale": "Tesla commits to Intel foundry; JPMorgan upgrades to Neutral",
-     "title": "Tesla Rises on a Foundry Agreement With Intel as JPMorgan Upgrades the Stock",
-     "published": "2026-10-19T20:07:47+00:00"
+     "rationale": "Q3 profit and revenue beat estimates",
+     "title": "Thermo Fisher beats profit, revenue expectations in Q3",
+     "published": "2026-10-21T10:41:20+00:00"
     },
-    "check": "1-month return -15.3% - skipped"
+    "check": "1-month return +4.3% - BUY"
    },
-   "GE": {
+   "T": {
     "event": {
-     "id": "b14a9186a6fc",
-     "ticker": "GE",
+     "id": "667b607f4a01",
+     "ticker": "T",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.7,
-     "rationale": "Q3 earnings and revenue beat estimates; sales up ~25%",
-     "title": "GE Aerospace (NYSE:GE) Reports Bullish Q3 2026",
-     "published": "2026-10-20T10:55:09+00:00"
+     "confidence": 0.55,
+     "rationale": "Best service revenue growth in four years",
+     "title": "AT&T Delivers Strong Third-Quarter 2026 Results with Its Best Consolidated Service Revenue Growth in More Than Four Years",
+     "published": "2026-10-21T10:30:00+00:00"
     },
-    "check": "1-month return -0.8% - skipped"
+    "check": null
    },
-   "RTX": {
+   "ABT": {
     "event": {
-     "id": "6907a0c743b0",
-     "ticker": "RTX",
-     "event_type": "earnings",
+     "id": "3ceba8e27cb9",
+     "ticker": "ABT",
+     "event_type": "m&a",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.7,
-     "rationale": "Q3 beat on earnings and revenue; full-year outlook raised",
-     "title": "RTX stock climbs on strong earnings beat and raised outlook",
-     "published": "2026-10-20T11:34:44+00:00"
+     "confidence": 0.55,
+     "rationale": "Plans to separate Nutrition business into public company",
+     "title": "Abbott announces its intention to separate its global Nutrition business into an independent, publicly traded company",
+     "published": "2026-10-21T11:25:00+00:00"
     },
-    "check": "1-month return -1.0% - skipped"
+    "check": null
    }
   },
   "signals": {
-   "GE": {
+   "SMCI": {
     "state": "SKIP",
-    "event": "earnings",
+    "event": "guidance",
     "materiality": 2,
-    "confidence": 0.7,
-    "check": "1-month return -0.8% - skipped"
+    "confidence": 0.65,
+    "check": "1-month return -21.2% - skipped"
    },
-   "RTX": {
-    "state": "SKIP",
+   "TMO": {
+    "state": "BUY",
     "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.7,
-    "check": "1-month return -1.0% - skipped"
-   },
-   "INTC": {
-    "state": "SKIP",
-    "event": "product",
     "materiality": 2,
     "confidence": 0.6,
-    "check": "1-month return -15.3% - skipped"
+    "check": "1-month return +4.3% - BUY"
+   },
+   "TSLA": {
+    "state": "NO SLOT",
+    "event": "m&a",
+    "materiality": 2,
+    "confidence": 0.55,
+    "check": "not checked (positions full)"
+   },
+   "BA": {
+    "state": "NO SLOT",
+    "event": "regulatory_legal",
+    "materiality": 2,
+    "confidence": 0.55,
+    "check": "not checked (positions full)"
+   },
+   "T": {
+    "state": "NO SLOT",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.55,
+    "check": "not checked (positions full)"
+   },
+   "ABT": {
+    "state": "NO SLOT",
+    "event": "m&a",
+    "materiality": 2,
+    "confidence": 0.55,
+    "check": "not checked (positions full)"
    }
   }
  },
