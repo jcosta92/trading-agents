@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-19T14:06:33.719585+00:00",
-   "last_mark": 1270.75
+   "last_mark": 1301.5250244140625
   },
   "XOM": {
    "inst_id": "XOM",
@@ -25,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-19T14:06:33.719585+00:00",
-   "last_mark": 178.08999633789062
+   "last_mark": 176.5449981689453
   },
   "TMO": {
    "inst_id": "TMO",
@@ -35,7 +35,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-21T14:08:03.164407+00:00",
-   "last_mark": 694.02001953125
+   "last_mark": 684.280029296875
   }
  },
  "journal": [
@@ -288,7 +288,7 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-20"
+    "updated": "2026-10-21"
    },
    "XOM": {
     "entry": 178.91440944671632,
@@ -302,156 +302,93 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-20"
+    "updated": "2026-10-21"
    },
    "TMO": {
     "entry": 690.4550403442382,
     "opened": "2026-10-21",
     "stop": 642.1231875201415,
     "target": 759.5005443786621,
-    "hwm": 690.4550403442382,
+    "hwm": 694.02001953125,
     "spec": {
      "stop_pct": 0.07,
      "target_pct": 0.1,
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-20"
+    "updated": "2026-10-21"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-10-22",
-   "equity": 969.1735
+   "equity": 970.0652
   },
-  "last_decision": "2026-10-20",
+  "last_decision": "2026-10-21",
   "last_candidates": {
-   "TSLA": {
+   "TXN": {
     "event": {
-     "id": "699f724350ab",
-     "ticker": "TSLA",
-     "event_type": "m&a",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.55,
-     "rationale": "Musk backs SpaceX-Tesla merger; boards form special committees",
-     "title": "Musk backs SpaceX-Tesla merger idea as both boards form special committees",
-     "published": "2026-10-21T11:32:19+00:00"
-    },
-    "check": null
-   },
-   "SMCI": {
-    "event": {
-     "id": "d3b5ba52c148",
-     "ticker": "SMCI",
-     "event_type": "guidance",
+     "id": "359d888bb43b",
+     "ticker": "TXN",
+     "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.65,
-     "rationale": "Preliminary revenue far above own forecast on AI demand",
-     "title": "Super Micro Says AI Demand Is So Strong It Blew Past Its Own Forecast by 25%",
-     "published": "2026-10-21T12:05:43+00:00"
+     "rationale": "Q3 beat and Q4 guidance above estimates on broad demand recovery",
+     "title": "Texas Instruments Just Guided Above Wall Street as AI Demand Spills Into Analog",
+     "published": "2026-10-22T11:45:40+00:00"
     },
-    "check": "1-month return -21.2% - skipped"
+    "check": null
    },
    "BA": {
     "event": {
-     "id": "ad3e325c9f2f",
+     "id": "06c8d4f1490a",
      "ticker": "BA",
      "event_type": "regulatory_legal",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.55,
-     "rationale": "FAA certifies 737 MAX 10, clearing deliveries",
-     "title": "Boeing Finally Gets FAA Approval for Its 737 Max 10 Jet. This Is Big.",
-     "published": "2026-10-20T22:08:00+00:00"
+     "confidence": 0.6,
+     "rationale": "FAA certifies 737 MAX 10 after nine-year wait",
+     "title": "Boeing (BA) Wins 737 MAX 10 Certification, Is The Valuation Gap Ready To Close?",
+     "published": "2026-10-22T06:18:54+00:00"
     },
     "check": null
    },
-   "TMO": {
+   "VLO": {
     "event": {
-     "id": "c3adeecb0425",
-     "ticker": "TMO",
+     "id": "42772f971917",
+     "ticker": "VLO",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.6,
-     "rationale": "Q3 profit and revenue beat estimates",
-     "title": "Thermo Fisher beats profit, revenue expectations in Q3",
-     "published": "2026-10-21T10:41:20+00:00"
-    },
-    "check": "1-month return +4.3% - BUY"
-   },
-   "T": {
-    "event": {
-     "id": "667b607f4a01",
-     "ticker": "T",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.55,
-     "rationale": "Best service revenue growth in four years",
-     "title": "AT&T Delivers Strong Third-Quarter 2026 Results with Its Best Consolidated Service Revenue Growth in More Than Four Years",
-     "published": "2026-10-21T10:30:00+00:00"
-    },
-    "check": null
-   },
-   "ABT": {
-    "event": {
-     "id": "3ceba8e27cb9",
-     "ticker": "ABT",
-     "event_type": "m&a",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.55,
-     "rationale": "Plans to separate Nutrition business into public company",
-     "title": "Abbott announces its intention to separate its global Nutrition business into an independent, publicly traded company",
-     "published": "2026-10-21T11:25:00+00:00"
+     "rationale": "Q3 earnings and revenue well above estimates",
+     "title": "Valero Energy: Q3 Earnings Snapshot",
+     "published": "2026-10-22T10:40:33+00:00"
     },
     "check": null
    }
   },
   "signals": {
-   "SMCI": {
-    "state": "SKIP",
-    "event": "guidance",
-    "materiality": 2,
-    "confidence": 0.65,
-    "check": "1-month return -21.2% - skipped"
-   },
-   "TMO": {
-    "state": "BUY",
+   "TXN": {
+    "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
-    "confidence": 0.6,
-    "check": "1-month return +4.3% - BUY"
-   },
-   "TSLA": {
-    "state": "NO SLOT",
-    "event": "m&a",
-    "materiality": 2,
-    "confidence": 0.55,
+    "confidence": 0.65,
     "check": "not checked (positions full)"
    },
    "BA": {
     "state": "NO SLOT",
     "event": "regulatory_legal",
     "materiality": 2,
-    "confidence": 0.55,
+    "confidence": 0.6,
     "check": "not checked (positions full)"
    },
-   "T": {
+   "VLO": {
     "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
-    "confidence": 0.55,
-    "check": "not checked (positions full)"
-   },
-   "ABT": {
-    "state": "NO SLOT",
-    "event": "m&a",
-    "materiality": 2,
-    "confidence": 0.55,
+    "confidence": 0.6,
     "check": "not checked (positions full)"
    }
   }
