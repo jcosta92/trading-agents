@@ -3,20 +3,9 @@
  "base": "EUR",
  "initial_capital": 1000.0,
  "cash": {
-  "EUR": 49.168722716620096
+  "EUR": 993.2769947744503
  },
- "positions": {
-  "SP500": {
-   "inst_id": "SP500",
-   "qty": 7.132935,
-   "avg_price": 133.301548,
-   "currency": "EUR",
-   "multiplier": 1.0,
-   "kind": "etf",
-   "opened": "2026-10-19T08:17:57.224953+00:00",
-   "last_mark": 132.3225
-  }
- },
+ "positions": {},
  "journal": [
   {
    "type": "deposit",
@@ -42,13 +31,40 @@
    "eur_rate": 1.0,
    "reason": "BUY signal: RSI(2) 4.6 < 10 with close 132.80 > SMA200 121.37",
    "seq": 1
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-23T08:18:06.082260+00:00",
+   "inst": "SP500",
+   "kind": "etf",
+   "qty": -7.132935,
+   "price": 132.35901800000002,
+   "mid": 132.47750000000002,
+   "ccy": "EUR",
+   "multiplier": 1.0,
+   "fees": {},
+   "fees_eur": 0,
+   "spread_cost_eur": 0.8451244046700014,
+   "value_eur": 944.1082720578302,
+   "eur_rate": 1.0,
+   "reason": "SELL signal: close 133.60 > SMA5 133.23",
+   "seq": 2
   }
  ],
  "costs": {
   "commissions": 0.0,
-  "spread_slippage": 0.8313293083799611
+  "spread_slippage": 1.6764537130499626
  },
- "realized": [],
+ "realized": [
+  {
+   "ts": "2026-10-23T08:18:06.082260+00:00",
+   "inst": "SP500",
+   "qty": 7.132935,
+   "pnl": -6.723005225549833,
+   "ccy": "EUR",
+   "pnl_eur": -6.723005225549833
+  }
+ ],
  "meta": {
   "splits_applied": {},
   "split_suspect": {},
@@ -60,40 +76,24 @@
    "date": "2026-10-23",
    "equity": 993.391
   },
-  "protect": {
-   "SP500": {
-    "entry": 133.301548,
-    "opened": "2026-10-19",
-    "stop": 130.22881595392514,
-    "target": 133.4529998779297,
-    "hwm": 133.30999755859375,
-    "spec": {
-     "stop_atr": 3.0,
-     "atr": 1.024244015358291,
-     "target_sma": 5,
-     "max_days": 10,
-     "label": "stop 3.0xATR(10), take-profit at SMA5 (when above entry), time exit 10 days"
-    },
-    "updated": "2026-10-21"
-   }
-  },
-  "last_decision": "2026-10-21",
+  "protect": {},
+  "last_decision": "2026-10-22",
   "signals": {
    "SP500": {
-    "close": 132.94,
-    "sma200": 121.5615,
-    "rsi2": 27.46,
-    "sma5": 133.453,
-    "atr10": 1.0178,
+    "close": 133.605,
+    "sma200": 121.6594,
+    "rsi2": 69.05,
+    "sma5": 133.227,
+    "atr10": 0.9865,
     "buy_rule": "close > SMA200 and RSI(2) < 10",
     "sell_rule": "close > SMA5; take-profit order at SMA5 while above the entry",
-    "state": "HOLD"
+    "state": "SELL"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-10-23",
-   "equity": 993.0165
+   "equity": 993.277
   }
  },
  "halted": false,
