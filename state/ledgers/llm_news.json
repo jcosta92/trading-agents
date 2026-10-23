@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-19T14:06:33.719585+00:00",
-   "last_mark": 1306.68994140625
+   "last_mark": 1284.26
   },
   "XOM": {
    "inst_id": "XOM",
@@ -25,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-19T14:06:33.719585+00:00",
-   "last_mark": 178.22999572753906
+   "last_mark": 181.57000732421875
   },
   "TMO": {
    "inst_id": "TMO",
@@ -35,7 +35,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-21T14:08:03.164407+00:00",
-   "last_mark": 676.5399780273438
+   "last_mark": 671.4299926757812
   }
  },
  "journal": [
@@ -281,14 +281,14 @@
     "opened": "2026-10-19",
     "stop": 1167.03572625,
     "target": 1380.3648375,
-    "hwm": 1283.6600341796875,
+    "hwm": 1306.68994140625,
     "spec": {
      "stop_pct": 0.07,
      "target_pct": 0.1,
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-21"
+    "updated": "2026-10-22"
    },
    "XOM": {
     "entry": 178.91440944671632,
@@ -302,7 +302,7 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-21"
+    "updated": "2026-10-22"
    },
    "TMO": {
     "entry": 690.4550403442382,
@@ -316,55 +316,125 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-21"
+    "updated": "2026-10-22"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-10-23",
-   "equity": 970.9144
+   "equity": 968.5904
   },
-  "last_decision": "2026-10-21",
+  "last_decision": "2026-10-22",
   "last_candidates": {
+   "BE": {
+    "event": {
+     "id": "915b12a13ed1",
+     "ticker": "BE",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.5,
+     "rationale": "Record Q3, revenue +138%, full-year guidance raised again",
+     "title": "Bloom Energy Earnings Surge as Revenue Jumps 138%",
+     "published": "2026-10-23T03:45:00+00:00"
+    },
+    "check": null
+   },
+   "WDC": {
+    "event": {
+     "id": "081b2be7f7b2",
+     "ticker": "WDC",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.45,
+     "rationale": "Fiscal Q1 beat; stock climbed late",
+     "title": "Western Digital Reports Quarterly Earnings Beat",
+     "published": "2026-10-22T22:24:13+00:00"
+    },
+    "check": null
+   },
    "TXN": {
     "event": {
-     "id": "359d888bb43b",
+     "id": "71406aa4ff6a",
      "ticker": "TXN",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.65,
-     "rationale": "Q3 beat and Q4 guidance above estimates on broad demand recovery",
-     "title": "Texas Instruments Just Guided Above Wall Street as AI Demand Spills Into Analog",
-     "published": "2026-10-22T11:45:40+00:00"
+     "confidence": 0.55,
+     "rationale": "Q3 beat, profit +78%, Q4 guidance above expectations",
+     "title": "TXN Q3 Earnings Beat Estimates on Strong Analog, Data Center Demand",
+     "published": "2026-10-22T13:17:00+00:00"
     },
     "check": null
    },
    "BA": {
     "event": {
-     "id": "06c8d4f1490a",
+     "id": "01f8eda89a22",
      "ticker": "BA",
      "event_type": "regulatory_legal",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "FAA certifies 737 MAX 10 after nine-year wait",
-     "title": "Boeing (BA) Wins 737 MAX 10 Certification, Is The Valuation Gap Ready To Close?",
-     "published": "2026-10-22T06:18:54+00:00"
+     "confidence": 0.5,
+     "rationale": "MAX 10 certification lands",
+     "title": "Boeing (BA) Stock Looks About Right As MAX 10 Certification Lands",
+     "published": "2026-10-23T11:17:34+00:00"
+    },
+    "check": null
+   },
+   "PG": {
+    "event": {
+     "id": "1f85f399865d",
+     "ticker": "PG",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.5,
+     "rationale": "FQ1 beat, organic sales +4%, outlook reaffirmed; shares +6%",
+     "title": "Procter & Gamble Q1 Earnings Call Highlights",
+     "published": "2026-10-22T22:04:17+00:00"
     },
     "check": null
    },
    "VLO": {
     "event": {
-     "id": "42772f971917",
+     "id": "085677dd9363",
      "ticker": "VLO",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Q3 earnings and revenue well above estimates",
-     "title": "Valero Energy: Q3 Earnings Snapshot",
-     "published": "2026-10-22T10:40:33+00:00"
+     "confidence": 0.55,
+     "rationale": "Q3 earnings surged sixfold on refining margins, beat estimates",
+     "title": "Valero Q3 Earnings Surge Sixfold to $6.8 Billion on Refining Boom",
+     "published": "2026-10-23T03:00:00+00:00"
+    },
+    "check": null
+   },
+   "NEE": {
+    "event": {
+     "id": "dff60345b40f",
+     "ticker": "NEE",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.4,
+     "rationale": "Q3 beat; stock jumps",
+     "title": "Learn Why The Bull Case For NextEra Energy Stock Could Change Following Earnings Beat",
+     "published": "2026-10-23T09:09:53+00:00"
+    },
+    "check": null
+   },
+   "AXP": {
+    "event": {
+     "id": "91483ad88e97",
+     "ticker": "AXP",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.4,
+     "rationale": "Q3 EPS beat by 4.7%, revenue roughly in line",
+     "title": "American Express (AXP) Beats Q3 Earnings Estimates",
+     "published": "2026-10-23T11:10:01+00:00"
     },
     "check": null
    }
@@ -374,21 +444,56 @@
     "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
-    "confidence": 0.65,
-    "check": "not checked (positions full)"
-   },
-   "BA": {
-    "state": "NO SLOT",
-    "event": "regulatory_legal",
-    "materiality": 2,
-    "confidence": 0.6,
+    "confidence": 0.55,
     "check": "not checked (positions full)"
    },
    "VLO": {
     "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
-    "confidence": 0.6,
+    "confidence": 0.55,
+    "check": "not checked (positions full)"
+   },
+   "BE": {
+    "state": "NO SLOT",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.5,
+    "check": "not checked (positions full)"
+   },
+   "BA": {
+    "state": "NO SLOT",
+    "event": "regulatory_legal",
+    "materiality": 2,
+    "confidence": 0.5,
+    "check": "not checked (positions full)"
+   },
+   "PG": {
+    "state": "NO SLOT",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.5,
+    "check": "not checked (positions full)"
+   },
+   "WDC": {
+    "state": "NO SLOT",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.45,
+    "check": "not checked (positions full)"
+   },
+   "NEE": {
+    "state": "NO SLOT",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.4,
+    "check": "not checked (positions full)"
+   },
+   "AXP": {
+    "state": "NO SLOT",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.4,
     "check": "not checked (positions full)"
    }
   }
