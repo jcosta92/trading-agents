@@ -3,7 +3,7 @@
  "base": "EUR",
  "initial_capital": 1000.0,
  "cash": {
-  "EUR": 420.305922481516
+  "EUR": 713.734668149612
  },
  "positions": {
   "COMMOD": {
@@ -14,17 +14,7 @@
    "multiplier": 1.0,
    "kind": "etf",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 37.66
-  },
-  "WORLD_EQ": {
-   "inst_id": "WORLD_EQ",
-   "qty": 2.269952,
-   "avg_price": 132.23068800000001,
-   "currency": "EUR",
-   "multiplier": 1.0,
-   "kind": "etf",
-   "opened": "2026-10-14T08:18:07.755023+00:00",
-   "last_mark": 129.72500000000002
+   "last_mark": 37.625
   }
  },
  "journal": [
@@ -70,13 +60,40 @@
    "eur_rate": 1.0,
    "reason": "BUY signal: close 132.25 > SMA50 128.16 > SMA200 120.19, ROC252 +20.1%, new 20-day high",
    "seq": 2
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-23T12:50:44.826497+00:00",
+   "inst": "WORLD_EQ",
+   "kind": "etf",
+   "qty": -2.269952,
+   "price": 129.266498,
+   "mid": 129.3775,
+   "ccy": "EUR",
+   "multiplier": 1.0,
+   "fees": {},
+   "fees_eur": 0,
+   "spread_cost_eur": 0.2519692119039658,
+   "value_eur": 293.42874566809604,
+   "eur_rate": 1.0,
+   "reason": "STOP-LOSS hit: price 129.4 <= stop 129.4 (3xATR(20) chandelier trailing stop)",
+   "seq": 3
   }
  ],
  "costs": {
   "commissions": 0.0,
-  "spread_slippage": 0.6810669134840435
+  "spread_slippage": 0.9330361253880093
  },
- "realized": [],
+ "realized": [
+  {
+   "ts": "2026-10-23T12:50:44.826497+00:00",
+   "inst": "WORLD_EQ",
+   "qty": 2.269952,
+   "pnl": -6.7285690188800045,
+   "ccy": "EUR",
+   "pnl_eur": -6.7285690188800045
+  }
+ ],
  "meta": {
   "splits_applied": {},
   "split_suspect": {},
@@ -99,21 +116,6 @@
     "spec": {
      "stop_atr": 3.0,
      "atr": 0.4533735256813622,
-     "trail_atr": 3.0,
-     "atr_n": 20,
-     "label": "3xATR(20) chandelier trailing stop"
-    },
-    "updated": "2026-10-22"
-   },
-   "WORLD_EQ": {
-    "entry": 132.23068800000001,
-    "opened": "2026-10-14",
-    "stop": 129.43929725306356,
-    "target": null,
-    "hwm": 132.23068800000001,
-    "spec": {
-     "stop_atr": 3.0,
-     "atr": 0.9558514372338639,
      "trail_atr": 3.0,
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
@@ -182,7 +184,7 @@
   "pending": [],
   "last_equity": {
    "date": "2026-10-23",
-   "equity": 991.6626
+   "equity": 990.3645
   }
  },
  "halted": false,
