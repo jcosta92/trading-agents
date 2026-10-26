@@ -4,29 +4,9 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 7.874373021528697,
-  "USD": -1.0325074129013956e-14
+  "USD": 731.3813332570904
  },
  "positions": {
-  "LLY": {
-   "inst_id": "LLY",
-   "qty": 0.28488015,
-   "avg_price": 1254.877125,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-10-19T14:06:33.719585+00:00",
-   "last_mark": 1273.4599609375
-  },
-  "XOM": {
-   "inst_id": "XOM",
-   "qty": 1.99810391,
-   "avg_price": 178.91440944671632,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-10-19T14:06:33.719585+00:00",
-   "last_mark": 183.2100067138672
-  },
   "TMO": {
    "inst_id": "TMO",
    "qty": 0.51778446,
@@ -35,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-21T14:08:03.164407+00:00",
-   "last_mark": 673.8200073242188
+   "last_mark": 678.09
   }
  },
  "journal": [
@@ -237,12 +217,52 @@
    "eur_rate": 1.1228384971618652,
    "reason": "BUY signal: earnings news, materiality 2, direction +1 (\"Thermo Fisher beats profit, revenue expectations in Q3\"), 1-month return +4.3%",
    "seq": 11
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-26T14:06:34.900266+00:00",
+   "inst": "LLY",
+   "kind": "stock",
+   "qty": -0.28488015,
+   "price": 1282.9432160000001,
+   "mid": 1283.92,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35844146327025056
+   },
+   "fees_eur": 0.3204825110835668,
+   "spread_cost_eur": 0.24879796264439125,
+   "value_eur": 326.7801871542313,
+   "eur_rate": 1.1184431314468384,
+   "reason": "TIME EXIT: held 5 business days (max 5)",
+   "seq": 12
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-26T14:06:34.900266+00:00",
+   "inst": "XOM",
+   "kind": "stock",
+   "qty": -1.99810391,
+   "price": 183.483286,
+   "mid": 183.57,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.3639522714499607
+   },
+   "fees_eur": 0.32540972465819107,
+   "spread_cost_eur": 0.1549149684773014,
+   "value_eur": 327.793752644342,
+   "eur_rate": 1.1184431314468384,
+   "reason": "TIME EXIT: held 5 business days (max 5)",
+   "seq": 13
   }
  ],
  "costs": {
   "fx": 0.29763768809349145,
-  "commissions": 2.2183587683347104,
-  "spread_slippage": 1.120967446817401
+  "commissions": 2.8642510040764684,
+  "spread_slippage": 1.5246803779390936
  },
  "realized": [
   {
@@ -260,6 +280,22 @@
    "pnl": 5.257397569944848,
    "ccy": "USD",
    "pnl_eur": 4.6859183973934355
+  },
+  {
+   "ts": "2026-10-26T14:06:34.900266+00:00",
+   "inst": "LLY",
+   "qty": 0.28488015,
+   "pnl": 7.995472213993691,
+   "ccy": "USD",
+   "pnl_eur": 7.148751679176216
+  },
+  {
+   "ts": "2026-10-26T14:06:34.900266+00:00",
+   "inst": "XOM",
+   "qty": 1.99810391,
+   "pnl": 9.12909010542343,
+   "ccy": "USD",
+   "pnl_eur": 8.162319432025008
   }
  ],
  "meta": {
@@ -276,34 +312,6 @@
    "equity": 969.5415
   },
   "protect": {
-   "LLY": {
-    "entry": 1254.877125,
-    "opened": "2026-10-19",
-    "stop": 1167.03572625,
-    "target": 1380.3648375,
-    "hwm": 1306.68994140625,
-    "spec": {
-     "stop_pct": 0.07,
-     "target_pct": 0.1,
-     "max_days": 5,
-     "label": "stop -7%, take-profit +10%, time exit 5 days"
-    },
-    "updated": "2026-10-22"
-   },
-   "XOM": {
-    "entry": 178.91440944671632,
-    "opened": "2026-10-19",
-    "stop": 166.39040078544616,
-    "target": 196.80585039138796,
-    "hwm": 178.91440944671632,
-    "spec": {
-     "stop_pct": 0.07,
-     "target_pct": 0.1,
-     "max_days": 5,
-     "label": "stop -7%, take-profit +10%, time exit 5 days"
-    },
-    "updated": "2026-10-22"
-   },
    "TMO": {
     "entry": 690.4550403442382,
     "opened": "2026-10-21",
@@ -316,154 +324,189 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-22"
+    "updated": "2026-10-25"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-10-26",
-   "equity": 971.0592
+   "equity": 975.7249
   },
-  "last_decision": "2026-10-22",
+  "last_decision": "2026-10-25",
   "last_candidates": {
-   "BE": {
+   "AAPL": {
     "event": {
-     "id": "915b12a13ed1",
-     "ticker": "BE",
-     "event_type": "earnings",
+     "id": "d7133c6b8144",
+     "ticker": "AAPL",
+     "event_type": "product",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Record Q3, revenue +138%, full-year guidance raised again",
-     "title": "Bloom Energy Earnings Surge as Revenue Jumps 138%",
-     "published": "2026-10-23T03:45:00+00:00"
+     "confidence": 0.55,
+     "rationale": "Report of 30% higher iPhone Duo production orders on strong demand",
+     "title": "Apple Reportedly Increases iPhone Duo Production Orders by 30% Following Launch Demand",
+     "published": "2026-10-26T11:48:18+00:00"
+    },
+    "check": null
+   },
+   "BE": {
+    "event": {
+     "id": "de0afc473908",
+     "ticker": "BE",
+     "event_type": "guidance",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.4,
+     "rationale": "2026 forecast raised for third time; sales to more than double",
+     "title": "Bloom Energy Raised Its 2026 Forecast for the Third Time. Is the Stock a Buy More Than a Third Below Its Record?",
+     "published": "2026-10-24T17:39:02+00:00"
     },
     "check": null
    },
    "WDC": {
     "event": {
-     "id": "081b2be7f7b2",
+     "id": "c76e0062bdbd",
      "ticker": "WDC",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.45,
-     "rationale": "Fiscal Q1 beat; stock climbed late",
-     "title": "Western Digital Reports Quarterly Earnings Beat",
-     "published": "2026-10-22T22:24:13+00:00"
-    },
-    "check": null
-   },
-   "TXN": {
-    "event": {
-     "id": "71406aa4ff6a",
-     "ticker": "TXN",
-     "event_type": "earnings",
+     "event_type": "guidance",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.55,
-     "rationale": "Q3 beat, profit +78%, Q4 guidance above expectations",
-     "title": "TXN Q3 Earnings Beat Estimates on Strong Analog, Data Center Demand",
-     "published": "2026-10-22T13:17:00+00:00"
+     "rationale": "Guides fiscal Q2 revenue growth of 66-72% after 55% Q1 growth",
+     "title": "Western Digital forecasts up to 72% second-quarter revenue growth after strong start",
+     "published": "2026-10-23T12:44:00+00:00"
     },
     "check": null
    },
-   "BA": {
+   "GEV": {
     "event": {
-     "id": "01f8eda89a22",
-     "ticker": "BA",
-     "event_type": "regulatory_legal",
+     "id": "fbbbdb55957d",
+     "ticker": "GEV",
+     "event_type": "product",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.5,
-     "rationale": "MAX 10 certification lands",
-     "title": "Boeing (BA) Stock Looks About Right As MAX 10 Certification Lands",
-     "published": "2026-10-23T11:17:34+00:00"
+     "rationale": "Venture Global frame agreements for up to 16 720MW gas power units",
+     "title": "Power Supply Deals Might Change The Case For Investing In GE Vernova Stock (GEV)",
+     "published": "2026-10-24T19:09:04+00:00"
+    },
+    "check": null
+   },
+   "MRNA": {
+    "event": {
+     "id": "07a756959be3",
+     "ticker": "MRNA",
+     "event_type": "product",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.3,
+     "rationale": "Phase 3 intismeran cut melanoma recurrence 42%; expectations were higher",
+     "title": "Moderna Melanoma Therapy Cuts Recurrence Risk 42% in Phase 3 Trial",
+     "published": "2026-10-24T22:02:03+00:00"
+    },
+    "check": null
+   },
+   "SMCI": {
+    "event": {
+     "id": "e6c65eb94651",
+     "ticker": "SMCI",
+     "event_type": "guidance",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.55,
+     "rationale": "Raised fiscal Q1 revenue guidance by ~$4B on AI demand",
+     "title": "Credo Soars 7% as Super Micro\u2019s $4 Billion Forecast Hike Signals \u201cIncreased Demand for AI Platforms\u201d",
+     "published": "2026-10-23T17:30:44+00:00"
     },
     "check": null
    },
    "PG": {
     "event": {
-     "id": "1f85f399865d",
+     "id": "6e068c208699",
      "ticker": "PG",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.5,
-     "rationale": "FQ1 beat, organic sales +4%, outlook reaffirmed; shares +6%",
-     "title": "Procter & Gamble Q1 Earnings Call Highlights",
-     "published": "2026-10-22T22:04:17+00:00"
+     "rationale": "Fiscal Q1 revenue beat, sales +4% with share gains",
+     "title": "PG Q3 deep dive: market share gains and product innovation offset input cost headwinds",
+     "published": "2026-10-23T13:04:39+00:00"
+    },
+    "check": null
+   },
+   "AMGN": {
+    "event": {
+     "id": "16238846fc52",
+     "ticker": "AMGN",
+     "event_type": "product",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.6,
+     "rationale": "Landmark interim Phase 3: Imdelltra+Imfinzi cut death risk 58% in 1L SCLC",
+     "title": "IMDELLTRA\u00ae IN COMBINATION WITH IMFINZI\u00ae REDUCED RISK OF DEATH BY AN UNPRECEDENTED 58% IN FIRST-LINE EXTENSIVE STAGE SMALL CELL LUNG CANCER",
+     "published": "2026-10-24T14:30:00+00:00"
     },
     "check": null
    },
    "VLO": {
     "event": {
-     "id": "085677dd9363",
+     "id": "b9f097ae329a",
      "ticker": "VLO",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.55,
-     "rationale": "Q3 earnings surged sixfold on refining margins, beat estimates",
-     "title": "Valero Q3 Earnings Surge Sixfold to $6.8 Billion on Refining Boom",
-     "published": "2026-10-23T03:00:00+00:00"
+     "confidence": 0.4,
+     "rationale": "Q3 net income $6.8B on strong refining margins",
+     "title": "How Earnings Beat Will Impact Valero Energy (VLO) Stock",
+     "published": "2026-10-23T18:14:59+00:00"
     },
     "check": null
    },
-   "NEE": {
+   "VZ": {
     "event": {
-     "id": "dff60345b40f",
-     "ticker": "NEE",
+     "id": "99e24fcf02d0",
+     "ticker": "VZ",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.4,
-     "rationale": "Q3 beat; stock jumps",
-     "title": "Learn Why The Bull Case For NextEra Energy Stock Could Change Following Earnings Beat",
-     "published": "2026-10-23T09:09:53+00:00"
-    },
-    "check": null
-   },
-   "AXP": {
-    "event": {
-     "id": "91483ad88e97",
-     "ticker": "AXP",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.4,
-     "rationale": "Q3 EPS beat by 4.7%, revenue roughly in line",
-     "title": "American Express (AXP) Beats Q3 Earnings Estimates",
-     "published": "2026-10-23T11:10:01+00:00"
+     "confidence": 0.5,
+     "rationale": "Q3 profit beat and guidance raised",
+     "title": "Verizon beats profit estimates, raises guidance",
+     "published": "2026-10-26T11:47:27+00:00"
     },
     "check": null
    }
   },
   "signals": {
-   "TXN": {
+   "AMGN": {
     "state": "NO SLOT",
-    "event": "earnings",
+    "event": "product",
+    "materiality": 2,
+    "confidence": 0.6,
+    "check": "not checked (positions full)"
+   },
+   "AAPL": {
+    "state": "NO SLOT",
+    "event": "product",
     "materiality": 2,
     "confidence": 0.55,
     "check": "not checked (positions full)"
    },
-   "VLO": {
+   "WDC": {
     "state": "NO SLOT",
-    "event": "earnings",
+    "event": "guidance",
     "materiality": 2,
     "confidence": 0.55,
     "check": "not checked (positions full)"
    },
-   "BE": {
+   "SMCI": {
     "state": "NO SLOT",
-    "event": "earnings",
+    "event": "guidance",
     "materiality": 2,
-    "confidence": 0.5,
+    "confidence": 0.55,
     "check": "not checked (positions full)"
    },
-   "BA": {
+   "GEV": {
     "state": "NO SLOT",
-    "event": "regulatory_legal",
+    "event": "product",
     "materiality": 2,
     "confidence": 0.5,
     "check": "not checked (positions full)"
@@ -475,23 +518,16 @@
     "confidence": 0.5,
     "check": "not checked (positions full)"
    },
-   "WDC": {
+   "VZ": {
     "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
-    "confidence": 0.45,
+    "confidence": 0.5,
     "check": "not checked (positions full)"
    },
-   "NEE": {
+   "BE": {
     "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.4,
-    "check": "not checked (positions full)"
-   },
-   "AXP": {
-    "state": "NO SLOT",
-    "event": "earnings",
+    "event": "guidance",
     "materiality": 2,
     "confidence": 0.4,
     "check": "not checked (positions full)"
