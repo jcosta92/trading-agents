@@ -4,7 +4,7 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 7.874373021528697,
-  "USD": 731.3813332570904
+  "USD": 6.652875430200345
  },
  "positions": {
   "TMO": {
@@ -15,7 +15,27 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-21T14:08:03.164407+00:00",
-   "last_mark": 684.8900146484375
+   "last_mark": 688.1199951171875
+  },
+  "KO": {
+   "inst_id": "KO",
+   "qty": 3.9036721,
+   "avg_price": 92.73634744262695,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-27T14:07:03.864634+00:00",
+   "last_mark": 92.69000244140625
+  },
+  "PFE": {
+   "inst_id": "PFE",
+   "qty": 12.18082399,
+   "avg_price": 29.715941,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-27T14:07:03.864634+00:00",
+   "last_mark": 29.705
   }
  },
  "journal": [
@@ -257,12 +277,52 @@
    "eur_rate": 1.1184431314468384,
    "reason": "TIME EXIT: held 5 business days (max 5)",
    "seq": 13
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-27T14:07:03.864634+00:00",
+   "inst": "KO",
+   "kind": "stock",
+   "qty": 3.9036721,
+   "price": 92.73634744262695,
+   "mid": 92.69000244140625,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.3625034617363
+   },
+   "fees_eur": 0.3251293572381866,
+   "spread_cost_eur": 0.1622632819834183,
+   "value_eur": 324.6888272488383,
+   "eur_rate": 1.114951491355896,
+   "reason": "BUY signal: earnings news, materiality 2, direction +1 (\"Coca-Cola raises earnings outlook as North America business slows\"), 1-month return +5.6%",
+   "seq": 14
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-27T14:07:03.864634+00:00",
+   "inst": "PFE",
+   "kind": "stock",
+   "qty": 12.18082399,
+   "price": 29.715941,
+   "mid": 29.705,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.38901517923997
+   },
+   "fees_eur": 0.34890771684325694,
+   "spread_cost_eur": 0.11953021840667731,
+   "value_eur": 324.64609431396724,
+   "eur_rate": 1.114951491355896,
+   "reason": "BUY signal: product news, materiality 2, direction +1 (\"Pfizer\u2019s ELREXFIO Outperforms Standard Regimens and Meets Primary Endpoint in Ph\"), 1-month return +3.9%",
+   "seq": 15
   }
  ],
  "costs": {
   "fx": 0.29763768809349145,
-  "commissions": 2.8642510040764684,
-  "spread_slippage": 1.5246803779390936
+  "commissions": 3.538288078157912,
+  "spread_slippage": 1.8064738783291892
  },
  "realized": [
   {
@@ -322,210 +382,224 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-25"
+    "updated": "2026-10-26"
+   },
+   "KO": {
+    "entry": 92.73634744262695,
+    "opened": "2026-10-27",
+    "stop": 86.24480312164306,
+    "target": 102.00998218688966,
+    "hwm": 92.73634744262695,
+    "spec": {
+     "stop_pct": 0.07,
+     "target_pct": 0.1,
+     "max_days": 5,
+     "label": "stop -7%, take-profit +10%, time exit 5 days"
+    },
+    "updated": ""
+   },
+   "PFE": {
+    "entry": 29.715941,
+    "opened": "2026-10-27",
+    "stop": 27.63582513,
+    "target": 32.687535100000005,
+    "hwm": 29.715941,
+    "spec": {
+     "stop_pct": 0.07,
+     "target_pct": 0.1,
+     "max_days": 5,
+     "label": "stop -7%, take-profit +10%, time exit 5 days"
+    },
+    "updated": ""
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-10-27",
-   "equity": 981.8052
+   "equity": 982.458
   },
-  "last_decision": "2026-10-25",
+  "last_decision": "2026-10-26",
   "last_candidates": {
-   "AAPL": {
+   "MSFT": {
     "event": {
-     "id": "d7133c6b8144",
-     "ticker": "AAPL",
-     "event_type": "product",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.55,
-     "rationale": "Report of 30% higher iPhone Duo production orders on strong demand",
-     "title": "Apple Reportedly Increases iPhone Duo Production Orders by 30% Following Launch Demand",
-     "published": "2026-10-26T11:48:18+00:00"
-    },
-    "check": null
-   },
-   "BE": {
-    "event": {
-     "id": "de0afc473908",
-     "ticker": "BE",
-     "event_type": "guidance",
+     "id": "3b2d81b09942",
+     "ticker": "MSFT",
+     "event_type": "other",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.4,
-     "rationale": "2026 forecast raised for third time; sales to more than double",
-     "title": "Bloom Energy Raised Its 2026 Forecast for the Third Time. Is the Stock a Buy More Than a Third Below Its Record?",
-     "published": "2026-10-24T17:39:02+00:00"
+     "rationale": "Buyouts offered to about a quarter of workforce; large cost action",
+     "title": "Microsoft Is Paying Workers to Leave So It Can Pay for AI",
+     "published": "2026-10-27T11:15:13+00:00"
     },
     "check": null
    },
-   "WDC": {
+   "AVGO": {
     "event": {
-     "id": "c76e0062bdbd",
-     "ticker": "WDC",
-     "event_type": "guidance",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.55,
-     "rationale": "Guides fiscal Q2 revenue growth of 66-72% after 55% Q1 growth",
-     "title": "Western Digital forecasts up to 72% second-quarter revenue growth after strong start",
-     "published": "2026-10-23T12:44:00+00:00"
-    },
-    "check": null
-   },
-   "GEV": {
-    "event": {
-     "id": "fbbbdb55957d",
-     "ticker": "GEV",
-     "event_type": "product",
+     "id": "83b3cb98f0fa",
+     "ticker": "AVGO",
+     "event_type": "analyst",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.5,
-     "rationale": "Venture Global frame agreements for up to 16 720MW gas power units",
-     "title": "Power Supply Deals Might Change The Case For Investing In GE Vernova Stock (GEV)",
-     "published": "2026-10-24T19:09:04+00:00"
+     "rationale": "Upgrade; S-1 discloses ~$125B five-year Broadcom lease agreement",
+     "title": "Broadcom Upgraded By DA Davidson After Anthropic IPO Filing \u2014 Analyst Says AI Cycle \u2018Isn't Over Quite Yet\u2019",
+     "published": "2026-10-27T11:49:00+00:00"
     },
-    "check": null
+    "check": "1-month return -6.7% - skipped"
    },
    "MRNA": {
     "event": {
-     "id": "07a756959be3",
+     "id": "7d8ccc9b3954",
      "ticker": "MRNA",
      "event_type": "product",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.3,
-     "rationale": "Phase 3 intismeran cut melanoma recurrence 42%; expectations were higher",
-     "title": "Moderna Melanoma Therapy Cuts Recurrence Risk 42% in Phase 3 Trial",
-     "published": "2026-10-24T22:02:03+00:00"
+     "confidence": 0.4,
+     "rationale": "Full Phase 3 melanoma vaccine data published; clinically positive",
+     "title": "Moderna (MRNA) Gets Phase 3 Melanoma Vaccine Validation At ESMO And NEJM",
+     "published": "2026-10-27T00:23:25+00:00"
     },
     "check": null
    },
-   "SMCI": {
+   "QCOM": {
     "event": {
-     "id": "e6c65eb94651",
-     "ticker": "SMCI",
-     "event_type": "guidance",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.55,
-     "rationale": "Raised fiscal Q1 revenue guidance by ~$4B on AI demand",
-     "title": "Credo Soars 7% as Super Micro\u2019s $4 Billion Forecast Hike Signals \u201cIncreased Demand for AI Platforms\u201d",
-     "published": "2026-10-23T17:30:44+00:00"
-    },
-    "check": null
-   },
-   "PG": {
-    "event": {
-     "id": "6e068c208699",
-     "ticker": "PG",
-     "event_type": "earnings",
+     "id": "5c3b79400c7c",
+     "ticker": "QCOM",
+     "event_type": "regulatory_legal",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.5,
-     "rationale": "Fiscal Q1 revenue beat, sales +4% with share gains",
-     "title": "PG Q3 deep dive: market share gains and product innovation offset input cost headwinds",
-     "published": "2026-10-23T13:04:39+00:00"
+     "rationale": "Jury finds Arm breached license and disrupted Qualcomm; legal win",
+     "title": "Arm Holdings (ARM) Faces Jury Breach Ruling As It Unveils Server Security Tie Up",
+     "published": "2026-10-26T22:15:37+00:00"
     },
-    "check": null
+    "check": "1-month return -11.1% - skipped"
    },
-   "AMGN": {
+   "GLW": {
     "event": {
-     "id": "16238846fc52",
-     "ticker": "AMGN",
-     "event_type": "product",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Landmark interim Phase 3: Imdelltra+Imfinzi cut death risk 58% in 1L SCLC",
-     "title": "IMDELLTRA\u00ae IN COMBINATION WITH IMFINZI\u00ae REDUCED RISK OF DEATH BY AN UNPRECEDENTED 58% IN FIRST-LINE EXTENSIVE STAGE SMALL CELL LUNG CANCER",
-     "published": "2026-10-24T14:30:00+00:00"
-    },
-    "check": null
-   },
-   "VLO": {
-    "event": {
-     "id": "b9f097ae329a",
-     "ticker": "VLO",
+     "id": "7ab9db38a8b6",
+     "ticker": "GLW",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.4,
-     "rationale": "Q3 net income $6.8B on strong refining margins",
-     "title": "How Earnings Beat Will Impact Valero Energy (VLO) Stock",
-     "published": "2026-10-23T18:14:59+00:00"
+     "confidence": 0.6,
+     "rationale": "Q3 beat and Q4 outlook above estimates; shares up premarket",
+     "title": "Corning shares rise 3% in premarket trade after Q3 EPS, revenue beat estimates",
+     "published": "2026-10-27T11:51:43+00:00"
+    },
+    "check": "1-month return -18.5% - skipped"
+   },
+   "KO": {
+    "event": {
+     "id": "46aff60488a3",
+     "ticker": "KO",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.55,
+     "rationale": "Q3 beat and raised earnings outlook; North America soft",
+     "title": "Coca-Cola raises earnings outlook as North America business slows",
+     "published": "2026-10-27T11:50:01+00:00"
+    },
+    "check": "1-month return +5.6% - BUY"
+   },
+   "BA": {
+    "event": {
+     "id": "8eb33b25629b",
+     "ticker": "BA",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.45,
+     "rationale": "Mixed Q3 with revenue beat and record backlog; shares gain",
+     "title": "Boeing Reports Mixed Q3 Results, Record Backlog; Stock Gains",
+     "published": "2026-10-27T11:52:09+00:00"
     },
     "check": null
    },
    "VZ": {
     "event": {
-     "id": "99e24fcf02d0",
+     "id": "17e61f82c917",
      "ticker": "VZ",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Q3 profit beat and guidance raised",
-     "title": "Verizon beats profit estimates, raises guidance",
-     "published": "2026-10-26T11:47:27+00:00"
+     "confidence": 0.45,
+     "rationale": "Q3 profit beat, 406k postpaid adds, guidance raised again",
+     "title": "Verizon Beats and Raises Guidance While Warning the FCC About SpaceX\u2019s Phone Network",
+     "published": "2026-10-26T18:19:57+00:00"
     },
     "check": null
+   },
+   "PFE": {
+    "event": {
+     "id": "446bda7df38d",
+     "ticker": "PFE",
+     "event_type": "product",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.5,
+     "rationale": "Phase 3 MagnetisMM-32 met primary endpoint; supports label expansion",
+     "title": "Pfizer\u2019s ELREXFIO Outperforms Standard Regimens and Meets Primary Endpoint in Phase 3 Study in Relapsed or Refractory Multiple Myeloma",
+     "published": "2026-10-27T10:45:00+00:00"
+    },
+    "check": "1-month return +3.9% - BUY"
    }
   },
   "signals": {
-   "AMGN": {
-    "state": "NO SLOT",
-    "event": "product",
+   "GLW": {
+    "state": "SKIP",
+    "event": "earnings",
     "materiality": 2,
     "confidence": 0.6,
-    "check": "not checked (positions full)"
+    "check": "1-month return -18.5% - skipped"
    },
-   "AAPL": {
-    "state": "NO SLOT",
-    "event": "product",
+   "KO": {
+    "state": "BUY",
+    "event": "earnings",
     "materiality": 2,
     "confidence": 0.55,
-    "check": "not checked (positions full)"
+    "check": "1-month return +5.6% - BUY"
    },
-   "WDC": {
-    "state": "NO SLOT",
-    "event": "guidance",
+   "AVGO": {
+    "state": "SKIP",
+    "event": "analyst",
     "materiality": 2,
-    "confidence": 0.55,
-    "check": "not checked (positions full)"
+    "confidence": 0.5,
+    "check": "1-month return -6.7% - skipped"
    },
-   "SMCI": {
-    "state": "NO SLOT",
-    "event": "guidance",
+   "QCOM": {
+    "state": "SKIP",
+    "event": "regulatory_legal",
     "materiality": 2,
-    "confidence": 0.55,
-    "check": "not checked (positions full)"
+    "confidence": 0.5,
+    "check": "1-month return -11.1% - skipped"
    },
-   "GEV": {
-    "state": "NO SLOT",
+   "PFE": {
+    "state": "BUY",
     "event": "product",
     "materiality": 2,
     "confidence": 0.5,
-    "check": "not checked (positions full)"
+    "check": "1-month return +3.9% - BUY"
    },
-   "PG": {
+   "BA": {
     "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
-    "confidence": 0.5,
+    "confidence": 0.45,
     "check": "not checked (positions full)"
    },
    "VZ": {
     "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
-    "confidence": 0.5,
+    "confidence": 0.45,
     "check": "not checked (positions full)"
    },
-   "BE": {
+   "MSFT": {
     "state": "NO SLOT",
-    "event": "guidance",
+    "event": "other",
     "materiality": 2,
     "confidence": 0.4,
     "check": "not checked (positions full)"
