@@ -1,18 +1,18 @@
 # Paper run status
 
-Last update: 28 Oct 2026 13:17 UTC · status: **running** · period: 2026-10-12 → 2026-11-12
+Last update: 28 Oct 2026 13:42 UTC · status: **running** · period: 2026-10-12 → 2026-11-12
 
 | Agent | Equity | Return | vs benchmark | Max DD | Trading costs | Funding | Fills | Backtest gate |
 |---|---|---|---|---|---|---|---|---|
-| B0 Benchmark: S&P 500 UCITS ETF, buy and hold | €992.99 | -0.70% | – | -2.5% | €2.50 | €0.00 | 1 | benchmark |
-| B1 Benchmark: Bitcoin spot, buy and hold | €977.41 | -2.26% | – | -6.0% | €2.79 | €0.00 | 1 | benchmark |
-| A1 ETF trend: SMA 50/200 + 12-month momentum, ATR trailing stop (IBKR) | €992.99 | -0.70% | +0.00% | -1.2% | €4.68 | €0.00 | 2 | FAIL (Sharpe at 2x costs <= 0) |
-| A1b Same ETF trend rules, Trading 212 cost model | €991.03 | -0.90% | -0.20% | -1.2% | €0.93 | €0.00 | 3 | FAIL (Sharpe at 2x costs <= 0) |
-| A2 Stock factor ranking + SMA(200) filter, ATR trailing stop (US large caps, IBKR) | €997.43 | -0.26% | +0.44% | -3.9% | €16.19 | €0.00 | 11 | FAIL (Sharpe at 2x costs <= 0) |
-| A3 Crypto breakout: Donchian 20/10 with 2N stop (BTC/ETH perps, Kraken EEA, 1x) | €1,000.00 | +0.00% | +2.26% | 0.0% | €0.00 | €0.00 | 0 | WEAK (DSR 0.00 < 0.95) |
-| A7 RSI(2) mean reversion on the S&P 500 UCITS ETF (Trading 212) | €993.28 | -0.67% | +0.03% | -1.0% | €1.68 | €0.00 | 2 | FAIL (Sharpe at 2x costs <= 0) |
-| A4 Funding carry: long spot / short perp when funding > 12%/yr (Bitvavo + Kraken) | €1,003.64 | +0.36% | +2.62% | -0.3% | €1.74 | −€1.24 | 2 | WEAK (DSR 0.00 < 0.95) |
-| A5 Put credit spreads on XSP: VIX filter, 50% take-profit, 2x stop (IBKR) | €904.69 | -9.53% | -8.83% | -11.4% | €72.17 | €0.00 | 4 | FAIL (Sharpe at 2x costs <= 0) |
-| A6 LLM news: Claude-labelled headlines, 7% stop / 10% target / 5-day exit (IBKR) | €981.68 | -1.83% | -1.13% | -5.7% | €5.64 | €0.00 | 11 | not backtested |
+| B0 Benchmark: S&P 500 UCITS ETF, buy and hold | €993.42 | -0.66% | – | -2.5% | €2.50 | €0.00 | 1 | benchmark |
+| B1 Benchmark: Bitcoin spot, buy and hold | €978.49 | -2.15% | – | -6.0% | €2.79 | €0.00 | 1 | benchmark |
+| A1 ETF trend: SMA 50/200 + 12-month momentum, ATR trailing stop (IBKR) | €993.15 | -0.68% | -0.03% | -1.2% | €4.68 | €0.00 | 2 | FAIL (Sharpe at 2x costs <= 0) |
+| A1b Same ETF trend rules, Trading 212 cost model | €991.08 | -0.89% | -0.23% | -1.2% | €0.93 | €0.00 | 3 | FAIL (Sharpe at 2x costs <= 0) |
+| A2 Stock factor ranking + SMA(200) filter, ATR trailing stop (US large caps, IBKR) | €1,007.25 | +0.72% | +1.38% | -3.9% | €16.19 | €0.00 | 11 | FAIL (Sharpe at 2x costs <= 0) |
+| A3 Crypto breakout: Donchian 20/10 with 2N stop (BTC/ETH perps, Kraken EEA, 1x) | €1,000.00 | +0.00% | +2.15% | 0.0% | €0.00 | €0.00 | 0 | WEAK (DSR 0.00 < 0.95) |
+| A7 RSI(2) mean reversion on the S&P 500 UCITS ETF (Trading 212) | €993.28 | -0.67% | -0.01% | -1.0% | €1.68 | €0.00 | 2 | FAIL (Sharpe at 2x costs <= 0) |
+| A4 Funding carry: long spot / short perp when funding > 12%/yr (Bitvavo + Kraken) | €1,003.52 | +0.35% | +2.50% | -0.3% | €1.74 | −€1.24 | 2 | WEAK (DSR 0.00 < 0.95) |
+| A5 Put credit spreads on XSP: VIX filter, 50% take-profit, 2x stop (IBKR) | €904.44 | -9.56% | -8.90% | -11.4% | €72.17 | €0.00 | 4 | FAIL (Sharpe at 2x costs <= 0) |
+| A6 LLM news: Claude-labelled headlines, 7% stop / 10% target / 5-day exit (IBKR) | €983.69 | -1.63% | -0.97% | -5.7% | €5.64 | €0.00 | 11 | not backtested |
 
 Simulated fills against public quotes; not investment advice. Full dashboard: docs/classic.html (GitHub Pages).
