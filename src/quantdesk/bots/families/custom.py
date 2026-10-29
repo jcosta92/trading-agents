@@ -281,3 +281,18 @@ class OctoDcaBot(Bot):
         if eur >= 5.0:
             ctx.place(iid, "buy", "market", eur=eur, tag="dca:time-based buy")
             st["buys"] = int(st.get("buys", 0)) + 1
+
+
+class BuyHoldEtfBot(UsEtfBot):
+    """Benchmark, not a strategy: the bot's whole EUR capital buys one US ETF at the first 5-minute
+    candle of the test (IBKR fees, EUR->USD conversion, spread and slippage) and holds it to the end."""
+
+    def on_bar(self, ctx, bars: dict) -> None:
+        if ctx.state.get("bought"):
+            return
+        iid = self.instruments()[0]
+        sess = self._session(ctx.ts)
+        if iid not in bars or sess is None or ctx.ts + 2 * TF[self.timeframe] > sess["close"]:
+            return
+        ctx.place(iid, "buy", "market", eur=ctx.cash_eur(), tag="bench:buy and hold")
+        ctx.state["bought"] = ctx.ts.isoformat()

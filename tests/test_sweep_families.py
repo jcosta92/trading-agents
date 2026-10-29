@@ -219,3 +219,24 @@ def test_octobot_dca_buys_at_start_then_weekly_and_never_sells():
     assert [pd.Timestamp(x.ts) - idx[1] for x in buys] == [pd.Timedelta(days=d) for d in (0, 7, 14, 21)]
     assert all(x.value_eur == pytest.approx(5000 / 12, rel=0.01) for x in buys)
     assert not [x for x in eng.fills if x.side == "sell"]
+
+
+def test_benchmarks_buy_once_and_stay_out_of_strategy_statistics(tmp_path):
+    import json
+    from quantdesk.bots import report
+    from quantdesk.bots.runner import load_config
+    cfg = load_config()
+    assert [b for b in cfg["bots"] if b.startswith("buy_and_hold.")] == ["buy_and_hold.SPY", "buy_and_hold.QQQ", "buy_and_hold.VGK"]
+    bot = custom.BuyHoldEtfBot("b", cfg["bots"]["buy_and_hold.SPY"])
+    idx = pd.date_range("2026-10-12T13:30Z", periods=10, freq="5min")
+    bot.sessions = pd.DataFrame({"open": [idx[0]], "close": [pd.Timestamp("2026-10-12T20:00Z")]},
+                                index=[pd.Timestamp("2026-10-12")])
+    from quantdesk.bots.runner import _us_market
+    markets = {}
+    _us_market(markets, cfg, "SPY")
+    eng = BotEngine(markets, CostModel(load_venues()), FxRates(1.16))
+    df = pd.DataFrame({"open": 600.0, "high": 601.0, "low": 599.0, "close": 600.0, "volume": 1.0}, index=idx)
+    led = Ledger("b", 5000.0)
+    eng.run(bot, led, {"SPY": df}, idx[0], idx[-1] + pd.Timedelta(days=1))
+    assert len(eng.fills) == 1 and eng.fills[0].side == "buy" and eng.fills[0].ts == idx[1].isoformat()
+    assert eng.fills[0].value_eur == pytest.approx(5000, rel=0.005)     # the engine keeps ~0.3% back for fees

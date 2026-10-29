@@ -32,6 +32,7 @@ groups:
   equity_research: "Stock and ETF research"
   ml: "Machine learning"
   social: "Reddit, social media and quant blogs"
+  benchmarks: "Benchmarks: EUR 5,000 bought at the start and held (not strategies)"
 
 families:
 
@@ -2100,6 +2101,20 @@ families:
     signal: trading_rush_macd200
     variants: crypto8
     risk: {bracket: true}
+
+  # =========================================================================== Benchmarks (29 Oct 2026)
+  # Not strategies: buy-and-hold yardsticks for the bots, left out of every strategy statistic on the dashboard.
+  buy_and_hold:
+    group: benchmarks
+    name: "Buy and hold from the start: SPY (S&P 500), QQQ (Nasdaq-100), VGK (Europe)"
+    source: "SPY (S&P 500), QQQ (Nasdaq-100), VGK (FTSE Developed Europe); US-listed, priced in USD"
+    rules: "The whole EUR 5,000 buys the ETF at the first 5-minute candle after the 12 Oct 17:00 UTC start (12 Oct 17:05 UTC, a US trading day) and holds it to the end; same IBKR fees, EUR->USD conversion, spread and slippage as the bots. Returns are in euros, so they include the dollar's move against the euro, as for a European buying an unhedged index fund. (EU retail investors buy the UCITS versions of these funds, which track the same indices.)"
+    class: BuyHoldEtfBot
+    timeframe: 5m
+    variants:
+      - {id: SPY, params: {instruments: [SPY]}}
+      - {id: QQQ, params: {instruments: [QQQ]}}
+      - {id: VGK, params: {instruments: [VGK]}}
 
   # =========================================================================== OctoBot Grid and DCA modes (15 Oct 2026)
   # Instagram post (diego.spanevello, 24 Sep 2026) on Freqtrade, Jesse and OctoBot: the test already runs

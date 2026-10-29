@@ -19,6 +19,7 @@ SINGLE_POSITION = {"BinHV45Bot", "SupertrendBot", "EmaMacdBot", "ORBBot", "VolBr
                    "MomentumRotationBot", "IBSBot", "OvernightBot", "TurnOfMonthBot", "LeverageRotationBot",
                    "TurtleBot", "SqueezeBot", "RSIBot", "SignalBot", "EtfDailyBot", "IntradayEtfBot", "TPSBot",
                    "PreFomcBot", "GoldIfvgBot", "GoldLevelBot"}
+BENCH = "benchmarks"           # buy-and-hold references: shown, but left out of every strategy statistic
 GROUP_ORDER = ["popular", "alternative", "classic", "repos", "ta", "crypto_research", "equity_research", "ml", "social"]
 
 
@@ -146,8 +147,12 @@ def _pts(s: pd.Series, start, cap) -> list:
 def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "index.html",
           md_name: str = "BOTS.md", preview: bool = False) -> pd.DataFrame:
     data = load(state)
-    table = summary_table(data, cfg)
-    fam = family_table(table, cfg)
+    table_all = summary_table(data, cfg)
+    fam = family_table(table_all, cfg)
+    is_bench = table_all["group"] == BENCH if len(table_all) else pd.Series(dtype=bool)
+    bench = table_all[is_bench] if len(table_all) else table_all
+    table = table_all[~is_bench] if len(table_all) else table_all          # the strategies
+    sfam = fam[fam["group"] != BENCH] if len(fam) else fam
     st = data["status"]
     start, end = pd.Timestamp(cfg["start"]), pd.Timestamp(cfg["end"])
     now = pd.Timestamp(st.get("ts")) if st.get("ts") else None
@@ -165,6 +170,14 @@ def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "i
         if len(s):
             series.append({"id": label, "label": label, "color": "var(--bench)", "bench": True,
                            "points": _thin([[int(t.timestamp() * 1000), round(float(v), 2)] for t, v in s.items()])})
+    eq = data["equity"]
+    for i, (_, b) in enumerate(bench.iterrows()):
+        e = eq[eq["bot"] == b["bot"]] if len(eq) else eq
+        if len(e):
+            label = {"SPY": "S&P 500 (SPY)", "QQQ": "Nasdaq-100 (QQQ)", "VGK": "Europe (VGK)"}.get(b["variant"], b["variant"])
+            series.append({"id": b["bot"], "label": f"{label} buy-and-hold",
+                           "color": COLORS[(len(groups) + i) % len(COLORS)], "bench": True,
+                           "points": _pts(e[e["ts"] >= start].set_index("ts")["equity_eur"], start, cap)})
 
     n = len(table)
     up = int((table["return"] > 0).sum()) if n else 0
@@ -172,8 +185,8 @@ def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "i
     beat = int((table["return"] > btc).sum()) if n and math.isfinite(btc) else 0
     trades = int(table["buys"].sum() + table["sells"].sum()) if n else 0
     fees = float(table["fees"].sum()) if n else 0.0
-    big = fam[fam["bots"] >= 3] if len(fam) else fam
-    best_f = (big if len(big) else fam).sort_values("median", ascending=False).iloc[0] if len(fam) else None
+    big = sfam[sfam["bots"] >= 3] if len(sfam) else sfam
+    best_f = (big if len(big) else sfam).sort_values("median", ascending=False).iloc[0] if len(sfam) else None
     days = (min(now, end) - start).days if now is not None and now > start else 0
     total_days = (end - start).days
     finished = now is not None and now >= end
@@ -181,6 +194,8 @@ def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "i
     err_html = (f"<div class='warn'>{len(errs)} bot error(s) in the last cycle: " +
                 _esc("; ".join(errs[:5])) + ("…" if len(errs) > 5 else "") + "</div>") if errs else ""
     order = groups or [g for g in GROUP_ORDER if len(fam) and g in set(fam["group"])]
+    if len(bench):
+        order = [BENCH] + [g for g in order if g != BENCH]
 
     tot = money(table, cap)
     frows = []
@@ -188,7 +203,7 @@ def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "i
         sub = fam[fam["group"] == g].sort_values("median", ascending=False)
         if sub.empty:
             continue
-        gm = money(table[table["group"] == g], cap)
+        gm = money(table_all[table_all["group"] == g], cap)
         frows.append(f"<tr class='grp'><td colspan='3' class='l'><b>{_esc(gnames.get(g, g))}</b> "
                      f"<span class='muted'>({len(sub)} families, {int(sub['bots'].sum())} bots)</span></td>"
                      + _money_cells(gm["pct"], gm["gross"], gm["fees"], gm["net"], strong=True)
@@ -214,7 +229,7 @@ def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "i
                        for k, v in ref_now.items())
 
     details = []
-    tb = table.set_index("bot")
+    tb = table_all.set_index("bot")
     for g in order:
         sub = fam[fam["group"] == g].sort_values("median", ascending=False)
         if sub.empty:
@@ -262,7 +277,7 @@ average bot {_eur(r['avg_net'])} after fees ({_pct(r['pl_pct'], 2)}) · median {
 <button class='toggle' onclick='toggleTheme()'>Light / dark</button>
 <h1>{'Preview: what the bots would have done in the month before the test' if preview else 'Trading bots: live demo'}</h1>
 {"<div class='warn'>Replay of the month <b>before</b> the live test, same code, data and costs. It shows behaviour; it is not the test.</div>" if preview else ''}
-<p class='sub'>{n} bots in {len(fam)} strategy families, each trading its own simulated €{float(cfg.get('initial_capital', 1000.0)):,.0f} from {start:%d %b %Y %H:%M} to
+<p class='sub'>{n} bots in {len(sfam)} strategy families, each trading its own simulated €{float(cfg.get('initial_capital', 1000.0)):,.0f} from {start:%d %b %Y %H:%M} to
 {end:%d %b %Y %H:%M} UTC. A family is one published strategy (open-source bot, research paper or classic system), run with
 its default rules on several markets: judge a family by its median and by how many of its bots made money, not by its best
 bot. Real candles, Bitvavo / IBKR fees, spread and slippage on every fill. Last update:
@@ -307,8 +322,10 @@ bots in profit. Sorted by median within each group. Click a family for its rules
     (docs / page_name).write_text(page, encoding="utf-8")
     (docs / ".nojekyll").write_text("")
     reports.mkdir(parents=True, exist_ok=True)
-    (reports / md_name).write_text(markdown(table, fam, cfg, st, ref_now), encoding="utf-8")
-    return table
+    bench_now = {f"{b['variant']} buy-and-hold (EUR {cap:,.0f} bought at the start, with costs)": b["return"]
+                 for _, b in bench.iterrows()}
+    (reports / md_name).write_text(markdown(table, sfam, cfg, st, {**bench_now, **ref_now}), encoding="utf-8")
+    return table_all
 
 
 def markdown(table: pd.DataFrame, fam: pd.DataFrame, cfg: dict, st: dict, ref_now: dict) -> str:
@@ -321,7 +338,7 @@ def markdown(table: pd.DataFrame, fam: pd.DataFrame, cfg: dict, st: dict, ref_no
              f"- Average bot since the start: {_eur(tot['gross'])} before fees, {_eur(-tot['fees'])} fees, "
              f"**{_eur(tot['net'])} after fees** ({_pct(tot['pct'], 2)} of EUR {cap:,.0f})"]
     for k, v in ref_now.items():
-        lines.append(f"- {k} (reference, no costs): {_pct(v, 2)}")
+        lines.append(f"- {k}{'' if 'costs' in k else ' (reference, no costs)'}: {_pct(v, 2)}")
     lines += ["", f"P/L columns are the family's average bot (per EUR {cap:,.0f} account) since the start: before fees + "
               "fees = after fees; P/L % = the average return after fees. Before fees = before commissions; spread "
               "and slippage are in the fill prices, so they count in both. Median, best and worst are single bots' returns "
