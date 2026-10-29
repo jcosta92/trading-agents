@@ -4,7 +4,7 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 7.874373021528697,
-  "USD": 371.8685795217623
+  "USD": 7.044191996929648
  },
  "positions": {
   "KO": {
@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-27T14:07:03.864634+00:00",
-   "last_mark": 91.7300033569336
+   "last_mark": 92.45
   },
   "PFE": {
    "inst_id": "PFE",
@@ -25,7 +25,17 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-27T14:07:03.864634+00:00",
-   "last_mark": 29.450000762939453
+   "last_mark": 29.75
+  },
+  "LLY": {
+   "inst_id": "LLY",
+   "qty": 0.26358009,
+   "avg_price": 1382.7810108032227,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-10-29T14:07:19.619998+00:00",
+   "last_mark": 1382.0899658203125
   }
  },
  "journal": [
@@ -327,12 +337,32 @@
    "eur_rate": 1.113709807395935,
    "reason": "TIME EXIT: held 5 business days (max 5)",
    "seq": 16
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-29T14:07:19.619998+00:00",
+   "inst": "LLY",
+   "kind": "stock",
+   "qty": 0.26358009,
+   "price": 1382.7810108032227,
+   "mid": 1382.0899658203125,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35084424702827
+   },
+   "fees_eur": 0.31498797373101256,
+   "spread_cost_eur": 0.16353041291540546,
+   "value_eur": 327.2243562437194,
+   "eur_rate": 1.1138337850570679,
+   "reason": "BUY signal: guidance news, materiality 2, direction +1 (\"Eli Lilly jumps on earnings beat, raised revenue guidance\"), 1-month return +8.8%",
+   "seq": 17
   }
  ],
  "costs": {
   "fx": 0.29763768809349145,
-  "commissions": 3.8608041447706603,
-  "spread_slippage": 1.9706808242747014
+  "commissions": 4.175792118501673,
+  "spread_slippage": 2.1342112371901067
  },
  "realized": [
   {
@@ -401,7 +431,7 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-27"
+    "updated": "2026-10-28"
    },
    "PFE": {
     "entry": 29.715941,
@@ -415,212 +445,226 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-27"
+    "updated": "2026-10-28"
+   },
+   "LLY": {
+    "entry": 1382.7810108032227,
+    "opened": "2026-10-29",
+    "stop": 1285.986340046997,
+    "target": 1521.059111883545,
+    "hwm": 1382.7810108032227,
+    "spec": {
+     "stop_pct": 0.07,
+     "target_pct": 0.1,
+     "max_days": 5,
+     "label": "stop -7%, take-profit +10%, time exit 5 days"
+    },
+    "updated": ""
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-10-29",
-   "equity": 986.9222
+   "equity": 990.6149
   },
-  "last_decision": "2026-10-27",
+  "last_decision": "2026-10-28",
   "last_candidates": {
-   "AMD": {
+   "MSFT": {
     "event": {
-     "id": "d57ac6d28409",
-     "ticker": "AMD",
-     "event_type": "product",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Announces deal with Meta to power its AI buildout; major customer win",
-     "title": "Nvidia, AMD Get Their Jollies Hooking Up With Meta's Muse",
-     "published": "2026-10-27T21:08:07+00:00"
-    },
-    "check": null
-   },
-   "GOOGL": {
-    "event": {
-     "id": "3490048d6179",
-     "ticker": "GOOGL",
-     "event_type": "product",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "OpenAI reportedly to buy Google AI chips; major TPU customer win",
-     "title": "OpenAI Reportedly Plans to Purchase Google AI Chips as Demand for Computing Infrastructure Grows",
-     "published": "2026-10-28T11:51:26+00:00"
-    },
-    "check": null
-   },
-   "GOOG": {
-    "event": {
-     "id": "c2115f6032a7",
-     "ticker": "GOOG",
-     "event_type": "product",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "OpenAI reportedly to buy Google AI chips; major TPU customer win",
-     "title": "OpenAI Reportedly Plans to Purchase Google AI Chips as Demand for Computing Infrastructure Grows",
-     "published": "2026-10-28T11:51:26+00:00"
-    },
-    "check": null
-   },
-   "STX": {
-    "event": {
-     "id": "9f64f5d7ab7c",
-     "ticker": "STX",
+     "id": "d7adfc9a8472",
+     "ticker": "MSFT",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Q1 beat and raised guidance; shares fell on profit-taking",
-     "title": "Seagate Technology shares fall 6% despite Q1 earnings beat and raised guidance",
-     "published": "2026-10-27T20:47:36+00:00"
+     "confidence": 0.7,
+     "rationale": "Rising 4% premarket on revenue and EPS beat",
+     "title": "Why Is Microsoft Stock Rising 4% in Premarket Trading?",
+     "published": "2026-10-29T11:52:27+00:00"
+    },
+    "check": null
+   },
+   "LITE": {
+    "event": {
+     "id": "fbd1f467eec3",
+     "ticker": "LITE",
+     "event_type": "m&a",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.75,
+     "rationale": "Marvell in advanced talks to acquire Lumentum; shares +9%",
+     "title": "Marvell nears deal for optical supplier Lumentum to bolster hardware, report says",
+     "published": "2026-10-28T22:26:16+00:00"
+    },
+    "check": "1-month return -6.1% - skipped"
+   },
+   "ORCL": {
+    "event": {
+     "id": "a2a9d0207a09",
+     "ticker": "ORCL",
+     "event_type": "guidance",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.65,
+     "rationale": "Rallies on upbeat revenue and cash flow forecasts",
+     "title": "Oracle Stock Rallies As Upbeat Revenue, Cash Flow Forecasts Ease AI Jitters",
+     "published": "2026-10-28T21:33:47+00:00"
     },
     "check": null
    },
    "LLY": {
     "event": {
-     "id": "abea574d7060",
+     "id": "aa79e7230730",
      "ticker": "LLY",
-     "event_type": "product",
+     "event_type": "guidance",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Retatrutide beats Ozempic head-to-head in Phase 3; strong data",
-     "title": "Lilly's retatrutide delivered greater A1C reduction and more than double the weight loss of Ozempic's highest approved dose in head-to-head trial",
-     "published": "2026-10-28T10:45:00+00:00"
+     "confidence": 0.75,
+     "rationale": "Beat and raised revenue guidance; +4% premarket",
+     "title": "Eli Lilly jumps on earnings beat, raised revenue guidance",
+     "published": "2026-10-29T11:26:29+00:00"
     },
-    "check": null
+    "check": "1-month return +8.8% - BUY"
    },
    "V": {
     "event": {
-     "id": "ca6e944ecebf",
+     "id": "176c37280f97",
      "ticker": "V",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Q4 EPS and revenue beat; payments volume up",
-     "title": "Visa Beats Fourth-Quarter Views as Payments Volume Increases",
-     "published": "2026-10-27T21:08:25+00:00"
+     "confidence": 0.6,
+     "rationale": "Revenue up 13%, double-digit growth forecast for 2027",
+     "title": "Visa earnings rise as payments growth offsets higher client incentives",
+     "published": "2026-10-28T13:31:00+00:00"
     },
     "check": null
    },
-   "XOM": {
+   "KLAC": {
     "event": {
-     "id": "8fadc92f0156",
-     "ticker": "XOM",
-     "event_type": "regulatory_legal",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Tribunal dismisses Kazakhstan $12B Kashagan claim; removes liability",
-     "title": "ExxonMobil (XOM) Wins Dismissal Of Kazakhstan\u2019s $12 Billion Kashagan Claim",
-     "published": "2026-10-27T15:16:43+00:00"
-    },
-    "check": null
-   },
-   "GEV": {
-    "event": {
-     "id": "6f4d721bcd61",
-     "ticker": "GEV",
+     "id": "df1125762deb",
+     "ticker": "KLAC",
      "event_type": "guidance",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.7,
-     "rationale": "Q3 beat and raised full-year guidance",
-     "title": "GE Vernova stock gains on earnings beat, raised guidance",
-     "published": "2026-10-28T10:59:34+00:00"
+     "rationale": "Beat and stronger-than-expected guidance; shares up 3%",
+     "title": "KLA shares jump 3% on Q1 earnings beat and upgraded guidance",
+     "published": "2026-10-28T20:49:07+00:00"
     },
     "check": null
    },
-   "GLW": {
+   "MRK": {
     "event": {
-     "id": "e433677f0ebc",
-     "ticker": "GLW",
-     "event_type": "earnings",
+     "id": "1ee76e4ddd60",
+     "ticker": "MRK",
+     "event_type": "guidance",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Q3 beat; optical sales up 44%, Q4 EPS guided higher",
-     "title": "Corning Reports 19% Rise in Q3 Core Sales to $5.08 Billion, Forecasts Higher Fourth-Quarter Earnings",
-     "published": "2026-10-27T15:07:51+00:00"
+     "confidence": 0.7,
+     "rationale": "Shares rise on beat and raised 2026 outlook",
+     "title": "Merck shares rise on Q3 beat, raised 2026 profit outlook",
+     "published": "2026-10-29T11:21:56+00:00"
     },
     "check": null
    },
    "VRT": {
     "event": {
-     "id": "02e6a5e2bc74",
+     "id": "0192af52c777",
      "ticker": "VRT",
+     "event_type": "guidance",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.8,
+     "rationale": "Soars 16% on doubled orders and raised guidance",
+     "title": "Vertiv Soars 16% on Doubled Orders and Raised Guidance in \u201cLargest Infrastructure Buildout\u201d",
+     "published": "2026-10-28T17:23:45+00:00"
+    },
+    "check": "1-month return -2.2% - skipped"
+   },
+   "APH": {
+    "event": {
+     "id": "e925a1010b91",
+     "ticker": "APH",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.7,
-     "rationale": "Sales up 61%, orders over 100%; full-year guidance raised across metrics",
-     "title": "Vertiv Reports Strong Third Quarter 2026 with Net Sales Growth of 61%, Organic Orders Growth over 100% and Diluted EPS Growth of 91% (Adjusted Diluted EPS Growth of 78%); Raises Full Year 2026 Guidance Across All Key Metrics",
-     "published": "2026-10-28T09:55:00+00:00"
+     "confidence": 0.8,
+     "rationale": "Record quarter, raised guidance, $4B buyback",
+     "title": "Amphenol Soars 7% on Record $10.2 Billion Quarter, Raised Guidance and New $4 Billion Buyback",
+     "published": "2026-10-28T17:20:52+00:00"
+    },
+    "check": "1-month return -4.0% - skipped"
+   },
+   "LIN": {
+    "event": {
+     "id": "13505f86476b",
+     "ticker": "LIN",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.65,
+     "rationale": "Stock up 3% on Q3 beats",
+     "title": "Linde stock rises 3% on third-quarter earnings, revenue beats",
+     "published": "2026-10-29T10:10:48+00:00"
     },
     "check": null
    }
   },
   "signals": {
-   "GEV": {
+   "VRT": {
+    "state": "SKIP",
+    "event": "guidance",
+    "materiality": 2,
+    "confidence": 0.8,
+    "check": "1-month return -2.2% - skipped"
+   },
+   "APH": {
+    "state": "SKIP",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.8,
+    "check": "1-month return -4.0% - skipped"
+   },
+   "LITE": {
+    "state": "SKIP",
+    "event": "m&a",
+    "materiality": 2,
+    "confidence": 0.75,
+    "check": "1-month return -6.1% - skipped"
+   },
+   "LLY": {
+    "state": "BUY",
+    "event": "guidance",
+    "materiality": 2,
+    "confidence": 0.75,
+    "check": "1-month return +8.8% - BUY"
+   },
+   "MSFT": {
+    "state": "NO SLOT",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.7,
+    "check": "not checked (positions full)"
+   },
+   "KLAC": {
     "state": "NO SLOT",
     "event": "guidance",
     "materiality": 2,
     "confidence": 0.7,
     "check": "not checked (positions full)"
    },
-   "VRT": {
+   "MRK": {
     "state": "NO SLOT",
-    "event": "earnings",
+    "event": "guidance",
     "materiality": 2,
     "confidence": 0.7,
     "check": "not checked (positions full)"
    },
-   "AMD": {
+   "ORCL": {
     "state": "NO SLOT",
-    "event": "product",
+    "event": "guidance",
     "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "GOOGL": {
-    "state": "NO SLOT",
-    "event": "product",
-    "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "GOOG": {
-    "state": "NO SLOT",
-    "event": "product",
-    "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "STX": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "LLY": {
-    "state": "NO SLOT",
-    "event": "product",
-    "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "GLW": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.6,
+    "confidence": 0.65,
     "check": "not checked (positions full)"
    }
   }
