@@ -4,7 +4,7 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 503.6798747706815,
-  "USD": 1.3948674444118
+  "USD": 1.409100660894051
  },
  "positions": {
   "BTC_SPOT": {
@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "crypto_spot",
    "opened": "2026-10-21T00:18:04.444611+00:00",
-   "last_mark": 69904.95
+   "last_mark": 70126.65
   },
   "BTC_PERP": {
    "inst_id": "BTC_PERP",
@@ -25,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "perp",
    "opened": "2026-10-21T00:18:04.444611+00:00",
-   "last_mark": 78201.5
+   "last_mark": 78417.5
   }
  },
  "journal": [
@@ -2237,19 +2237,29 @@
    "amount_eur": 0.016957894003679946,
    "rate": 3.6298782407407e-05,
    "seq": 218
+  },
+  {
+   "type": "funding",
+   "ts": "2026-10-30T05:17:53.451755+00:00",
+   "inst": "BTC_PERP",
+   "ccy": "USD",
+   "amount": 0.014233216482251038,
+   "amount_eur": 0.01272164896159676,
+   "rate": 2.7126829166667e-05,
+   "seq": 219
   }
  ],
  "costs": {
   "commissions": 1.4850526180682073,
   "spread_slippage": 0.2507528148136476,
-  "funding": -1.493970004628837
+  "funding": -1.5066916535904336
  },
  "realized": [],
  "meta": {
   "splits_applied": {},
   "split_suspect": {},
   "funding_ts": {
-   "BTC_PERP": "2026-10-30T04:35:34.605322+00:00"
+   "BTC_PERP": "2026-10-30T05:17:53.451755+00:00"
   },
   "div_checked": {},
   "day_start": {
@@ -2288,7 +2298,7 @@
   "pending": [],
   "last_equity": {
    "date": "2026-10-30",
-   "equity": 1001.496
+   "equity": 1001.7139
   },
   "entered": "2026-10-20",
   "perp_leverage": 0.86
