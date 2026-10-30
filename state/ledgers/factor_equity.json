@@ -4,7 +4,7 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 4.075538146253166e-05,
-  "USD": 96.85359283737992
+  "USD": 196.834059771814
  },
  "positions": {
   "APA": {
@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 51.5099983215332
+   "last_mark": 52.06999969482422
   },
   "COP": {
    "inst_id": "COP",
@@ -25,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 150.02999877929688
+   "last_mark": 152.31500244140625
   },
   "DVN": {
    "inst_id": "DVN",
@@ -35,7 +35,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 51.16999816894531
+   "last_mark": 51.79499816894531
   },
   "EOG": {
    "inst_id": "EOG",
@@ -45,7 +45,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 162.22000122070312
+   "last_mark": 164.8699951171875
   },
   "FANG": {
    "inst_id": "FANG",
@@ -55,7 +55,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 206.42999267578125
+   "last_mark": 210.13999938964844
   },
   "MU": {
    "inst_id": "MU",
@@ -65,17 +65,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 934.27001953125
-  },
-  "NEM": {
-   "inst_id": "NEM",
-   "qty": 0.9421468,
-   "avg_price": 117.463484,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 111.80000305175781
+   "last_mark": 897.4749755859375
   },
   "OXY": {
    "inst_id": "OXY",
@@ -85,7 +75,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 63.0099983215332
+   "last_mark": 63.53499984741211
   },
   "SNDK": {
    "inst_id": "SNDK",
@@ -95,7 +85,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 1330.050048828125
+   "last_mark": 1221.0238037109375
   }
  },
  "journal": [
@@ -455,12 +445,32 @@
    "eur_rate": 1.114951491355896,
    "reason": "STOP-LOSS hit: price 405.8 <= stop 413.8 (3xATR(20) chandelier trailing stop)",
    "seq": 21
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-30T14:06:11.762026+00:00",
+   "inst": "NEM",
+   "kind": "stock",
+   "qty": -0.9421468,
+   "price": 106.49672805023194,
+   "mid": 106.55000305175781,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.3550846085621857
+   },
+   "fees_eur": 0.31868841709427526,
+   "spread_cost_eur": 0.04504810010781855,
+   "value_eur": 90.05115211553488,
+   "eur_rate": 1.1142061948776245,
+   "reason": "STOP-LOSS hit: price 106.6 <= stop 107.4 (3xATR(20) chandelier trailing stop)",
+   "seq": 22
   }
  ],
  "costs": {
   "fx": 0.2999999877734467,
-  "commissions": 3.477107608221265,
-  "spread_slippage": 12.417371868875636
+  "commissions": 3.7957960253155405,
+  "spread_slippage": 12.462419968983454
  },
  "realized": [
   {
@@ -470,6 +480,14 @@
    "pnl": -7.18801738762642,
    "ccy": "USD",
    "pnl_eur": -6.446932842688115
+  },
+  {
+   "ts": "2026-10-30T14:06:11.762026+00:00",
+   "inst": "NEM",
+   "qty": 0.9421468,
+   "pnl": -10.332294024454935,
+   "ccy": "USD",
+   "pnl_eur": -9.273233331456886
   }
  ],
  "meta": {
@@ -495,7 +513,7 @@
    "APA": {
     "entry": 48.779235,
     "opened": "2026-10-12",
-    "stop": 47.18442107549493,
+    "stop": 47.261335418320584,
     "target": null,
     "hwm": 51.900001525878906,
     "spec": {
@@ -505,12 +523,12 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-28"
+    "updated": "2026-10-29"
    },
    "COP": {
     "entry": 135.867162,
     "opened": "2026-10-12",
-    "stop": 141.01370015449083,
+    "stop": 141.20036094051753,
     "target": null,
     "hwm": 151.3699951171875,
     "spec": {
@@ -520,12 +538,12 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-28"
+    "updated": "2026-10-29"
    },
    "DVN": {
     "entry": 48.77975200000001,
     "opened": "2026-10-12",
-    "stop": 47.42961870138107,
+    "stop": 47.46620517170725,
     "target": null,
     "hwm": 51.63999938964844,
     "spec": {
@@ -535,12 +553,12 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-28"
+    "updated": "2026-10-29"
    },
    "EOG": {
     "entry": 150.13998700000002,
     "opened": "2026-10-12",
-    "stop": 152.53218273693287,
+    "stop": 152.68485063866885,
     "target": null,
     "hwm": 163.67999267578125,
     "spec": {
@@ -550,7 +568,7 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-28"
+    "updated": "2026-10-29"
    },
    "FANG": {
     "entry": 207.92923199999998,
@@ -565,7 +583,7 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-28"
+    "updated": "2026-10-29"
    },
    "MU": {
     "entry": 995.1985139999999,
@@ -580,27 +598,12 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-28"
-   },
-   "NEM": {
-    "entry": 117.463484,
-    "opened": "2026-10-12",
-    "stop": 107.38800945032591,
-    "target": null,
-    "hwm": 118.5999984741211,
-    "spec": {
-     "stop_atr": 3.0,
-     "atr": 3.871108136096721,
-     "trail_atr": 3.0,
-     "atr_n": 20,
-     "label": "3xATR(20) chandelier trailing stop"
-    },
-    "updated": "2026-10-28"
+    "updated": "2026-10-29"
    },
    "OXY": {
     "entry": 61.022200999999995,
     "opened": "2026-10-12",
-    "stop": 59.48760508858405,
+    "stop": 59.52294275784305,
     "target": null,
     "hwm": 64.16999816894531,
     "spec": {
@@ -610,12 +613,12 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-28"
+    "updated": "2026-10-29"
    },
    "SNDK": {
     "entry": 1481.0901505737304,
     "opened": "2026-10-12",
-    "stop": 1195.9064143169237,
+    "stop": 1197.154919558906,
     "target": null,
     "hwm": 1487.3299560546875,
     "spec": {
@@ -625,7 +628,7 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-28"
+    "updated": "2026-10-29"
    }
   },
   "last_rebalance": "2026-10",
@@ -725,7 +728,7 @@
   "pending": [],
   "last_equity": {
    "date": "2026-10-30",
-   "equity": 1000.7624
+   "equity": 996.0599
   }
  },
  "halted": false,
