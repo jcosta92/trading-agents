@@ -4,7 +4,7 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 4.075538146253166e-05,
-  "USD": 196.834059771814
+  "USD": 284.2154909735418
  },
  "positions": {
   "APA": {
@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 52.220001220703125
+   "last_mark": 52.27000045776367
   },
   "COP": {
    "inst_id": "COP",
@@ -25,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 152.80499267578125
+   "last_mark": 152.72
   },
   "DVN": {
    "inst_id": "DVN",
@@ -35,7 +35,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 51.935001373291016
+   "last_mark": 51.96500015258789
   },
   "EOG": {
    "inst_id": "EOG",
@@ -45,7 +45,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 164.63499450683594
+   "last_mark": 164.81500244140625
   },
   "FANG": {
    "inst_id": "FANG",
@@ -55,7 +55,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 210.9499969482422
+   "last_mark": 210.88499450683594
   },
   "MU": {
    "inst_id": "MU",
@@ -65,7 +65,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 893.6467895507812
+   "last_mark": 883.1624755859375
   },
   "OXY": {
    "inst_id": "OXY",
@@ -75,17 +75,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 63.584999084472656
-  },
-  "SNDK": {
-   "inst_id": "SNDK",
-   "qty": 0.07473022,
-   "avg_price": 1481.0901505737304,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 1198.925048828125
+   "last_mark": 63.70000076293945
   }
  },
  "journal": [
@@ -465,12 +455,32 @@
    "eur_rate": 1.1142061948776245,
    "reason": "STOP-LOSS hit: price 106.6 <= stop 107.4 (3xATR(20) chandelier trailing stop)",
    "seq": 22
+  },
+  {
+   "type": "trade",
+   "ts": "2026-10-30T15:42:24.813899+00:00",
+   "inst": "SNDK",
+   "kind": "stock",
+   "qty": -0.07473022,
+   "price": 1174.0026708374023,
+   "mid": 1174.5899658203125,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35204667053882865
+   },
+   "fees_eur": 0.3153986030030747,
+   "spread_cost_eur": 0.03931987021001405,
+   "value_eur": 78.60042054981493,
+   "eur_rate": 1.1161960363388062,
+   "reason": "STOP-LOSS hit: price 1175 <= stop 1197 (3xATR(20) chandelier trailing stop)",
+   "seq": 23
   }
  ],
  "costs": {
   "fx": 0.2999999877734467,
-  "commissions": 3.7957960253155405,
-  "spread_slippage": 12.462419968983454
+  "commissions": 4.111194628318615,
+  "spread_slippage": 12.501739839193467
  },
  "realized": [
   {
@@ -488,6 +498,14 @@
    "pnl": -10.332294024454935,
    "ccy": "USD",
    "pnl_eur": -9.273233331456886
+  },
+  {
+   "ts": "2026-10-30T15:42:24.813899+00:00",
+   "inst": "SNDK",
+   "qty": 0.07473022,
+   "pnl": -22.948714919941338,
+   "ccy": "USD",
+   "pnl_eur": -20.559753101448543
   }
  ],
  "meta": {
@@ -613,21 +631,6 @@
      "label": "3xATR(20) chandelier trailing stop"
     },
     "updated": "2026-10-29"
-   },
-   "SNDK": {
-    "entry": 1481.0901505737304,
-    "opened": "2026-10-12",
-    "stop": 1197.154919558906,
-    "target": null,
-    "hwm": 1487.3299560546875,
-    "spec": {
-     "stop_atr": 3.0,
-     "atr": 103.75941410969904,
-     "trail_atr": 3.0,
-     "atr_n": 20,
-     "label": "3xATR(20) chandelier trailing stop"
-    },
-    "updated": "2026-10-29"
    }
   },
   "last_rebalance": "2026-10",
@@ -727,7 +730,7 @@
   "pending": [],
   "last_equity": {
    "date": "2026-10-30",
-   "equity": 994.9419
+   "equity": 991.0701
   }
  },
  "halted": false,
