@@ -3,9 +3,20 @@
  "base": "EUR",
  "initial_capital": 1000.0,
  "cash": {
-  "EUR": 993.2769947744503
+  "EUR": 48.83711611880244
  },
- "positions": {},
+ "positions": {
+  "SP500": {
+   "inst_id": "SP500",
+   "qty": 7.194366,
+   "avg_price": 131.274928,
+   "currency": "EUR",
+   "multiplier": 1.0,
+   "kind": "etf",
+   "opened": "2026-11-02T09:18:06.915375+00:00",
+   "last_mark": 131.16
+  }
+ },
  "journal": [
   {
    "type": "deposit",
@@ -49,11 +60,29 @@
    "eur_rate": 1.0,
    "reason": "SELL signal: close 133.60 > SMA5 133.23",
    "seq": 2
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-02T09:18:06.915375+00:00",
+   "inst": "SP500",
+   "kind": "etf",
+   "qty": 7.194366,
+   "price": 131.274928,
+   "mid": 131.16,
+   "ccy": "EUR",
+   "multiplier": 1.0,
+   "fees": {},
+   "fees_eur": 0,
+   "spread_cost_eur": 0.8268340956479419,
+   "value_eur": 944.4398786556478,
+   "eur_rate": 1.0,
+   "reason": "BUY signal: RSI(2) 9.8 < 10 with close 131.75 > SMA200 122.31",
+   "seq": 3
   }
  ],
  "costs": {
   "commissions": 0.0,
-  "spread_slippage": 1.6764537130499626
+  "spread_slippage": 2.5032878086979045
  },
  "realized": [
   {
@@ -74,24 +103,40 @@
    "date": "2026-11-02",
    "equity": 993.277
   },
-  "protect": {},
-  "last_decision": "2026-10-29",
+  "protect": {
+   "SP500": {
+    "entry": 131.274928,
+    "opened": "2026-11-02",
+    "stop": 127.73432436469201,
+    "target": 133.3949981689453,
+    "hwm": 131.274928,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 1.1802012117693261,
+     "target_sma": 5,
+     "max_days": 10,
+     "label": "stop 3.0xATR(10), take-profit at SMA5 (when above entry), time exit 10 days"
+    },
+    "updated": ""
+   }
+  },
+  "last_decision": "2026-11-01",
   "signals": {
    "SP500": {
-    "close": 134.375,
-    "sma200": 122.1206,
-    "rsi2": 91.1,
-    "sma5": 133.214,
-    "atr10": 1.0768,
+    "close": 131.75,
+    "sma200": 122.3056,
+    "rsi2": 9.82,
+    "sma5": 133.395,
+    "atr10": 1.1802,
     "buy_rule": "close > SMA200 and RSI(2) < 10",
     "sell_rule": "close > SMA5; take-profit order at SMA5 while above the entry",
-    "state": "FLAT"
+    "state": "BUY"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-11-02",
-   "equity": 993.277
+   "equity": 992.4502
   }
  },
  "halted": false,

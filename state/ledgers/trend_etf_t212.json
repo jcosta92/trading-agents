@@ -3,20 +3,9 @@
  "base": "EUR",
  "initial_capital": 1000.0,
  "cash": {
-  "EUR": 713.734668149612
+  "EUR": 982.9312033803778
  },
- "positions": {
-  "COMMOD": {
-   "inst_id": "COMMOD",
-   "qty": 7.352289,
-   "avg_price": 38.02037200000001,
-   "currency": "EUR",
-   "multiplier": 1.0,
-   "kind": "etf",
-   "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 37.26
-  }
- },
+ "positions": {},
  "journal": [
   {
    "type": "deposit",
@@ -78,11 +67,29 @@
    "eur_rate": 1.0,
    "reason": "STOP-LOSS hit: price 129.4 <= stop 129.4 (3xATR(20) chandelier trailing stop)",
    "seq": 3
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-02T09:18:06.915375+00:00",
+   "inst": "COMMOD",
+   "kind": "etf",
+   "qty": -7.352289,
+   "price": 36.61397630462646,
+   "mid": 36.68000030517578,
+   "ccy": "EUR",
+   "multiplier": 1.0,
+   "fees": {},
+   "fees_eur": 0,
+   "spread_cost_eur": 0.48542753297475455,
+   "value_eur": 269.1965352307658,
+   "eur_rate": 1.0,
+   "reason": "STOP-LOSS hit: price 36.68 <= stop 36.86 (3xATR(20) chandelier trailing stop)",
+   "seq": 4
   }
  ],
  "costs": {
   "commissions": 0.0,
-  "spread_slippage": 0.9330361253880093
+  "spread_slippage": 1.418463658362764
  },
  "realized": [
   {
@@ -92,6 +99,14 @@
    "pnl": -6.7285690188800045,
    "ccy": "EUR",
    "pnl_eur": -6.7285690188800045
+  },
+  {
+   "ts": "2026-11-02T09:18:06.915375+00:00",
+   "inst": "COMMOD",
+   "qty": 7.352289,
+   "pnl": -10.340227600742281,
+   "ccy": "EUR",
+   "pnl_eur": -10.340227600742281
   }
  ],
  "meta": {
@@ -105,75 +120,59 @@
    "date": "2026-11-02",
    "equity": 987.6809
   },
-  "protect": {
-   "COMMOD": {
-    "entry": 38.02037200000001,
-    "opened": "2026-10-12",
-    "stop": 36.85914942174969,
-    "target": null,
-    "hwm": 38.13999938964844,
-    "spec": {
-     "stop_atr": 3.0,
-     "atr": 0.4533735256813622,
-     "trail_atr": 3.0,
-     "atr_n": 20,
-     "label": "3xATR(20) chandelier trailing stop"
-    },
-    "updated": "2026-10-29"
-   }
-  },
-  "last_decision": "2026-10-29",
+  "protect": {},
+  "last_decision": "2026-11-01",
   "signals": {
    "WORLD_EQ": {
-    "close": 131.72,
-    "sma50": 128.7659,
-    "sma200": 121.2505,
-    "roc252": 0.1805,
-    "atr20": 1.0069,
+    "close": 129.685,
+    "sma50": 128.9358,
+    "sma200": 121.4167,
+    "roc252": 0.1589,
+    "atr20": 1.0486,
     "high_close20": 132.25,
     "buy_rule": "close > SMA50 > SMA200, ROC252 > 0 and a new 20-day closing high",
     "sell_rule": "SMA50 < SMA200",
     "state": "FLAT"
    },
    "EM_EQ": {
-    "close": 46.509,
-    "sma50": 47.7092,
-    "sma200": 45.3489,
-    "roc252": 0.2024,
-    "atr20": 0.7153,
+    "close": 44.964,
+    "sma50": 47.6519,
+    "sma200": 45.3956,
+    "roc252": 0.1548,
+    "atr20": 0.7381,
     "high_close20": 50.15,
     "buy_rule": "close > SMA50 > SMA200, ROC252 > 0 and a new 20-day closing high",
     "sell_rule": "SMA50 < SMA200",
     "state": "FLAT"
    },
    "EUR_GOVT": {
-    "close": 105.045,
-    "sma50": 105.3254,
-    "sma200": 107.2854,
-    "roc252": -0.0326,
-    "atr20": 0.4417,
-    "high_close20": 105.17,
+    "close": 105.345,
+    "sma50": 105.266,
+    "sma200": 107.2562,
+    "roc252": -0.0294,
+    "atr20": 0.4414,
+    "high_close20": 105.275,
     "buy_rule": "close > SMA50 > SMA200, ROC252 > 0 and a new 20-day closing high",
     "sell_rule": "SMA50 < SMA200",
     "state": "FLAT"
    },
    "GOLD": {
-    "close": 116.59,
-    "sma50": 120.7132,
-    "sma200": 125.019,
-    "roc252": 0.0691,
-    "atr20": 1.605,
+    "close": 112.37,
+    "sma50": 120.2426,
+    "sma200": 124.8769,
+    "roc252": 0.0109,
+    "atr20": 1.6767,
     "high_close20": 120.32,
     "buy_rule": "close > SMA50 > SMA200, ROC252 > 0 and a new 20-day closing high",
     "sell_rule": "SMA50 < SMA200",
     "state": "FLAT"
    },
    "COMMOD": {
-    "close": 37.735,
-    "sma50": 36.842,
-    "sma200": 33.5743,
-    "roc252": 0.4405,
-    "atr20": 0.4272,
+    "close": 37.26,
+    "sma50": 36.9289,
+    "sma200": 33.6622,
+    "roc252": 0.4021,
+    "atr20": 0.4326,
     "high_close20": 38.14,
     "buy_rule": "close > SMA50 > SMA200, ROC252 > 0 and a new 20-day closing high",
     "sell_rule": "SMA50 < SMA200",
@@ -183,7 +182,7 @@
   "pending": [],
   "last_equity": {
    "date": "2026-11-02",
-   "equity": 987.681
+   "equity": 982.9312
   }
  },
  "halted": false,
