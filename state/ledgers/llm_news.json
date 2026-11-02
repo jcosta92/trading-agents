@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-27T14:07:03.864634+00:00",
-   "last_mark": 94.08000183105469
+   "last_mark": 94.67500305175781
   },
   "PFE": {
    "inst_id": "PFE",
@@ -25,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-27T14:07:03.864634+00:00",
-   "last_mark": 30.520000457763672
+   "last_mark": 30.225000381469727
   },
   "LLY": {
    "inst_id": "LLY",
@@ -35,7 +35,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-29T14:07:19.619998+00:00",
-   "last_mark": 1417.5400390625
+   "last_mark": 1395.5999755859375
   }
  },
  "journal": [
@@ -425,247 +425,219 @@
     "opened": "2026-10-27",
     "stop": 86.24480312164306,
     "target": 102.00998218688966,
-    "hwm": 92.81999969482422,
+    "hwm": 94.08000183105469,
     "spec": {
      "stop_pct": 0.07,
      "target_pct": 0.1,
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-29"
+    "updated": "2026-11-01"
    },
    "PFE": {
     "entry": 29.715941,
     "opened": "2026-10-27",
     "stop": 27.63582513,
     "target": 32.687535100000005,
-    "hwm": 29.950000762939453,
+    "hwm": 30.520000457763672,
     "spec": {
      "stop_pct": 0.07,
      "target_pct": 0.1,
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-29"
+    "updated": "2026-11-01"
    },
    "LLY": {
     "entry": 1382.7810108032227,
     "opened": "2026-10-29",
     "stop": 1285.986340046997,
     "target": 1521.059111883545,
-    "hwm": 1382.7810108032227,
+    "hwm": 1417.5400390625,
     "spec": {
      "stop_pct": 0.07,
      "target_pct": 0.1,
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-10-29"
+    "updated": "2026-11-01"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-11-02",
-   "equity": 1005.9712
+   "equity": 1000.1286
   },
-  "last_decision": "2026-10-29",
+  "last_decision": "2026-11-01",
   "last_candidates": {
    "SNDK": {
     "event": {
-     "id": "14f57fb3c2e6",
+     "id": "229260d52c83",
      "ticker": "SNDK",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.7,
-     "rationale": "Beat, raised guidance, and 8-for-1 stock split",
-     "title": "Sandisk tops Q1 estimates and guides higher, sets 8-for-1 stock split",
-     "published": "2026-10-29T20:43:52+00:00"
-    },
-    "check": null
-   },
-   "AVGO": {
-    "event": {
-     "id": "711609f787ce",
-     "ticker": "AVGO",
-     "event_type": "other",
-     "direction": 1,
-     "materiality": 2,
      "confidence": 0.5,
-     "rationale": "Anthropic $63B financing funds a major Broadcom customer",
-     "title": "Broadcom\u2019s $63B Anthropic Deal Could Be The One That Finally Gets it Into Gear",
-     "published": "2026-10-30T11:15:57+00:00"
+     "rationale": "Record results and raised guidance despite selloff",
+     "title": "Sandisk Sinks 12% Despite Earnings Beat and 8-for-1 Split as Memory Stocks Slide: \u201cIt\u2019s Absurd\u201d",
+     "published": "2026-10-30T16:47:25+00:00"
     },
     "check": null
    },
    "LITE": {
     "event": {
-     "id": "19ed9e995374",
+     "id": "851095ddbe74",
      "ticker": "LITE",
      "event_type": "m&a",
      "direction": 1,
-     "materiality": 2,
-     "confidence": 0.7,
-     "rationale": "Reported advanced talks to be acquired by Marvell",
-     "title": "Marvell in advanced talks to buy Nvidia-backed Lumentum \u2013 report",
-     "published": "2026-10-30T11:12:02+00:00"
-    },
-    "check": null
-   },
-   "XOM": {
-    "event": {
-     "id": "86993cb987c2",
-     "ticker": "XOM",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
+     "materiality": 3,
      "confidence": 0.6,
-     "rationale": "Earnings topped estimates on refining margins",
-     "title": "ExxonMobil earnings top estimates as diesel, gasoline spike fuels refining margins",
-     "published": "2026-10-30T11:09:44+00:00"
+     "rationale": "Lumentum agrees to be acquired by Marvell",
+     "title": "Marvell and Lumentum to Combine, Creating a Category Leader in AI Connectivity",
+     "published": "2026-11-02T12:05:00+00:00"
     },
     "check": null
    },
-   "GEV": {
+   "MRNA": {
     "event": {
-     "id": "fd69773b890d",
-     "ticker": "GEV",
-     "event_type": "earnings",
+     "id": "32b8a2effeab",
+     "ticker": "MRNA",
+     "event_type": "product",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.5,
-     "rationale": "Q3 beat, rising pricing, $197B backlog",
-     "title": "GE Vernova Q3 Earnings Call Highlights Pricing and Grid Expansion",
-     "published": "2026-10-29T16:40:00+00:00"
-    },
-    "check": null
-   },
-   "KLAC": {
-    "event": {
-     "id": "dba407321878",
-     "ticker": "KLAC",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Up 5.5% on strong Q1 print; record revenue",
-     "title": "KLA (KLAC) Stock Gains Attention As Q1 Earnings Meet Valuation Doubts",
-     "published": "2026-10-30T08:19:18+00:00"
+     "rationale": "Positive Phase 3 melanoma vaccine data with Merck",
+     "title": "How Investors Are Reacting To Moderna Stock Phase 3 Melanoma Vaccine Data",
+     "published": "2026-10-31T09:14:53+00:00"
     },
     "check": null
    },
    "CVX": {
     "event": {
-     "id": "ef1e1a25b2f1",
+     "id": "a4a7cf9f7df5",
      "ticker": "CVX",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Beat estimates; shares up premarket",
-     "title": "Chevron beats estimates as refining margins lift earnings",
-     "published": "2026-10-30T10:57:02+00:00"
-    },
-    "check": null
-   },
-   "MA": {
-    "event": {
-     "id": "796771321f6d",
-     "ticker": "MA",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Revenue beat; best day in nine months",
-     "title": "MA Stock Clocks Best Day In 9 Months: Goldman Sees Bull Case Intact",
-     "published": "2026-10-30T01:45:14+00:00"
+     "confidence": 0.45,
+     "rationale": "Adjusted earnings $10.4B vs $3.6B; record refining",
+     "title": "Chevron reports net income of $9.9bn in Q3 2026",
+     "published": "2026-11-02T10:36:42+00:00"
     },
     "check": null
    },
    "MRK": {
     "event": {
-     "id": "c1bdf08c9e26",
+     "id": "4c8e96bca1cb",
      "ticker": "MRK",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Earnings blew past estimates",
-     "title": "Merck Earnings Blow Past Estimates. Why Wall Street Is Looking Past the Numbers.",
-     "published": "2026-10-29T18:27:00+00:00"
+     "confidence": 0.5,
+     "rationale": "Q3 beat and raised 2026 outlook",
+     "title": "Merck Q3 Earnings Call Highlights Pipeline Progress and Raised Outlook",
+     "published": "2026-10-30T13:00:00+00:00"
     },
     "check": null
    },
-   "VRT": {
+   "ABBV": {
     "event": {
-     "id": "7693962a55a3",
-     "ticker": "VRT",
+     "id": "50126c84e6a8",
+     "ticker": "ABBV",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.6,
-     "rationale": "Q3 beat; 61% sales growth; upgraded outlook",
-     "title": "Vertiv Q3 Earnings Beat on Robust Sales Growth and Strong AI Demand",
-     "published": "2026-10-29T16:42:00+00:00"
+     "rationale": "Q3 beat and raised 2026 EPS guidance",
+     "title": "ABBV Beats on Q3 Earnings & Sales, Stock Rises on Raised '26 EPS View",
+     "published": "2026-10-30T15:09:00+00:00"
+    },
+    "check": null
+   },
+   "LIN": {
+    "event": {
+     "id": "b054377b3feb",
+     "ticker": "LIN",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.45,
+     "rationale": "Q3 earnings beat with $7.9B backlog",
+     "title": "LIN Q3 Earnings Call Highlights Restructuring and Growth Outlook",
+     "published": "2026-10-30T13:00:00+00:00"
+    },
+    "check": null
+   },
+   "MPWR": {
+    "event": {
+     "id": "04409edc743f",
+     "ticker": "MPWR",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.5,
+     "rationale": "Record Q3 beat and raised Q4 guidance",
+     "title": "Revenue Outlook Raised Could Be A Game Changer For Monolithic Power Systems Stock",
+     "published": "2026-10-31T11:10:44+00:00"
     },
     "check": null
    }
   },
   "signals": {
+   "LITE": {
+    "state": "NO SLOT",
+    "event": "m&a",
+    "materiality": 3,
+    "confidence": 0.6,
+    "check": "not checked (positions full)"
+   },
+   "ABBV": {
+    "state": "NO SLOT",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.6,
+    "check": "not checked (positions full)"
+   },
    "SNDK": {
     "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
-    "confidence": 0.7,
+    "confidence": 0.5,
     "check": "not checked (positions full)"
    },
-   "LITE": {
+   "MRNA": {
     "state": "NO SLOT",
-    "event": "m&a",
+    "event": "product",
     "materiality": 2,
-    "confidence": 0.7,
-    "check": "not checked (positions full)"
-   },
-   "XOM": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "KLAC": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "CVX": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "MA": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.6,
+    "confidence": 0.5,
     "check": "not checked (positions full)"
    },
    "MRK": {
     "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
-    "confidence": 0.6,
+    "confidence": 0.5,
     "check": "not checked (positions full)"
    },
-   "VRT": {
+   "MPWR": {
     "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
-    "confidence": 0.6,
+    "confidence": 0.5,
+    "check": "not checked (positions full)"
+   },
+   "CVX": {
+    "state": "NO SLOT",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.45,
+    "check": "not checked (positions full)"
+   },
+   "LIN": {
+    "state": "NO SLOT",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.45,
     "check": "not checked (positions full)"
    }
   }

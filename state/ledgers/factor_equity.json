@@ -4,7 +4,7 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 4.075538146253166e-05,
-  "USD": 284.2154909735418
+  "USD": 0.0005573045845619351
  },
  "positions": {
   "APA": {
@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 52.81999969482422
+   "last_mark": 50.470001220703125
   },
   "COP": {
    "inst_id": "COP",
@@ -25,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 154.02999877929688
+   "last_mark": 149.5800018310547
   },
   "DVN": {
    "inst_id": "DVN",
@@ -35,7 +35,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 52.150001525878906
+   "last_mark": 50.250099182128906
   },
   "EOG": {
    "inst_id": "EOG",
@@ -45,7 +45,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 165.5399932861328
+   "last_mark": 160.63499450683594
   },
   "FANG": {
    "inst_id": "FANG",
@@ -55,7 +55,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 212.0800018310547
+   "last_mark": 205.36000061035156
   },
   "MU": {
    "inst_id": "MU",
@@ -65,7 +65,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 884.739990234375
+   "last_mark": 874.364990234375
   },
   "OXY": {
    "inst_id": "OXY",
@@ -75,7 +75,37 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 64.0
+   "last_mark": 61.834999084472656
+  },
+  "DELL": {
+   "inst_id": "DELL",
+   "qty": 0.25842096,
+   "avg_price": 415.8304004058838,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-11-02T15:06:16.006730+00:00",
+   "last_mark": 415.6225891113281
+  },
+  "HPE": {
+   "inst_id": "HPE",
+   "qty": 1.97945797,
+   "avg_price": 54.287231369018556,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-11-02T15:06:16.006730+00:00",
+   "last_mark": 54.260101318359375
+  },
+  "TWLO": {
+   "inst_id": "TWLO",
+   "qty": 0.32773067,
+   "avg_price": 208.21405561065674,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-11-02T15:06:16.006730+00:00",
+   "last_mark": 208.11000061035156
   }
  },
  "journal": [
@@ -475,12 +505,72 @@
    "eur_rate": 1.1161960363388062,
    "reason": "STOP-LOSS hit: price 1175 <= stop 1197 (3xATR(20) chandelier trailing stop)",
    "seq": 23
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-02T15:06:16.006730+00:00",
+   "inst": "DELL",
+   "kind": "stock",
+   "qty": 0.25842096,
+   "price": 415.8304004058838,
+   "mid": 415.6225891113281,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35082772233487997
+   },
+   "fees_eur": 0.3128681664930064,
+   "spread_cost_eur": 0.04789215247000777,
+   "value_eur": 95.83219709249016,
+   "eur_rate": 1.1213276386260986,
+   "reason": "BUY signal: ranked #4 of 392 on momentum_only and close > SMA200",
+   "seq": 24
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-02T15:06:16.006730+00:00",
+   "inst": "HPE",
+   "kind": "stock",
+   "qty": 1.97945797,
+   "price": 54.287231369018556,
+   "mid": 54.260101318359375,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35634020387791
+   },
+   "fees_eur": 0.3177841975914498,
+   "spread_cost_eur": 0.04789215315304227,
+   "value_eur": 95.83219845923158,
+   "eur_rate": 1.1213276386260986,
+   "reason": "BUY signal: ranked #7 of 392 on momentum_only and close > SMA200",
+   "seq": 25
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-02T15:06:16.006730+00:00",
+   "inst": "TWLO",
+   "kind": "stock",
+   "qty": 0.32773067,
+   "price": 208.21405561065674,
+   "mid": 208.11000061035156,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35104972133601
+   },
+   "fees_eur": 0.3130661452045648,
+   "spread_cost_eur": 0.03041217730854326,
+   "value_eur": 60.85476679439227,
+   "eur_rate": 1.1213276386260986,
+   "reason": "BUY signal: ranked #1 of 392 on momentum_only and close > SMA200",
+   "seq": 26
   }
  ],
  "costs": {
   "fx": 0.2999999877734467,
-  "commissions": 4.111194628318615,
-  "spread_slippage": 12.501739839193467
+  "commissions": 5.054913137607636,
+  "spread_slippage": 12.62793632212506
  },
  "realized": [
   {
@@ -529,9 +619,9 @@
    "APA": {
     "entry": 48.779235,
     "opened": "2026-10-12",
-    "stop": 47.261335418320584,
+    "stop": 48.19411698122274,
     "target": null,
-    "hwm": 51.900001525878906,
+    "hwm": 52.81999969482422,
     "spec": {
      "stop_atr": 3.0,
      "atr": 1.5522986338201816,
@@ -539,14 +629,14 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-29"
+    "updated": "2026-11-01"
    },
    "COP": {
     "entry": 135.867162,
     "opened": "2026-10-12",
-    "stop": 141.20036094051753,
+    "stop": 143.72943272739712,
     "target": null,
-    "hwm": 151.3699951171875,
+    "hwm": 154.02999877929688,
     "spec": {
      "stop_atr": 3.0,
      "atr": 3.2571538168178678,
@@ -554,14 +644,14 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-29"
+    "updated": "2026-11-01"
    },
    "DVN": {
     "entry": 48.77975200000001,
     "opened": "2026-10-12",
-    "stop": 47.46620517170725,
+    "stop": 48.01805985711813,
     "target": null,
-    "hwm": 51.63999938964844,
+    "hwm": 52.150001525878906,
     "spec": {
      "stop_atr": 3.0,
      "atr": 1.4115977434162168,
@@ -569,14 +659,14 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-29"
+    "updated": "2026-11-01"
    },
    "EOG": {
     "entry": 150.13998700000002,
     "opened": "2026-10-12",
-    "stop": 152.68485063866885,
+    "stop": 154.5390590220994,
     "target": null,
-    "hwm": 163.67999267578125,
+    "hwm": 165.5399932861328,
     "spec": {
      "stop_atr": 3.0,
      "atr": 3.571030070391242,
@@ -584,14 +674,14 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-29"
+    "updated": "2026-11-01"
    },
    "FANG": {
     "entry": 207.92923199999998,
     "opened": "2026-10-12",
-    "stop": 192.29423579186297,
+    "stop": 195.55206668878662,
     "target": null,
-    "hwm": 207.92923199999998,
+    "hwm": 212.0800018310547,
     "spec": {
      "stop_atr": 3.0,
      "atr": 5.330825974402974,
@@ -599,7 +689,7 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-29"
+    "updated": "2026-11-01"
    },
    "MU": {
     "entry": 995.1985139999999,
@@ -614,12 +704,12 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-29"
+    "updated": "2026-11-01"
    },
    "OXY": {
     "entry": 61.022200999999995,
     "opened": "2026-10-12",
-    "stop": 59.52294275784305,
+    "stop": 59.59677711639203,
     "target": null,
     "hwm": 64.16999816894531,
     "spec": {
@@ -629,39 +719,84 @@
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
     },
-    "updated": "2026-10-29"
+    "updated": "2026-11-01"
+   },
+   "DELL": {
+    "entry": 415.8304004058838,
+    "opened": "2026-11-02",
+    "stop": 320.9882696591377,
+    "target": null,
+    "hwm": 415.8304004058838,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 31.614043582248694,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
+   },
+   "HPE": {
+    "entry": 54.287231369018556,
+    "opened": "2026-11-02",
+    "stop": 43.659314008112354,
+    "target": null,
+    "hwm": 54.287231369018556,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 3.5426391203020673,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
+   },
+   "TWLO": {
+    "entry": 208.21405561065674,
+    "opened": "2026-11-02",
+    "stop": 157.27277924101,
+    "target": null,
+    "hwm": 208.21405561065674,
+    "spec": {
+     "stop_atr": 3.0,
+     "atr": 16.980425456548915,
+     "trail_atr": 3.0,
+     "atr_n": 20,
+     "label": "3xATR(20) chandelier trailing stop"
+    },
+    "updated": ""
    }
   },
-  "last_rebalance": "2026-10",
-  "mode": "momentum+quality+value",
+  "last_rebalance": "2026-11",
+  "mode": "momentum_only",
   "holdings_target": [
    "APA",
    "COP",
+   "DELL",
    "DVN",
    "EOG",
    "FANG",
+   "HPE",
    "MU",
-   "NEM",
    "OXY",
-   "SNDK",
-   "VLO"
+   "TWLO"
   ],
   "top_scores": {
-   "MU": 1.664,
-   "APA": 1.64,
-   "SNDK": 1.206,
-   "NEM": 1.202,
-   "CF": 1.128,
-   "OXY": 1.097,
-   "FANG": 1.092,
-   "EOG": 1.092,
-   "COP": 1.084,
-   "VLO": 1.071,
-   "DVN": 1.037,
-   "VTRS": 1.021,
-   "BMY": 0.972,
-   "CNC": 0.971,
-   "MPC": 0.958
+   "TWLO": 2.668,
+   "TER": 2.668,
+   "STX": 2.668,
+   "DELL": 2.668,
+   "COHR": 2.668,
+   "SNDK": 2.668,
+   "HPE": 2.668,
+   "LRCX": 2.668,
+   "MU": 2.668,
+   "KEYS": 2.668,
+   "WDC": 2.668,
+   "AMAT": 2.668,
+   "AMD": 2.668,
+   "VLO": 2.668,
+   "INTC": 2.668
   },
   "coverage_log": [
    {
@@ -671,65 +806,73 @@
     "with_history": 393,
     "eligible": 391,
     "mode": "momentum+quality+value"
+   },
+   {
+    "month": "2026-11",
+    "members": 397,
+    "with_data": 397,
+    "with_history": 394,
+    "eligible": 392,
+    "mode": "momentum_only"
    }
   ],
-  "signals_asof": "2026-10-11",
+  "signals_asof": "2026-11-01",
   "signals": {
-   "MU": {
-    "state": "BUY",
-    "rank": 1,
-    "score": 1.664
-   },
    "APA": {
-    "state": "BUY",
-    "rank": 2,
-    "score": 1.64
-   },
-   "SNDK": {
-    "state": "BUY",
-    "rank": 3,
-    "score": 1.206
-   },
-   "NEM": {
-    "state": "BUY",
-    "rank": 4,
-    "score": 1.202
-   },
-   "OXY": {
-    "state": "BUY",
-    "rank": 6,
-    "score": 1.097
-   },
-   "FANG": {
-    "state": "BUY",
-    "rank": 7,
-    "score": 1.092
-   },
-   "EOG": {
-    "state": "BUY",
-    "rank": 8,
-    "score": 1.092
+    "state": "HOLD",
+    "rank": 25,
+    "score": 2.242
    },
    "COP": {
-    "state": "BUY",
-    "rank": 9,
-    "score": 1.084
-   },
-   "VLO": {
-    "state": "BUY",
-    "rank": 10,
-    "score": 1.071
+    "state": "HOLD",
+    "rank": 54,
+    "score": 0.933
    },
    "DVN": {
+    "state": "HOLD",
+    "rank": 50,
+    "score": 0.99
+   },
+   "EOG": {
+    "state": "HOLD",
+    "rank": 79,
+    "score": 0.601
+   },
+   "FANG": {
+    "state": "HOLD",
+    "rank": 94,
+    "score": 0.481
+   },
+   "MU": {
+    "state": "HOLD",
+    "rank": 9,
+    "score": 2.668
+   },
+   "OXY": {
+    "state": "HOLD",
+    "rank": 57,
+    "score": 0.839
+   },
+   "TWLO": {
     "state": "BUY",
-    "rank": 11,
-    "score": 1.037
+    "rank": 1,
+    "score": 2.668
+   },
+   "DELL": {
+    "state": "BUY",
+    "rank": 4,
+    "score": 2.668
+   },
+   "HPE": {
+    "state": "BUY",
+    "rank": 7,
+    "score": 2.668
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-11-02",
-   "equity": 990.3113
+   "equity": 966.4483
   }
  },
  "halted": false,
