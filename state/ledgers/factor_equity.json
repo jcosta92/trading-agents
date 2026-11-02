@@ -4,7 +4,7 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 4.075538146253166e-05,
-  "USD": 0.0005573045845619351
+  "USD": 93.50103052727587
  },
  "positions": {
   "APA": {
@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 49.21500015258789
+   "last_mark": 48.95000076293945
   },
   "COP": {
    "inst_id": "COP",
@@ -25,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 147.62
+   "last_mark": 147.28
   },
   "DVN": {
    "inst_id": "DVN",
@@ -35,7 +35,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 49.17
+   "last_mark": 48.775001525878906
   },
   "EOG": {
    "inst_id": "EOG",
@@ -45,7 +45,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 158.48000000000002
+   "last_mark": 157.865
   },
   "FANG": {
    "inst_id": "FANG",
@@ -55,17 +55,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 201.77000427246094
-  },
-  "MU": {
-   "inst_id": "MU",
-   "qty": 0.11145499,
-   "avg_price": 995.1985139999999,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 855.0700073242188
+   "last_mark": 200.13999938964844
   },
   "OXY": {
    "inst_id": "OXY",
@@ -75,7 +65,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 60.8650016784668
+   "last_mark": 60.78
   },
   "DELL": {
    "inst_id": "DELL",
@@ -85,7 +75,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-02T15:06:16.006730+00:00",
-   "last_mark": 407.16499999999996
+   "last_mark": 402.4599914550781
   },
   "HPE": {
    "inst_id": "HPE",
@@ -95,7 +85,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-02T15:06:16.006730+00:00",
-   "last_mark": 53.369998931884766
+   "last_mark": 52.519999999999996
   },
   "TWLO": {
    "inst_id": "TWLO",
@@ -105,7 +95,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-02T15:06:16.006730+00:00",
-   "last_mark": 216.5800018310547
+   "last_mark": 211.38999938964844
   }
  },
  "journal": [
@@ -565,12 +555,32 @@
    "eur_rate": 1.1213276386260986,
    "reason": "BUY signal: ranked #1 of 392 on momentum_only and close > SMA200",
    "seq": 26
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-02T19:08:11.730919+00:00",
+   "inst": "MU",
+   "kind": "stock",
+   "qty": -0.11145499,
+   "price": 842.0687452392579,
+   "mid": 842.489990234375,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.352290357262717
+   },
+   "fees_eur": 0.31448959568632895,
+   "spread_cost_eur": 0.0419121362605683,
+   "value_eur": 83.78236038488363,
+   "eur_rate": 1.1201971769332886,
+   "reason": "STOP-LOSS hit: price 842.5 <= stop 851.9 (3xATR(20) chandelier trailing stop)",
+   "seq": 27
   }
  ],
  "costs": {
   "fx": 0.2999999877734467,
-  "commissions": 5.054913137607636,
-  "spread_slippage": 12.62793632212506
+  "commissions": 5.369402733293965,
+  "spread_slippage": 12.669848458385628
  },
  "realized": [
   {
@@ -596,6 +606,14 @@
    "pnl": -22.948714919941338,
    "ccy": "USD",
    "pnl_eur": -20.559753101448543
+  },
+  {
+   "ts": "2026-11-02T19:08:11.730919+00:00",
+   "inst": "MU",
+   "qty": 0.11145499,
+   "pnl": -17.06707684593082,
+   "ccy": "USD",
+   "pnl_eur": -15.235779197957415
   }
  ],
  "meta": {
@@ -688,21 +706,6 @@
     "spec": {
      "stop_atr": 3.0,
      "atr": 5.330825974402974,
-     "trail_atr": 3.0,
-     "atr_n": 20,
-     "label": "3xATR(20) chandelier trailing stop"
-    },
-    "updated": "2026-11-01"
-   },
-   "MU": {
-    "entry": 995.1985139999999,
-    "opened": "2026-10-12",
-    "stop": 851.9490910064503,
-    "target": null,
-    "hwm": 995.1985139999999,
-    "spec": {
-     "stop_atr": 3.0,
-     "atr": 48.6433036062678,
      "trail_atr": 3.0,
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
@@ -875,7 +878,7 @@
   "pending": [],
   "last_equity": {
    "date": "2026-11-02",
-   "equity": 952.9368
+   "equity": 944.6727
   }
  },
  "halted": false,
