@@ -4,7 +4,7 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 4.075538146253166e-05,
-  "USD": 208.34613782168842
+  "USD": 318.14086875831396
  },
  "positions": {
   "COP": {
@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 144.805
+   "last_mark": 144.6199951171875
   },
   "DVN": {
    "inst_id": "DVN",
@@ -25,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 48.105098724365234
+   "last_mark": 48.085
   },
   "EOG": {
    "inst_id": "EOG",
@@ -35,17 +35,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 156.4149932861328
-  },
-  "FANG": {
-   "inst_id": "FANG",
-   "qty": 0.56396247,
-   "avg_price": 207.92923199999998,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 195.82000732421875
+   "last_mark": 156.16000366210938
   },
   "OXY": {
    "inst_id": "OXY",
@@ -55,7 +45,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 60.470001220703125
+   "last_mark": 60.46
   },
   "DELL": {
    "inst_id": "DELL",
@@ -65,7 +55,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-02T15:06:16.006730+00:00",
-   "last_mark": 410.9599914550781
+   "last_mark": 410.3475036621094
   },
   "HPE": {
    "inst_id": "HPE",
@@ -75,7 +65,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-02T15:06:16.006730+00:00",
-   "last_mark": 54.07
+   "last_mark": 54.22999954223633
   },
   "TWLO": {
    "inst_id": "TWLO",
@@ -85,7 +75,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-02T15:06:16.006730+00:00",
-   "last_mark": 209.0800018310547
+   "last_mark": 214.8000030517578
   }
  },
  "journal": [
@@ -585,12 +575,32 @@
    "eur_rate": 1.119444727897644,
    "reason": "STOP-LOSS hit: price 48.11 <= stop 48.19 (3xATR(20) chandelier trailing stop)",
    "seq": 28
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-03T16:08:39.519403+00:00",
+   "inst": "FANG",
+   "kind": "stock",
+   "qty": -0.56396247,
+   "price": 195.31229866027832,
+   "mid": 195.41000366210938,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35407543720271084
+   },
+   "fees_eur": 0.31626016610762214,
+   "spread_cost_eur": 0.049217063218039536,
+   "value_eur": 98.38490937285644,
+   "eur_rate": 1.1195701360702515,
+   "reason": "STOP-LOSS hit: price 195.4 <= stop 195.6 (3xATR(20) chandelier trailing stop)",
+   "seq": 29
   }
  ],
  "costs": {
   "fx": 0.2999999877734467,
-  "commissions": 5.691032753023507,
-  "spread_slippage": 12.721330582891076
+  "commissions": 6.00729291913113,
+  "spread_slippage": 12.770547646109115
  },
  "realized": [
   {
@@ -632,6 +642,14 @@
    "pnl": -1.6609949154112342,
    "ccy": "USD",
    "pnl_eur": -1.483766794391573
+  },
+  {
+   "ts": "2026-11-03T16:08:39.519403+00:00",
+   "inst": "FANG",
+   "qty": 0.56396247,
+   "pnl": -7.115476890094781,
+   "ccy": "USD",
+   "pnl_eur": -6.355543668814238
   }
  ],
  "meta": {
@@ -639,7 +657,6 @@
   "split_suspect": {},
   "funding_ts": {},
   "div_checked": {
-   "APA": "2026-11-03",
    "COP": "2026-11-03",
    "DVN": "2026-11-03",
    "EOG": "2026-11-03",
@@ -693,21 +710,6 @@
     "spec": {
      "stop_atr": 3.0,
      "atr": 3.571030070391242,
-     "trail_atr": 3.0,
-     "atr_n": 20,
-     "label": "3xATR(20) chandelier trailing stop"
-    },
-    "updated": "2026-11-02"
-   },
-   "FANG": {
-    "entry": 207.92923199999998,
-    "opened": "2026-10-12",
-    "stop": 195.55206668878662,
-    "target": null,
-    "hwm": 212.0800018310547,
-    "spec": {
-     "stop_atr": 3.0,
-     "atr": 5.330825974402974,
      "trail_atr": 3.0,
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
@@ -880,7 +882,7 @@
   "pending": [],
   "last_equity": {
    "date": "2026-11-03",
-   "equity": 940.3706
+   "equity": 941.1496
   }
  },
  "halted": false,
