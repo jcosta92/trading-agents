@@ -4,7 +4,7 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 4.075538146253166e-05,
-  "USD": 318.14086875831396
+  "USD": 426.3006881159611
  },
  "positions": {
   "COP": {
@@ -15,17 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 144.89999389648438
-  },
-  "DVN": {
-   "inst_id": "DVN",
-   "qty": 2.26880388,
-   "avg_price": 48.77975200000001,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 48.165
+   "last_mark": 144.24
   },
   "EOG": {
    "inst_id": "EOG",
@@ -35,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 156.49
+   "last_mark": 155.4199981689453
   },
   "OXY": {
    "inst_id": "OXY",
@@ -45,7 +35,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-12T14:57:36.390767+00:00",
-   "last_mark": 60.675
+   "last_mark": 60.43000030517578
   },
   "DELL": {
    "inst_id": "DELL",
@@ -55,7 +45,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-02T15:06:16.006730+00:00",
-   "last_mark": 408.4700012207031
+   "last_mark": 408.095
   },
   "HPE": {
    "inst_id": "HPE",
@@ -65,7 +55,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-02T15:06:16.006730+00:00",
-   "last_mark": 53.95000076293945
+   "last_mark": 53.481201171875
   },
   "TWLO": {
    "inst_id": "TWLO",
@@ -75,7 +65,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-02T15:06:16.006730+00:00",
-   "last_mark": 216.095
+   "last_mark": 216.02999877929688
   }
  },
  "journal": [
@@ -595,12 +585,32 @@
    "eur_rate": 1.1195701360702515,
    "reason": "STOP-LOSS hit: price 195.4 <= stop 195.6 (3xATR(20) chandelier trailing stop)",
    "seq": 29
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-03T19:08:52.373844+00:00",
+   "inst": "DVN",
+   "kind": "stock",
+   "qty": -2.26880388,
+   "price": 47.83107204246521,
+   "mid": 47.85499954223633,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35950247685743075
+   },
+   "fees_eur": 0.3209997619303953,
+   "spread_cost_eur": 0.04847268762881061,
+   "value_eur": 96.89690256998826,
+   "eur_rate": 1.1199462413787842,
+   "reason": "STOP-LOSS hit: price 47.85 <= stop 48.02 (3xATR(20) chandelier trailing stop)",
+   "seq": 30
   }
  ],
  "costs": {
   "fx": 0.2999999877734467,
-  "commissions": 6.00729291913113,
-  "spread_slippage": 12.770547646109115
+  "commissions": 6.328292681061526,
+  "spread_slippage": 12.819020333737926
  },
  "realized": [
   {
@@ -650,6 +660,14 @@
    "pnl": -7.115476890094781,
    "ccy": "USD",
    "pnl_eur": -6.355543668814238
+  },
+  {
+   "ts": "2026-11-03T19:08:52.373844+00:00",
+   "inst": "DVN",
+   "qty": 2.26880388,
+   "pnl": -2.15236876853319,
+   "ccy": "USD",
+   "pnl_eur": -1.9218500754852068
   }
  ],
  "meta": {
@@ -679,21 +697,6 @@
     "spec": {
      "stop_atr": 3.0,
      "atr": 3.2571538168178678,
-     "trail_atr": 3.0,
-     "atr_n": 20,
-     "label": "3xATR(20) chandelier trailing stop"
-    },
-    "updated": "2026-11-02"
-   },
-   "DVN": {
-    "entry": 48.77975200000001,
-    "opened": "2026-10-12",
-    "stop": 48.01805985711813,
-    "target": null,
-    "hwm": 52.150001525878906,
-    "spec": {
-     "stop_atr": 3.0,
-     "atr": 1.4115977434162168,
      "trail_atr": 3.0,
      "atr_n": 20,
      "label": "3xATR(20) chandelier trailing stop"
@@ -881,7 +884,7 @@
   "pending": [],
   "last_equity": {
    "date": "2026-11-03",
-   "equity": 941.1102
+   "equity": 937.7024
   }
  },
  "halted": false,
