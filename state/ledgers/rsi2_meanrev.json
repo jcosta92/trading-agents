@@ -14,7 +14,7 @@
    "multiplier": 1.0,
    "kind": "etf",
    "opened": "2026-11-02T09:18:06.915375+00:00",
-   "last_mark": 130.16750000000002
+   "last_mark": 130.23000000000002
   }
  },
  "journal": [
@@ -119,10 +119,10 @@
      "max_days": 10,
      "label": "stop 3.0xATR(10), take-profit at SMA5 (when above entry), time exit 10 days"
     },
-    "updated": "2026-11-01"
+    "updated": "2026-11-02"
    }
   },
-  "last_decision": "2026-11-01",
+  "last_decision": "2026-11-02",
   "signals": {
    "SP500": {
     "close": 131.75,
@@ -132,13 +132,13 @@
     "atr10": 1.1802,
     "buy_rule": "close > SMA200 and RSI(2) < 10",
     "sell_rule": "close > SMA5; take-profit order at SMA5 while above the entry",
-    "state": "BUY"
+    "state": "HOLD"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-11-03",
-   "equity": 985.3098
+   "equity": 985.7594
   }
  },
  "halted": false,
