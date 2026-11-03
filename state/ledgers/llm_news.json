@@ -4,29 +4,9 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 7.874373021528697,
-  "USD": 7.044191996929648
+  "USD": 747.3722558800997
  },
  "positions": {
-  "KO": {
-   "inst_id": "KO",
-   "qty": 3.9036721,
-   "avg_price": 92.73634744262695,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-10-27T14:07:03.864634+00:00",
-   "last_mark": 95.83000183105469
-  },
-  "PFE": {
-   "inst_id": "PFE",
-   "qty": 12.18082399,
-   "avg_price": 29.715941,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-10-27T14:07:03.864634+00:00",
-   "last_mark": 30.740000000000002
-  },
   "LLY": {
    "inst_id": "LLY",
    "qty": 0.26358009,
@@ -35,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-29T14:07:19.619998+00:00",
-   "last_mark": 1410.989990234375
+   "last_mark": 1424.4749755859375
   }
  },
  "journal": [
@@ -357,12 +337,52 @@
    "eur_rate": 1.1138337850570679,
    "reason": "BUY signal: guidance news, materiality 2, direction +1 (\"Eli Lilly jumps on earnings beat, raised revenue guidance\"), 1-month return +8.8%",
    "seq": 17
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-03T15:08:51.872660+00:00",
+   "inst": "KO",
+   "kind": "stock",
+   "qty": -3.9036721,
+   "price": 94.20786975479126,
+   "mid": 94.25499725341797,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.37007924837120154
+   },
+   "fees_eur": 0.3305918006923157,
+   "spread_cost_eur": 0.1643406743961084,
+   "value_eur": 328.5170081178302,
+   "eur_rate": 1.119444727897644,
+   "reason": "TIME EXIT: held 5 business days (max 5)",
+   "seq": 18
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-03T15:08:51.872660+00:00",
+   "inst": "PFE",
+   "kind": "stock",
+   "qty": -12.18082399,
+   "price": 30.64966841506958,
+   "mid": 30.665000915527344,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.396705946496076
+   },
+   "fees_eur": 0.354377430711656,
+   "spread_cost_eur": 0.16683493588232226,
+   "value_eur": 333.50303682877393,
+   "eur_rate": 1.119444727897644,
+   "reason": "TIME EXIT: held 5 business days (max 5)",
+   "seq": 19
   }
  ],
  "costs": {
   "fx": 0.29763768809349145,
-  "commissions": 4.175792118501673,
-  "spread_slippage": 2.1342112371901067
+  "commissions": 4.860761349905645,
+  "spread_slippage": 2.4653868474685376
  },
  "realized": [
   {
@@ -404,6 +424,22 @@
    "pnl": 8.068003179071646,
    "ccy": "USD",
    "pnl_eur": 7.244259793254554
+  },
+  {
+   "ts": "2026-11-03T15:08:51.872660+00:00",
+   "inst": "KO",
+   "qty": 3.9036721,
+   "pnl": 5.74434059452331,
+   "ccy": "USD",
+   "pnl_eur": 5.131419579161697
+  },
+  {
+   "ts": "2026-11-03T15:08:51.872660+00:00",
+   "inst": "PFE",
+   "qty": 12.18082399,
+   "pnl": 11.373569297600225,
+   "ccy": "USD",
+   "pnl_eur": 10.16000970316791
   }
  ],
  "meta": {
@@ -420,34 +456,6 @@
    "equity": 1014.8543
   },
   "protect": {
-   "KO": {
-    "entry": 92.73634744262695,
-    "opened": "2026-10-27",
-    "stop": 86.24480312164306,
-    "target": 102.00998218688966,
-    "hwm": 94.08000183105469,
-    "spec": {
-     "stop_pct": 0.07,
-     "target_pct": 0.1,
-     "max_days": 5,
-     "label": "stop -7%, take-profit +10%, time exit 5 days"
-    },
-    "updated": "2026-11-01"
-   },
-   "PFE": {
-    "entry": 29.715941,
-    "opened": "2026-10-27",
-    "stop": 27.63582513,
-    "target": 32.687535100000005,
-    "hwm": 30.520000457763672,
-    "spec": {
-     "stop_pct": 0.07,
-     "target_pct": 0.1,
-     "max_days": 5,
-     "label": "stop -7%, take-profit +10%, time exit 5 days"
-    },
-    "updated": "2026-11-01"
-   },
    "LLY": {
     "entry": 1382.7810108032227,
     "opened": "2026-10-29",
@@ -460,184 +468,79 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-11-01"
+    "updated": "2026-11-02"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-11-03",
-   "equity": 1015.5037
+   "equity": 1010.9033
   },
-  "last_decision": "2026-11-01",
+  "last_decision": "2026-11-02",
   "last_candidates": {
-   "SNDK": {
+   "PLTR": {
     "event": {
-     "id": "229260d52c83",
-     "ticker": "SNDK",
+     "id": "4d485edcd9c9",
+     "ticker": "PLTR",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Record results and raised guidance despite selloff",
-     "title": "Sandisk Sinks 12% Despite Earnings Beat and 8-for-1 Split as Memory Stocks Slide: \u201cIt\u2019s Absurd\u201d",
-     "published": "2026-10-30T16:47:25+00:00"
+     "confidence": 0.4,
+     "rationale": "Revenue topped $2B; raised full-year guidance",
+     "title": "Palantir Technologies Inc (PLTR) (Q3 2026) Earnings Call Highlights: Revenue Nearly Doubles as ...",
+     "published": "2026-11-03T05:05:13+00:00"
     },
     "check": null
    },
    "LITE": {
     "event": {
-     "id": "851095ddbe74",
+     "id": "7b4f28782052",
      "ticker": "LITE",
      "event_type": "m&a",
      "direction": 1,
-     "materiality": 3,
-     "confidence": 0.6,
-     "rationale": "Lumentum agrees to be acquired by Marvell",
-     "title": "Marvell and Lumentum to Combine, Creating a Category Leader in AI Connectivity",
-     "published": "2026-11-02T12:05:00+00:00"
+     "materiality": 2,
+     "confidence": 0.4,
+     "rationale": "Being acquired by Marvell in $115B all-stock deal",
+     "title": "Marvell agrees to acquire Lumentum in $115bn all-stock deal",
+     "published": "2026-11-03T10:10:02+00:00"
     },
     "check": null
    },
-   "MRNA": {
+   "MPC": {
     "event": {
-     "id": "32b8a2effeab",
-     "ticker": "MRNA",
-     "event_type": "product",
+     "id": "ee6967e30684",
+     "ticker": "MPC",
+     "event_type": "m&a",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Positive Phase 3 melanoma vaccine data with Merck",
-     "title": "How Investors Are Reacting To Moderna Stock Phase 3 Melanoma Vaccine Data",
-     "published": "2026-10-31T09:14:53+00:00"
-    },
-    "check": null
-   },
-   "CVX": {
-    "event": {
-     "id": "a4a7cf9f7df5",
-     "ticker": "CVX",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.45,
-     "rationale": "Adjusted earnings $10.4B vs $3.6B; record refining",
-     "title": "Chevron reports net income of $9.9bn in Q3 2026",
-     "published": "2026-11-02T10:36:42+00:00"
-    },
-    "check": null
-   },
-   "MRK": {
-    "event": {
-     "id": "4c8e96bca1cb",
-     "ticker": "MRK",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Q3 beat and raised 2026 outlook",
-     "title": "Merck Q3 Earnings Call Highlights Pipeline Progress and Raised Outlook",
-     "published": "2026-10-30T13:00:00+00:00"
-    },
-    "check": null
-   },
-   "ABBV": {
-    "event": {
-     "id": "50126c84e6a8",
-     "ticker": "ABBV",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Q3 beat and raised 2026 EPS guidance",
-     "title": "ABBV Beats on Q3 Earnings & Sales, Stock Rises on Raised '26 EPS View",
-     "published": "2026-10-30T15:09:00+00:00"
-    },
-    "check": null
-   },
-   "LIN": {
-    "event": {
-     "id": "b054377b3feb",
-     "ticker": "LIN",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.45,
-     "rationale": "Q3 earnings beat with $7.9B backlog",
-     "title": "LIN Q3 Earnings Call Highlights Restructuring and Growth Outlook",
-     "published": "2026-10-30T13:00:00+00:00"
-    },
-    "check": null
-   },
-   "MPWR": {
-    "event": {
-     "id": "04409edc743f",
-     "ticker": "MPWR",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Record Q3 beat and raised Q4 guidance",
-     "title": "Revenue Outlook Raised Could Be A Game Changer For Monolithic Power Systems Stock",
-     "published": "2026-10-31T11:10:44+00:00"
+     "confidence": 0.4,
+     "rationale": "Divesting two refineries and midstream assets to CVR",
+     "title": "Marathon Petroleum Corp to Divest Minnesota and North Dakota Refineries & MPLX LP to Divest Related Midstream Assets",
+     "published": "2026-11-03T11:30:00+00:00"
     },
     "check": null
    }
   },
   "signals": {
+   "PLTR": {
+    "state": "NO SLOT",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.4,
+    "check": "not checked (positions full)"
+   },
    "LITE": {
     "state": "NO SLOT",
     "event": "m&a",
-    "materiality": 3,
-    "confidence": 0.6,
+    "materiality": 2,
+    "confidence": 0.4,
     "check": "not checked (positions full)"
    },
-   "ABBV": {
+   "MPC": {
     "state": "NO SLOT",
-    "event": "earnings",
+    "event": "m&a",
     "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "SNDK": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.5,
-    "check": "not checked (positions full)"
-   },
-   "MRNA": {
-    "state": "NO SLOT",
-    "event": "product",
-    "materiality": 2,
-    "confidence": 0.5,
-    "check": "not checked (positions full)"
-   },
-   "MRK": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.5,
-    "check": "not checked (positions full)"
-   },
-   "MPWR": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.5,
-    "check": "not checked (positions full)"
-   },
-   "CVX": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.45,
-    "check": "not checked (positions full)"
-   },
-   "LIN": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.45,
+    "confidence": 0.4,
     "check": "not checked (positions full)"
    }
   }
