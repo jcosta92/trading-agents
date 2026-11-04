@@ -1,18 +1,18 @@
 # Paper run status
 
-Last update: 04 Nov 2026 18:08 UTC · status: **running** · period: 2026-10-12 → 2026-11-12
+Last update: 04 Nov 2026 19:08 UTC · status: **running** · period: 2026-10-12 → 2026-11-12
 
 | Agent | Equity | Return | vs benchmark | Max DD | Trading costs | Funding | Fills | Backtest gate |
 |---|---|---|---|---|---|---|---|---|
 | B0 Benchmark: S&P 500 UCITS ETF, buy and hold | €978.90 | -2.11% | – | -3.7% | €2.50 | €0.00 | 1 | benchmark |
-| B1 Benchmark: Bitcoin spot, buy and hold | €968.60 | -3.14% | – | -10.6% | €2.79 | €0.00 | 1 | benchmark |
+| B1 Benchmark: Bitcoin spot, buy and hold | €966.10 | -3.39% | – | -10.6% | €2.79 | €0.00 | 1 | benchmark |
 | A1 ETF trend: SMA 50/200 + 12-month momentum, ATR trailing stop (IBKR) | €975.69 | -2.43% | -0.32% | -2.3% | €9.42 | €0.00 | 4 | FAIL (Sharpe at 2x costs <= 0) |
 | A1b Same ETF trend rules, Trading 212 cost model | €982.93 | -1.71% | +0.40% | -1.8% | €1.42 | €0.00 | 4 | FAIL (Sharpe at 2x costs <= 0) |
-| A2 Stock factor ranking + SMA(200) filter, ATR trailing stop (US large caps, IBKR) | €909.52 | -9.05% | -6.94% | -10.7% | €20.56 | €0.00 | 23 | FAIL (Sharpe at 2x costs <= 0) |
-| A3 Crypto breakout: Donchian 20/10 with 2N stop (BTC/ETH perps, Kraken EEA, 1x) | €1,000.00 | +0.00% | +3.14% | 0.0% | €0.00 | €0.00 | 0 | WEAK (DSR 0.00 < 0.95) |
+| A2 Stock factor ranking + SMA(200) filter, ATR trailing stop (US large caps, IBKR) | €909.04 | -9.10% | -6.99% | -10.7% | €20.56 | €0.00 | 23 | FAIL (Sharpe at 2x costs <= 0) |
+| A3 Crypto breakout: Donchian 20/10 with 2N stop (BTC/ETH perps, Kraken EEA, 1x) | €1,000.00 | +0.00% | +3.39% | 0.0% | €0.00 | €0.00 | 0 | WEAK (DSR 0.00 < 0.95) |
 | A7 RSI(2) mean reversion on the S&P 500 UCITS ETF (Trading 212) | €1,002.13 | +0.21% | +2.32% | -1.6% | €2.50 | €0.00 | 3 | FAIL (Sharpe at 2x costs <= 0) |
-| A4 Funding carry: long spot / short perp when funding > 12%/yr (Bitvavo + Kraken) | €1,000.24 | +0.02% | +3.16% | -0.6% | €1.74 | −€2.43 | 2 | WEAK (DSR 0.00 < 0.95) |
-| A5 Put credit spreads on XSP: VIX filter, 50% take-profit, 2x stop (IBKR) | €899.38 | -10.06% | -7.95% | -11.4% | €72.17 | €0.00 | 4 | FAIL (Sharpe at 2x costs <= 0) |
-| A6 LLM news: Claude-labelled headlines, 7% stop / 10% target / 5-day exit (IBKR) | €1,016.10 | +1.61% | +3.72% | -5.7% | €8.62 | €0.00 | 17 | not backtested |
+| A4 Funding carry: long spot / short perp when funding > 12%/yr (Bitvavo + Kraken) | €1,000.99 | +0.10% | +3.49% | -0.6% | €1.74 | −€2.43 | 2 | WEAK (DSR 0.00 < 0.95) |
+| A5 Put credit spreads on XSP: VIX filter, 50% take-profit, 2x stop (IBKR) | €900.26 | -9.97% | -7.86% | -11.4% | €72.17 | €0.00 | 4 | FAIL (Sharpe at 2x costs <= 0) |
+| A6 LLM news: Claude-labelled headlines, 7% stop / 10% target / 5-day exit (IBKR) | €1,018.52 | +1.85% | +3.96% | -5.7% | €8.62 | €0.00 | 17 | not backtested |
 
 Simulated fills against public quotes; not investment advice. Full dashboard: docs/classic.html (GitHub Pages).
