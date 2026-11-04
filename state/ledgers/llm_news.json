@@ -4,7 +4,7 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 7.874373021528697,
-  "USD": 747.3722558800997
+  "USD": 0.29801428504217636
  },
  "positions": {
   "LLY": {
@@ -15,7 +15,27 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-10-29T14:07:19.619998+00:00",
-   "last_mark": 1409.3800048828125
+   "last_mark": 1418.970458984375
+  },
+  "AMGN": {
+   "inst_id": "AMGN",
+   "qty": 0.79381848,
+   "avg_price": 470.0899384918213,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-11-04T15:07:09.555859+00:00",
+   "last_mark": 469.8550109863281
+  },
+  "PFE": {
+   "inst_id": "PFE",
+   "qty": 12.34418628,
+   "avg_price": 30.230107652664184,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-11-04T15:07:09.555859+00:00",
+   "last_mark": 30.21500015258789
   }
  },
  "journal": [
@@ -377,12 +397,52 @@
    "eur_rate": 1.119444727897644,
    "reason": "TIME EXIT: held 5 business days (max 5)",
    "seq": 19
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-04T15:07:09.555859+00:00",
+   "inst": "AMGN",
+   "kind": "stock",
+   "qty": 0.79381848,
+   "price": 470.0899384918213,
+   "mid": 469.8550109863281,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35254260059144
+   },
+   "fees_eur": 0.3134456328630876,
+   "spread_cost_eur": 0.16580808055184879,
+   "value_eur": 331.7819691842738,
+   "eur_rate": 1.1247328519821167,
+   "reason": "BUY signal: guidance news, materiality 2, direction +1 (\"Amgen Inc (AMGN) (Q3 2026) Earnings Call Highlights: Revenue Up 8% to $10. ...\"), 1-month return +14.5%",
+   "seq": 20
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-04T15:07:09.555859+00:00",
+   "inst": "PFE",
+   "kind": "stock",
+   "qty": 12.34418628,
+   "price": 30.230107652664184,
+   "mid": 30.21500015258789,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.38953842865483995
+   },
+   "fees_eur": 0.34633862429496604,
+   "spread_cost_eur": 0.16580808041503595,
+   "value_eur": 331.78196891049254,
+   "eur_rate": 1.1247328519821167,
+   "reason": "BUY signal: guidance news, materiality 2, direction +1 (\"Pfizer Inc (PFE) (Q3 2026) Earnings Call Highlights: Raised Guidance, Cost Savin\"), 1-month return +9.4%",
+   "seq": 21
   }
  ],
  "costs": {
   "fx": 0.29763768809349145,
-  "commissions": 4.860761349905645,
-  "spread_slippage": 2.4653868474685376
+  "commissions": 5.520545607063699,
+  "spread_slippage": 2.7970030084354227
  },
  "realized": [
   {
@@ -466,66 +526,213 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-11-02"
+    "updated": "2026-11-03"
+   },
+   "AMGN": {
+    "entry": 470.0899384918213,
+    "opened": "2026-11-04",
+    "stop": 437.18364279739376,
+    "target": 517.0989323410034,
+    "hwm": 470.0899384918213,
+    "spec": {
+     "stop_pct": 0.07,
+     "target_pct": 0.1,
+     "max_days": 5,
+     "label": "stop -7%, take-profit +10%, time exit 5 days"
+    },
+    "updated": ""
+   },
+   "PFE": {
+    "entry": 30.230107652664184,
+    "opened": "2026-11-04",
+    "stop": 28.11400011697769,
+    "target": 33.25311841793061,
+    "hwm": 30.230107652664184,
+    "spec": {
+     "stop_pct": 0.07,
+     "target_pct": 0.1,
+     "max_days": 5,
+     "label": "stop -7%, take-profit +10%, time exit 5 days"
+    },
+    "updated": ""
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-11-04",
-   "equity": 1001.4191
+   "equity": 1003.9061
   },
-  "last_decision": "2026-11-02",
+  "last_decision": "2026-11-03",
   "last_candidates": {
-   "PLTR": {
+   "AMD": {
     "event": {
-     "id": "4d485edcd9c9",
-     "ticker": "PLTR",
+     "id": "628f876f7bda",
+     "ticker": "AMD",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.4,
-     "rationale": "Revenue topped $2B; raised full-year guidance",
-     "title": "Palantir Technologies Inc (PLTR) (Q3 2026) Earnings Call Highlights: Revenue Nearly Doubles as ...",
-     "published": "2026-11-03T05:05:13+00:00"
+     "confidence": 0.6,
+     "rationale": "Q3 beat and revenue outlook above expectations; shares up 8%",
+     "title": "AMD Shares Surge Nearly 8% as Q3 Earnings Beat Forecasts and Revenue Outlook Exceeds Expectations",
+     "published": "2026-11-04T11:32:51+00:00"
     },
-    "check": null
+    "check": "1-month return -23.4% - skipped"
    },
    "LITE": {
     "event": {
-     "id": "7b4f28782052",
+     "id": "a53448415c6f",
      "ticker": "LITE",
      "event_type": "m&a",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.4,
      "rationale": "Being acquired by Marvell in $115B all-stock deal",
-     "title": "Marvell agrees to acquire Lumentum in $115bn all-stock deal",
-     "published": "2026-11-03T10:10:02+00:00"
+     "title": "Marvell to Acquire Lumentum in Historic $115B Tech Deal",
+     "published": "2026-11-03T20:14:02+00:00"
     },
     "check": null
    },
-   "MPC": {
+   "BE": {
     "event": {
-     "id": "ee6967e30684",
-     "ticker": "MPC",
-     "event_type": "m&a",
+     "id": "4dc68987fee9",
+     "ticker": "BE",
+     "event_type": "product",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.4,
-     "rationale": "Divesting two refineries and midstream assets to CVR",
-     "title": "Marathon Petroleum Corp to Divest Minnesota and North Dakota Refineries & MPLX LP to Divest Related Midstream Assets",
-     "published": "2026-11-03T11:30:00+00:00"
+     "rationale": "MOU with California Resources for carbon-captured power projects",
+     "title": "Bloom Energy (BE) Signed A Carbon Captured Power Deal In California",
+     "published": "2026-11-03T18:09:59+00:00"
     },
     "check": null
+   },
+   "SMCI": {
+    "event": {
+     "id": "b9325bfeb79a",
+     "ticker": "SMCI",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.55,
+     "rationale": "Fiscal Q1 earnings and revenue beat; stock pops",
+     "title": "Super Micro Reports Strong Earnings Beat. The Stock Pops.",
+     "published": "2026-11-04T11:40:00+00:00"
+    },
+    "check": "1-month return -27.3% - skipped"
+   },
+   "BKNG": {
+    "event": {
+     "id": "0058e98f5e8f",
+     "ticker": "BKNG",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.4,
+     "rationale": "Results exceeded high end of guidance",
+     "title": "Booking Q3 Earnings Call Highlights",
+     "published": "2026-11-04T00:14:03+00:00"
+    },
+    "check": null
+   },
+   "AMGN": {
+    "event": {
+     "id": "1eb8c2b5b498",
+     "ticker": "AMGN",
+     "event_type": "guidance",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.5,
+     "rationale": "Raised 2026 revenue and EPS outlook",
+     "title": "Amgen Inc (AMGN) (Q3 2026) Earnings Call Highlights: Revenue Up 8% to $10. ...",
+     "published": "2026-11-04T05:12:16+00:00"
+    },
+    "check": "1-month return +14.5% - BUY"
+   },
+   "ANET": {
+    "event": {
+     "id": "bd1593a2eb20",
+     "ticker": "ANET",
+     "event_type": "guidance",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.6,
+     "rationale": "Earnings and Q4 outlook handily top estimates",
+     "title": "Arista Networks' Earnings, Revenue Outlook Handily Top Estimates",
+     "published": "2026-11-03T22:03:02+00:00"
+    },
+    "check": "1-month return -17.9% - skipped"
+   },
+   "MPC": {
+    "event": {
+     "id": "d0add519cd1e",
+     "ticker": "MPC",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.5,
+     "rationale": "Profit surges fivefold on refining margins",
+     "title": "Marathon Petroleum's Profit Surges Fivefold as Refining Margins Explode",
+     "published": "2026-11-03T18:45:44+00:00"
+    },
+    "check": "1-month return -1.4% - skipped"
+   },
+   "PFE": {
+    "event": {
+     "id": "b9f0ad2235d2",
+     "ticker": "PFE",
+     "event_type": "guidance",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.5,
+     "rationale": "Raised 2026 revenue and EPS guidance",
+     "title": "Pfizer Inc (PFE) (Q3 2026) Earnings Call Highlights: Raised Guidance, Cost Savings Momentum, ...",
+     "published": "2026-11-04T07:05:52+00:00"
+    },
+    "check": "1-month return +9.4% - BUY"
    }
   },
   "signals": {
-   "PLTR": {
-    "state": "NO SLOT",
+   "AMD": {
+    "state": "SKIP",
     "event": "earnings",
     "materiality": 2,
-    "confidence": 0.4,
-    "check": "not checked (positions full)"
+    "confidence": 0.6,
+    "check": "1-month return -23.4% - skipped"
+   },
+   "ANET": {
+    "state": "SKIP",
+    "event": "guidance",
+    "materiality": 2,
+    "confidence": 0.6,
+    "check": "1-month return -17.9% - skipped"
+   },
+   "SMCI": {
+    "state": "SKIP",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.55,
+    "check": "1-month return -27.3% - skipped"
+   },
+   "AMGN": {
+    "state": "BUY",
+    "event": "guidance",
+    "materiality": 2,
+    "confidence": 0.5,
+    "check": "1-month return +14.5% - BUY"
+   },
+   "MPC": {
+    "state": "SKIP",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.5,
+    "check": "1-month return -1.4% - skipped"
+   },
+   "PFE": {
+    "state": "BUY",
+    "event": "guidance",
+    "materiality": 2,
+    "confidence": 0.5,
+    "check": "1-month return +9.4% - BUY"
    },
    "LITE": {
     "state": "NO SLOT",
@@ -534,9 +741,9 @@
     "confidence": 0.4,
     "check": "not checked (positions full)"
    },
-   "MPC": {
+   "BE": {
     "state": "NO SLOT",
-    "event": "m&a",
+    "event": "product",
     "materiality": 2,
     "confidence": 0.4,
     "check": "not checked (positions full)"
