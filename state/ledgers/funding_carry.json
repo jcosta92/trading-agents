@@ -4,7 +4,7 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 503.6798747706815,
-  "USD": 2.4630844450928353
+  "USD": 2.469203880194186
  },
  "positions": {
   "BTC_SPOT": {
@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "crypto_spot",
    "opened": "2026-10-21T00:18:04.444611+00:00",
-   "last_mark": 71588.45
+   "last_mark": 71762.85
   },
   "BTC_PERP": {
    "inst_id": "BTC_PERP",
@@ -25,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "perp",
    "opened": "2026-10-21T00:18:04.444611+00:00",
-   "last_mark": 80407.5
+   "last_mark": 80629.5
   }
  },
  "journal": [
@@ -3627,49 +3627,59 @@
    "amount_eur": 0.003604126452198904,
    "rate": 7.527195833333e-06,
    "seq": 357
+  },
+  {
+   "type": "funding",
+   "ts": "2026-11-05T00:18:07.272571+00:00",
+   "inst": "BTC_PERP",
+   "ccy": "USD",
+   "amount": 0.006119435101350631,
+   "amount_eur": 0.005443849054982127,
+   "rate": 1.1342958333333e-05,
+   "seq": 358
   }
  ],
  "costs": {
   "commissions": 1.4850526180682073,
   "spread_slippage": 0.2507528148136476,
-  "funding": -2.448442480488182
+  "funding": -2.453886329543164
  },
  "realized": [],
  "meta": {
   "splits_applied": {},
   "split_suspect": {},
   "funding_ts": {
-   "BTC_PERP": "2026-11-04T23:21:11.091692+00:00"
+   "BTC_PERP": "2026-11-05T00:18:07.272571+00:00"
   },
   "div_checked": {},
   "day_start": {
-   "date": "2026-11-04",
-   "equity": 1002.1537
+   "date": "2026-11-05",
+   "equity": 1000.4599
   },
   "protect": {},
-  "last_decision": "2026-11-03",
+  "last_decision": "2026-11-04",
   "funding": {
    "BTC": {
-    "avg7_ann": 0.12911007805088703,
-    "last_ann": 0.1328809555625
+    "avg7_ann": 0.13023670595267267,
+    "last_ann": 0.08933590806249964
    },
    "ETH": {
-    "avg7_ann": 0.06177126189076621,
-    "last_ann": 0.10410802533333309
+    "avg7_ann": 0.06298166815564742,
+    "last_ann": 0.09820768475000072
    }
   },
   "signals": {
    "BTC": {
     "state": "IN",
-    "funding_7d_ann": 0.1291,
-    "funding_last_ann": 0.1329,
+    "funding_7d_ann": 0.1302,
+    "funding_last_ann": 0.0893,
     "buy_rule": "7-day average funding > 12%/yr and the last day's funding positive",
     "sell_rule": "7-day average < 4%/yr or the last 24h negative"
    },
    "ETH": {
     "state": "FLAT",
-    "funding_7d_ann": 0.0618,
-    "funding_last_ann": 0.1041,
+    "funding_7d_ann": 0.063,
+    "funding_last_ann": 0.0982,
     "buy_rule": "7-day average funding > 12%/yr and the last day's funding positive",
     "sell_rule": "7-day average < 4%/yr or the last 24h negative"
    }
@@ -3677,11 +3687,11 @@
   "active": "BTC",
   "pending": [],
   "last_equity": {
-   "date": "2026-11-04",
-   "equity": 1000.4599
+   "date": "2026-11-05",
+   "equity": 1000.3028
   },
   "entered": "2026-10-20",
-  "perp_leverage": 0.852
+  "perp_leverage": 0.923
  },
  "halted": false,
  "halt_reason": null
