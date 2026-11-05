@@ -4,19 +4,9 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 7.874373021528697,
-  "USD": 0.29801428504217636
+  "USD": 382.08658979000097
  },
  "positions": {
-  "LLY": {
-   "inst_id": "LLY",
-   "qty": 0.26358009,
-   "avg_price": 1382.7810108032227,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-10-29T14:07:19.619998+00:00",
-   "last_mark": 1417.989990234375
-  },
   "AMGN": {
    "inst_id": "AMGN",
    "qty": 0.79381848,
@@ -25,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-04T15:07:09.555859+00:00",
-   "last_mark": 478.4800109863281
+   "last_mark": 481.7460021972656
   },
   "PFE": {
    "inst_id": "PFE",
@@ -35,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-04T15:07:09.555859+00:00",
-   "last_mark": 30.790000915527344
+   "last_mark": 31.3700008392334
   }
  },
  "journal": [
@@ -437,12 +427,32 @@
    "eur_rate": 1.1247328519821167,
    "reason": "BUY signal: guidance news, materiality 2, direction +1 (\"Pfizer Inc (PFE) (Q3 2026) Earnings Call Highlights: Raised Guidance, Cost Savin\"), 1-month return +9.4%",
    "seq": 21
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-05T15:08:19.094189+00:00",
+   "inst": "LLY",
+   "kind": "stock",
+   "qty": -0.26358009,
+   "price": 1449.8336804809571,
+   "mid": 1450.5589599609375,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.3587164812431857
+   },
+   "fees_eur": 0.3197957248819324,
+   "spread_cost_eur": 0.1704273594167049,
+   "value_eur": 340.68429147403845,
+   "eur_rate": 1.1217050552368164,
+   "reason": "TIME EXIT: held 5 business days (max 5)",
+   "seq": 22
   }
  ],
  "costs": {
   "fx": 0.29763768809349145,
-  "commissions": 5.520545607063699,
-  "spread_slippage": 2.7970030084354227
+  "commissions": 5.840341331945631,
+  "spread_slippage": 2.9674303678521277
  },
  "realized": [
   {
@@ -500,6 +510,14 @@
    "pnl": 11.373569297600225,
    "ccy": "USD",
    "pnl_eur": 10.16000970316791
+  },
+  {
+   "ts": "2026-11-05T15:08:19.094189+00:00",
+   "inst": "LLY",
+   "qty": 0.26358009,
+   "pnl": 17.673748708397518,
+   "ccy": "USD",
+   "pnl_eur": 15.756146079475593
   }
  ],
  "meta": {
@@ -516,236 +534,236 @@
    "equity": 1016.4677
   },
   "protect": {
-   "LLY": {
-    "entry": 1382.7810108032227,
-    "opened": "2026-10-29",
-    "stop": 1285.986340046997,
-    "target": 1521.059111883545,
-    "hwm": 1417.5400390625,
-    "spec": {
-     "stop_pct": 0.07,
-     "target_pct": 0.1,
-     "max_days": 5,
-     "label": "stop -7%, take-profit +10%, time exit 5 days"
-    },
-    "updated": "2026-11-03"
-   },
    "AMGN": {
     "entry": 470.0899384918213,
     "opened": "2026-11-04",
     "stop": 437.18364279739376,
     "target": 517.0989323410034,
-    "hwm": 470.0899384918213,
+    "hwm": 478.4800109863281,
     "spec": {
      "stop_pct": 0.07,
      "target_pct": 0.1,
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-11-03"
+    "updated": "2026-11-04"
    },
    "PFE": {
     "entry": 30.230107652664184,
     "opened": "2026-11-04",
     "stop": 28.11400011697769,
     "target": 33.25311841793061,
-    "hwm": 30.230107652664184,
+    "hwm": 30.790000915527344,
     "spec": {
      "stop_pct": 0.07,
      "target_pct": 0.1,
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-11-03"
+    "updated": "2026-11-04"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-11-05",
-   "equity": 1018.9093
+   "equity": 1034.6528
   },
-  "last_decision": "2026-11-03",
+  "last_decision": "2026-11-04",
   "last_candidates": {
    "AMD": {
     "event": {
-     "id": "628f876f7bda",
+     "id": "37315e35d03b",
      "ticker": "AMD",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Q3 beat and revenue outlook above expectations; shares up 8%",
-     "title": "AMD Shares Surge Nearly 8% as Q3 Earnings Beat Forecasts and Revenue Outlook Exceeds Expectations",
-     "published": "2026-11-04T11:32:51+00:00"
+     "confidence": 0.4,
+     "rationale": "Record Q3 and strong outlook; valuation caps gains",
+     "title": "AMD (AMD) Q3 Results Fuel AI Optimism But Valuation Caps Gains",
+     "published": "2026-11-04T23:21:51+00:00"
     },
-    "check": "1-month return -23.4% - skipped"
+    "check": null
    },
    "LITE": {
     "event": {
-     "id": "a53448415c6f",
+     "id": "b5ab6696b97b",
      "ticker": "LITE",
      "event_type": "m&a",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.4,
-     "rationale": "Being acquired by Marvell in $115B all-stock deal",
-     "title": "Marvell to Acquire Lumentum in Historic $115B Tech Deal",
-     "published": "2026-11-03T20:14:02+00:00"
+     "confidence": 0.35,
+     "rationale": "Trades well below Marvell offer value; report Nov 5",
+     "title": "Lumentum Fell to $750 With Marvell\u2019s Offer Worth $820. Its November 5 Report Tests the Floor",
+     "published": "2026-11-04T20:28:01+00:00"
     },
     "check": null
    },
-   "BE": {
+   "MRNA": {
     "event": {
-     "id": "4dc68987fee9",
-     "ticker": "BE",
+     "id": "f4d273c18f23",
+     "ticker": "MRNA",
      "event_type": "product",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.4,
-     "rationale": "MOU with California Resources for carbon-captured power projects",
-     "title": "Bloom Energy (BE) Signed A Carbon Captured Power Deal In California",
-     "published": "2026-11-03T18:09:59+00:00"
+     "rationale": "Early myeloma data: 4 of 11 responses; shares up 8%",
+     "title": "Moderna Soars 8% on Early Multiple Myeloma Data for Its Three-in-One mRNA Therapy",
+     "published": "2026-11-04T16:41:19+00:00"
+    },
+    "check": null
+   },
+   "COHR": {
+    "event": {
+     "id": "fd7fe37be358",
+     "ticker": "COHR",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.55,
+     "rationale": "Shares up 4% premarket; revenue up ~50% on AI demand",
+     "title": "Coherent Shares Rise 4% as AI Data Centre Demand Lifts Quarterly Revenue Nearly 50%",
+     "published": "2026-11-05T11:43:33+00:00"
     },
     "check": null
    },
    "SMCI": {
     "event": {
-     "id": "b9325bfeb79a",
+     "id": "63c8a8d0e0d8",
      "ticker": "SMCI",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.55,
-     "rationale": "Fiscal Q1 earnings and revenue beat; stock pops",
-     "title": "Super Micro Reports Strong Earnings Beat. The Stock Pops.",
-     "published": "2026-11-04T11:40:00+00:00"
+     "confidence": 0.4,
+     "rationale": "Revenue nearly quadrupled; beat expectations",
+     "title": "Super Micro's AI Boom Just Got Much Bigger",
+     "published": "2026-11-04T19:28:19+00:00"
     },
-    "check": "1-month return -27.3% - skipped"
+    "check": null
+   },
+   "APP": {
+    "event": {
+     "id": "7959683e4741",
+     "ticker": "APP",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.6,
+     "rationale": "Q3 beat; shares up 20%+ after hours",
+     "title": "AppLovin delivers strong Q3 2026 numbers, stock jumps 24.9%",
+     "published": "2026-11-04T22:38:04+00:00"
+    },
+    "check": null
+   },
+   "MCD": {
+    "event": {
+     "id": "a4a4275f2e09",
+     "ticker": "MCD",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.45,
+     "rationale": "Q3 EPS beat; shares up 6%",
+     "title": "McDonald\u2019s (MCD) Stock Jumps As Q3 Earnings Beat Meets Growth Questions",
+     "published": "2026-11-05T00:17:36+00:00"
+    },
+    "check": null
+   },
+   "UBER": {
+    "event": {
+     "id": "ff1a181510ef",
+     "ticker": "UBER",
+     "event_type": "product",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.45,
+     "rationale": "Becomes official Prime restaurant delivery partner",
+     "title": "Amazon partners with Uber Eats to bring restaurant delivery to Prime members",
+     "published": "2026-11-05T11:01:00+00:00"
+    },
+    "check": null
    },
    "BKNG": {
     "event": {
-     "id": "0058e98f5e8f",
+     "id": "16d5da361509",
      "ticker": "BKNG",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.4,
-     "rationale": "Results exceeded high end of guidance",
-     "title": "Booking Q3 Earnings Call Highlights",
-     "published": "2026-11-04T00:14:03+00:00"
+     "rationale": "Jumped 9.8% on Q3 margin strength",
+     "title": "Booking (BKNG) Stock Jumps As Q3 Results Spotlight Margin Strength",
+     "published": "2026-11-04T23:24:47+00:00"
     },
     "check": null
    },
-   "AMGN": {
-    "event": {
-     "id": "1eb8c2b5b498",
-     "ticker": "AMGN",
-     "event_type": "guidance",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Raised 2026 revenue and EPS outlook",
-     "title": "Amgen Inc (AMGN) (Q3 2026) Earnings Call Highlights: Revenue Up 8% to $10. ...",
-     "published": "2026-11-04T05:12:16+00:00"
-    },
-    "check": "1-month return +14.5% - BUY"
-   },
    "ANET": {
     "event": {
-     "id": "bd1593a2eb20",
+     "id": "07cf740c1c63",
      "ticker": "ANET",
      "event_type": "guidance",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Earnings and Q4 outlook handily top estimates",
-     "title": "Arista Networks' Earnings, Revenue Outlook Handily Top Estimates",
-     "published": "2026-11-03T22:03:02+00:00"
-    },
-    "check": "1-month return -17.9% - skipped"
-   },
-   "MPC": {
-    "event": {
-     "id": "d0add519cd1e",
-     "ticker": "MPC",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
      "confidence": 0.5,
-     "rationale": "Profit surges fivefold on refining margins",
-     "title": "Marathon Petroleum's Profit Surges Fivefold as Refining Margins Explode",
-     "published": "2026-11-03T18:45:44+00:00"
+     "rationale": "Shares up 5-10% on $18.5B 2027 outlook",
+     "title": "Arista Stocks Rise 5.10% as Revenue Guide Raises the AI Networking Bar",
+     "published": "2026-11-04T17:15:14+00:00"
     },
-    "check": "1-month return -1.4% - skipped"
-   },
-   "PFE": {
-    "event": {
-     "id": "b9f0ad2235d2",
-     "ticker": "PFE",
-     "event_type": "guidance",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Raised 2026 revenue and EPS guidance",
-     "title": "Pfizer Inc (PFE) (Q3 2026) Earnings Call Highlights: Raised Guidance, Cost Savings Momentum, ...",
-     "published": "2026-11-04T07:05:52+00:00"
-    },
-    "check": "1-month return +9.4% - BUY"
+    "check": null
    }
   },
   "signals": {
-   "AMD": {
-    "state": "SKIP",
+   "APP": {
+    "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
     "confidence": 0.6,
-    "check": "1-month return -23.4% - skipped"
+    "check": "not checked (positions full)"
    },
-   "ANET": {
-    "state": "SKIP",
-    "event": "guidance",
-    "materiality": 2,
-    "confidence": 0.6,
-    "check": "1-month return -17.9% - skipped"
-   },
-   "SMCI": {
-    "state": "SKIP",
+   "COHR": {
+    "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
     "confidence": 0.55,
-    "check": "1-month return -27.3% - skipped"
+    "check": "not checked (positions full)"
    },
-   "AMGN": {
-    "state": "BUY",
+   "ANET": {
+    "state": "NO SLOT",
     "event": "guidance",
     "materiality": 2,
     "confidence": 0.5,
-    "check": "1-month return +14.5% - BUY"
+    "check": "not checked (positions full)"
    },
-   "MPC": {
-    "state": "SKIP",
+   "MCD": {
+    "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
-    "confidence": 0.5,
-    "check": "1-month return -1.4% - skipped"
+    "confidence": 0.45,
+    "check": "not checked (positions full)"
    },
-   "PFE": {
-    "state": "BUY",
-    "event": "guidance",
-    "materiality": 2,
-    "confidence": 0.5,
-    "check": "1-month return +9.4% - BUY"
-   },
-   "LITE": {
+   "UBER": {
     "state": "NO SLOT",
-    "event": "m&a",
+    "event": "product",
+    "materiality": 2,
+    "confidence": 0.45,
+    "check": "not checked (positions full)"
+   },
+   "AMD": {
+    "state": "NO SLOT",
+    "event": "earnings",
     "materiality": 2,
     "confidence": 0.4,
     "check": "not checked (positions full)"
    },
-   "BE": {
+   "MRNA": {
     "state": "NO SLOT",
     "event": "product",
+    "materiality": 2,
+    "confidence": 0.4,
+    "check": "not checked (positions full)"
+   },
+   "SMCI": {
+    "state": "NO SLOT",
+    "event": "earnings",
     "materiality": 2,
     "confidence": 0.4,
     "check": "not checked (positions full)"
