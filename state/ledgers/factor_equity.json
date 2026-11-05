@@ -4,19 +4,9 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 4.075538146253166e-05,
-  "USD": 756.6449895556445
+  "USD": 839.2454322236736
  },
  "positions": {
-  "DELL": {
-   "inst_id": "DELL",
-   "qty": 0.25842096,
-   "avg_price": 415.8304004058838,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-11-02T15:06:16.006730+00:00",
-   "last_mark": 326.010009765625
-  },
   "HPE": {
    "inst_id": "HPE",
    "qty": 1.97945797,
@@ -25,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-02T15:06:16.006730+00:00",
-   "last_mark": 45.0
+   "last_mark": 44.560001373291016
   },
   "TWLO": {
    "inst_id": "TWLO",
@@ -35,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-02T15:06:16.006730+00:00",
-   "last_mark": 200.02999877929688
+   "last_mark": 198.1199951171875
   }
  },
  "journal": [
@@ -635,12 +625,32 @@
    "eur_rate": 1.1247328519821167,
    "reason": "STOP-LOSS hit: price 58.55 <= stop 59.6 (3xATR(20) chandelier trailing stop)",
    "seq": 33
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-05T18:08:28.710364+00:00",
+   "inst": "DELL",
+   "kind": "stock",
+   "qty": -0.25842096,
+   "price": 320.9994236602783,
+   "mid": 321.1600036621094,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.3525365537068477
+   },
+   "fees_eur": 0.31354600214293943,
+   "spread_cost_eur": 0.03690764265485445,
+   "value_eur": 73.77837766704297,
+   "eur_rate": 1.1243535280227661,
+   "reason": "STOP-LOSS hit: price 321.2 <= stop 321.7 (3xATR(20) chandelier trailing stop)",
+   "seq": 34
   }
  ],
  "costs": {
   "fx": 0.2999999877734467,
-  "commissions": 7.277502773479476,
-  "spread_slippage": 12.97841422973716
+  "commissions": 7.591048775622416,
+  "spread_slippage": 13.015321872392015
  },
  "realized": [
   {
@@ -722,6 +732,14 @@
    "pnl": -4.540610847088626,
    "ccy": "USD",
    "pnl_eur": -4.037057190146716
+  },
+  {
+   "ts": "2026-11-05T18:08:28.710364+00:00",
+   "inst": "DELL",
+   "qty": 0.25842096,
+   "pnl": -24.506312048337044,
+   "ccy": "USD",
+   "pnl_eur": -21.795913329353503
   }
  ],
  "meta": {
@@ -738,21 +756,6 @@
    "equity": 909.6426
   },
   "protect": {
-   "DELL": {
-    "entry": 415.8304004058838,
-    "opened": "2026-11-02",
-    "stop": 321.73559992360316,
-    "target": null,
-    "hwm": 415.8304004058838,
-    "spec": {
-     "stop_atr": 3.0,
-     "atr": 31.614043582248694,
-     "trail_atr": 3.0,
-     "atr_n": 20,
-     "label": "3xATR(20) chandelier trailing stop"
-    },
-    "updated": "2026-11-04"
-   },
    "HPE": {
     "entry": 54.287231369018556,
     "opened": "2026-11-02",
@@ -889,7 +892,7 @@
   "pending": [],
   "last_equity": {
    "date": "2026-11-05",
-   "equity": 885.6185
+   "equity": 882.6229
   }
  },
  "halted": false,
