@@ -3,20 +3,9 @@
  "base": "EUR",
  "initial_capital": 1000.0,
  "cash": {
-  "EUR": 48.83711611880244
+  "EUR": 1002.2983556314184
  },
- "positions": {
-  "SP500": {
-   "inst_id": "SP500",
-   "qty": 7.194366,
-   "avg_price": 131.274928,
-   "currency": "EUR",
-   "multiplier": 1.0,
-   "kind": "etf",
-   "opened": "2026-11-02T09:18:06.915375+00:00",
-   "last_mark": 132.26999999999998
-  }
- },
+ "positions": {},
  "journal": [
   {
    "type": "deposit",
@@ -78,11 +67,29 @@
    "eur_rate": 1.0,
    "reason": "BUY signal: RSI(2) 9.8 < 10 with close 131.75 > SMA200 122.31",
    "seq": 3
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-05T10:18:08.324912+00:00",
+   "inst": "SP500",
+   "kind": "etf",
+   "qty": -7.194366,
+   "price": 132.528876,
+   "mid": 132.655,
+   "ccy": "EUR",
+   "multiplier": 1.0,
+   "fees": {},
+   "fees_eur": 0,
+   "spread_cost_eur": 0.9073822173840312,
+   "value_eur": 953.461239512616,
+   "eur_rate": 1.0,
+   "reason": "TAKE-PROFIT hit: price 132.7 >= target 132.5 (stop 3.0xATR(10), take-profit at SMA5 (when above entry), time exit 10 days)",
+   "seq": 4
   }
  ],
  "costs": {
   "commissions": 0.0,
-  "spread_slippage": 2.5032878086979045
+  "spread_slippage": 3.410670026081936
  },
  "realized": [
   {
@@ -92,6 +99,14 @@
    "pnl": -6.723005225549833,
    "ccy": "EUR",
    "pnl_eur": -6.723005225549833
+  },
+  {
+   "ts": "2026-11-05T10:18:08.324912+00:00",
+   "inst": "SP500",
+   "qty": 7.194366,
+   "pnl": 9.021360856968059,
+   "ccy": "EUR",
+   "pnl_eur": 9.021360856968059
   }
  ],
  "meta": {
@@ -105,23 +120,7 @@
    "date": "2026-11-05",
    "equity": 1002.1266
   },
-  "protect": {
-   "SP500": {
-    "entry": 131.274928,
-    "opened": "2026-11-02",
-    "stop": 127.73432436469201,
-    "target": 132.53999938964844,
-    "hwm": 131.8300018310547,
-    "spec": {
-     "stop_atr": 3.0,
-     "atr": 1.1802012117693261,
-     "target_sma": 5,
-     "max_days": 10,
-     "label": "stop 3.0xATR(10), take-profit at SMA5 (when above entry), time exit 10 days"
-    },
-    "updated": "2026-11-04"
-   }
-  },
+  "protect": {},
   "last_decision": "2026-11-04",
   "signals": {
    "SP500": {
@@ -138,7 +137,7 @@
   "pending": [],
   "last_equity": {
    "date": "2026-11-05",
-   "equity": 1000.4359
+   "equity": 1002.2984
   }
  },
  "halted": false,
