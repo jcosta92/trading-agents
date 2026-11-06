@@ -4,7 +4,7 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 7.874373021528697,
-  "USD": 382.08658979000097
+  "USD": 13.614862942252763
  },
  "positions": {
   "AMGN": {
@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-04T15:07:09.555859+00:00",
-   "last_mark": 460.2799987792969
+   "last_mark": 457.9200134277344
   },
   "PFE": {
    "inst_id": "PFE",
@@ -25,7 +25,17 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-04T15:07:09.555859+00:00",
-   "last_mark": 29.8799991607666
+   "last_mark": 29.209999084472656
+  },
+  "MRNA": {
+   "inst_id": "MRNA",
+   "qty": 1.42361456,
+   "avg_price": 258.5792372131348,
+   "currency": "USD",
+   "multiplier": 1.0,
+   "kind": "stock",
+   "opened": "2026-11-06T15:07:13.678426+00:00",
+   "last_mark": 258.45001220703125
   }
  },
  "journal": [
@@ -447,12 +457,32 @@
    "eur_rate": 1.1217050552368164,
    "reason": "TIME EXIT: held 5 business days (max 5)",
    "seq": 22
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-06T15:07:13.678426+00:00",
+   "inst": "MRNA",
+   "kind": "stock",
+   "qty": 1.42361456,
+   "price": 258.5792372131348,
+   "mid": 258.45001220703125,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.35455983743568
+   },
+   "fees_eur": 0.3178628989597212,
+   "spread_cost_eur": 0.16492605952177133,
+   "value_eur": 330.01704510304126,
+   "eur_rate": 1.1154489517211914,
+   "reason": "BUY signal: earnings news, materiality 2, direction +1 (\"Moderna swings to profit as momentum for cancer vaccine builds\"), 1-month return +22.9%",
+   "seq": 23
   }
  ],
  "costs": {
   "fx": 0.29763768809349145,
-  "commissions": 5.840341331945631,
-  "spread_slippage": 2.9674303678521277
+  "commissions": 6.158204230905353,
+  "spread_slippage": 3.132356427373899
  },
  "realized": [
   {
@@ -545,7 +575,7 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-11-04"
+    "updated": "2026-11-05"
    },
    "PFE": {
     "entry": 30.230107652664184,
@@ -559,159 +589,208 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-11-04"
+    "updated": "2026-11-05"
+   },
+   "MRNA": {
+    "entry": 258.5792372131348,
+    "opened": "2026-11-06",
+    "stop": 240.47869060821532,
+    "target": 284.4371609344483,
+    "hwm": 258.5792372131348,
+    "spec": {
+     "stop_pct": 0.07,
+     "target_pct": 0.1,
+     "max_days": 5,
+     "label": "stop -7%, take-profit +10%, time exit 5 days"
+    },
+    "updated": ""
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-11-06",
-   "equity": 1009.539
+   "equity": 999.0691
   },
-  "last_decision": "2026-11-04",
+  "last_decision": "2026-11-05",
   "last_candidates": {
-   "AMD": {
-    "event": {
-     "id": "37315e35d03b",
-     "ticker": "AMD",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.4,
-     "rationale": "Record Q3 and strong outlook; valuation caps gains",
-     "title": "AMD (AMD) Q3 Results Fuel AI Optimism But Valuation Caps Gains",
-     "published": "2026-11-04T23:21:51+00:00"
-    },
-    "check": null
-   },
-   "LITE": {
-    "event": {
-     "id": "b5ab6696b97b",
-     "ticker": "LITE",
-     "event_type": "m&a",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.35,
-     "rationale": "Trades well below Marvell offer value; report Nov 5",
-     "title": "Lumentum Fell to $750 With Marvell\u2019s Offer Worth $820. Its November 5 Report Tests the Floor",
-     "published": "2026-11-04T20:28:01+00:00"
-    },
-    "check": null
-   },
-   "MRNA": {
-    "event": {
-     "id": "f4d273c18f23",
-     "ticker": "MRNA",
-     "event_type": "product",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.4,
-     "rationale": "Early myeloma data: 4 of 11 responses; shares up 8%",
-     "title": "Moderna Soars 8% on Early Multiple Myeloma Data for Its Three-in-One mRNA Therapy",
-     "published": "2026-11-04T16:41:19+00:00"
-    },
-    "check": null
-   },
    "COHR": {
     "event": {
-     "id": "fd7fe37be358",
+     "id": "cb8da087ec83",
      "ticker": "COHR",
-     "event_type": "earnings",
+     "event_type": "guidance",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.55,
-     "rationale": "Shares up 4% premarket; revenue up ~50% on AI demand",
-     "title": "Coherent Shares Rise 4% as AI Data Centre Demand Lifts Quarterly Revenue Nearly 50%",
-     "published": "2026-11-05T11:43:33+00:00"
+     "rationale": "Targets >60% growth and $4B quarter by fiscal 2028",
+     "title": "Coherent Now Sees Growth Above 60% and Its First $4 Billion Quarter by Fiscal 2028",
+     "published": "2026-11-05T14:19:53+00:00"
+    },
+    "check": null
+   },
+   "BE": {
+    "event": {
+     "id": "da2a5004bee7",
+     "ticker": "BE",
+     "event_type": "product",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.6,
+     "rationale": "900 MW NTT DATA onsite power deal across data centers",
+     "title": "NTT DATA Announces Agreement with Bloom Energy for 900 MW of Onsite Power Generation Across Multiple Data Center Projects",
+     "published": "2026-11-05T14:00:00+00:00"
+    },
+    "check": "1-month return -42.5% - skipped"
+   },
+   "MRNA": {
+    "event": {
+     "id": "fd4b482ce79f",
+     "ticker": "MRNA",
+     "event_type": "earnings",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.6,
+     "rationale": "First quarterly profit in two years",
+     "title": "Moderna swings to profit as momentum for cancer vaccine builds",
+     "published": "2026-11-06T11:45:04+00:00"
+    },
+    "check": "1-month return +22.9% - BUY"
+   },
+   "LRCX": {
+    "event": {
+     "id": "70890236dbe5",
+     "ticker": "LRCX",
+     "event_type": "capital_return",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.65,
+     "rationale": "$25B share repurchase authorization plus dividend",
+     "title": "Lam Research Corporation Announces $25 Billion Share Repurchase Authorization and Declares Quarterly Dividend",
+     "published": "2026-11-05T21:05:00+00:00"
+    },
+    "check": "1-month return -43.8% - skipped"
+   },
+   "UBER": {
+    "event": {
+     "id": "f635b5bec5b6",
+     "ticker": "UBER",
+     "event_type": "product",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.55,
+     "rationale": "Amazon Prime restaurant delivery moves to Uber Eats",
+     "title": "Amazon switches to Uber Eats for restaurant delivery perks",
+     "published": "2026-11-05T18:14:01+00:00"
+    },
+    "check": null
+   },
+   "COST": {
+    "event": {
+     "id": "dd0b470f5c90",
+     "ticker": "COST",
+     "event_type": "other",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.55,
+     "rationale": "October US comps accelerate to 8.1%; BofA keeps buy",
+     "title": "Costco retains BofA \"buy\" as October US comps rise 8.1%",
+     "published": "2026-11-05T19:20:00+00:00"
+    },
+    "check": null
+   },
+   "JNJ": {
+    "event": {
+     "id": "d3fa4a0de604",
+     "ticker": "JNJ",
+     "event_type": "regulatory_legal",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.6,
+     "rationale": "FDA accelerated approval for Rybrevant Faspro in head and neck cancer",
+     "title": "Johnson & Johnson wins FDA approval for Rybrevant cancer treatment",
+     "published": "2026-11-06T02:47:17+00:00"
     },
     "check": null
    },
    "SMCI": {
     "event": {
-     "id": "63c8a8d0e0d8",
+     "id": "10cb4a60d8b9",
      "ticker": "SMCI",
-     "event_type": "earnings",
+     "event_type": "guidance",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.4,
-     "rationale": "Revenue nearly quadrupled; beat expectations",
-     "title": "Super Micro's AI Boom Just Got Much Bigger",
-     "published": "2026-11-04T19:28:19+00:00"
+     "confidence": 0.5,
+     "rationale": "Beat and higher FY27 revenue outlook",
+     "title": "Supermicro Stock In Focus After Earnings Beat And Higher 2027 Sales Outlook",
+     "published": "2026-11-05T23:18:54+00:00"
+    },
+    "check": null
+   },
+   "TMO": {
+    "event": {
+     "id": "e8136ae89095",
+     "ticker": "TMO",
+     "event_type": "capital_return",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.5,
+     "rationale": "$5B share repurchase authorization",
+     "title": "Thermo Fisher Scientific Authorizes $5 Billion of Share Repurchases",
+     "published": "2026-11-05T22:15:00+00:00"
     },
     "check": null
    },
    "APP": {
     "event": {
-     "id": "7959683e4741",
+     "id": "d5a45f7adea0",
      "ticker": "APP",
      "event_type": "earnings",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.6,
-     "rationale": "Q3 beat; shares up 20%+ after hours",
-     "title": "AppLovin delivers strong Q3 2026 numbers, stock jumps 24.9%",
-     "published": "2026-11-04T22:38:04+00:00"
-    },
-    "check": null
-   },
-   "MCD": {
-    "event": {
-     "id": "a4a4275f2e09",
-     "ticker": "MCD",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.45,
-     "rationale": "Q3 EPS beat; shares up 6%",
-     "title": "McDonald\u2019s (MCD) Stock Jumps As Q3 Earnings Beat Meets Growth Questions",
-     "published": "2026-11-05T00:17:36+00:00"
-    },
-    "check": null
-   },
-   "UBER": {
-    "event": {
-     "id": "ff1a181510ef",
-     "ticker": "UBER",
-     "event_type": "product",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.45,
-     "rationale": "Becomes official Prime restaurant delivery partner",
-     "title": "Amazon partners with Uber Eats to bring restaurant delivery to Prime members",
-     "published": "2026-11-05T11:01:00+00:00"
-    },
-    "check": null
-   },
-   "BKNG": {
-    "event": {
-     "id": "16d5da361509",
-     "ticker": "BKNG",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.4,
-     "rationale": "Jumped 9.8% on Q3 margin strength",
-     "title": "Booking (BKNG) Stock Jumps As Q3 Results Spotlight Margin Strength",
-     "published": "2026-11-04T23:24:47+00:00"
-    },
-    "check": null
-   },
-   "ANET": {
-    "event": {
-     "id": "07cf740c1c63",
-     "ticker": "ANET",
-     "event_type": "guidance",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Shares up 5-10% on $18.5B 2027 outlook",
-     "title": "Arista Stocks Rise 5.10% as Revenue Guide Raises the AI Networking Bar",
-     "published": "2026-11-04T17:15:14+00:00"
+     "rationale": "Q3 beat with margin surge",
+     "title": "AppLovin (APP) Stock Price Roars After Q3 Earnings Margin Surge",
+     "published": "2026-11-06T00:22:51+00:00"
     },
     "check": null
    }
   },
   "signals": {
+   "LRCX": {
+    "state": "SKIP",
+    "event": "capital_return",
+    "materiality": 2,
+    "confidence": 0.65,
+    "check": "1-month return -43.8% - skipped"
+   },
+   "BE": {
+    "state": "SKIP",
+    "event": "product",
+    "materiality": 2,
+    "confidence": 0.6,
+    "check": "1-month return -42.5% - skipped"
+   },
+   "MRNA": {
+    "state": "BUY",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.6,
+    "check": "1-month return +22.9% - BUY"
+   },
+   "JNJ": {
+    "state": "NO SLOT",
+    "event": "regulatory_legal",
+    "materiality": 2,
+    "confidence": 0.6,
+    "check": "not checked (positions full)"
+   },
    "APP": {
+    "state": "NO SLOT",
+    "event": "earnings",
+    "materiality": 2,
+    "confidence": 0.6,
+    "check": "not checked (positions full)"
+   },
+   "COP": {
     "state": "NO SLOT",
     "event": "earnings",
     "materiality": 2,
@@ -720,51 +799,16 @@
    },
    "COHR": {
     "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.55,
-    "check": "not checked (positions full)"
-   },
-   "ANET": {
-    "state": "NO SLOT",
     "event": "guidance",
     "materiality": 2,
-    "confidence": 0.5,
-    "check": "not checked (positions full)"
-   },
-   "MCD": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.45,
+    "confidence": 0.55,
     "check": "not checked (positions full)"
    },
    "UBER": {
     "state": "NO SLOT",
     "event": "product",
     "materiality": 2,
-    "confidence": 0.45,
-    "check": "not checked (positions full)"
-   },
-   "AMD": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.4,
-    "check": "not checked (positions full)"
-   },
-   "MRNA": {
-    "state": "NO SLOT",
-    "event": "product",
-    "materiality": 2,
-    "confidence": 0.4,
-    "check": "not checked (positions full)"
-   },
-   "SMCI": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.4,
+    "confidence": 0.55,
     "check": "not checked (positions full)"
    }
   }
