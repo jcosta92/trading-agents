@@ -15,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-04T15:07:09.555859+00:00",
-   "last_mark": 465.155
+   "last_mark": 463.5199890136719
   },
   "PFE": {
    "inst_id": "PFE",
@@ -25,7 +25,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-04T15:07:09.555859+00:00",
-   "last_mark": 29.229999542236328
+   "last_mark": 29.13249969482422
   },
   "MRNA": {
    "inst_id": "MRNA",
@@ -35,7 +35,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-06T15:07:13.678426+00:00",
-   "last_mark": 269.0
+   "last_mark": 255.5
   }
  },
  "journal": [
@@ -576,7 +576,7 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-11-08"
+    "updated": "2026-11-09"
    },
    "PFE": {
     "entry": 30.230107652664184,
@@ -590,226 +590,135 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-11-08"
+    "updated": "2026-11-09"
    },
    "MRNA": {
     "entry": 258.5792372131348,
     "opened": "2026-11-06",
     "stop": 240.47869060821532,
     "target": 284.4371609344483,
-    "hwm": 258.5792372131348,
+    "hwm": 269.0,
     "spec": {
      "stop_pct": 0.07,
      "target_pct": 0.1,
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-11-08"
+    "updated": "2026-11-09"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-11-10",
-   "equity": 1014.4113
+   "equity": 995.8904
   },
-  "last_decision": "2026-11-05",
+  "last_decision": "2026-11-09",
   "last_candidates": {
-   "COHR": {
+   "LLY": {
     "event": {
-     "id": "cb8da087ec83",
-     "ticker": "COHR",
-     "event_type": "guidance",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.55,
-     "rationale": "Targets >60% growth and $4B quarter by fiscal 2028",
-     "title": "Coherent Now Sees Growth Above 60% and Its First $4 Billion Quarter by Fiscal 2028",
-     "published": "2026-11-05T14:19:53+00:00"
-    },
-    "check": null
-   },
-   "BE": {
-    "event": {
-     "id": "da2a5004bee7",
-     "ticker": "BE",
+     "id": "3f14d5f645d6",
+     "ticker": "LLY",
      "event_type": "product",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.6,
-     "rationale": "900 MW NTT DATA onsite power deal across data centers",
-     "title": "NTT DATA Announces Agreement with Bloom Energy for 900 MW of Onsite Power Generation Across Multiple Data Center Projects",
-     "published": "2026-11-05T14:00:00+00:00"
+     "rationale": "Positive Phase 3 ATTAIN-OSA results expand orforglipron use",
+     "title": "Lilly's Foundayo (orforglipron) significantly reduced obstructive sleep apnea severity, reinforcing its potential to improve health beyond weight loss",
+     "published": "2026-11-09T14:30:00+00:00"
     },
-    "check": "1-month return -42.5% - skipped"
+    "check": null
    },
-   "MRNA": {
+   "GEV": {
     "event": {
-     "id": "fd4b482ce79f",
-     "ticker": "MRNA",
-     "event_type": "earnings",
+     "id": "69616fcd8d1c",
+     "ticker": "GEV",
+     "event_type": "product",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "First quarterly profit in two years",
-     "title": "Moderna swings to profit as momentum for cancer vaccine builds",
-     "published": "2026-11-06T11:45:04+00:00"
+     "confidence": 0.5,
+     "rationale": "Chosen for 6-GW HVDC transmission project in India",
+     "title": "GE Vernova to Support India\u2019s Energy Transition With 6-GW HVDC Transmission Project",
+     "published": "2026-11-09T17:49:54+00:00"
     },
-    "check": "1-month return +22.9% - BUY"
+    "check": null
    },
-   "LRCX": {
+   "CAT": {
     "event": {
-     "id": "70890236dbe5",
-     "ticker": "LRCX",
-     "event_type": "capital_return",
+     "id": "d9955a63f461",
+     "ticker": "CAT",
+     "event_type": "product",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.65,
-     "rationale": "$25B share repurchase authorization plus dividend",
-     "title": "Lam Research Corporation Announces $25 Billion Share Repurchase Authorization and Declares Quarterly Dividend",
-     "published": "2026-11-05T21:05:00+00:00"
+     "confidence": 0.5,
+     "rationale": "Anthropic secures $3.4B Caterpillar generator order",
+     "title": "Caterpillar Stocks Jump 6.61% as Anthropic Takes Over $3.4 Billion Generator Order",
+     "published": "2026-11-09T19:04:26+00:00"
     },
-    "check": "1-month return -43.8% - skipped"
+    "check": null
+   },
+   "COIN": {
+    "event": {
+     "id": "4ecdb9c80660",
+     "ticker": "COIN",
+     "event_type": "regulatory_legal",
+     "direction": 1,
+     "materiality": 2,
+     "confidence": 0.5,
+     "rationale": "Final OCC approval for national trust bank charter",
+     "title": "Coinbase Secures Final OCC Approval for Its National Trust Bank",
+     "published": "2026-11-09T20:10:46+00:00"
+    },
+    "check": null
    },
    "UBER": {
     "event": {
-     "id": "f635b5bec5b6",
+     "id": "cad12b5042c2",
      "ticker": "UBER",
      "event_type": "product",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.55,
-     "rationale": "Amazon Prime restaurant delivery moves to Uber Eats",
-     "title": "Amazon switches to Uber Eats for restaurant delivery perks",
-     "published": "2026-11-05T18:14:01+00:00"
-    },
-    "check": null
-   },
-   "COST": {
-    "event": {
-     "id": "dd0b470f5c90",
-     "ticker": "COST",
-     "event_type": "other",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.55,
-     "rationale": "October US comps accelerate to 8.1%; BofA keeps buy",
-     "title": "Costco retains BofA \"buy\" as October US comps rise 8.1%",
-     "published": "2026-11-05T19:20:00+00:00"
-    },
-    "check": null
-   },
-   "JNJ": {
-    "event": {
-     "id": "d3fa4a0de604",
-     "ticker": "JNJ",
-     "event_type": "regulatory_legal",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "FDA accelerated approval for Rybrevant Faspro in head and neck cancer",
-     "title": "Johnson & Johnson wins FDA approval for Rybrevant cancer treatment",
-     "published": "2026-11-06T02:47:17+00:00"
-    },
-    "check": null
-   },
-   "SMCI": {
-    "event": {
-     "id": "10cb4a60d8b9",
-     "ticker": "SMCI",
-     "event_type": "guidance",
-     "direction": 1,
-     "materiality": 2,
      "confidence": 0.5,
-     "rationale": "Beat and higher FY27 revenue outlook",
-     "title": "Supermicro Stock In Focus After Earnings Beat And Higher 2027 Sales Outlook",
-     "published": "2026-11-05T23:18:54+00:00"
-    },
-    "check": null
-   },
-   "TMO": {
-    "event": {
-     "id": "e8136ae89095",
-     "ticker": "TMO",
-     "event_type": "capital_return",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "$5B share repurchase authorization",
-     "title": "Thermo Fisher Scientific Authorizes $5 Billion of Share Repurchases",
-     "published": "2026-11-05T22:15:00+00:00"
-    },
-    "check": null
-   },
-   "APP": {
-    "event": {
-     "id": "d5a45f7adea0",
-     "ticker": "APP",
-     "event_type": "earnings",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Q3 beat with margin surge",
-     "title": "AppLovin (APP) Stock Price Roars After Q3 Earnings Margin Surge",
-     "published": "2026-11-06T00:22:51+00:00"
+     "rationale": "Preferred McDonald's delivery partner across 14 markets",
+     "title": "Uber to Power McDonald's App Deliveries as Partnership Widens",
+     "published": "2026-11-09T17:22:46+00:00"
     },
     "check": null
    }
   },
   "signals": {
-   "LRCX": {
-    "state": "SKIP",
-    "event": "capital_return",
-    "materiality": 2,
-    "confidence": 0.65,
-    "check": "1-month return -43.8% - skipped"
-   },
-   "BE": {
-    "state": "SKIP",
+   "LLY": {
+    "state": "NO SLOT",
     "event": "product",
     "materiality": 2,
     "confidence": 0.6,
-    "check": "1-month return -42.5% - skipped"
+    "check": "not checked (positions full)"
    },
-   "MRNA": {
-    "state": "BUY",
-    "event": "earnings",
+   "GEV": {
+    "state": "NO SLOT",
+    "event": "product",
     "materiality": 2,
-    "confidence": 0.6,
-    "check": "1-month return +22.9% - BUY"
+    "confidence": 0.5,
+    "check": "not checked (positions full)"
    },
-   "JNJ": {
+   "CAT": {
+    "state": "NO SLOT",
+    "event": "product",
+    "materiality": 2,
+    "confidence": 0.5,
+    "check": "not checked (positions full)"
+   },
+   "COIN": {
     "state": "NO SLOT",
     "event": "regulatory_legal",
     "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "APP": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "COP": {
-    "state": "NO SLOT",
-    "event": "earnings",
-    "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "COHR": {
-    "state": "NO SLOT",
-    "event": "guidance",
-    "materiality": 2,
-    "confidence": 0.55,
+    "confidence": 0.5,
     "check": "not checked (positions full)"
    },
    "UBER": {
     "state": "NO SLOT",
     "event": "product",
     "materiality": 2,
-    "confidence": 0.55,
+    "confidence": 0.5,
     "check": "not checked (positions full)"
    }
   }
