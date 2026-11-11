@@ -4,29 +4,9 @@
  "initial_capital": 1000.0,
  "cash": {
   "EUR": 7.874373021528697,
-  "USD": 13.614862942252763
+  "USD": 737.6404284105025
  },
  "positions": {
-  "AMGN": {
-   "inst_id": "AMGN",
-   "qty": 0.79381848,
-   "avg_price": 470.0899384918213,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-11-04T15:07:09.555859+00:00",
-   "last_mark": 464.14
-  },
-  "PFE": {
-   "inst_id": "PFE",
-   "qty": 12.34418628,
-   "avg_price": 30.230107652664184,
-   "currency": "USD",
-   "multiplier": 1.0,
-   "kind": "stock",
-   "opened": "2026-11-04T15:07:09.555859+00:00",
-   "last_mark": 29.360000610351562
-  },
   "MRNA": {
    "inst_id": "MRNA",
    "qty": 1.42361456,
@@ -35,7 +15,7 @@
    "multiplier": 1.0,
    "kind": "stock",
    "opened": "2026-11-06T15:07:13.678426+00:00",
-   "last_mark": 250.8300018310547
+   "last_mark": 248.85499572753906
   }
  },
  "journal": [
@@ -477,12 +457,52 @@
    "eur_rate": 1.1154489517211914,
    "reason": "BUY signal: earnings news, materiality 2, direction +1 (\"Moderna swings to profit as momentum for cancer vaccine builds\"), 1-month return +22.9%",
    "seq": 23
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-11T15:07:31.893669+00:00",
+   "inst": "AMGN",
+   "kind": "stock",
+   "qty": -0.79381848,
+   "price": 459.82996755981446,
+   "mid": 460.05999755859375,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.36006204402511965
+   },
+   "fees_eur": 0.32459593073455545,
+   "spread_cost_eur": 0.16461575969181763,
+   "value_eur": 329.0669036239578,
+   "eur_rate": 1.1092623472213745,
+   "reason": "TIME EXIT: held 5 business days (max 5)",
+   "seq": 24
+  },
+  {
+   "type": "trade",
+   "ts": "2026-11-11T15:07:31.893669+00:00",
+   "inst": "PFE",
+   "kind": "stock",
+   "qty": -12.34418628,
+   "price": 29.144169,
+   "mid": 29.155,
+   "ccy": "USD",
+   "multiplier": 1.0,
+   "fees": {
+    "USD": 0.39694950630774306
+   },
+   "fees_eur": 0.3578499777821488,
+   "spread_cost_eur": 0.12053044253560388,
+   "value_eur": 324.3245856248325,
+   "eur_rate": 1.1092623472213745,
+   "reason": "TIME EXIT: held 5 business days (max 5)",
+   "seq": 25
   }
  ],
  "costs": {
   "fx": 0.29763768809349145,
-  "commissions": 6.158204230905353,
-  "spread_slippage": 3.132356427373899
+  "commissions": 6.840650139422057,
+  "spread_slippage": 3.4175026296013207
  },
  "realized": [
   {
@@ -548,6 +568,22 @@
    "pnl": 17.673748708397518,
    "ccy": "USD",
    "pnl_eur": 15.756146079475593
+  },
+  {
+   "ts": "2026-11-11T15:07:31.893669+00:00",
+   "inst": "AMGN",
+   "qty": 0.79381848,
+   "pnl": -8.144554530089827,
+   "ccy": "USD",
+   "pnl_eur": -7.34231586467473
+  },
+  {
+   "ts": "2026-11-11T15:07:31.893669+00:00",
+   "inst": "PFE",
+   "qty": 12.34418628,
+   "pnl": -13.40502901713889,
+   "ccy": "USD",
+   "pnl_eur": -12.08463358620038
   }
  ],
  "meta": {
@@ -564,34 +600,6 @@
    "equity": 993.778
   },
   "protect": {
-   "AMGN": {
-    "entry": 470.0899384918213,
-    "opened": "2026-11-04",
-    "stop": 437.18364279739376,
-    "target": 517.0989323410034,
-    "hwm": 478.4800109863281,
-    "spec": {
-     "stop_pct": 0.07,
-     "target_pct": 0.1,
-     "max_days": 5,
-     "label": "stop -7%, take-profit +10%, time exit 5 days"
-    },
-    "updated": "2026-11-09"
-   },
-   "PFE": {
-    "entry": 30.230107652664184,
-    "opened": "2026-11-04",
-    "stop": 28.11400011697769,
-    "target": 33.25311841793061,
-    "hwm": 30.790000915527344,
-    "spec": {
-     "stop_pct": 0.07,
-     "target_pct": 0.1,
-     "max_days": 5,
-     "label": "stop -7%, take-profit +10%, time exit 5 days"
-    },
-    "updated": "2026-11-09"
-   },
    "MRNA": {
     "entry": 258.5792372131348,
     "opened": "2026-11-06",
@@ -604,119 +612,56 @@
      "max_days": 5,
      "label": "stop -7%, take-profit +10%, time exit 5 days"
     },
-    "updated": "2026-11-09"
+    "updated": "2026-11-10"
    }
   },
   "pending": [],
   "last_equity": {
    "date": "2026-11-11",
-   "equity": 1000.4975
+   "equity": 992.2349
   },
-  "last_decision": "2026-11-09",
+  "last_decision": "2026-11-10",
   "last_candidates": {
-   "LLY": {
+   "COST": {
     "event": {
-     "id": "3f14d5f645d6",
-     "ticker": "LLY",
-     "event_type": "product",
+     "id": "84028f33eea0",
+     "ticker": "COST",
+     "event_type": "capital_return",
      "direction": 1,
      "materiality": 2,
-     "confidence": 0.6,
-     "rationale": "Positive Phase 3 ATTAIN-OSA results expand orforglipron use",
-     "title": "Lilly's Foundayo (orforglipron) significantly reduced obstructive sleep apnea severity, reinforcing its potential to improve health beyond weight loss",
-     "published": "2026-11-09T14:30:00+00:00"
-    },
-    "check": null
-   },
-   "GEV": {
-    "event": {
-     "id": "69616fcd8d1c",
-     "ticker": "GEV",
-     "event_type": "product",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Chosen for 6-GW HVDC transmission project in India",
-     "title": "GE Vernova to Support India\u2019s Energy Transition With 6-GW HVDC Transmission Project",
-     "published": "2026-11-09T17:49:54+00:00"
-    },
-    "check": null
-   },
-   "CAT": {
-    "event": {
-     "id": "d9955a63f461",
-     "ticker": "CAT",
-     "event_type": "product",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Anthropic secures $3.4B Caterpillar generator order",
-     "title": "Caterpillar Stocks Jump 6.61% as Anthropic Takes Over $3.4 Billion Generator Order",
-     "published": "2026-11-09T19:04:26+00:00"
+     "confidence": 0.55,
+     "rationale": "Record $30 special dividend plus new $4B buyback",
+     "title": "Costco (COST) Declares $30 Special Dividend And Reauthorizes $4 Billion Buyback",
+     "published": "2026-11-11T11:10:21+00:00"
     },
     "check": null
    },
    "COIN": {
     "event": {
-     "id": "4ecdb9c80660",
+     "id": "24788bf062e3",
      "ticker": "COIN",
      "event_type": "regulatory_legal",
      "direction": 1,
      "materiality": 2,
      "confidence": 0.5,
-     "rationale": "Final OCC approval for national trust bank charter",
-     "title": "Coinbase Secures Final OCC Approval for Its National Trust Bank",
-     "published": "2026-11-09T20:10:46+00:00"
-    },
-    "check": null
-   },
-   "UBER": {
-    "event": {
-     "id": "cad12b5042c2",
-     "ticker": "UBER",
-     "event_type": "product",
-     "direction": 1,
-     "materiality": 2,
-     "confidence": 0.5,
-     "rationale": "Preferred McDonald's delivery partner across 14 markets",
-     "title": "Uber to Power McDonald's App Deliveries as Partnership Widens",
-     "published": "2026-11-09T17:22:46+00:00"
+     "rationale": "Final approval of national trust bank charter",
+     "title": "Coinbase's national trust charter approval is a major win for crypto custody",
+     "published": "2026-11-10T20:55:37+00:00"
     },
     "check": null
    }
   },
   "signals": {
-   "LLY": {
+   "COST": {
     "state": "NO SLOT",
-    "event": "product",
+    "event": "capital_return",
     "materiality": 2,
-    "confidence": 0.6,
-    "check": "not checked (positions full)"
-   },
-   "GEV": {
-    "state": "NO SLOT",
-    "event": "product",
-    "materiality": 2,
-    "confidence": 0.5,
-    "check": "not checked (positions full)"
-   },
-   "CAT": {
-    "state": "NO SLOT",
-    "event": "product",
-    "materiality": 2,
-    "confidence": 0.5,
+    "confidence": 0.55,
     "check": "not checked (positions full)"
    },
    "COIN": {
     "state": "NO SLOT",
     "event": "regulatory_legal",
-    "materiality": 2,
-    "confidence": 0.5,
-    "check": "not checked (positions full)"
-   },
-   "UBER": {
-    "state": "NO SLOT",
-    "event": "product",
     "materiality": 2,
     "confidence": 0.5,
     "check": "not checked (positions full)"
