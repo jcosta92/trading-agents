@@ -9,7 +9,7 @@ The live dashboard, updated every 15 minutes. Also:
 [status table](https://github.com/jcosta92/trading-agents/blob/bot-state/reports/BOTS.md) ·
 [every fill](https://github.com/jcosta92/trading-agents/blob/bot-state/state/bots/fills.csv)
 
-## The bot test (12 Oct - 31 Dec 2026): 1,152 bots, 213 strategy families
+## The bot test (12 Oct - 31 Dec 2026): 1,158 bots, 215 strategy families
 
 **Benchmarks:** three buy-and-hold yardsticks, EUR 5,000 each bought at the start (12 Oct 17:05 UTC) and held, with
 the same costs: SPY (S&P 500), QQQ (Nasdaq-100) and VGK (European stocks). They are shown at the top of the dashboard's
@@ -27,7 +27,7 @@ all results cover the same window at the same size.)
   several markets (usually 8 coins or 10 ETFs). That is a robustness check, not parameter fishing: a family is judged
   by its median bot and by how many of its bots make money, never by its single best bot.
 - **The original 17 bots** (6 most-used bot strategies, 5 less common ones, 6 classic systems) are in
-  [`config/bots.yaml`](config/bots.yaml); the 196 other families, with source links and rules, in
+  [`config/bots.yaml`](config/bots.yaml); the 198 other families, with source links and rules, in
   [`config/families.yaml`](config/families.yaml).
 - **Final GitHub sweep (13 Oct).** 23 more families, rules read from each project's source file: Freqtrade's
   sample strategy, Strategy002, UniversalMACD, MultiRSI, VolatilitySystem, NostalgiaForInfinity V1, ichiV1 and
@@ -56,8 +56,21 @@ all results cover the same window at the same size.)
   (spread 1.5%, steps 0.5%, 20 buy orders, each fill mirrored 1% away) and the time-based DCA (a market buy every
   week, no exit; 1/12 of the capital per buy instead of OctoBot's fixed 50 units, which would leave 90% idle),
   each on the 8 coins. With them the test runs 37 Freqtrade, 5 Jesse and 3 OctoBot families.
+- **Copy trading, "Sonic" both ways (17 Nov).** Two families that follow other traders instead of a rule set.
+  (1) The MQL5 signal [Exness Sonic Strategy](https://www.mql5.com/en/signals/2347199) (Exness MT5, 1:200, gold,
+  GBPJPY, crypto CFDs): a EUR 5,000 MetaTrader 5 account copying it from the start with MT5's default 95% load,
+  paying the USD 30 monthly subscription. The trade list needs a login, so the copy is rebuilt from the public
+  page's balance/equity series and withdrawals (fetched every cycle and kept in the state): between two samples
+  the copy gains the copy ratio times the provider's equity change. (2) Five wallets on the Sonic blockchain,
+  one bot each: the best traders of the three largest Shadow Exchange pools over the 30 days before the start,
+  picked with data from before the start only by [`scripts/select_sonic_leaders.py`](scripts/select_sonic_leaders.py)
+  (method and result in [`config/sonic_leaders.json`](config/sonic_leaders.json)). Each bot copies its wallet's
+  USDC.e/S/WETH trades in proportion (the same share of its holdings as the wallet, read on chain just before
+  each trade), 5 minutes later, paying the pool fee, price impact from the pool's liquidity and gas. All data
+  comes free from the public signal page and Sonic's public RPC.
 - **Everything is free.** No paid API or subscription: public-repository GitHub Actions minutes, free market data
-  (Bitvavo, Kraken, Yahoo, including Yahoo's delayed gold futures) and scheduled Claude tasks.
+  (Bitvavo, Kraken, Yahoo, including Yahoo's delayed gold futures; the public MQL5 signal page and Sonic RPC for
+  the copy bots) and scheduled Claude tasks.
 - **Luck.** With ~1,100 bots, dozens will beat the market by chance. The dashboard shows a luck yardstick (how far the
   best bot would sit above the average with no skill at all) and the reviews correct for multiple testing.
 - **No look-ahead.** Every signal and weight function is checked by `tests/test_families.py`: its value at a candle

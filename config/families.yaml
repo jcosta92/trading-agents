@@ -32,6 +32,7 @@ groups:
   equity_research: "Stock and ETF research"
   ml: "Machine learning"
   social: "Reddit, social media and quant blogs"
+  copy: "Copy trading: following another trader's account or wallet"
   benchmarks: "Benchmarks: EUR 5,000 bought at the start and held (not strategies)"
 
 families:
@@ -2160,3 +2161,30 @@ families:
     class: GoldLevelBot
     timeframe: 5m
     params: {instrument: MGC, start: "09:00", end: "11:00", tp_ticks: 96, sl_ticks: 48, exit: "15:30", risk: 0.01, max_risk: 0.05}
+
+  # =========================================================================== Copy trading (17 Nov 2026)
+  # "Sonic copy trading": both readings are tested. This one copies the MQL5 signal "Exness Sonic Strategy".
+  mql5_exness_sonic:
+    group: copy
+    name: "MQL5 signal 'Exness Sonic Strategy' copied with MetaTrader 5's default settings"
+    source: "https://www.mql5.com/en/signals/2347199 (Truong Ngoc Tuan; Exness MT5, 1:200 leverage, started 4 Dec 2025, 30 USD per month)"
+    rules: "A EUR 5,000 MetaTrader 5 account subscribes at the 12 Oct 17:00 UTC start and copies every trade of the provider (XAUUSD, GBPJPY, BTCUSD, ETHUSD, USDJPY), scaled to 95% of the balance ratio (MT5's default 'use no more than 95% of deposit'), the ratio reset each time the provider's balance changes (a trade closes, a withdrawal); open positions synchronised at the start. Rebuilt from the balance/equity series and the withdrawals on the public signal page (the trade list needs a login): between two samples the copy gains the ratio times the provider's equity change. The provider's spreads and commissions are inside its equity; the 30 USD subscription is charged at the start and on each monthly renewal (12 Nov, 12 Dec) as a fee. Not modelled: lot rounding, the copier's own slippage, swaps (the signal account is swap-free), and moves between the provider's samples (about 5 hours apart)."
+    class: Mql5CopyBot
+    timeframe: 15m
+    params: {signal_id: "2347199", load: 0.95, monthly_usd: 30}
+
+
+  # Second reading of "Sonic copy trading": copying wallets on the Sonic blockchain (ex-Fantom).
+  sonic_wallet_copy:
+    group: copy
+    name: "Copy the top 5 Sonic wallets of the month before the start (one bot per wallet)"
+    source: "Sonic blockchain via the free public RPC (rpc.soniclabs.com); wallets picked by scripts/select_sonic_leaders.py from data before the start only, result in config/sonic_leaders.json"
+    rules: "Leaderboard pick, fixed on 17 Nov from data before the start: of the 4,550 ordinary wallets that traded the three largest Shadow Exchange pools (S/USDC.e, WETH/S, USDC.e/WETH, 0.15% fee) through a public router between 12 Sep and 12 Oct 17:00 UTC, the 5 with the highest trading P&L (gains marked at the 12 Oct pool prices) among those with 10+ trades on 5+ days, at most 20 trades a day and USD 1,000+ traded. Each bot copies one wallet's trades between USDC.e, S and WETH in those pools in proportion: when the wallet pays a share of its holding of one coin for another (its balance read on chain just before the trade), the bot pays the same share of its own holding. EUR 5,000 changed to USDC.e at the start (0.3%); a trade is seen at the close of its 5-minute candle and copied at the next candle's open, at the pool price after the wallet's own trade. Costs: the 0.15% pool fee, price impact computed from the pool's liquidity at that moment, USD 0.01 gas per swap; an S<->WETH switch goes through USDC.e (two swaps). Not copied: the wallets' trades in other tokens or other pools. The pools were chosen as today's three largest by volume (all three have been the largest since early 2025)."
+    class: SonicCopyBot
+    timeframe: 5m
+    variants:
+      - {id: "L1", params: {wallet: "0x65da0970b9a0153db222056b50a84a46d8cf40b5"}}   # 49 trades, USD 6,084 P&L on USD 16,300 traded
+      - {id: "L2", params: {wallet: "0x3f5654b852c4652ac0ed50691838d70d458b40a4"}}   # 467 trades, USD 5,759 P&L on USD 54,130 traded
+      - {id: "L3", params: {wallet: "0x1c9d8823aebe15ce970d8ebca19dfa493f26c62a"}}   # 30 trades, USD 5,732 P&L on USD 68,418 traded
+      - {id: "L4", params: {wallet: "0x6d63bf948a8e76e69a441307cfe3daa5986b54f4"}}   # 18 trades, USD 5,029 P&L on USD 8,814 traded
+      - {id: "L5", params: {wallet: "0x95a68f3210ce8c3b0304cbbae789fb9aa97416d6"}}   # 74 trades, USD 4,573 P&L on USD 79,776 traded

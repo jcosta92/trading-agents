@@ -104,9 +104,11 @@ class BotContext:
                 if o["tag"].startswith(tag_prefix) and (iid is None or o["inst"] == iid)]
 
     def place(self, iid: str, side: str, type_: str, *, qty: float | None = None, eur: float | None = None,
-              price: float | None = None, tag: str = "", reduce_only: bool = False, same_bar: bool = False) -> dict:
+              price: float | None = None, tag: str = "", reduce_only: bool = False, same_bar: bool = False,
+              impact: float = 0.0) -> dict:
         """reduce_only: may only shrink an open position (margin instruments). same_bar: placed from
-        on_fill of a market order, the order also applies to the rest of the fill's candle."""
+        on_fill of a market order, the order also applies to the rest of the fill's candle. impact:
+        extra price impact of this order (fraction), on top of the market's spread and slippage."""
         assert side in ("buy", "sell") and type_ in ("market", "limit", "stop")
         if type_ != "market" and not (price and price > 0):
             raise ValueError(f"{type_} order needs a positive price")
@@ -118,6 +120,8 @@ class BotContext:
             o["reduce_only"] = True
         if same_bar:
             o["same_bar"] = True
+        if impact:
+            o["impact"] = float(impact)
         meta.setdefault("orders", []).append(o)
         return o
 
@@ -221,7 +225,7 @@ class BotEngine:
     def _trigger(self, o: dict, bar) -> tuple[float | None, float | None, str]:
         m = self.markets[o["inst"]]
         op, hi, lo = float(bar["open"]), float(bar["high"]), float(bar["low"])
-        cost = m.half_spread + m.slippage
+        cost = m.half_spread + m.slippage + float(o.get("impact") or 0.0)   # impact: set per order (AMM pools)
         sgn = 1.0 if o["side"] == "buy" else -1.0
         if o["type"] == "market":
             return op * (1 + sgn * cost), op, "taker"

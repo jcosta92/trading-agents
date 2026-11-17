@@ -59,6 +59,38 @@ class DataHub:
         self.fut_since: dict[tuple, pd.Timestamp] = {}
         self.used = getattr(source, "used", {})
 
+    def mql5(self, signal_id: str, state: Path) -> dict:
+        """A public MQL5 signal's balance/equity samples: fetched once per cycle and merged into the
+        copy kept in the state (a failed fetch falls back to it)."""
+        from .families.copytrade import Mql5Store, parse_mql5_signal
+        key = ("mql5", signal_id)
+        if key not in self.mem:
+            store = Mql5Store(state, signal_id)
+            try:
+                self.mem[key] = store.merge(parse_mql5_signal(self.source.mql5_page(signal_id)), self.now)
+                self.used[f"mql5:{signal_id}"] = "mql5.com"
+            except Exception as exc:
+                old = store.load()
+                if old is None:
+                    raise
+                log.warning("MQL5 signal %s fetch failed (%s); using the samples stored at %s", signal_id, exc,
+                            old.get("fetched"))
+                self.used[f"mql5:{signal_id}"] = f"stored copy from {old.get('fetched')} (fetch failed)"
+                self.mem[key] = old
+        return self.mem[key]
+
+    def sonic(self, state: Path, wallets: list[str], start: pd.Timestamp):
+        """Sonic pool prices and the copied wallets' trades, synced from the chain once per cycle."""
+        from .sonic_chain import SonicStore
+        key = ("sonic", tuple(sorted(wallets)))
+        if key not in self.mem:
+            rpc = self.source.sonic_rpc() if hasattr(self.source, "sonic_rpc") else None
+            res = SonicStore(state, wallets, start, rpc).sync(self.now, budget_s=float(os.environ.get("QD_SONIC_BUDGET", 300)))
+            self.used["sonic"] = (f"rpc.soniclabs.com, synced to {res.synced_ts:%Y-%m-%d %H:%M}"
+                                  + (f" ({res.error})" if res.error else ""))
+            self.mem[key] = res
+        return self.mem[key]
+
     def futures(self, iid: str, spec: dict, tf: str, since: pd.Timestamp) -> pd.DataFrame:
         """Futures candles (Yahoo), downloaded once per cycle for the earliest start any bot asks for."""
         key = (iid, tf)
@@ -263,9 +295,32 @@ def restart_on_capital_change(state: Path, capital: float, now: pd.Timestamp) ->
     return {"initial_capital": capital, "restarted_bots": len(stale)} if stale else None
 
 def _inputs(bot, led, hub: DataHub, cfg, state, markets, now, t0, last, fx=None) -> dict[str, pd.DataFrame]:
+    from .families.copytrade import SONIC_COINS, Mql5CopyBot, SonicCopyBot, copier_nav, nav_candles
     from .families.futures import FuturesBot
     from .generic import IntradayEtfBot, SignalBot, WeightBot
     first = last if last is not None else t0
+    if isinstance(bot, Mql5CopyBot):
+        iid = bot.instruments()[0]
+        _copy_market(markets, iid, f"Copy of MQL5 signal {bot.p['signal_id']} (account NAV)")
+        sig = hub.mql5(str(bot.p["signal_id"]), state)
+        nav = copier_nav(sig["samples"], sig["flows"], t0, float(bot.p.get("load", 0.95)))
+        df = nav_candles(nav, t0, now, bot.timeframe)
+        return {iid: df} if len(df) else {}
+    if isinstance(bot, SonicCopyBot):
+        wallets = sorted({str(s["params"]["wallet"]).lower() for s in cfg["bots"].values() if s["class"] == "SonicCopyBot"})
+        res = hub.sonic(state, wallets, t0)
+        for iid, coin in SONIC_COINS.items():
+            _sonic_market(markets, iid, coin)
+        bot.prepare(res.trades)
+        done = res.synced_ts.floor("5min")              # only candles whose trades and prices are all read
+        out = {}
+        for iid, coin in SONIC_COINS.items():
+            df = res.candles.get(coin)
+            if df is not None and len(df):
+                df = df[(df.index >= first - pd.Timedelta(hours=2)) & (df.index + TF[bot.timeframe] <= min(done, now))]
+                if len(df):
+                    out[iid] = df
+        return out if len(out) == len(SONIC_COINS) else {}
     if isinstance(bot, FuturesBot):
         iid = bot.instruments()[0]
         spec = cfg["futures"][iid]
@@ -314,6 +369,26 @@ def _sessions(t0: pd.Timestamp, now: pd.Timestamp) -> pd.DataFrame:
     sched = xcals.get_calendar("XNYS").schedule.loc[(t0 - pd.Timedelta(days=40)).tz_localize(None).normalize():
                                                     (now + pd.Timedelta(days=45)).tz_localize(None).normalize()]
     return sched[["open", "close"]]          # future sessions too: calendar bots count trading days ahead
+
+
+def _copy_market(markets, iid: str, description: str) -> None:
+    """A copied account's net asset value as an instrument: no spread, slippage or fees on it (the
+    copied trades' costs are inside the NAV; the copy service's own fees are charged by the bot)."""
+    if iid not in markets:
+        inst = Instrument(id=iid, kind="fund", currency="EUR", venue="copy", calendar="CRYPTO", lot_size=0.0,
+                          half_spread_bps=0.0, description=description)
+        markets[iid] = Market(inst, 0.0, 0.0, 0.0, 0.0)
+
+
+def _sonic_market(markets, iid: str, coin: str) -> None:
+    """A coin on Sonic's Shadow Exchange: priced in USD (USDC.e), pool fee as the taker fee, no fixed
+    spread (price impact is set per order from the pool's liquidity)."""
+    if iid not in markets:
+        fee = float(load_venues()["sonic_shadow"]["fees"][0]["rate"])
+        inst = Instrument(id=iid, kind="crypto_spot", currency="USD", venue="sonic_shadow", calendar="CRYPTO",
+                          lot_size=0.0, half_spread_bps=0.0,
+                          description=f"{'Wrapped S' if coin == 'S' else 'WETH'} on Shadow Exchange (Sonic), priced in USDC.e")
+        markets[iid] = Market(inst, 0.0, 0.0, fee, fee)
 
 
 def _futures_market(markets, iid: str, spec: dict) -> None:

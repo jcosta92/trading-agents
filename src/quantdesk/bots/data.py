@@ -140,6 +140,16 @@ class CandleSource:
             out[t] = df.astype(float)
         return out
 
+    def mql5_page(self, signal_id: str) -> str:
+        """The public page of an MQL5 trading signal (balance/equity series, no login needed)."""
+        import requests
+        from .families.copytrade import UA
+        r = requests.get(f"https://www.mql5.com/en/signals/{signal_id}", headers={"User-Agent": UA}, timeout=40)
+        r.raise_for_status()
+        if "equityData" not in r.text:
+            raise RuntimeError(f"MQL5 signal {signal_id}: page has no equity data")
+        return r.text
+
     def eurusd(self) -> float:
         from ..data import yahoo
         q = yahoo.live_quote("EURUSD=X")

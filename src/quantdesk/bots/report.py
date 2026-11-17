@@ -20,7 +20,8 @@ SINGLE_POSITION = {"BinHV45Bot", "SupertrendBot", "EmaMacdBot", "ORBBot", "VolBr
                    "TurtleBot", "SqueezeBot", "RSIBot", "SignalBot", "EtfDailyBot", "IntradayEtfBot", "TPSBot",
                    "PreFomcBot", "GoldIfvgBot", "GoldLevelBot"}
 BENCH = "benchmarks"           # buy-and-hold references: shown, but left out of every strategy statistic
-GROUP_ORDER = ["popular", "alternative", "classic", "repos", "ta", "crypto_research", "equity_research", "ml", "social"]
+GROUP_ORDER = ["popular", "alternative", "classic", "repos", "ta", "crypto_research", "equity_research", "ml", "social",
+               "copy"]
 
 
 def load(state: Path) -> dict:
@@ -40,6 +41,9 @@ def load(state: Path) -> dict:
     return out
 
 
+EXTERNAL_FEES = ("subscription", "gas")
+
+
 def summary_table(data: dict, cfg: dict) -> pd.DataFrame:
     st, fills, eq = data["status"], data["fills"], data["equity"]
     cap = float(cfg.get("initial_capital", 1000.0))
@@ -57,6 +61,8 @@ def summary_table(data: dict, cfg: dict) -> pd.DataFrame:
         win = float((closes["pnl_eur"] > 0).mean()) if len(closes) and spec["class"] in SINGLE_POSITION else float("nan")
         equity = float(s.get("equity_eur", cap))
         fees = float(f["fee_eur"].sum()) if len(f) else 0.0
+        # fees charged outside the fills (a copy-trading subscription, network gas)
+        fees += sum(float(v) for k, v in (s.get("costs_eur") or {}).items() if k in EXTERNAL_FEES)
         rows.append({
             "bot": bid, "family": spec.get("family", bid), "variant": spec.get("variant", ""),
             "group": spec.get("group", "popular"), "name": spec.get("name", bid), "class": spec["class"],
@@ -193,7 +199,9 @@ def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "i
     errs = st.get("errors", [])
     err_html = (f"<div class='warn'>{len(errs)} bot error(s) in the last cycle: " +
                 _esc("; ".join(errs[:5])) + ("…" if len(errs) > 5 else "") + "</div>") if errs else ""
-    order = groups or [g for g in GROUP_ORDER if len(fam) and g in set(fam["group"])]
+    present = list(dict.fromkeys(fam["group"])) if len(fam) else []
+    order = groups or ([g for g in GROUP_ORDER if g in present]
+                       + [g for g in present if g not in GROUP_ORDER and g != BENCH])   # a new group is never hidden
     if len(bench):
         order = [BENCH] + [g for g in order if g != BENCH]
 

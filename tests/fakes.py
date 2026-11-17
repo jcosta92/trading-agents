@@ -62,6 +62,16 @@ class FamilySource:
         df = self._c[key]
         return df[(df.index >= since) & (df.index + TF[timeframe] <= now - delay)]
 
+    def sonic_rpc(self):
+        if "sonic" not in self._c:
+            self._c["sonic"] = FakeSonicRpc()
+        return self._c["sonic"]
+
+    def mql5_page(self, signal_id):
+        """A page shaped like an MQL5 signal page: balance/equity about every 5 hours (trades closing
+        now and then), one withdrawal on 20 Oct 2026."""
+        return mql5_html(_seed("mql5", signal_id))
+
     def _sched(self):
         if "sched" not in self._c:
             import exchange_calendars as xcals
@@ -97,3 +107,168 @@ class FamilySource:
     def stock_daily(self, tickers, days, now):
         day = pd.Timestamp(now).tz_convert("America/New_York").tz_localize(None).normalize()
         return {t: self._stock(t)[1][lambda d: d.index < day] for t in tickers}
+
+
+def mql5_html(seed: int, start="2026-09-01", end=END, withdrawal=("2026-10-20 06:00", -300.0)) -> str:
+    rng = np.random.default_rng(seed)
+    idx = pd.date_range(pd.Timestamp(start, tz="UTC"), end, freq="5h")
+    wts = pd.Timestamp(withdrawal[0], tz="UTC")
+    b, fl, done, rows = 1000.0, 0.0, False, []
+    for t in idx:
+        if not done and t > wts:
+            b += withdrawal[1]
+            done = True
+        fl += rng.normal(0.4, 12.0)
+        if rng.random() < 0.3:               # a trade closes: its P&L moves to the balance
+            b, fl = b + fl, 0.0
+        rows.append((int(t.timestamp()), round(b, 2), round(b + fl, 2)))
+    eq = ",".join(f"{a},{c},{d}" for a, c, d in rows)
+    return (f"<html><script>var equityData=[{eq}];</script><div>Trades: <b>120</b></div>"
+            f"<script>var acc={{growth:0.1,balance:{rows[-1][1]},equity:{rows[-1][2]},drawdown:0,deposits:0,"
+            f"withdrawals:{-withdrawal[1]},currency:\"USD\",digits:2,stops:window.buildBalanceData("
+            f"[5,5,{int(wts.timestamp())},{withdrawal[1]}]),}};</script></html>")
+
+
+class FakeSonicRpc:
+    """A deterministic stand-in for the Sonic RPC: a block every 2 seconds from 1 Oct 2026, a swap in
+    the S/USDC.e pool every 150 blocks and in the USDC.e/WETH pool 75 blocks later (random-walk prices,
+    constant liquidity), and for every wallet asked about, a trade about every 6 hours (alternately
+    buying S or ETH with a share of its USDC.e and selling a share of it back)."""
+    BASE = int(pd.Timestamp("2026-10-01", tz="UTC").timestamp())
+    LIMIT = 5000
+
+    def __init__(self, head_ts=None, liq=7e17):
+        from quantdesk.bots import sonic_chain as sc
+        self.sc = sc
+        self.head = ((int(pd.Timestamp(head_ts).timestamp()) if head_ts is not None else int(END.timestamp())) - self.BASE) // 2
+        self.liq = liq
+        self.calls = 0
+
+    # chain
+    def ts(self, n):
+        return self.BASE + 2 * n
+
+    def px(self, coin, n):
+        k = n // 150
+        rng = np.random.default_rng(_seed("sonicpx", coin, k // 500))
+        steps = rng.normal(0, 0.004, 500)
+        base = 0.5 if coin == "S" else 4000.0
+        return base * float(np.exp(np.cumsum(steps)[k % 500] + 0.05 * np.sin(k / 300)))
+
+    def sqrt_of(self, pool, human):
+        _, t0, t1 = self.sc.POOLS[pool]
+        raw = human * 10 ** (self.sc.TOKENS[t1][1] - self.sc.TOKENS[t0][1])
+        return int((raw ** 0.5) * self.sc.Q96)
+
+    def _word(self, v):
+        return format(v % 2 ** 256, "064x")
+
+    def swap_log(self, pool, n, a0, a1, tx=None, idx=0):
+        addr, t0, t1 = self.sc.POOLS[pool]
+        coin = "S" if pool == "S/USD" else "ETH"
+        p = self.px(coin, n)
+        human = p if t0 == coin else 1.0 / p
+        data = "0x" + "".join(self._word(v) for v in (a0, a1, self.sqrt_of(pool, human), int(self.liq), 0))
+        return {"address": addr, "topics": [self.sc.SWAP, "0x" + "0" * 64, "0x" + "0" * 64], "data": data,
+                "blockNumber": hex(n), "blockTimestamp": hex(self.ts(n)), "logIndex": hex(idx),
+                "transactionHash": tx or f"0xswap{pool}{n}", "transactionIndex": "0x0"}
+
+    def trades_of(self, w, a, b):
+        """(block, n-th trade) of wallet w in [a, b]: one about every 6 hours."""
+        out = []
+        period = 10800
+        off = _seed("off", w) % period
+        k0 = max(0, (a - off) // period)
+        for k in range(k0, (b - off) // period + 2):
+            n = off + k * period
+            if a <= n <= b:
+                out.append((n, k))
+        return out
+
+    def trade(self, w, n, k):
+        """Trade k of wallet w: even k buys S (k % 4 == 0) or ETH with 20-60% of its USDC.e, odd k sells
+        half of what it bought back."""
+        rng = np.random.default_rng(_seed("trade", w, k))
+        coin = "S" if (k // 2) % 2 == 0 else "ETH"
+        pool = "S/USD" if coin == "S" else "USD/ETH"
+        usd_have = 10000.0
+        if k % 2 == 0:
+            usd = usd_have * float(rng.uniform(0.2, 0.6))
+            amt = usd / self.px(coin, n)
+            before = {"USD": usd_have, "S": 1000.0, "ETH": 0.5}
+            paid, got = ("USD", usd), (coin, amt)
+        else:
+            have = 1000.0 if coin == "S" else 0.5
+            amt = have * 0.5
+            usd = amt * self.px(coin, n)
+            before = {"USD": usd_have, "S": 1000.0, "ETH": 0.5}
+            paid, got = (coin, amt), ("USD", usd)
+        _, t0, t1 = self.sc.POOLS[pool]
+        raw = {c: v * 10 ** self.sc.TOKENS[c][1] for c, v in (paid, got)}
+        a0 = int(raw[t0]) if t0 == paid[0] else -int(raw[t0])
+        a1 = int(raw[t1]) if t1 == paid[0] else -int(raw[t1])
+        tx = f"0xtx{w[2:10]}{n}"
+        return {"tx": tx, "block": n, "log": self.swap_log(pool, n, a0, a1, tx=tx, idx=1), "before": before}
+
+    # RPC surface used by SonicStore
+    def block_number(self):
+        return self.head
+
+    def block_ts(self, n):
+        return self.ts(n)
+
+    def block_at(self, t):
+        return max(0, -(-(int(t) - self.BASE) // 2))
+
+    def logs(self, flt, a, b):
+        self.calls += 1
+        b = min(b, self.head)
+        out = []
+        if flt.get("address"):
+            addrs = flt["address"] if isinstance(flt["address"], list) else [flt["address"]]
+            for pool, (addr, _, _) in self.sc.POOLS.items():
+                if addr not in addrs:
+                    continue
+                off = 0 if pool == "S/USD" else 75
+                first = a + ((off - a) % 150)
+                for n in range(first, b + 1, 150):
+                    out.append(self.swap_log(pool, n, 10 ** 18, -(10 ** 5)))
+        else:
+            t = flt["topics"]
+            wallets = t[1] if len(t) > 1 and t[1] else t[2]
+            self._wallets = sorted(set(getattr(self, "_wallets", [])) | {"0x" + wt[-40:] for wt in wallets})
+            for wt in wallets:
+                w = "0x" + wt[-40:]
+                for n, k in self.trades_of(w, a, b):
+                    tr = self.trade(w, n, k)
+                    out.append({"transactionHash": tr["tx"], "blockNumber": hex(n), "topics": t})
+        if len(out) > self.LIMIT:
+            raise self.sc.TooManyResults("too many results")
+        return out
+
+    def batch(self, reqs):
+        res = []
+        for m, p in reqs:
+            if m == "eth_getTransactionReceipt":
+                h = p[0]
+                w8, n = h[4:12], int(h[12:])
+                w = next(x for x in self._wallets if x[2:10] == w8)
+                k = next(k for nn, k in self.trades_of(w, n, n))
+                tr = self.trade(w, n, k)
+                res.append({"from": w, "status": "0x1", "blockNumber": hex(n), "transactionIndex": "0x1",
+                            "logs": [tr["log"]]})
+            elif m == "eth_call":
+                tok = p[0]["to"]
+                w = "0x" + p[0]["data"][-40:]
+                n = int(p[1], 16) + 1
+                k = next(k for nn, k in self.trades_of(w, n, n))
+                coin = self.sc.TOKEN_BY_ADDR[tok]
+                v = self.trade(w, n, k)["before"][coin]
+                res.append(hex(int(v * 10 ** self.sc.TOKENS[coin][1])))
+            elif m == "eth_getBalance":
+                res.append("0x0")
+            elif m == "eth_getBlockByNumber":
+                res.append({"timestamp": hex(self.ts(int(p[0], 16)))})
+            else:
+                raise ValueError(m)
+        return res

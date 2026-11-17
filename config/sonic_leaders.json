@@ -1,0 +1,316 @@
+{
+ "selected_on": "2026-11-17",
+ "method": "Method, written down before looking at any wallet's results after the start:\n  1. Window: the 30 days before 12 Oct 2026 17:00 UTC.\n  2. Every swap in the three most liquid Shadow Exchange pools (S/USDC.e, WETH/S, USDC.e/WETH, 0.15%).\n  3. The trader of a swap = the account that signed the transaction. Kept: ordinary wallets (no\n     contract code) trading through a public router (a contract that at least 20 different wallets\n     sent swaps through) -- this drops arbitrage and market-making bots, which call their own contracts.\n  4. A wallet's flows per transaction = what it paid and received in those pools (several pools in one\n     transaction are netted, so S bought and sold on the way cancels out).\n  5. Trading P&L = the value at the start (pool prices at 12 Oct 17:00 UTC) of everything bought minus\n     everything paid over the 30 days, i.e. the gain over not trading. Volume = USD value of what was\n     paid, at the time.\n  6. Eligible: at least 10 trades on at least 5 different days, at most 20 trades a day on average,\n     at least USD 1,000 traded. Ranked by trading P&L; the top 5 are copied (one bot each).\nThis is how copy-trading leaderboards pick traders (recent P&L), so the test asks whether last\nmonth's best traders stay good once copied.",
+ "window": {
+  "from": "2026-09-12T17:00:00+00:00",
+  "to": "2026-10-12T17:00:00+00:00",
+  "blocks": [
+   79109876,
+   80858754
+  ]
+ },
+ "rules": {
+  "min_trades": 10,
+  "min_days": 5,
+  "max_trades_per_day": 20,
+  "min_volume_usd": 1000.0,
+  "router_min_wallets": 20
+ },
+ "prices_at_start_usd": {
+  "USD": 1.0,
+  "S": 0.0567796547150872,
+  "ETH": 2513.6071729703276
+ },
+ "counts": {
+  "swaps": 231682,
+  "transactions": 218750,
+  "public_routers": 35,
+  "wallets_via_routers": 4618,
+  "ordinary_wallets": 4550,
+  "wallets_with_trades": 4534,
+  "eligible": 149
+ },
+ "leaders": [
+  {
+   "rank": 1,
+   "wallet": "0x65da0970b9a0153db222056b50a84a46d8cf40b5",
+   "trades": 49,
+   "days": 13,
+   "volume_usd": 16300.22,
+   "pnl_usd": 6084.28,
+   "pnl_per_volume": 0.37326,
+   "net": {
+    "S": 349595.185767,
+    "USD": -11002.924208,
+    "ETH": -1.099094
+   }
+  },
+  {
+   "rank": 2,
+   "wallet": "0x3f5654b852c4652ac0ed50691838d70d458b40a4",
+   "trades": 467,
+   "days": 15,
+   "volume_usd": 54130.09,
+   "pnl_usd": 5759.02,
+   "pnl_per_volume": 0.10639,
+   "net": {
+    "S": 407510.72422,
+    "USD": -17379.298524
+   }
+  },
+  {
+   "rank": 3,
+   "wallet": "0x1c9d8823aebe15ce970d8ebca19dfa493f26c62a",
+   "trades": 30,
+   "days": 10,
+   "volume_usd": 68417.55,
+   "pnl_usd": 5731.73,
+   "pnl_per_volume": 0.08378,
+   "net": {
+    "S": 421968.749051,
+    "USD": -22007.30568,
+    "ETH": 1.503736
+   }
+  },
+  {
+   "rank": 4,
+   "wallet": "0x6d63bf948a8e76e69a441307cfe3daa5986b54f4",
+   "trades": 18,
+   "days": 11,
+   "volume_usd": 8813.71,
+   "pnl_usd": 5029.0,
+   "pnl_per_volume": 0.57059,
+   "net": {
+    "S": 229027.859289,
+    "USD": -8421.736293,
+    "ETH": 0.177678
+   }
+  },
+  {
+   "rank": 5,
+   "wallet": "0x95a68f3210ce8c3b0304cbbae789fb9aa97416d6",
+   "trades": 74,
+   "days": 18,
+   "volume_usd": 79776.0,
+   "pnl_usd": 4573.4,
+   "pnl_per_volume": 0.05733,
+   "net": {
+    "S": 264368.666285,
+    "USD": -11728.172064,
+    "ETH": 0.51353
+   }
+  }
+ ],
+ "runners_up": [
+  {
+   "rank": 6,
+   "wallet": "0x0746c99c50d8514744a02a0c119e751e71f8899f",
+   "trades": 19,
+   "days": 12,
+   "volume_usd": 136078.41,
+   "pnl_usd": 4319.56,
+   "pnl_per_volume": 0.03174,
+   "net": {
+    "S": 268766.819294,
+    "USD": -9717.791026,
+    "ETH": -0.486607
+   }
+  },
+  {
+   "rank": 7,
+   "wallet": "0x6736bb74570fcf2fdd1e659ef3fd3c833cb16024",
+   "trades": 49,
+   "days": 10,
+   "volume_usd": 15278.32,
+   "pnl_usd": 2800.86,
+   "pnl_per_volume": 0.18332,
+   "net": {
+    "S": 95893.443605,
+    "USD": -100.941413,
+    "ETH": -1.011691
+   }
+  },
+  {
+   "rank": 8,
+   "wallet": "0xaa970e6bd6e187492f8327e514c9e8c36c81f11e",
+   "trades": 17,
+   "days": 9,
+   "volume_usd": 16149.5,
+   "pnl_usd": 2503.68,
+   "pnl_per_volume": 0.15503,
+   "net": {
+    "S": 289938.74382,
+    "USD": -15197.661385,
+    "ETH": 0.492804
+   }
+  },
+  {
+   "rank": 9,
+   "wallet": "0x120add821f8d8dc1c5fafbc0c1265f9b719b86d6",
+   "trades": 11,
+   "days": 6,
+   "volume_usd": 7883.16,
+   "pnl_usd": 2326.01,
+   "pnl_per_volume": 0.29506,
+   "net": {
+    "S": 88861.72738,
+    "USD": -2752.901463,
+    "ETH": 0.013276
+   }
+  },
+  {
+   "rank": 10,
+   "wallet": "0x78bae8879bb8a7ce4cd788d9c5328f9eb257b2f7",
+   "trades": 13,
+   "days": 7,
+   "volume_usd": 31207.19,
+   "pnl_usd": 2005.63,
+   "pnl_per_volume": 0.06427,
+   "net": {
+    "S": 146453.738929,
+    "USD": -8175.607505,
+    "ETH": 0.74222
+   }
+  },
+  {
+   "rank": 11,
+   "wallet": "0x0304492c94d8dafab67756c7b7aaf94e2c9ca709",
+   "trades": 33,
+   "days": 9,
+   "volume_usd": 12501.76,
+   "pnl_usd": 1737.38,
+   "pnl_per_volume": 0.13897,
+   "net": {
+    "S": 59328.395361,
+    "USD": -330.366554,
+    "ETH": -0.517544
+   }
+  },
+  {
+   "rank": 12,
+   "wallet": "0xe2c8781e73844f38fd80b5cdc971561d516cb4cb",
+   "trades": 52,
+   "days": 13,
+   "volume_usd": 36978.72,
+   "pnl_usd": 1720.51,
+   "pnl_per_volume": 0.04653,
+   "net": {
+    "S": 187011.427083,
+    "USD": -10349.398811,
+    "ETH": 0.577441
+   }
+  },
+  {
+   "rank": 13,
+   "wallet": "0xa177e430f106cb7cda74575bf47668c40ace2f62",
+   "trades": 183,
+   "days": 5,
+   "volume_usd": 18048.77,
+   "pnl_usd": 1653.42,
+   "pnl_per_volume": 0.09161,
+   "net": {
+    "S": 55334.209351,
+    "USD": -5901.362158,
+    "ETH": 1.755615
+   }
+  },
+  {
+   "rank": 14,
+   "wallet": "0x5e552e0a1f107b225116b525f0fbfe887d332068",
+   "trades": 29,
+   "days": 9,
+   "volume_usd": 7426.58,
+   "pnl_usd": 1307.38,
+   "pnl_per_volume": 0.17604,
+   "net": {
+    "S": 59742.030214,
+    "USD": -6746.879892,
+    "ETH": 1.854756
+   }
+  },
+  {
+   "rank": 15,
+   "wallet": "0x2b48d74a61c817cc7efb56104df74e7ef599e7de",
+   "trades": 14,
+   "days": 9,
+   "volume_usd": 2281.72,
+   "pnl_usd": 925.72,
+   "pnl_per_volume": 0.40571,
+   "net": {
+    "S": 46155.07056,
+    "USD": -511.356295,
+    "ETH": -0.470873
+   }
+  },
+  {
+   "rank": 16,
+   "wallet": "0x61ccacec626419f5d4c85e3358749e221e833ede",
+   "trades": 40,
+   "days": 10,
+   "volume_usd": 9811.35,
+   "pnl_usd": 924.74,
+   "pnl_per_volume": 0.09425,
+   "net": {
+    "S": 29694.593116,
+    "USD": -1911.219126,
+    "ETH": 0.457473
+   }
+  },
+  {
+   "rank": 17,
+   "wallet": "0xbe772ccc5543524e12c023bb1b1ce1835c464b51",
+   "trades": 46,
+   "days": 9,
+   "volume_usd": 11687.55,
+   "pnl_usd": 899.41,
+   "pnl_per_volume": 0.07695,
+   "net": {
+    "S": 33410.128301,
+    "USD": -2299.398869,
+    "ETH": 0.5179
+   }
+  },
+  {
+   "rank": 18,
+   "wallet": "0x0600f3714fbd3ab24fc15df675902f3a995d1084",
+   "trades": 22,
+   "days": 14,
+   "volume_usd": 70201.54,
+   "pnl_usd": 886.81,
+   "pnl_per_volume": 0.01263,
+   "net": {
+    "S": 153427.704043,
+    "USD": -10634.682374,
+    "ETH": 1.117884
+   }
+  },
+  {
+   "rank": 19,
+   "wallet": "0x7fccb851e32c83cf43eb5df239a85bbbe6018d00",
+   "trades": 37,
+   "days": 10,
+   "volume_usd": 9432.62,
+   "pnl_usd": 871.29,
+   "pnl_per_volume": 0.09237,
+   "net": {
+    "S": 44021.43313,
+    "USD": -1336.185106,
+    "ETH": -0.116186
+   }
+  },
+  {
+   "rank": 20,
+   "wallet": "0xb1e0b78faa644dca9b369679c68840a7e571eb11",
+   "trades": 50,
+   "days": 9,
+   "volume_usd": 12299.17,
+   "pnl_usd": 812.27,
+   "pnl_per_volume": 0.06604,
+   "net": {
+    "USD": -1701.427401,
+    "ETH": 0.066536,
+    "S": 41325.551197
+   }
+  }
+ ]
+}

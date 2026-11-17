@@ -111,6 +111,14 @@ ibkr_comex_micro:
   margin: true
   max_leverage: 15               # new exposure capped at 15x equity (about the intraday margin for MGC)
 
+sonic_shadow:
+  label: Shadow Exchange on the Sonic blockchain (concentrated-liquidity pools, 0.15% fee tier), own wallet
+  fees:
+    - {name: pool_fee, basis: notional, rate: 0.0015}
+  slippage_bps: 0.0              # price impact is computed per trade from the pool's liquidity
+  fx_conversion: 0.003           # EUR -> USDC on an exchange and withdrawal to Sonic, about 0.3% all in
+  auto_fx: true
+
 none:
   label: not tradable
   fees: []
