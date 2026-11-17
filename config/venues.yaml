@@ -119,6 +119,14 @@ sonic_shadow:
   fx_conversion: 0.003           # EUR -> USDC on an exchange and withdrawal to Sonic, about 0.3% all in
   auto_fx: true
 
+etoro:
+  label: eToro CopyTrader, EUR money in a USD account (standard tier)
+  fees: []                       # copying is free; the copied trades' spreads are inside the account's gains
+  slippage_bps: 0.0
+  fx_conversion: 0.0075          # EUR account -> USD account, 0.75% (etoro.com/trading/fees/conversion, Nov 2026)
+  auto_fx: true
+  allow_negative_cash: false
+
 none:
   label: not tradable
   fees: []

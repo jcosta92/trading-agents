@@ -208,6 +208,57 @@ class Mql5CopyBot(Bot):
             st["months_paid"] = paid
 
 
+# ============================================================================================ eToro
+def etoro_nav(gains: dict[str, float], start: pd.Timestamp) -> pd.Series:
+    """Net asset value (1.0 at `start`) of eToro CopyTrader money copying an account from `start`.
+
+    eToro publishes each account's daily gain (time-weighted, so the trader's own deposits and
+    withdrawals do not count); a copy opens every position in proportion and gains what the account
+    gains. Day d counts only if it starts at or after `start` (a copy opened mid-day misses that
+    day), and its gain is known at the end of the day (00:00 UTC of d+1), so nothing is used before
+    eToro could have published it."""
+    start = pd.Timestamp(start)
+    first = start.normalize() + (pd.Timedelta(0) if start == start.normalize() else pd.Timedelta(days=1))
+    out, nav = {start: 1.0}, 1.0
+    for d in sorted(gains):
+        day = pd.Timestamp(d, tz="UTC")
+        if day < first:
+            continue
+        nav *= 1.0 + float(gains[d])
+        out[day + pd.Timedelta(days=1)] = max(nav, 0.0)
+    return pd.Series(out).sort_index()
+
+
+class EtoroCopyBot(Bot):
+    """eToro CopyTrader on a Popular Investor or a Smart Portfolio: the whole account copies from the
+    start (synthetic instrument = the copy's NAV in USD, rebuilt from the account's published daily
+    gains). eToro charges no fee for copying; the spreads of the copied trades are inside the gains.
+    The EUR money is changed to USD at the start at eToro's conversion fee (`fx_fee`, 0.75%), and the
+    copy then carries the EUR/USD move like any USD holding."""
+    timeframe = "15m"
+
+    def instruments(self) -> list[str]:
+        return [f"ETORO_{self.p['username'].upper().replace('-', '_')}"]
+
+    def warmup(self) -> int:
+        return 1
+
+    def on_bar(self, ctx, bars: dict) -> None:
+        st = ctx.state
+        iid = self.instruments()[0]
+        if st.get("copying") or iid not in bars:
+            return
+        eur = max(ctx.ledger.cash.get("EUR", 0.0), 0.0)
+        if eur > 0:                                      # EUR account -> USD account once, at eToro's fee
+            rate = float(self.p.get("fx_fee", 0.0075))
+            ctx.ledger.convert(ctx.ts.isoformat(), "EUR", "USD", ctx.engine.fx.from_eur(eur, "USD") * (1 - rate),
+                               ctx.engine.fx, rate, reason="EUR -> USD on eToro (conversion fee)")
+        usd = max(ctx.ledger.cash.get("USD", 0.0), 0.0)
+        ctx.place(iid, "buy", "market", qty=usd / float(bars[iid]["close"]),
+                  tag=f"copy:start copying {self.p['username']} on eToro")
+        st["copying"] = ctx.ts.isoformat()
+
+
 # ============================================================================================ Sonic wallets
 SONIC_COINS = {"S_SONIC": "S", "ETH_SONIC": "ETH"}
 COIN_IID = {v: k for k, v in SONIC_COINS.items()}

@@ -2188,3 +2188,48 @@ families:
       - {id: "L3", params: {wallet: "0x1c9d8823aebe15ce970d8ebca19dfa493f26c62a"}}   # 30 trades, USD 5,732 P&L on USD 68,418 traded
       - {id: "L4", params: {wallet: "0x6d63bf948a8e76e69a441307cfe3daa5986b54f4"}}   # 18 trades, USD 5,029 P&L on USD 8,814 traded
       - {id: "L5", params: {wallet: "0x95a68f3210ce8c3b0304cbbae789fb9aa97416d6"}}   # 74 trades, USD 4,573 P&L on USD 79,776 traded
+
+  # =========================================================================== Copy trading added 17 Nov 2026
+  # Picked by the owner from mql5.com's MT5 signal tiles and eToro on 17 Nov; replayed from the
+  # common 12 Oct start like every other family (the data covers it: see each rule).
+  mql5_signals:
+    group: copy
+    name: "Seven popular MQL5 signals copied with MetaTrader 5's default settings (one bot per signal)"
+    source: "https://www.mql5.com/en/signals (MT5 signal tiles, 17 Nov 2026): NoPain MT5 2262642, RAZOR EA 2300694, Gold Reaper Goldtrade Pro Daytrade Pro 2204998, Dynamic Liquidity Intelligence HFM50 2373900 and XM100 2370969, Combo Profile 2026 2362349, GoldWave signal 2339082"
+    rules: "Same model as the Exness Sonic signal copy: a EUR 5,000 MetaTrader 5 account subscribes at the 12 Oct 17:00 UTC start and copies every trade of the provider, scaled to 95% of the balance ratio (MT5's default), the ratio reset each time the provider's balance changes; open positions synchronised at the start. Rebuilt from the balance/equity series and the deposits/withdrawals on the public signal page (every signal had samples before the start). The provider's spreads and commissions are inside its equity; the monthly subscription (USD 30, 33, 75, 35, 35, 50, 49) is charged at the start and on each monthly renewal. Not modelled: lot rounding, the copier's own slippage, swaps, moves between the page's samples."
+    class: Mql5CopyBot
+    timeframe: 15m
+    params: {load: 0.95}
+    variants:
+      - {id: "nopain", params: {signal_id: "2262642", monthly_usd: 30}}       # robobenz, EBC Financial
+      - {id: "razor", params: {signal_id: "2300694", monthly_usd: 33}}        # Exness
+      - {id: "goldreaper", params: {signal_id: "2204998", monthly_usd: 75}}   # Malcolm Campbell, XBTFX
+      - {id: "dli_hfm50", params: {signal_id: "2373900", monthly_usd: 35}}    # Sathit Sukhirun, HFM
+      - {id: "dli_xm100", params: {signal_id: "2370969", monthly_usd: 35}}    # Sathit Sukhirun, XM
+      - {id: "combo2026", params: {signal_id: "2362349", monthly_usd: 50}}    # Michael John Malkinson
+      - {id: "goldwave", params: {signal_id: "2339082", monthly_usd: 49}}     # Robinson Osorio
+
+  etoro_smart_portfolios:
+    group: copy
+    name: "eToro Smart Portfolios BigTech and AI-Revolution, copied with CopyTrader (one bot each)"
+    source: "https://www.etoro.com/smartportfolios/bigtech, https://www.etoro.com/smartportfolios/ai-revolution; daily gains from the eToro Public API (GET /api/v2/portfolios/{name}/gain/daily) via the eToro connector, in data/copy/etoro_gains.json"
+    rules: "EUR 5,000 changed to USD at eToro's conversion fee (0.75%, EUR account to USD account) and invested in the portfolio at the 12 Oct 17:00 UTC start; the copy gains what the portfolio gains each day as eToro publishes it (time-weighted daily gain, so it follows every rebalance in proportion). The 12 Oct session is not counted (the copy opens mid-day); each day's gain is applied at 00:00 UTC the next day. The value moves with EUR/USD. eToro charges no fee for copying; the trades' spreads are inside the gains. Daily gains are added to the data file once a day by a scheduled task."
+    class: EtoroCopyBot
+    timeframe: 15m
+    variants:
+      - {id: "bigtech", params: {username: "BigTech"}}
+      - {id: "ai_revolution", params: {username: "AI-Revolution"}}
+
+  etoro_popular_investors:
+    group: copy
+    name: "Five eToro Popular Investors copied with CopyTrader (one bot each)"
+    source: "https://www.etoro.com/people/michal454, /drcmart, /smudliczek, /cphequities, /jeppekirkbonde; daily gains from the eToro Public API (GET /api/v2/portfolios/{username}/gain/daily) via the eToro connector, in data/copy/etoro_gains.json"
+    rules: "EUR 5,000 changed to USD at eToro's conversion fee (0.75%) and copied from the 12 Oct 17:00 UTC start; CopyTrader opens every position in proportion, so the copy gains the investor's published daily gain (time-weighted: the investor's own deposits and withdrawals do not count). The 12 Oct session is not counted; each day's gain is applied at 00:00 UTC the next day; the value moves with EUR/USD. No copy fee; spreads inside the gains. Not modelled: positions too small to copy at EUR 5,000 (below eToro's minimum copied position size) and the copy stop-loss."
+    class: EtoroCopyBot
+    timeframe: 15m
+    variants:
+      - {id: "michal454", params: {username: "michal454"}}
+      - {id: "drcmart", params: {username: "drcmart"}}
+      - {id: "smudliczek", params: {username: "smudliczek"}}
+      - {id: "cphequities", params: {username: "cphequities"}}
+      - {id: "jeppekirkbonde", params: {username: "jeppekirkbonde"}}

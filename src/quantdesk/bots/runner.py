@@ -79,6 +79,13 @@ class DataHub:
                 self.mem[key] = old
         return self.mem[key]
 
+    def etoro(self) -> dict:
+        """The copied eToro accounts' daily gains (read once per cycle)."""
+        if "etoro" not in self.mem:
+            self.mem["etoro"] = self.source.etoro_gains()
+            self.used["etoro"] = f"data/copy/etoro_gains.json, updated {self.mem['etoro'].get('updated')}"
+        return self.mem["etoro"]
+
     def sonic(self, state: Path, wallets: list[str], start: pd.Timestamp):
         """Sonic pool prices and the copied wallets' trades, synced from the chain once per cycle."""
         from .sonic_chain import SonicStore
@@ -295,7 +302,8 @@ def restart_on_capital_change(state: Path, capital: float, now: pd.Timestamp) ->
     return {"initial_capital": capital, "restarted_bots": len(stale)} if stale else None
 
 def _inputs(bot, led, hub: DataHub, cfg, state, markets, now, t0, last, fx=None) -> dict[str, pd.DataFrame]:
-    from .families.copytrade import SONIC_COINS, Mql5CopyBot, SonicCopyBot, copier_nav, nav_candles
+    from .families.copytrade import (SONIC_COINS, EtoroCopyBot, Mql5CopyBot, SonicCopyBot, copier_nav,
+                                     etoro_nav, nav_candles)
     from .families.futures import FuturesBot
     from .generic import IntradayEtfBot, SignalBot, WeightBot
     first = last if last is not None else t0
@@ -305,6 +313,16 @@ def _inputs(bot, led, hub: DataHub, cfg, state, markets, now, t0, last, fx=None)
         sig = hub.mql5(str(bot.p["signal_id"]), state)
         nav = copier_nav(sig["samples"], sig["flows"], t0, float(bot.p.get("load", 0.95)))
         df = nav_candles(nav, t0, now, bot.timeframe)
+        return {iid: df} if len(df) else {}
+    if isinstance(bot, EtoroCopyBot):
+        iid = bot.instruments()[0]
+        user = str(bot.p["username"])
+        _copy_market(markets, iid, f"Copy of eToro account {user} (NAV in USD)", currency="USD", venue="etoro")
+        data = hub.etoro()
+        acc = {k.lower(): v for k, v in data["accounts"].items()}.get(user.lower())
+        if acc is None:
+            raise RuntimeError(f"eToro account {user} is not in data/copy/etoro_gains.json")
+        df = nav_candles(etoro_nav(acc["gains"], t0), t0, now, bot.timeframe)
         return {iid: df} if len(df) else {}
     if isinstance(bot, SonicCopyBot):
         wallets = sorted({str(s["params"]["wallet"]).lower() for s in cfg["bots"].values() if s["class"] == "SonicCopyBot"})
@@ -371,11 +389,11 @@ def _sessions(t0: pd.Timestamp, now: pd.Timestamp) -> pd.DataFrame:
     return sched[["open", "close"]]          # future sessions too: calendar bots count trading days ahead
 
 
-def _copy_market(markets, iid: str, description: str) -> None:
+def _copy_market(markets, iid: str, description: str, currency: str = "EUR", venue: str = "copy") -> None:
     """A copied account's net asset value as an instrument: no spread, slippage or fees on it (the
     copied trades' costs are inside the NAV; the copy service's own fees are charged by the bot)."""
     if iid not in markets:
-        inst = Instrument(id=iid, kind="fund", currency="EUR", venue="copy", calendar="CRYPTO", lot_size=0.0,
+        inst = Instrument(id=iid, kind="fund", currency=currency, venue=venue, calendar="CRYPTO", lot_size=0.0,
                           half_spread_bps=0.0, description=description)
         markets[iid] = Market(inst, 0.0, 0.0, 0.0, 0.0)
 

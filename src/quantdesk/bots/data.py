@@ -150,6 +150,15 @@ class CandleSource:
             raise RuntimeError(f"MQL5 signal {signal_id}: page has no equity data")
         return r.text
 
+    def etoro_gains(self) -> dict:
+        """Daily gains of the copied eToro accounts, kept in data/copy/etoro_gains.json and updated
+        once a day by a scheduled Claude task through the eToro connector (the eToro API needs keys
+        the workflow does not have); the loop pulls main every cycle, so a new day arrives within
+        15 minutes of being committed."""
+        import json
+        from ..config import ROOT
+        return json.loads((ROOT / "data" / "copy" / "etoro_gains.json").read_text())
+
     def eurusd(self) -> float:
         from ..data import yahoo
         q = yahoo.live_quote("EURUSD=X")

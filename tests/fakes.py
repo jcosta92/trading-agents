@@ -67,6 +67,16 @@ class FamilySource:
             self._c["sonic"] = FakeSonicRpc()
         return self._c["sonic"]
 
+    def etoro_gains(self):
+        """Daily gains shaped like data/copy/etoro_gains.json: weekdays move, weekends 0."""
+        days = pd.date_range(pd.Timestamp("2026-09-01", tz="UTC"), END, freq="D", inclusive="left")
+        acc = {}
+        for u in ("BigTech", "AI-Revolution", "michal454", "drcmart", "smudliczek", "cphequities", "jeppekirkbonde"):
+            rng = np.random.default_rng(_seed("etoro", u))
+            g = np.where(days.dayofweek < 5, rng.normal(0.0005, 0.012, len(days)), 0.0)
+            acc[u] = {"gains": {d.strftime("%Y-%m-%d"): round(float(x), 4) for d, x in zip(days, g)}}
+        return {"updated": "fake", "accounts": acc}
+
     def mql5_page(self, signal_id):
         """A page shaped like an MQL5 signal page: balance/equity about every 5 hours (trades closing
         now and then), one withdrawal on 20 Oct 2026."""

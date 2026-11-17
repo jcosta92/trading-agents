@@ -296,3 +296,31 @@ def test_sonic_bots_run_in_cycles_like_one_pass(tmp_path):
     assert set(fills["bot"]) == set(cfg["bots"])                  # every wallet's trades were copied
     assert (pd.to_datetime(fills["ts"]) >= T0).all()
     assert "rpc.soniclabs.com" in one["data_sources"]["sonic"]
+
+
+# ------------------------------------------------------------------------------------ eToro copy (added 17 Nov 2026)
+def test_etoro_nav_skips_the_start_day_and_publishes_at_midnight():
+    g = {"2026-10-11": 0.5, "2026-10-12": 0.5, "2026-10-13": 0.10, "2026-10-14": -0.10}
+    nav = ct.etoro_nav(g, T0)
+    assert nav[T0] == 1.0
+    assert list(nav.index[1:]) == [pd.Timestamp("2026-10-14T00:00Z"), pd.Timestamp("2026-10-15T00:00Z")]
+    assert nav.iloc[-1] == pytest.approx(1.1 * 0.9)
+    # a start at midnight counts that day
+    assert ct.etoro_nav(g, pd.Timestamp("2026-10-13T00:00Z")).iloc[-1] == pytest.approx(0.99)
+
+
+def test_etoro_bot_buys_once_pays_conversion_and_tracks_the_gains(tmp_path):
+    bots = ["etoro_popular_investors.drcmart", "etoro_smart_portfolios.bigtech"]
+    cfg = _cfg(bots)
+    src = FamilySource()
+    now = pd.Timestamp("2026-11-20T12:00Z")
+    s = run_cycle(tmp_path, now=now, source=src, cfg=cfg)
+    assert not s["errors"], s["errors"]
+    fills = pd.read_csv(tmp_path / "fills.csv")
+    assert len(fills) == 2 and set(fills["ts"]) == {"2026-10-12T17:15:00+00:00"}
+    for bid, user in zip(bots, ("drcmart", "BigTech")):
+        b = s["bots"][bid]
+        nav = ct.etoro_nav(src.etoro_gains()["accounts"][user]["gains"], T0)
+        last = nav[nav.index <= now].iloc[-1]
+        # EUR 5,000 less the 0.75% conversion, then the account's compounded gain (fake EUR/USD is fixed)
+        assert b["equity_eur"] == pytest.approx(5000 * (1 - 0.0075) * last, rel=2e-3)

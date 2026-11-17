@@ -68,9 +68,21 @@ all results cover the same window at the same size.)
   USDC.e/S/WETH trades in proportion (the same share of its holdings as the wallet, read on chain just before
   each trade), 5 minutes later, paying the pool fee, price impact from the pool's liquidity and gas. All data
   comes free from the public signal page and Sonic's public RPC.
+- **More copy trading: 7 MQL5 signals and 7 eToro accounts (17 Nov).** Picked from mql5.com's MT5 signal tiles
+  and eToro, one bot each, replayed from the 12 Oct start. MQL5 (`mql5_signals`): NoPain MT5, RAZOR EA, Gold Reaper
+  Goldtrade Pro Daytrade Pro, Dynamic Liquidity Intelligence HFM50 and XM100, Combo Profile 2026 and GoldWave,
+  copied exactly like the Exness Sonic signal, each paying its own monthly subscription (USD 30-75). eToro
+  CopyTrader: the Smart Portfolios [BigTech](https://www.etoro.com/smartportfolios/bigtech) and
+  [AI-Revolution](https://www.etoro.com/smartportfolios/ai-revolution) (`etoro_smart_portfolios`) and the Popular
+  Investors michal454, drcmart, smudliczek, cphequities and jeppekirkbonde (`etoro_popular_investors`). EUR 5,000
+  is changed to USD at eToro's 0.75% conversion fee and the copy gains each account's published daily gain
+  (time-weighted, so it follows every trade and rebalance in proportion; copying itself is free). The eToro API
+  needs keys the workflow does not have, so a scheduled Claude task reads the gains once a day through the eToro
+  connector and commits them to [`data/copy/etoro_gains.json`](data/copy/etoro_gains.json); the loop picks them up
+  within 15 minutes.
 - **Everything is free.** No paid API or subscription: public-repository GitHub Actions minutes, free market data
-  (Bitvavo, Kraken, Yahoo, including Yahoo's delayed gold futures; the public MQL5 signal page and Sonic RPC for
-  the copy bots) and scheduled Claude tasks.
+  (Bitvavo, Kraken, Yahoo, including Yahoo's delayed gold futures; the public MQL5 signal pages, Sonic RPC and
+  eToro's published daily gains for the copy bots) and scheduled Claude tasks.
 - **Luck.** With ~1,100 bots, dozens will beat the market by chance. The dashboard shows a luck yardstick (how far the
   best bot would sit above the average with no skill at all) and the reviews correct for multiple testing.
 - **No look-ahead.** Every signal and weight function is checked by `tests/test_families.py`: its value at a candle
