@@ -13,7 +13,7 @@ import pandas as pd
 
 log = logging.getLogger(__name__)
 
-TF = {"5m": pd.Timedelta(minutes=5), "15m": pd.Timedelta(minutes=15), "1h": pd.Timedelta(hours=1),
+TF = {"1m": pd.Timedelta(minutes=1), "5m": pd.Timedelta(minutes=5), "15m": pd.Timedelta(minutes=15), "1h": pd.Timedelta(hours=1),
       "4h": pd.Timedelta(hours=4), "1d": pd.Timedelta(days=1)}
 CRYPTO_SOURCES = ("bitvavo", "kraken")
 
@@ -139,6 +139,30 @@ class CandleSource:
             df.index = pd.DatetimeIndex(df.index).tz_localize(None).normalize()
             out[t] = df.astype(float)
         return out
+
+    def minute(self, symbol: str, since: pd.Timestamp, now: pd.Timestamp) -> pd.DataFrame:
+        """Regular-session 1-minute candles of a US ticker or option contract (Yahoo symbol, e.g.
+        QQQ261124C00653000) from `since` to `now`. Yahoo keeps 1-minute data for 30 days and serves at
+        most 8 days per request."""
+        import yfinance as yf
+        lo = max(pd.Timestamp(since), pd.Timestamp(now) - pd.Timedelta(days=29, hours=12))
+        parts = []
+        t = lo
+        while t < now:
+            t1 = min(t + pd.Timedelta(days=7), pd.Timestamp(now) + pd.Timedelta(minutes=1))
+            raw = yf.Ticker(symbol).history(start=t, end=t1, interval="1m", prepost=False, auto_adjust=False,
+                                            raise_errors=False)
+            if raw is not None and len(raw):
+                parts.append(raw.rename(columns=str.lower)[["open", "high", "low", "close", "volume"]])
+            t = t1
+        if not parts:
+            return pd.DataFrame(columns=["open", "high", "low", "close", "volume"])
+        df = pd.concat(parts).dropna(subset=["open", "high", "low", "close"])
+        idx = pd.DatetimeIndex(df.index)
+        df.index = idx.tz_convert("UTC") if idx.tz is not None else idx.tz_localize("UTC")
+        df = df[~df.index.duplicated(keep="last")].sort_index().astype(float)
+        self.used[symbol] = "yahoo 1m"
+        return closed_only(df[df.index >= since], "1m", now)
 
     def mql5_page(self, signal_id: str) -> str:
         """The public page of an MQL5 trading signal (balance/equity series, no login needed)."""

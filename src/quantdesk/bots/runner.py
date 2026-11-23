@@ -238,6 +238,8 @@ def run_cycle(state_dir: str | Path, now: pd.Timestamp | None = None, source=Non
             if candles:
                 engine.run(bot, led, candles, t0, t1)
             save_ledger(path, led)
+            if hasattr(bot, "after_save"):
+                bot.after_save(led, state)
             # write this bot's fills and equity right after its ledger, so a cycle cut short (time
             # limit) never leaves a saved ledger without its fills
             append_csv(state / "fills.csv", [f.__dict__ for f in engine.fills[n_fills:]])
@@ -347,6 +349,9 @@ def _inputs(bot, led, hub: DataHub, cfg, state, markets, now, t0, last, fx=None)
         df = hub.futures(iid, spec, bot.timeframe, first - pd.Timedelta(days=bot.history_days))
         bot.prepare(df)
         return {iid: df} if len(df) else {}
+    from .families.options_orb import QqqNoiseOrbOptionsBot
+    if isinstance(bot, QqqNoiseOrbOptionsBot):
+        return _qqq_options_inputs(bot, led, hub, cfg, state, markets, now, t0, last)
     if isinstance(bot, ORBBot):
         return _orb_inputs(bot, led, hub, cfg, state, markets, now, t0, last)
     if isinstance(bot, UsEtfBot):
@@ -442,6 +447,69 @@ def _etf_inputs(bot: UsEtfBot, hub: DataHub, cfg, markets, now, t0, last) -> dic
     if bot.needs_daily or bot.spec.get("intraday_days"):
         bot.daily = hub.daily(tickers)
     return hub.intraday(tickers, since, bot.timeframe)
+
+
+def _qqq_options_inputs(bot, led, hub: DataHub, cfg, state, markets, now, t0, last) -> dict[str, pd.DataFrame]:
+    """QQQ 1-minute candles (kept in state/bots/options/QQQ_1m.csv beyond Yahoo's 30 days) and the
+    1-minute candles of every option contract the bot may trade in the minutes still to replay.
+    Only minutes closed at least `data_delay_minutes` ago are used (Yahoo's option prints lag)."""
+    start = max(t0, bot.start())
+    cutoff = now - pd.Timedelta(minutes=float(bot.p.get("data_delay_minutes", 20)))
+    if cutoff <= start:
+        return {}
+    bot.sessions = _sessions(t0, now)
+    first = max(last, start) if last is not None else start
+    und = bot.UNDERLYING
+    store = Path(state) / "options" / f"{und}_1m.csv"
+    old = pd.DataFrame(columns=["open", "high", "low", "close", "volume"])
+    if store.exists():
+        old = pd.read_csv(store, index_col=0)
+        old.index = pd.to_datetime(old.index, utc=True)
+    key = ("min1", und)
+    if key not in hub.mem:
+        since = (old.index.max() - pd.Timedelta(days=1)) if len(old) else first - pd.Timedelta(days=35)
+        new = hub.source.minute(und, since, now)
+        m1 = pd.concat([old, new]) if len(old) else new
+        m1 = m1[~m1.index.duplicated(keep="last")].sort_index().astype(float)
+        m1 = m1[m1.index >= now - pd.Timedelta(days=75)]
+        store.parent.mkdir(parents=True, exist_ok=True)
+        m1.round(4).to_csv(store)
+        hub.mem[key] = m1
+    m1 = hub.mem[key]
+    m1 = m1[m1.index + pd.Timedelta(minutes=1) <= cutoff]
+    if m1.empty or m1.index.max() <= first:
+        return {}
+    bot.prepare(m1, first.tz_convert("America/New_York").tz_localize(None).normalize())
+    _us_market(markets, cfg, und)
+    out = {und: m1[m1.index >= max(start, first - pd.Timedelta(minutes=1))]}
+    # option contracts: every signal still ahead, plus a position or limit carried from an earlier cycle
+    st = led.meta.get("state", {})
+    want = {oid for ts, oid in bot.contracts.items() if ts >= first - pd.Timedelta(minutes=1)}
+    for k in ("pos", "pending"):
+        if st.get(k):
+            want.add(st[k]["inst"])
+    for o in led.meta.get("orders", []):
+        want.add(o["inst"])
+    want.discard(und)
+    for oid in sorted(want):
+        inst = bot.option_inst(oid)
+        ok = ("opt", oid)
+        if ok not in hub.mem:
+            day_open = min(first, pd.Timestamp(oid.split(":")[1]).tz_localize("UTC")) - pd.Timedelta(days=4)
+            hub.mem[ok] = hub.source.minute(_yahoo_symbol(oid), day_open, now)
+        df = hub.mem[ok]
+        df = df[df.index + pd.Timedelta(minutes=1) <= cutoff]
+        if oid not in markets:                          # the spread is set per order by the bot (impact)
+            markets[oid] = Market(inst, 0.0, 0.0)
+        if len(df):
+            out[oid] = df
+    return out
+
+
+def _yahoo_symbol(oid: str) -> str:
+    from .families.options_orb import yahoo_option_symbol
+    und, exp, right, strike = oid.split(":")
+    return yahoo_option_symbol(und, exp, right, float(strike))
 
 
 def _orb_inputs(bot: ORBBot, led, hub: DataHub, cfg, state, markets, now, t0, last) -> dict[str, pd.DataFrame]:

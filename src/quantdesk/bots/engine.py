@@ -272,19 +272,25 @@ class BotEngine:
             buy_fees = ledger.meta.setdefault("open_buy_fees", {})
             share = buy_fees.get(inst.id, 0.0) * qty / held
             buy_fees[inst.id] = buy_fees.get(inst.id, 0.0) - share
-            pnl = (px - pos.avg_price) * qty - fee - share
+            pnl = (px - pos.avg_price) * qty * inst.multiplier - fee - share
             ledger.trade(ts.isoformat(), inst, -qty, px, {inst.currency: fee}, fx, mid, reason=o["tag"])
             return self._record(bot, inst, "sell", qty, px, fee, liq, o["tag"], ts, fx.to_eur(pnl, inst.currency))
         # buy: size by EUR amount or quantity, capped by the cash available
-        want = float(o["qty"]) if o.get("qty") else float(o["eur"]) / fx.to_eur(px, inst.currency)
+        mult = float(inst.multiplier or 1.0)            # options: 100 shares per contract
+        want = float(o["qty"]) if o.get("qty") else float(o["eur"]) / fx.to_eur(px * mult, inst.currency)
         fee_rate = (m.taker if liq == "taker" else m.maker) if m.maker is not None else 0.002
         cash_ccy = self._spendable(ledger, inst.currency)
-        qty = min(want, cash_ccy / (px * (1 + fee_rate)) * 0.999)
-        if fx.to_eur(qty * px, inst.currency) < MIN_NOTIONAL_EUR:
+        qty = min(want, cash_ccy / (px * mult * (1 + fee_rate)) * 0.999)
+        if inst.kind == "option":                       # whole contracts only
+            qty = math.floor(qty + 1e-9)
+            if qty < 1:
+                self.notes.setdefault(bot.id, []).append(f"{ts:%Y-%m-%d %H:%M} {o['tag']}: not enough cash for one contract")
+                return None
+        if fx.to_eur(qty * px * mult, inst.currency) < MIN_NOTIONAL_EUR:
             return None
         fee = self._fee(m, qty, px, "buy", liq)
         if inst.currency != ledger.base:
-            need = qty * px + fee - ledger.cash.get(inst.currency, 0.0)
+            need = qty * px * mult + fee - ledger.cash.get(inst.currency, 0.0)
             if need > 0:
                 ledger.convert(ts.isoformat(), ledger.base, inst.currency, need, fx,
                                float(self.cm.venue(inst).get("fx_conversion", 0.0003)), reason="FX for stock purchase")

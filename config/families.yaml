@@ -2162,6 +2162,27 @@ families:
     timeframe: 5m
     params: {instrument: MGC, start: "09:00", end: "11:00", tp_ticks: 96, sl_ticks: 48, exit: "15:30", risk: 0.01, max_risk: 0.05}
 
+  # =========================================================================== Options (added 23 Nov 2026)
+  # Sent by the owner on 23 Nov (rules from a social-media post); trades from 23 Nov 2026 only, because
+  # Yahoo has no history of option prices (1-minute option prints are kept for a few weeks at most).
+  qqq_noise_orb_options:
+    group: social
+    name: "QQQ noise-band + opening-range breakout with 1-day calls/puts (social post, Beat the Market noise area)"
+    source: "Rules sent by the owner on 23 Nov 2026 (social-media post); noise area from Zarattini, Aziz & Barbon 2024, https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4824172"
+    rules: "Opening range = QQQ high/low 9:30-9:45 NY. Noise band: average |close/open - 1| at each minute over the last 20 sessions x 1.25; upper = max(open, previous close) x (1 + band), lower = min(open, previous close) x (1 - band). ATR = 5-day. From 10:00 to 14:00, every 10 minutes on the 1-minute close: buy calls if close > OR high + 0.3 ATR, > upper band and > VWAP; buy puts if close < OR low - 0.3 ATR, < lower band and < VWAP. One trade a day, strike nearest the price, expiry the next session, limit at the mid (the option's last 1-minute print), cancelled if not filled by the next check. Exits on QQQ's 1-minute closes: once QQQ moved 4 ATR in favour, sell when half of the best move is given back; emergency stop 10 ATR against; otherwise sell at 15:45 (market order, half spread USD 0.03). IBKR option commissions. Every signal, buy and sell logged to state/bots/options/qqq_noise_orb_options.csv (bot-state branch). Starts 23 Nov 2026 (no option history before)."
+    class: QqqNoiseOrbOptionsBot
+    timeframe: 1m
+    params:
+      contracts: 1               # <- number of option contracts per trade (edit here)
+      start: "2026-11-23T00:00:00Z"
+      noise_days: 20
+      noise_mult: 1.25
+      atr_days: 5
+      or_atr_mult: 0.3
+      trail_atr: 4.0
+      stop_atr: 10.0
+      data_delay_minutes: 20     # Yahoo's option prints lag ~15 minutes
+
   # =========================================================================== Copy trading (17 Nov 2026)
   # "Sonic copy trading": both readings are tested. This one copies the MQL5 signal "Exness Sonic Strategy".
   mql5_exness_sonic:

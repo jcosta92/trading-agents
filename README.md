@@ -80,6 +80,16 @@ all results cover the same window at the same size.)
   needs keys the workflow does not have, so a scheduled Claude task reads the gains once a day through the eToro
   connector and commits them to [`data/copy/etoro_gains.json`](data/copy/etoro_gains.json); the loop picks them up
   within 15 minutes.
+- **QQQ options: noise band + opening-range breakout (23 Nov, trades from 23 Nov only).** Rules sent by the owner
+  (`qqq_noise_orb_options`): opening range 9:30-9:45 NY; noise band = 20-session average move from the open at
+  each minute x 1.25 (gap-adjusted, as in Zarattini, Aziz & Barbon's "Beat the Market"); 5-day ATR. Every 10
+  minutes from 10:00 to 14:00 on the 1-minute close, buy calls above OR high + 0.3 ATR, the upper band and VWAP
+  (puts mirrored), one trade a day, strike nearest the price, expiry the next session, limit at the mid (the
+  option's last 1-minute print). Exits on QQQ's 1-minute closes: half of the best move given back after +4 ATR,
+  stop at -10 ATR, otherwise 15:45. Contracts per trade: `params.contracts` in `config/families.yaml`. QQQ and
+  option 1-minute candles from Yahoo (minutes replayed 20 minutes late, because option prints lag); QQQ's are kept
+  in `state/bots/options/QQQ_1m.csv`. Every signal, buy and sell: `state/bots/options/qqq_noise_orb_options.csv`
+  on `bot-state`. It cannot be replayed from 12 Oct: Yahoo keeps no option history that far back.
 - **Everything is free.** No paid API or subscription: public-repository GitHub Actions minutes, free market data
   (Bitvavo, Kraken, Yahoo, including Yahoo's delayed gold futures; the public MQL5 signal pages, Sonic RPC and
   eToro's published daily gains for the copy bots) and scheduled Claude tasks.
