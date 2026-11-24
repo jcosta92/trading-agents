@@ -144,9 +144,12 @@ class DataHub:
 
     def intraday(self, tickers: list[str], since: pd.Timestamp, tf: str = "5m") -> dict[str, pd.DataFrame]:
         missing = [t for t in tickers if t not in self.us_intraday]
-        if missing or self.us_since is None or since < self.us_since:
+        if self.us_since is None or since < self.us_since:      # an earlier start: everything again
             need = sorted(set(tickers) | set(self.us_intraday))
             s = min(since, self.us_since) if self.us_since is not None else since
+        else:                                                    # only the tickers not seen yet
+            need, s = sorted(missing), self.us_since
+        if need:
             got = self.source.stocks(need, tf, s, self.now)
             self.us_intraday.update(got)
             for t in need:

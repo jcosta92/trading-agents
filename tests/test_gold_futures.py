@@ -322,7 +322,7 @@ class GoldSource:
 
 def test_run_cycle_trades_the_gold_bots(tmp_path):
     cfg = load_config()
-    cfg["bots"] = {k: v for k, v in cfg["bots"].items() if k.startswith("gold_")}
+    cfg["bots"] = {k: v for k, v in cfg["bots"].items() if v.get("family") in ("gold_ifvg_asia", "gold_level_reentry")}
     cfg["start"], cfg["end"] = "2026-10-13T18:00:00Z", "2026-10-31T00:00:00Z"
     ifvg = _ifvg_day()
     pat = ifvg[(ifvg.index >= pd.Timestamp("2026-10-14T00:00Z")) & (ifvg.index < pd.Timestamp("2026-10-14T03:00Z"))]

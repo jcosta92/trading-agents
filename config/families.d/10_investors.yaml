@@ -1,0 +1,2582 @@
+# WARREN BUFFETT AND OTHER FAMOUS INVESTORS (added 24 Nov 2026; replayed from the common start 12 Oct 17:00 UTC)
+# ---------------------------------------------------------------------------------------------------------------
+# Every bot: EUR 5,000, long only, IBKR fees, orders 5 minutes before the US close (EtfWeightBot).
+# Point in time: 13F clones start from the Q2 2026 filings (public in Jul-Aug 2026) and switch to each later
+# filing on the session after its SEC filing date (config/investors/13f_2026.json). Fundamental screens use
+# only statements for periods ending by 30 Jun 2026 (filed before the start) and prices of 9 Oct 2026
+# (config/investors/screens_2026.json); they are held for a year (until a refreshed screen is added).
+# The price-only S&P 500 anomalies are recomputed live at each month-end.
+groups:
+  buffett: Warren Buffett's strategies
+  investors: Famous investors and stock-factor strategies
+universes:
+  sp500_20260818:
+  - A
+  - AAPL
+  - ABBV
+  - ABNB
+  - ABT
+  - ACGL
+  - ACN
+  - ADBE
+  - ADI
+  - ADM
+  - ADP
+  - ADSK
+  - AEE
+  - AEP
+  - AES
+  - AFL
+  - AIG
+  - AIZ
+  - AJG
+  - AKAM
+  - ALB
+  - ALGN
+  - ALL
+  - ALLE
+  - AMAT
+  - AMCR
+  - AMD
+  - AME
+  - AMGN
+  - AMP
+  - AMT
+  - AMZN
+  - ANET
+  - AON
+  - AOS
+  - APA
+  - APD
+  - APH
+  - APO
+  - APP
+  - APTV
+  - ARE
+  - ARES
+  - ATO
+  - AVGO
+  - AVY
+  - AWK
+  - AXON
+  - AXP
+  - AZO
+  - BA
+  - BAC
+  - BALL
+  - BAX
+  - BBY
+  - BDX
+  - BEN
+  - BF-B
+  - BG
+  - BIIB
+  - BKNG
+  - BKR
+  - BLDR
+  - BLK
+  - BMY
+  - BNY
+  - BR
+  - BRK-B
+  - BRO
+  - BSX
+  - BX
+  - BXP
+  - C
+  - CAH
+  - CARR
+  - CASY
+  - CAT
+  - CB
+  - CBOE
+  - CBRE
+  - CCI
+  - CCL
+  - CDNS
+  - CDW
+  - CEG
+  - CF
+  - CFG
+  - CHD
+  - CHRW
+  - CHTR
+  - CI
+  - CIEN
+  - CINF
+  - CL
+  - CLX
+  - CMCSA
+  - CME
+  - CMG
+  - CMI
+  - CMS
+  - CNC
+  - CNP
+  - COF
+  - COHR
+  - COIN
+  - COO
+  - COP
+  - COR
+  - COST
+  - CPAY
+  - CPRT
+  - CPT
+  - CRH
+  - CRL
+  - CRM
+  - CRWD
+  - CSCO
+  - CSGP
+  - CSX
+  - CTAS
+  - CTSH
+  - CTVA
+  - CVNA
+  - CVS
+  - CVX
+  - D
+  - DAL
+  - DASH
+  - DD
+  - DDOG
+  - DE
+  - DECK
+  - DELL
+  - DG
+  - DGX
+  - DHI
+  - DHR
+  - DIS
+  - DLR
+  - DLTR
+  - DOC
+  - DOV
+  - DOW
+  - DPZ
+  - DRI
+  - DTE
+  - DUK
+  - DVA
+  - DVN
+  - DXCM
+  - EBAY
+  - ECHO
+  - ECL
+  - ED
+  - EFX
+  - EG
+  - EIX
+  - EL
+  - ELV
+  - EME
+  - EMR
+  - EOG
+  - EQIX
+  - EQT
+  - ERIE
+  - ES
+  - ESS
+  - ETN
+  - ETR
+  - EVRG
+  - EW
+  - EXC
+  - EXE
+  - EXPD
+  - EXPE
+  - EXR
+  - F
+  - FANG
+  - FAST
+  - FCX
+  - FDS
+  - FDX
+  - FDXF
+  - FE
+  - FERG
+  - FFIV
+  - FICO
+  - FIS
+  - FISV
+  - FITB
+  - FIX
+  - FLEX
+  - FOX
+  - FOXA
+  - FRT
+  - FSLR
+  - FTNT
+  - FTV
+  - GD
+  - GDDY
+  - GE
+  - GEHC
+  - GEN
+  - GEV
+  - GILD
+  - GIS
+  - GL
+  - GLW
+  - GM
+  - GNRC
+  - GOOG
+  - GOOGL
+  - GPC
+  - GPN
+  - GRMN
+  - GS
+  - GWW
+  - HAL
+  - HAS
+  - HBAN
+  - HCA
+  - HD
+  - HIG
+  - HII
+  - HLT
+  - HON
+  - HONA
+  - HOOD
+  - HPE
+  - HPQ
+  - HRL
+  - HSIC
+  - HST
+  - HSY
+  - HUBB
+  - HUM
+  - HWM
+  - IBKR
+  - IBM
+  - ICE
+  - IDXX
+  - IEX
+  - IFF
+  - INCY
+  - INTC
+  - INTU
+  - INVH
+  - IP
+  - IQV
+  - IR
+  - IRM
+  - ISRG
+  - IT
+  - ITW
+  - IVZ
+  - J
+  - JBHT
+  - JBL
+  - JCI
+  - JKHY
+  - JNJ
+  - JPM
+  - KDP
+  - KEY
+  - KEYS
+  - KHC
+  - KIM
+  - KKR
+  - KLAC
+  - KMB
+  - KMI
+  - KO
+  - KR
+  - L
+  - LDOS
+  - LEN
+  - LH
+  - LHX
+  - LII
+  - LIN
+  - LITE
+  - LLY
+  - LMT
+  - LNT
+  - LOW
+  - LRCX
+  - LULU
+  - LUV
+  - LVS
+  - LYB
+  - LYV
+  - MA
+  - MAA
+  - MAR
+  - MAS
+  - MCD
+  - MCHP
+  - MCK
+  - MCO
+  - MDLZ
+  - MDT
+  - MET
+  - META
+  - MGM
+  - MKC
+  - MLM
+  - MMM
+  - MNST
+  - MO
+  - MOS
+  - MPC
+  - MPWR
+  - MRK
+  - MRNA
+  - MRSH
+  - MRVL
+  - MS
+  - MSCI
+  - MSFT
+  - MSI
+  - MTB
+  - MTD
+  - MU
+  - NCLH
+  - NDAQ
+  - NDSN
+  - NEE
+  - NEM
+  - NFLX
+  - NI
+  - NKE
+  - NOC
+  - NOW
+  - NRG
+  - NSC
+  - NTAP
+  - NTRS
+  - NUE
+  - NVDA
+  - NVR
+  - NWS
+  - NWSA
+  - NXPI
+  - O
+  - ODFL
+  - OKE
+  - OMC
+  - 'ON'
+  - ORCL
+  - ORLY
+  - OTIS
+  - OXY
+  - PANW
+  - PAYX
+  - PCAR
+  - PCG
+  - PEG
+  - PEP
+  - PFE
+  - PFG
+  - PG
+  - PGR
+  - PH
+  - PHM
+  - PKG
+  - PLD
+  - PLTR
+  - PM
+  - PNC
+  - PNR
+  - PNW
+  - PODD
+  - PPG
+  - PPL
+  - PRU
+  - PSA
+  - PSX
+  - PTC
+  - PWR
+  - PYPL
+  - Q
+  - QCOM
+  - RCL
+  - RDDT
+  - REG
+  - REGN
+  - RF
+  - RJF
+  - RL
+  - RMD
+  - ROK
+  - ROL
+  - ROP
+  - ROST
+  - RSG
+  - RTX
+  - RVTY
+  - SBAC
+  - SBUX
+  - SCHW
+  - SHW
+  - SJM
+  - SLB
+  - SMCI
+  - SNA
+  - SNDK
+  - SNPS
+  - SO
+  - SOLV
+  - SPG
+  - SPGI
+  - SRE
+  - STE
+  - STLD
+  - STT
+  - STX
+  - STZ
+  - SW
+  - SWK
+  - SWKS
+  - SYF
+  - SYK
+  - SYY
+  - T
+  - TAP
+  - TDG
+  - TDY
+  - TECH
+  - TEL
+  - TER
+  - TFC
+  - TGT
+  - TJX
+  - TKO
+  - TMO
+  - TMUS
+  - TPL
+  - TPR
+  - TRGP
+  - TRMB
+  - TROW
+  - TRV
+  - TSCO
+  - TSLA
+  - TSN
+  - TT
+  - TTD
+  - TTWO
+  - TXN
+  - TXT
+  - TYL
+  - UAL
+  - UBER
+  - UDR
+  - UHS
+  - ULTA
+  - UNH
+  - UNP
+  - UPS
+  - URI
+  - USB
+  - V
+  - VEEV
+  - VICI
+  - VLO
+  - VLTO
+  - VMC
+  - VMRK
+  - VRSK
+  - VRSN
+  - VRT
+  - VRTX
+  - VST
+  - VTR
+  - VTRS
+  - VZ
+  - WAB
+  - WAT
+  - WDAY
+  - WDC
+  - WEC
+  - WELL
+  - WFC
+  - WM
+  - WMB
+  - WMT
+  - WRB
+  - WSM
+  - WST
+  - WTW
+  - WY
+  - WYNN
+  - XEL
+  - XOM
+  - XYL
+  - XYZ
+  - YUM
+  - ZBH
+  - ZBRA
+  - ZTS
+families:
+  jt_momentum_12_1:
+    group: investors
+    name: Stock momentum 12-1 on the S&P 500 (Jegadeesh & Titman 1993)
+    source: https://doi.org/10.1111/j.1540-6261.1993.tb04702.x
+    rules: 'At each month-end rank the S&P 500 on the 12-month return skipping the last month; hold the top 10% (50 stocks) equally weighted for
+      a month. Universe: S&P 500 members on 18 Aug 2026 (the last membership list before the start).'
+    class: EtfWeightBot
+    weights: inv_xs_rank
+    schedule: calendar
+    lookback: 300
+    params:
+      universe: sp500_20260818
+      signal_tickers:
+      - AAL
+      - AEM
+      - AERO
+      - AGX
+      - ALLY
+      - AMR
+      - APG
+      - AVUV
+      - B
+      - BABA
+      - BEAM
+      - BIDU
+      - BIL
+      - BLCO
+      - BN
+      - BND
+      - CBRS
+      - CCC
+      - CLH
+      - CNI
+      - COLD
+      - CORZ
+      - CP
+      - CPNG
+      - CRCL
+      - CROX
+      - CRS
+      - CRWV
+      - CTRI
+      - CVI
+      - CZR
+      - DBC
+      - DFSV
+      - DLS
+      - DNOW
+      - EEM
+      - EFV
+      - ETSY
+      - EWBC
+      - EWY
+      - EWZ
+      - EXP
+      - FLR
+      - FNV
+      - FWONK
+      - GDS
+      - GLD
+      - GSG
+      - GSHD
+      - GTX
+      - HCC
+      - HDB
+      - HHH
+      - HTZ
+      - HUT
+      - IEI
+      - IJR
+      - IJS
+      - INSM
+      - ITUB
+      - JBLU
+      - KGS
+      - KRC
+      - KSPI
+      - LLYVA
+      - LLYVK
+      - LPLA
+      - MATW
+      - MBGL
+      - MDB
+      - MDLN
+      - MELI
+      - MNRO
+      - MOD
+      - MOH
+      - MTZ
+      - NTLA
+      - NTRA
+      - NYT
+      - OCSL
+      - OR
+      - PAG
+      - PAYP
+      - PDD
+      - PFGC
+      - PINS
+      - PRM
+      - PS
+      - PSUS
+      - PURR
+      - QNT
+      - QSR
+      - QUAL
+      - RBLX
+      - RKT
+      - RTO
+      - RVMD
+      - RWAY
+      - RYAN
+      - SCZ
+      - SD
+      - SE
+      - SEG
+      - SGI
+      - SHAZ
+      - SHOP
+      - SHY
+      - SIRI
+      - SITE
+      - SLYV
+      - SPCX
+      - SPY
+      - SSD
+      - STM
+      - STRL
+      - SU
+      - SUPN
+      - TAC
+      - TDS
+      - TEM
+      - TFPM
+      - TFX
+      - TIP
+      - TLN
+      - TLT
+      - TME
+      - TOST
+      - TRU
+      - TSM
+      - TTMI
+      - TWST
+      - TXG
+      - U
+      - UAN
+      - UNIT
+      - UNM
+      - USFD
+      - USMV
+      - VBR
+      - VEA
+      - VEU
+      - VLUE
+      - VNOM
+      - VNQ
+      - VOO
+      - VSAT
+      - VTI
+      - VTV
+      - VV
+      - WCC
+      - WEN
+      - WSO
+      - WULF
+      - YPF
+      - ^VIX
+      - SPY
+      metric: mom12_1
+      n: 50
+    band: 0.001
+  george_hwang_52wh:
+    group: investors
+    name: 52-week-high momentum on the S&P 500 (George & Hwang 2004)
+    source: https://doi.org/10.1111/j.1540-6261.2004.00695.x
+    rules: 'At each month-end rank the S&P 500 on price / 52-week high; hold the top 10% (50 stocks) equally weighted. Universe: S&P 500 members
+      on 18 Aug 2026 (the last membership list before the start).'
+    class: EtfWeightBot
+    weights: inv_xs_rank
+    schedule: calendar
+    lookback: 300
+    params:
+      universe: sp500_20260818
+      signal_tickers:
+      - SPY
+      metric: high52
+      n: 50
+    band: 0.001
+  st_reversal_1m:
+    group: investors
+    name: 'Short-term reversal: last month''s losers on the S&P 500 (Jegadeesh 1990; Lehmann 1990)'
+    source: https://doi.org/10.1111/j.1540-6261.1990.tb05110.x
+    rules: 'At each month-end buy the 10% (50) S&P 500 stocks with the worst 1-month return, equal weight, held for a month. Universe: S&P 500
+      members on 18 Aug 2026 (the last membership list before the start).'
+    class: EtfWeightBot
+    weights: inv_xs_rank
+    schedule: calendar
+    lookback: 300
+    params:
+      universe: sp500_20260818
+      signal_tickers:
+      - SPY
+      metric: rev1m
+      n: 50
+    band: 0.001
+  low_volatility_sp500:
+    group: investors
+    name: Low-volatility stocks on the S&P 500 (Ang, Hodrick, Xing & Zhang 2006; Blitz & van Vliet 2007)
+    source: https://papers.ssrn.com/abstract=980865
+    rules: 'At each month-end hold the 10% (50) S&P 500 stocks with the lowest 1-year daily volatility, equal weight. Universe: S&P 500 members
+      on 18 Aug 2026 (the last membership list before the start).'
+    class: EtfWeightBot
+    weights: inv_xs_rank
+    schedule: calendar
+    lookback: 300
+    params:
+      universe: sp500_20260818
+      signal_tickers:
+      - SPY
+      metric: lowvol
+      n: 50
+    band: 0.001
+  bab_long_sp500:
+    group: investors
+    name: Betting against beta, long leg, on the S&P 500 (Frazzini & Pedersen 2014)
+    source: https://doi.org/10.1016/j.jfineco.2013.10.005
+    rules: 'At each month-end hold the 10% (50) S&P 500 stocks with the lowest shrunk beta (0.6 x 1-year daily beta vs SPY + 0.4), equal weight.
+      Long only, unlevered (the paper levers the low-beta leg to beta 1 and shorts high beta). Universe: S&P 500 members on 18 Aug 2026 (the last
+      membership list before the start).'
+    class: EtfWeightBot
+    weights: inv_xs_rank
+    schedule: calendar
+    lookback: 300
+    params:
+      universe: sp500_20260818
+      signal_tickers:
+      - SPY
+      metric: lowbeta
+      n: 50
+    band: 0.001
+  buffett_9010:
+    group: buffett
+    name: 'Buffett''s 90/10: 90% S&P 500 index fund, 10% short-term Treasuries (2013 letter)'
+    source: https://www.berkshirehathaway.com/letters/2013ltr.pdf (the instructions for his wife's trust)
+    rules: '10% of the cash in short-term government bonds and 90% in a very low-cost S&P 500 index fund (Vanguard): VOO 90% / SHY 10%, rebalanced
+      on the first trading day of each year.'
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - VOO
+      - SHY
+      mix:
+        VOO: 0.9
+        SHY: 0.1
+      rebalance: yearly
+    band: 0.001
+  buffett_brk:
+    group: buffett
+    name: Own Berkshire Hathaway (BRK-B), Buffett's own vehicle
+    source: https://www.berkshirehathaway.com/ ; https://www.berkshirehathaway.com/letters/letters.html
+    rules: Buy BRK-B at the start and hold.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - BRK-B
+      mix:
+        BRK-B: 1.0
+      rebalance: never
+    band: 0.001
+  berkshire_13f:
+    group: buffett
+    name: 'Warren Buffett: 13F clone of BERKSHIRE HATHAWAY INC'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/1067983/000119312526352200/ ; 2026-09-30 13F-HR filed
+      2026-11-16: https://www.sec.gov/Archives/edgar/data/1067983/000119312526463399/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AAPL
+      - ALLY
+      - AXP
+      - BAC
+      - COF
+      - CVX
+      - DAL
+      - DVA
+      - GOOG
+      - GOOGL
+      - KHC
+      - KO
+      - KR
+      - LEN
+      - LLYVA
+      - LLYVK
+      - MCO
+      - NYT
+      - OXY
+      - SIRI
+      - VRSN
+      file: 13f_2026.json
+      key: berkshire
+    band: 0.001
+  buffett_greedy_fearful:
+    group: buffett
+    name: '''Greedy when others are fearful'': all in stocks when fear spikes'
+    source: https://www.berkshirehathaway.com/letters/1986.html ; 'Buy American. I Am.' NYT 17 Oct 2008 https://www.nytimes.com/2008/10/17/opinion/17buffett.html
+      ; the VIX-above-30 buy signal as quoted in Haghani & White, 'When Fear Spikes, Should You Buy?' (Elm Wealth, Jul 2026) https://elmwealth.com/wp-content/uploads/2026/06/Elm-When-Fear-Spikes-Should-You-Buy.pdf
+    rules: 'Normally 60% SPY / 40% short Treasuries (SHY); 100% SPY while fear is high: the VIX closes above 30 (variant VIX30) or the S&P 500
+      is 20% or more below its 52-week closing high (variant DD20, Buffett''s Oct 2008 ''Buy American'' moment). Checked daily 5 minutes before
+      the close. (The 60/40 base is this test''s choice.)'
+    class: EtfWeightBot
+    weights: inv_greedy_fearful
+    schedule: daily
+    band: 0.05
+    params:
+      universe:
+      - SPY
+      - SHY
+      base: 0.6
+    variants:
+    - id: VIX30
+      params:
+        mode: vix
+        vix: 30
+        signal_tickers:
+        - ^VIX
+    - id: DD20
+      params:
+        mode: drawdown
+        dd: 0.2
+  buffett_small_value:
+    group: buffett
+    name: Small-cap value, buy and hold (Buffett's Graham-and-Doddsville value; Fama-French small value)
+    source: 'Buffett, ''The Superinvestors of Graham-and-Doddsville'' (1984) https://www8.gsb.columbia.edu/sites/valueinvesting/files/files/Buffett1984.pdf
+      ; Fama & French (1992) ''The Cross-Section of Expected Stock Returns'', JF ; Buffett 1999 (BusinessWeek): with small sums he could earn
+      50% a year in small companies'
+    rules: 'Buy one US small-cap value ETF at the start and hold; one bot per ETF: IJS (S&P 600 value), VBR (CRSP small value), AVUV (Avantis),
+      SLYV (SPDR S&P 600 value), DFSV (Dimensional).'
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      rebalance: never
+    variants:
+    - id: IJS
+      params:
+        universe:
+        - IJS
+        mix:
+          IJS: 1.0
+    - id: VBR
+      params:
+        universe:
+        - VBR
+        mix:
+          VBR: 1.0
+    - id: AVUV
+      params:
+        universe:
+        - AVUV
+        mix:
+          AVUV: 1.0
+    - id: SLYV
+      params:
+        universe:
+        - SLYV
+        mix:
+          SLYV: 1.0
+    - id: DFSV
+      params:
+        universe:
+        - DFSV
+        mix:
+          DFSV: 1.0
+    band: 0.001
+  buffett_alpha_etf:
+    group: buffett
+    name: 'Buffett''s Alpha with factor ETFs: low beta + quality + value (Frazzini, Kabiller & Pedersen 2018)'
+    source: https://papers.ssrn.com/abstract=3197185 (Financial Analysts Journal 74(4), 2018)
+    rules: 'The paper explains Berkshire''s returns by its loadings on betting-against-beta, quality-minus-junk and value (plus ~1.6x leverage).
+      Long-only, unlevered ETF version: 1/3 each in USMV (minimum volatility), QUAL (quality) and VLUE (value), rebalanced quarterly.'
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - USMV
+      - QUAL
+      - VLUE
+      mix:
+        USMV: 0.3333333333333333
+        QUAL: 0.3333333333333333
+        VLUE: 0.3333333333333333
+      rebalance: quarterly
+    band: 0.001
+  buffett_indicator:
+    group: buffett
+    name: 'The Buffett indicator: total market below 200% of GDP, else T-bills'
+    source: 'Buffett & Loomis, ''Warren Buffett on the Stock Market'', Fortune 10 Dec 2001 https://archive.fortune.com/magazines/fortune/fortune_archive/2001/12/10/314691/index.htm
+      ; reading of 240.24% on 12 Aug 2026: https://www.mitrade.com/insights/news/live-news/article-8-2102462-20260921'
+    rules: Market value / GDP = 240.24% on 12 Aug 2026 (published before the start), carried forward with VTI's price. Hold VTI while the ratio
+      is below 200% ('approaching 200% ... you are playing with fire'), otherwise T-bills (SHY). Checked daily.
+    class: EtfWeightBot
+    weights: inv_buffett_indicator
+    schedule: daily
+    params:
+      universe:
+      - VTI
+      - SHY
+      ref_ratio: 2.4024
+      ref_date: '2026-08-12'
+      max_ratio: 2.0
+  brk_buyback_rule:
+    group: buffett
+    name: 'Berkshire''s buyback rule: BRK-B below 1.2x book, else the S&P 500 fund'
+    source: 'https://fortune.com/2012/12/12/buffetts-buy-changes-berkshire-rules/ (limit raised from 110% to 120% of book, 2012) ; book value:
+      Berkshire 10-Qs https://www.sec.gov/Archives/edgar/data/1067983/000119312526341032/ (Q2 2026, filed 10 Aug) and https://www.sec.gov/Archives/edgar/data/1067983/000119312526452412/
+      (Q3 2026, filed 9 Nov)'
+    rules: 'Buffett and Munger authorised buybacks at up to 120% of book value (2012-2018), the level at which they judged the shares clearly
+      undervalued. Hold BRK-B while its price is at most 1.2x the last reported book value per class-B share (Q2 2026: $348.26; Q3 2026: $357.73,
+      each usable the day after its 10-Q), otherwise VOO. Checked daily.'
+    class: EtfWeightBot
+    weights: inv_brk_book
+    schedule: daily
+    params:
+      universe:
+      - BRK-B
+      - VOO
+      max_pb: 1.2
+      book:
+      - effective: '2026-08-11'
+        bvps_b: 348.26
+      - effective: '2026-11-10'
+        bvps_b: 357.73
+  munger_daily_journal:
+    group: buffett
+    name: 'Charlie Munger (Buffett''s partner): 13F clone of DAILY JOURNAL CORP'
+    source: '2026-06-30 13F-HR filed 2026-07-16: https://www.sec.gov/Archives/edgar/data/783412/000143774926023711/ ; 2026-09-30 13F-HR filed
+      2026-11-02: https://www.sec.gov/Archives/edgar/data/783412/000143774926034429/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - BABA
+      - BAC
+      - USB
+      - WFC
+      file: 13f_2026.json
+      key: daily_journal
+    band: 0.001
+  li_lu_himalaya:
+    group: investors
+    name: 'Li Lu: 13F clone of Himalaya Capital Management LLC'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/1709323/000204358526000022/ ; 2026-09-30 13F-HR filed
+      2026-11-16: https://www.sec.gov/Archives/edgar/data/1709323/000204358526000030/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AAPL
+      - BRK-B
+      - CROX
+      - EWBC
+      - GOOG
+      - GOOGL
+      - PDD
+      - TME
+      file: 13f_2026.json
+      key: himalaya
+    band: 0.001
+  pabrai_dalal_street:
+    group: investors
+    name: 'Mohnish Pabrai: 13F clone of Dalal Street, LLC'
+    source: '2026-06-30 13F-HR filed 2026-08-13: https://www.sec.gov/Archives/edgar/data/1549575/000154957526000015/ ; 2026-09-30 13F-HR filed
+      2026-11-13: https://www.sec.gov/Archives/edgar/data/1549575/000154957526000023/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AMR
+      - HCC
+      - KSPI
+      file: 13f_2026.json
+      key: dalal_pabrai
+    band: 0.001
+  akre_capital:
+    group: investors
+    name: 'Chuck Akre: 13F clone of AKRE CAPITAL MANAGEMENT LLC'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/1112520/000111252026000014/ ; 2026-09-30 13F-HR filed
+      2026-11-13: https://www.sec.gov/Archives/edgar/data/1112520/000111252026000022/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - ABNB
+      - AMT
+      - BN
+      - BRK-B
+      - CCC
+      - CPRT
+      - CRM
+      - CSGP
+      - FICO
+      - GSHD
+      - MA
+      - MCO
+      - NOW
+      - ORLY
+      - PRM
+      - ROL
+      - ROP
+      - TDG
+      - V
+      file: 13f_2026.json
+      key: akre
+    band: 0.001
+  gayner_markel:
+    group: investors
+    name: 'Tom Gayner: 13F clone of MARKEL GROUP INC.'
+    source: '2026-06-30 13F-HR filed 2026-07-31: https://www.sec.gov/Archives/edgar/data/1096343/000109634326000065/ ; 2026-09-30 13F-HR filed
+      2026-10-30: https://www.sec.gov/Archives/edgar/data/1096343/000109634326000085/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AAPL
+      - ADI
+      - AMZN
+      - AXP
+      - BLK
+      - BN
+      - BRK-B
+      - CAT
+      - DE
+      - DIS
+      - FNV
+      - GOOG
+      - GOOGL
+      - GS
+      - HD
+      - LOW
+      - LPLA
+      - MSFT
+      - TXN
+      - V
+      - WSO
+      file: 13f_2026.json
+      key: markel
+    band: 0.001
+  klarman_baupost:
+    group: investors
+    name: 'Seth Klarman: 13F clone of BAUPOST GROUP LLC/MA'
+    source: '2026-06-30 13F-HR filed 2026-08-13: https://www.sec.gov/Archives/edgar/data/1061768/000106176826000010/ ; 2026-09-30 13F-HR filed
+      2026-11-13: https://www.sec.gov/Archives/edgar/data/1061768/000106176826000015/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AERO
+      - AMZN
+      - CME
+      - COLD
+      - DNOW
+      - ELV
+      - EXP
+      - FERG
+      - GDS
+      - GOOG
+      - GPC
+      - HONA
+      - MOH
+      - PS
+      - QSR
+      - SITE
+      - TFX
+      - UNP
+      - V
+      - WCC
+      file: 13f_2026.json
+      key: baupost
+    band: 0.001
+  tepper_appaloosa:
+    group: investors
+    name: 'David Tepper: 13F clone of Appaloosa LP'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/1656456/000165645626000003/ ; 2026-09-30 13F-HR filed
+      2026-11-16: https://www.sec.gov/Archives/edgar/data/1656456/000165645626000004/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AAL
+      - AMAT
+      - AMD
+      - AMZN
+      - AVGO
+      - BA
+      - BABA
+      - BIDU
+      - CRWV
+      - EWY
+      - GOOG
+      - LRCX
+      - META
+      - MOD
+      - MU
+      - NRG
+      - NVDA
+      - ORCL
+      - QCOM
+      - SPCX
+      - TSM
+      - UBER
+      - VST
+      file: 13f_2026.json
+      key: appaloosa
+    band: 0.001
+  loeb_third_point:
+    group: investors
+    name: 'Dan Loeb: 13F clone of Third Point LLC'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/1040273/000104027326000003/ ; 2026-09-30 13F-HR filed
+      2026-11-16: https://www.sec.gov/Archives/edgar/data/1040273/000104027326000004/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AMZN
+      - APG
+      - ARES
+      - BAC
+      - CASY
+      - COF
+      - CRS
+      - DHR
+      - FWONK
+      - GOOGL
+      - HUT
+      - KEYS
+      - LYV
+      - META
+      - MSFT
+      - MTZ
+      - NSC
+      - NVDA
+      - PFGC
+      - SGI
+      - SPCX
+      - SYY
+      - TDG
+      - TDS
+      - TSM
+      - TTMI
+      - UNM
+      - UNP
+      - XYZ
+      file: 13f_2026.json
+      key: third_point
+    band: 0.001
+  druckenmiller_duquesne:
+    group: investors
+    name: 'Stanley Druckenmiller: 13F clone of Duquesne Family Office LLC'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/1536411/000153641126000006/ ; 2026-09-30 13F-HR filed
+      2026-11-16: https://www.sec.gov/Archives/edgar/data/1536411/000153641126000011/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AEM
+      - AMD
+      - AMZN
+      - B
+      - CDW
+      - CPNG
+      - DAL
+      - DHI
+      - EWZ
+      - FLR
+      - FOX
+      - FOXA
+      - GOOGL
+      - INSM
+      - NEM
+      - NTRA
+      - PANW
+      - PURR
+      - RVMD
+      - SE
+      - SGI
+      - SNDK
+      - STM
+      - TSM
+      - U
+      - UAL
+      - WDC
+      - YPF
+      file: 13f_2026.json
+      key: duquesne
+    band: 0.001
+  terry_smith_fundsmith:
+    group: investors
+    name: 'Terry Smith: 13F clone of Fundsmith LLP'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/1569205/000156920526000012/ ; 2026-09-30 13F-HR filed
+      2026-11-16: https://www.sec.gov/Archives/edgar/data/1569205/000156920526000014/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - ADP
+      - APP
+      - CHD
+      - FTNT
+      - GEV
+      - GOOGL
+      - IDXX
+      - MA
+      - MAR
+      - META
+      - MSFT
+      - NFLX
+      - PG
+      - PM
+      - SYK
+      - TJX
+      - TSM
+      - TXN
+      - UBER
+      - V
+      - VEEV
+      - WAT
+      - YUM
+      file: 13f_2026.json
+      key: fundsmith
+    band: 0.001
+  cathie_wood_ark:
+    group: investors
+    name: 'Cathie Wood: 13F clone of ARK Investment Management LLC'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/1697748/000110465926096910/ ; 2026-09-30 13F-HR filed
+      2026-11-13: https://www.sec.gov/Archives/edgar/data/1697748/000110465926126785/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AMD
+      - AMZN
+      - AVGO
+      - BEAM
+      - CBRS
+      - COIN
+      - CRCL
+      - CRWV
+      - DE
+      - GOOG
+      - HOOD
+      - META
+      - NTLA
+      - NVDA
+      - PLTR
+      - RBLX
+      - SHOP
+      - SPCX
+      - TEM
+      - TER
+      - TSLA
+      - TWST
+      - TXG
+      - XYZ
+      file: 13f_2026.json
+      key: ark
+    band: 0.001
+  icahn_13f:
+    group: investors
+    name: 'Carl Icahn: 13F clone of ICAHN CARL C'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/921669/000153949726002243/ ; 2026-09-30 13F-HR filed
+      2026-11-13: https://www.sec.gov/Archives/edgar/data/921669/000153949726002964/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AEP
+      - BLCO
+      - CTRI
+      - CVI
+      - CZR
+      - ECHO
+      - IFF
+      - JBLU
+      - MNRO
+      - SD
+      - UAN
+      file: 13f_2026.json
+      key: icahn
+    band: 0.001
+  hohn_tci:
+    group: investors
+    name: 'Chris Hohn: 13F clone of TCI Fund Management Ltd'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/1647251/000164725126000007/ ; 2026-09-30 13F-HR filed
+      2026-11-16: https://www.sec.gov/Archives/edgar/data/1647251/000164725126000011/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - CNI
+      - CP
+      - GE
+      - GOOG
+      - GOOGL
+      - MBGL
+      - MCO
+      - MLM
+      - SPGI
+      - V
+      - VMC
+      file: 13f_2026.json
+      key: tci
+    band: 0.001
+  singer_elliott:
+    group: investors
+    name: 'Paul Singer: 13F clone of Elliott Investment Management L.P.'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/1791786/000101359426000915/ ; 2026-09-30 13F-HR filed
+      2026-11-16: https://www.sec.gov/Archives/edgar/data/1791786/000101359426001204/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - EQIX
+      - ETSY
+      - HDB
+      - HPE
+      - LUV
+      - OR
+      - PAG
+      - PEP
+      - PINS
+      - PSX
+      - QNT
+      - SNPS
+      - SU
+      - TFPM
+      - UNIT
+      file: 13f_2026.json
+      key: elliott
+    band: 0.001
+  mandel_lone_pine:
+    group: investors
+    name: 'Lone Pine (Stephen Mandel''s firm): 13F clone of LONE PINE CAPITAL LLC'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/1061165/000091957426005485/ ; 2026-09-30 13F-HR filed
+      2026-11-16: https://www.sec.gov/Archives/edgar/data/1061165/000091957426008115/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AGX
+      - AMAT
+      - AMZN
+      - APP
+      - CLH
+      - CRS
+      - CVNA
+      - DHR
+      - GLW
+      - GOOGL
+      - HD
+      - HUT
+      - IBKR
+      - INTC
+      - KGS
+      - KKR
+      - LPLA
+      - MCK
+      - MDLN
+      - MELI
+      - META
+      - MTZ
+      - PFGC
+      - SHAZ
+      - STRL
+      - TER
+      - TMO
+      - TSM
+      - TTMI
+      - USFD
+      - V
+      - WULF
+      file: 13f_2026.json
+      key: lone_pine
+    band: 0.001
+  peltz_trian:
+    group: investors
+    name: 'Nelson Peltz: 13F clone of TRIAN FUND MANAGEMENT, L.P.'
+    source: '2026-06-30 13F-HR filed 2026-08-12: https://www.sec.gov/Archives/edgar/data/1345471/000134547126000035/ ; 2026-09-30 13F-HR filed
+      2026-11-16: https://www.sec.gov/Archives/edgar/data/1345471/000134547126000051/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - FERG
+      - GE
+      - GEHC
+      - RTO
+      - SOLV
+      - WEN
+      file: 13f_2026.json
+      key: trian
+    band: 0.001
+  valueact_13f:
+    group: investors
+    name: 'ValueAct (Jeff Ubben''s firm): 13F clone of ValueAct Holdings, L.P.'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/1418814/000141881426000003/ ; 2026-09-30 13F-HR filed
+      2026-11-16: https://www.sec.gov/Archives/edgar/data/1418814/000141881426000006/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - A
+      - AJG
+      - AMZN
+      - BLK
+      - CBRE
+      - CRM
+      - EFX
+      - KKR
+      - LLYVA
+      - LLYVK
+      - LYV
+      - MDB
+      - MDLN
+      - META
+      - MSI
+      - PAYP
+      - RBLX
+      - RKT
+      - RYAN
+      - SSD
+      - TOST
+      - TRU
+      - V
+      file: 13f_2026.json
+      key: valueact
+    band: 0.001
+  marks_oaktree:
+    group: investors
+    name: 'Howard Marks: 13F clone of OAKTREE CAPITAL MANAGEMENT LP'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/949509/000094950926000005/ ; 13F cloning: Martin & Puthenpurackal,
+      ''Imitation is the Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed. Oaktree''s Q3 2026 filing was not on EDGAR by 24 Nov 2026.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AERO
+      - B
+      - BLCO
+      - CORZ
+      - EXE
+      - FCX
+      - GTX
+      - ITUB
+      - KRC
+      - MATW
+      - OCSL
+      - RWAY
+      - SE
+      - SUPN
+      - TAC
+      - TDS
+      - TLN
+      - VNOM
+      - VSAT
+      - YPF
+      file: 13f_2026.json
+      key: oaktree
+    band: 0.001
+  ackman_pershing:
+    group: investors
+    name: 'Bill Ackman: 13F clone of PERSHING SQUARE INC.'
+    source: '2026-06-30 13F-HR filed 2026-08-14: https://www.sec.gov/Archives/edgar/data/2026053/000117266126003790/ ; 2026-09-30 13F-HR filed
+      2026-11-16: https://www.sec.gov/Archives/edgar/data/2026053/000117266126005427/ ; 13F cloning: Martin & Puthenpurackal, ''Imitation is the
+      Sincerest Form of Flattery: Warren Buffett and Berkshire Hathaway'' (SSRN 806246, https://papers.ssrn.com/abstract=806246)'
+    rules: 'Copy the fund''s latest 13F-HR filing: the 20 largest long stock/ETF positions by reported value, re-weighted to 100%, bought on the
+      first session after the SEC filing date and held until the next filing (options, notes and warrants left out). Start: the Q2 2026 filing
+      (public before 12 Oct); then each new filing on the day after it is filed.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AMZN
+      - BN
+      - HHH
+      - HTZ
+      - ICE
+      - MA
+      - META
+      - MSFT
+      - NFLX
+      - PS
+      - PSUS
+      - QSR
+      - SEG
+      - SPGI
+      - UBER
+      - V
+      file: 13f_2026.json
+      key: pershing_inc
+    band: 0.001
+  dalio_all_weather:
+    group: investors
+    name: 'Ray Dalio All Weather (as given to Tony Robbins, ''Money: Master the Game'')'
+    source: https://www.lazyportfolioetf.com/allocation/ray-dalio-all-weather/
+    rules: Fixed weights VTI 30%, TLT 40%, IEI 15%, DBC 7.5%, GLD 7.5%; bought at the start and rebalanced on the first trading day of each year.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - VTI
+      - TLT
+      - IEI
+      - DBC
+      - GLD
+      mix:
+        VTI: 0.3
+        TLT: 0.4
+        IEI: 0.15
+        DBC: 0.075
+        GLD: 0.075
+      rebalance: yearly
+    band: 0.001
+  browne_permanent:
+    group: investors
+    name: Harry Browne Permanent Portfolio
+    source: https://www.lazyportfolioetf.com/allocation/harry-browne-permanent/
+    rules: Fixed weights VTI 25%, TLT 25%, BIL 25%, GLD 25%; bought at the start and rebalanced on the first trading day of each year.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - VTI
+      - TLT
+      - BIL
+      - GLD
+      mix:
+        VTI: 0.25
+        TLT: 0.25
+        BIL: 0.25
+        GLD: 0.25
+      rebalance: yearly
+    band: 0.001
+  bogleheads_three_fund:
+    group: investors
+    name: Bogleheads three-fund portfolio (Taylor Larimore, after John Bogle)
+    source: https://www.lazyportfolioetf.com/allocation/bogleheads-three-funds/
+    rules: Fixed weights VTI 50%, VEU 30%, BND 20%; bought at the start and rebalanced on the first trading day of each year.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - VTI
+      - VEU
+      - BND
+      mix:
+        VTI: 0.5
+        VEU: 0.3
+        BND: 0.2
+      rebalance: yearly
+    band: 0.001
+  swensen_lazy:
+    group: investors
+    name: David Swensen's lazy portfolio ('Unconventional Success', Yale CIO)
+    source: https://www.lazyportfolioetf.com/allocation/david-swensen-lazy/
+    rules: Fixed weights VTI 30%, VNQ 20%, VEU 15%, EEM 5%, IEI 15%, TIP 15%; bought at the start and rebalanced on the first trading day of each
+      year.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - VTI
+      - VNQ
+      - VEU
+      - EEM
+      - IEI
+      - TIP
+      mix:
+        VTI: 0.3
+        VNQ: 0.2
+        VEU: 0.15
+        EEM: 0.05
+        IEI: 0.15
+        TIP: 0.15
+      rebalance: yearly
+    band: 0.001
+  bernstein_no_brainer:
+    group: investors
+    name: William Bernstein No-Brainer portfolio
+    source: https://www.lazyportfolioetf.com/allocation/bill-bernstein-no-brainer/
+    rules: Fixed weights IJR 25%, VEU 25%, VV 25%, SHY 25%; bought at the start and rebalanced on the first trading day of each year.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - IJR
+      - VEU
+      - VV
+      - SHY
+      mix:
+        IJR: 0.25
+        VEU: 0.25
+        VV: 0.25
+        SHY: 0.25
+      rebalance: yearly
+    band: 0.001
+  schultheis_coffeehouse:
+    group: investors
+    name: Bill Schultheis Coffeehouse portfolio
+    source: https://www.lazyportfolioetf.com/allocation/bill-schultheis-coffee-house/
+    rules: Fixed weights IJS 10%, IJR 10%, VTV 10%, VEU 10%, VNQ 10%, VV 10%, BND 40%; bought at the start and rebalanced on the first trading
+      day of each year.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - IJS
+      - IJR
+      - VTV
+      - VEU
+      - VNQ
+      - VV
+      - BND
+      mix:
+        IJS: 0.1
+        IJR: 0.1
+        VTV: 0.1
+        VEU: 0.1
+        VNQ: 0.1
+        VV: 0.1
+        BND: 0.4
+      rebalance: yearly
+    band: 0.001
+  faber_ivy_static:
+    group: investors
+    name: Mebane Faber Ivy portfolio, buy and hold (Harvard/Yale endowment style)
+    source: https://www.lazyportfolioetf.com/allocation/mebane-faber-ivy/
+    rules: Fixed weights VTI 20%, VEU 20%, VNQ 20%, BND 20%, GSG 20%; bought at the start and rebalanced on the first trading day of each year.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - VTI
+      - VEU
+      - VNQ
+      - BND
+      - GSG
+      mix:
+        VTI: 0.2
+        VEU: 0.2
+        VNQ: 0.2
+        BND: 0.2
+        GSG: 0.2
+      rebalance: yearly
+    band: 0.001
+  ferri_core_four:
+    group: investors
+    name: Rick Ferri Core Four
+    source: https://www.lazyportfolioetf.com/allocation/rick-ferri-core-four/
+    rules: Fixed weights VTI 48%, VEU 24%, VNQ 8%, BND 20%; bought at the start and rebalanced on the first trading day of each year.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - VTI
+      - VEU
+      - VNQ
+      - BND
+      mix:
+        VTI: 0.48
+        VEU: 0.24
+        VNQ: 0.08
+        BND: 0.2
+      rebalance: yearly
+    band: 0.001
+  merriman_ultimate_bh:
+    group: investors
+    name: Paul Merriman Ultimate Buy and Hold (all-equity, 10 asset classes)
+    source: https://www.lazyportfolioetf.com/allocation/paul-merriman-ultimate-buy-and-hold-strategy/
+    rules: Fixed weights IJS 10%, DLS 10%, IJR 10%, EEM 10%, SPY 10%, VTV 10%, VEA 10%, SCZ 10%, EFV 10%, VNQ 10%; bought at the start and rebalanced
+      on the first trading day of each year.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - IJS
+      - DLS
+      - IJR
+      - EEM
+      - SPY
+      - VTV
+      - VEA
+      - SCZ
+      - EFV
+      - VNQ
+      mix:
+        IJS: 0.1
+        DLS: 0.1
+        IJR: 0.1
+        EEM: 0.1
+        SPY: 0.1
+        VTV: 0.1
+        VEA: 0.1
+        SCZ: 0.1
+        EFV: 0.1
+        VNQ: 0.1
+      rebalance: yearly
+    band: 0.001
+  swedroe_larry:
+    group: investors
+    name: Larry Swedroe 'Larry Portfolio' (small value tilt, 70% bonds)
+    source: https://www.lazyportfolioetf.com/allocation/larry-swedroe-larry-portfolio/
+    rules: Fixed weights IJS 15%, EEM 7.5%, DLS 7.5%, IEI 70%; bought at the start and rebalanced on the first trading day of each year.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - IJS
+      - EEM
+      - DLS
+      - IEI
+      mix:
+        IJS: 0.15
+        EEM: 0.075
+        DLS: 0.075
+        IEI: 0.7
+      rebalance: yearly
+    band: 0.001
+  burns_couch_potato:
+    group: investors
+    name: Scott Burns Couch Potato
+    source: https://www.lazyportfolioetf.com/allocation/scott-burns-couch/
+    rules: Fixed weights VTI 50%, TIP 50%; bought at the start and rebalanced on the first trading day of each year.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - VTI
+      - TIP
+      mix:
+        VTI: 0.5
+        TIP: 0.5
+      rebalance: yearly
+    band: 0.001
+  marc_faber_portfolio:
+    group: investors
+    name: Marc Faber's 25/25/25/25 (stocks, bonds, gold, real estate)
+    source: https://www.lazyportfolioetf.com/allocation/marc-faber-portfolio/
+    rules: Fixed weights VNQ 25%, VV 13%, VEA 8%, EEM 4%, BND 25%, GLD 25%; bought at the start and rebalanced on the first trading day of each
+      year.
+    class: EtfWeightBot
+    weights: inv_fixed_mix
+    schedule: calendar
+    params:
+      universe:
+      - VNQ
+      - VV
+      - VEA
+      - EEM
+      - BND
+      - GLD
+      mix:
+        VNQ: 0.25
+        VV: 0.13
+        VEA: 0.08
+        EEM: 0.04
+        BND: 0.25
+        GLD: 0.25
+      rebalance: yearly
+    band: 0.001
+  buffett_alpha_screen:
+    group: buffett
+    name: 'Buffett''s Alpha stock screen: low beta + quality + value (Frazzini, Kabiller & Pedersen 2018)'
+    source: https://papers.ssrn.com/abstract=3197185
+    rules: 'Rank on z(low 1-year beta) + z(quality: profitability, growth, safety as in QMJ) + z(book/market) and hold the 20 best (Berkshire''s
+      factor profile, long only, unlevered). Universe: S&P 500 members on 18 Aug 2026. Screened once on the start''s data (statements for periods
+      ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json), bought equally weighted on 12 Oct and held for a year
+      (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY). Picks: 20 best by z(low beta) + z(quality) + z(book/market).'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - ACGL
+      - AIG
+      - ALL
+      - BRK-B
+      - CB
+      - CHTR
+      - CINF
+      - CMCSA
+      - CTVA
+      - EG
+      - ERIE
+      - KHC
+      - L
+      - PGR
+      - T
+      - TAP
+      - TFC
+      - TSN
+      - UHS
+      - VICI
+      file: screens_2026.json
+      key: buffett_alpha_screen
+    band: 0.001
+  buffett_tenets_screen:
+    group: buffett
+    name: Buffett tenets screen (Robert Hagstrom, 'The Warren Buffett Way'; AAII Buffett-Hagstrom screen)
+    source: https://www.aaii.com/journal/article/14973-buy-great-companies-for-the-long-term-buffett-hagstrom-screening-strategy
+    rules: 'Financial tenets: return on equity of at least 15% in each of the last 3 fiscal years, net margin above the median, long-term debt
+      no more than 5 years of net income; value tenet: the 15 highest owner-earnings yields (net income + depreciation - capex, over market value).
+      Universe: S&P 500 members on 18 Aug 2026. Screened once on the start''s data (statements for periods ending by 30 Jun 2026, prices of 9
+      Oct 2026; config/investors/screens_2026.json), bought equally weighted on 12 Oct and held for a year (until a refreshed screen is added).
+      If nothing qualifies the bot holds T-bills (SHY). Picks: ROE >= 15% in each of the last 3 years, net margin above the S&P 500 median, long-term
+      debt <= 5 years of earnings; 15 best owner-earnings yields.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - ACGL
+      - CF
+      - CINF
+      - CMCSA
+      - DECK
+      - GL
+      - HIG
+      - LULU
+      - NFLX
+      - NVR
+      - PNR
+      - PYPL
+      - SYF
+      - TROW
+      - ZTS
+      file: screens_2026.json
+      key: buffett_tenets_screen
+    band: 0.001
+  graham_defensive:
+    group: investors
+    name: Benjamin Graham's defensive investor (The Intelligent Investor ch. 14), simplified
+    source: https://en.wikipedia.org/wiki/The_Intelligent_Investor ; Graham, 'The Intelligent Investor' (4th ed. 1973), ch. 14
+    rules: 'Non-financial S&P 500 stocks with current ratio >= 2, long-term debt <= net current assets, positive earnings in each of the last
+      3-4 fiscal years, dividends in each of the last 20 calendar years, EPS higher than 3 years earlier, P/E on 3-year average EPS <= 15 and
+      P/B <= 1.5 (or P/E x P/B <= 22.5). Graham asks for 10 years of earnings and a one-third EPS rise over 10 years: only 4 years of statements
+      were available, hence ''simplified''. Hold all qualifiers (at most 30). Universe: S&P 500 members on 18 Aug 2026. Screened once on the start''s
+      data (statements for periods ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json), bought equally weighted on
+      12 Oct and held for a year (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY). Picks: qualifiers, at
+      most 30 by lowest P/E x P/B.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - SHY
+      file: screens_2026.json
+      key: graham_defensive
+    band: 0.001
+  magic_formula:
+    group: investors
+    name: Joel Greenblatt's Magic Formula ('The Little Book That Beats the Market')
+    source: https://en.wikipedia.org/wiki/Magic_formula_investing ; https://www.aaii.com/journal/article/greenblatts-magic-formula
+    rules: 'Exclude financials and utilities; rank on earnings yield (EBIT / enterprise value) and return on capital (EBIT / (net working capital
+      + net fixed assets)); hold the 30 best combined ranks for a year. Universe: S&P 500 members on 18 Aug 2026. Screened once on the start''s
+      data (statements for periods ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json), bought equally weighted on
+      12 Oct and held for a year (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY). Picks: top 30 by EY rank
+      + ROC rank, ex financials/utilities.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - ACN
+      - ADBE
+      - ADP
+      - AOS
+      - BKNG
+      - BMY
+      - BR
+      - CDW
+      - CMCSA
+      - CPAY
+      - CTSH
+      - DECK
+      - DPZ
+      - ELV
+      - FISV
+      - GEHC
+      - HON
+      - IT
+      - JKHY
+      - KDP
+      - LDOS
+      - MKC
+      - OTIS
+      - PAYX
+      - PG
+      - PNR
+      - SNDK
+      - SOLV
+      - TPR
+      - WDC
+      file: screens_2026.json
+      key: magic_formula
+    band: 0.001
+  piotroski_fscore:
+    group: investors
+    name: Piotroski F-score on cheap stocks (Piotroski 2000)
+    source: https://econpapers.repec.org/RePEc:bla:joares:v:38:y:2000:i::p:1-41 ; https://alphaarchitect.com/value-investing-the-use-of-historical-financial-statement-information-to-separate-winners-from-losers/
+    rules: 'Highest book-to-market quintile; nine binary signals (ROA > 0, CFO > 0, rising ROA, CFO > ROA, falling leverage, rising current ratio,
+      no new shares, rising gross margin, rising asset turnover); hold the stocks scoring 8-9 (7+ if fewer than five). Universe: S&P 500 members
+      on 18 Aug 2026. Screened once on the start''s data (statements for periods ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json),
+      bought equally weighted on 12 Oct and held for a year (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY).
+      Picks: B/M top quintile with F-score 8-9.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - APTV
+      - CMCSA
+      - CTVA
+      - DIS
+      - EQT
+      - EXE
+      - SNDK
+      - UHS
+      file: screens_2026.json
+      key: piotroski_fscore
+    band: 0.001
+  lynch_peg:
+    group: investors
+    name: Peter Lynch PEG growth at a reasonable price ('One Up on Wall Street')
+    source: Lynch, 'One Up on Wall Street' (1989), ch. 13 ; https://www.validea.com/peter-lynch
+    rules: 'P/E divided by the EPS growth rate (3-year EPS CAGR, in %) below 1, growth between 10% and 50% a year (Lynch distrusts faster growth),
+      positive EPS; hold the 20 lowest PEGs. Universe: S&P 500 members on 18 Aug 2026. Screened once on the start''s data (statements for periods
+      ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json), bought equally weighted on 12 Oct and held for a year
+      (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY). Picks: PEG < 1 with 3-year EPS growth 10-50%, 20
+      lowest PEG.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - ACGL
+      - AIZ
+      - AOS
+      - CB
+      - D
+      - DECK
+      - EG
+      - FISV
+      - GDDY
+      - GL
+      - HIG
+      - L
+      - LDOS
+      - LULU
+      - PYPL
+      - SMCI
+      - SPG
+      - TRV
+      - UHS
+      - VICI
+      file: screens_2026.json
+      key: lynch_peg
+    band: 0.001
+  oshaughnessy_trending_value:
+    group: investors
+    name: James O'Shaughnessy Trending Value ('What Works on Wall Street', 4th ed.)
+    source: https://www.quant-investing.com/strategies/oshaughnessy-trending-value-investment-strategy ; https://thereformedbroker.com/2011/12/19/trending-value-or-how-to-crush-the-market/
+    rules: 'Value Composite Two: percentile ranks on P/B, P/E, P/S, EBITDA/EV, price/cash flow and shareholder yield (missing = 50); take the
+      top decile, then hold the 25 with the best 6-month price change. Universe: S&P 500 members on 18 Aug 2026. Screened once on the start''s
+      data (statements for periods ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json), bought equally weighted on
+      12 Oct and held for a year (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY). Picks: value composite
+      (P/B, P/E, P/S, EBITDA/EV, P/CF, shareholder yield) top decile, then the 25 best 6-month returns.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - ACGL
+      - AIG
+      - ALL
+      - AMCR
+      - APA
+      - CI
+      - CTSH
+      - CTVA
+      - DHI
+      - EG
+      - FOX
+      - FOXA
+      - GM
+      - GPN
+      - HIG
+      - L
+      - MET
+      - PRU
+      - PYPL
+      - SNDK
+      - SW
+      - SYF
+      - TROW
+      - UAL
+      - UHS
+      file: screens_2026.json
+      key: oshaughnessy_trending_value
+    band: 0.001
+  faber_shareholder_yield:
+    group: investors
+    name: Meb Faber shareholder yield ('Shareholder Yield', 2013)
+    source: https://mebfaber.com/2013/05/29/shareholder-yield-a-better-approach-to-dividend-investing/ ; Faber, 'Shareholder Yield' (2013)
+    rules: 'Shareholder yield = (dividends + net share buybacks + net debt paydown) / market value; hold the top 10% (50). Universe: S&P 500 members
+      on 18 Aug 2026. Screened once on the start''s data (statements for periods ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json),
+      bought equally weighted on 12 Oct and held for a year (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY).
+      Picks: top 10% (50) by (dividends + net buybacks + net debt paydown) / market value; financials without the debt term.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - ADBE
+      - AIG
+      - APA
+      - APTV
+      - ARE
+      - BAX
+      - CARR
+      - CHTR
+      - CMCSA
+      - CTSH
+      - CTVA
+      - DAL
+      - DD
+      - DECK
+      - DHI
+      - DLTR
+      - EFX
+      - FISV
+      - FOX
+      - FOXA
+      - FTV
+      - GDDY
+      - GIS
+      - GM
+      - HCA
+      - IFF
+      - IT
+      - IVZ
+      - KR
+      - LULU
+      - LUV
+      - MET
+      - MGM
+      - MTB
+      - NVR
+      - PYPL
+      - RF
+      - SBAC
+      - SNDK
+      - SOLV
+      - STZ
+      - SWK
+      - SWKS
+      - SYF
+      - TAP
+      - TFC
+      - TSN
+      - TTD
+      - UAL
+      - WFC
+      file: screens_2026.json
+      key: faber_shareholder_yield
+    band: 0.001
+  novy_marx_gross_profit:
+    group: investors
+    name: Gross profitability premium (Novy-Marx 2013)
+    source: https://doi.org/10.1016/j.jfineco.2013.01.003
+    rules: 'Hold the 10% (50) non-financial stocks with the highest gross profit / total assets. Universe: S&P 500 members on 18 Aug 2026. Screened
+      once on the start''s data (statements for periods ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json), bought
+      equally weighted on 12 Oct and held for a year (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY). Picks:
+      top 10% (50) by gross profit / total assets, ex financials.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AAPL
+      - ADBE
+      - ADSK
+      - APP
+      - AZO
+      - BBY
+      - CASY
+      - CL
+      - CTAS
+      - DECK
+      - DLTR
+      - DPZ
+      - EL
+      - EXPE
+      - FAST
+      - FICO
+      - FTNT
+      - GWW
+      - HAS
+      - HCA
+      - HD
+      - IDXX
+      - INCY
+      - IT
+      - KR
+      - LLY
+      - LOW
+      - LRCX
+      - LULU
+      - MAS
+      - MTD
+      - NKE
+      - NVDA
+      - ORLY
+      - PODD
+      - QCOM
+      - RDDT
+      - RL
+      - ROL
+      - SNDK
+      - STX
+      - SYY
+      - TGT
+      - TJX
+      - TPR
+      - TSCO
+      - UHS
+      - VRSN
+      - WMT
+      - WSM
+      file: screens_2026.json
+      key: novy_marx_gross_profit
+    band: 0.001
+  asset_growth_low:
+    group: investors
+    name: 'Asset growth anomaly: low asset growth (Cooper, Gulen & Schill 2008)'
+    source: https://doi.org/10.1111/j.1540-6261.2008.01370.x
+    rules: 'Hold the 10% (50) stocks with the lowest total-asset growth over the last fiscal year. Universe: S&P 500 members on 18 Aug 2026. Screened
+      once on the start''s data (statements for periods ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json), bought
+      equally weighted on 12 Oct and held for a year (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY). Picks:
+      lowest 10% (50) total-asset growth over the last fiscal year.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AOS
+      - APA
+      - ARE
+      - BAX
+      - BDX
+      - BMY
+      - CCI
+      - CHRW
+      - CNC
+      - CRL
+      - DD
+      - DLTR
+      - EBAY
+      - ECHO
+      - EMR
+      - FOX
+      - FOXA
+      - FTV
+      - GDDY
+      - GIS
+      - HAS
+      - IFF
+      - IT
+      - J
+      - JBHT
+      - JCI
+      - KHC
+      - KIM
+      - KR
+      - LEN
+      - LUV
+      - LYB
+      - MCHP
+      - MMM
+      - MRNA
+      - NVR
+      - 'ON'
+      - OTIS
+      - PFE
+      - QCOM
+      - SJM
+      - SWK
+      - SWKS
+      - TAP
+      - TDG
+      - TXN
+      - UDR
+      - VLO
+      - VRSN
+      - VTRS
+      file: screens_2026.json
+      key: asset_growth_low
+    band: 0.001
+  sloan_accruals_low:
+    group: investors
+    name: 'Accrual anomaly: low accruals (Sloan 1996)'
+    source: https://www.jstor.org/stable/248290
+    rules: 'Hold the 10% (50) non-financial stocks with the lowest accruals: (net income - operating cash flow) / average total assets. Universe:
+      S&P 500 members on 18 Aug 2026. Screened once on the start''s data (statements for periods ending by 30 Jun 2026, prices of 9 Oct 2026;
+      config/investors/screens_2026.json), bought equally weighted on 12 Oct and held for a year (until a refreshed screen is added). If nothing
+      qualifies the bot holds T-bills (SHY). Picks: lowest 10% (50) accruals (net income - operating cash flow) / average assets, ex financials.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - ABBV
+      - ABNB
+      - ADBE
+      - ADSK
+      - AKAM
+      - ALB
+      - APA
+      - APP
+      - BKNG
+      - CIEN
+      - CL
+      - CNC
+      - COP
+      - CRL
+      - CRWD
+      - DDOG
+      - DPZ
+      - DVN
+      - DXCM
+      - ECHO
+      - EOG
+      - EXE
+      - EXPE
+      - F
+      - FANG
+      - HAS
+      - HCA
+      - HSY
+      - IP
+      - JBHT
+      - KHC
+      - KR
+      - LITE
+      - META
+      - MU
+      - NOW
+      - 'ON'
+      - OXY
+      - PANW
+      - PODD
+      - QCOM
+      - SJM
+      - SWKS
+      - TAP
+      - TEL
+      - TTWO
+      - VRSK
+      - VRSN
+      - VTRS
+      - WDAY
+      file: screens_2026.json
+      key: sloan_accruals_low
+    band: 0.001
+  net_share_issuance_low:
+    group: investors
+    name: 'Net share issuance anomaly: shrinking share counts (Pontiff & Woodgate 2008)'
+    source: https://doi.org/10.1111/j.1540-6261.2008.01329.x
+    rules: 'Hold the 10% (50) stocks whose share count fell most (log change over the last fiscal year): the buyback side. Universe: S&P 500 members
+      on 18 Aug 2026. Screened once on the start''s data (statements for periods ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json),
+      bought equally weighted on 12 Oct and held for a year (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY).
+      Picks: lowest 10% (50) log change in shares outstanding over the last fiscal year.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - ADBE
+      - AFL
+      - AIG
+      - AMP
+      - APTV
+      - BAC
+      - BALL
+      - BF-B
+      - C
+      - CF
+      - CHTR
+      - DECK
+      - DELL
+      - DHI
+      - DLTR
+      - DVA
+      - EG
+      - FISV
+      - FOX
+      - FOXA
+      - FTV
+      - GL
+      - GM
+      - HCA
+      - HSIC
+      - IT
+      - JBHT
+      - JBL
+      - JCI
+      - KR
+      - LEN
+      - LUV
+      - LVS
+      - MET
+      - MGM
+      - MPC
+      - MSCI
+      - MTB
+      - NVR
+      - 'ON'
+      - PHM
+      - PYPL
+      - RVTY
+      - SWKS
+      - SYF
+      - TAP
+      - UHS
+      - VLO
+      - WFC
+      - ZTS
+      file: screens_2026.json
+      key: net_share_issuance_low
+    band: 0.001
+  qmj_quality:
+    group: investors
+    name: Quality minus junk, long leg (Asness, Frazzini & Pedersen 2019)
+    source: https://doi.org/10.1007/s11142-018-9470-2
+    rules: 'Quality = z(profitability: GPOA, ROE, ROA, CFOA, gross margin, low accruals) + z(3-year growth in ROA and GPOA) + z(safety: low beta,
+      low leverage); hold the top 10% (50). Long only. Universe: S&P 500 members on 18 Aug 2026. Screened once on the start''s data (statements
+      for periods ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json), bought equally weighted on 12 Oct and held
+      for a year (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY). Picks: top 10% (50) by quality = z(profitability)
+      + z(growth) + z(safety).'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AAPL
+      - ABNB
+      - ADBE
+      - ADSK
+      - AMZN
+      - ANET
+      - APP
+      - CBOE
+      - CL
+      - CTAS
+      - DASH
+      - DDOG
+      - DECK
+      - DXCM
+      - ERIE
+      - EXPE
+      - FAST
+      - FIX
+      - FTNT
+      - GDDY
+      - GOOG
+      - GOOGL
+      - IDXX
+      - INCY
+      - JKHY
+      - LLY
+      - LULU
+      - MA
+      - META
+      - MNST
+      - MSFT
+      - NEM
+      - NFLX
+      - NOW
+      - NVDA
+      - PGR
+      - PLTR
+      - PODD
+      - RDDT
+      - RMD
+      - ROL
+      - STX
+      - TPL
+      - TPR
+      - TTD
+      - UBER
+      - UHS
+      - VEEV
+      - WDAY
+      - WDC
+      file: screens_2026.json
+      key: qmj_quality
+    band: 0.001
+  dogs_of_the_dow:
+    group: investors
+    name: Dogs of the Dow (Michael O'Higgins, 'Beating the Dow' 1991)
+    source: https://www.dogsofthedow.com/ ; https://en.wikipedia.org/wiki/Dogs_of_the_Dow
+    rules: 'Buy the 10 Dow Jones Industrial Average stocks with the highest dividend yield (trailing 12 months, Dow members since the 29 Jun 2026
+      change), equal weight, hold a year (the classic rebalance is on the first trading day of the year; this test starts on 12 Oct). Screened
+      once on the start''s data (statements for periods ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json), bought
+      equally weighted on 12 Oct and held for a year (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY). Picks:
+      10 highest trailing-12-month dividend yields of the Dow 30 on 9 Oct 2026: NKE 4.72%, CVX 3.33%, HD 3.20%, MCD 3.16%, IBM 2.97%, PG 2.84%,
+      AMGN 2.40%, UNH 2.39%, KO 2.39%, MRK 2.34%.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - AMGN
+      - CVX
+      - HD
+      - IBM
+      - KO
+      - MCD
+      - MRK
+      - NKE
+      - PG
+      - UNH
+      file: screens_2026.json
+      key: dogs_of_the_dow
+    band: 0.001
+  small_dogs_of_the_dow:
+    group: investors
+    name: Small Dogs of the Dow (O'Higgins)
+    source: https://www.dogsofthedow.com/ ; https://en.wikipedia.org/wiki/Dogs_of_the_Dow
+    rules: 'The 5 lowest-priced of the 10 Dogs of the Dow, equal weight, held a year. Screened once on the start''s data (statements for periods
+      ending by 30 Jun 2026, prices of 9 Oct 2026; config/investors/screens_2026.json), bought equally weighted on 12 Oct and held for a year
+      (until a refreshed screen is added). If nothing qualifies the bot holds T-bills (SHY). Picks: the 5 lowest-priced of the 10 Dogs: NKE $34.71,
+      KO $88.05, MRK $145.60, PG $151.23, CVX $211.98.'
+    class: EtfWeightBot
+    weights: inv_dated_portfolio
+    schedule: calendar
+    params:
+      universe:
+      - CVX
+      - KO
+      - MRK
+      - NKE
+      - PG
+      file: screens_2026.json
+      key: small_dogs_of_the_dow
+    band: 0.001

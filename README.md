@@ -9,7 +9,7 @@ The live dashboard, updated every 15 minutes. Also:
 [status table](https://github.com/jcosta92/trading-agents/blob/bot-state/reports/BOTS.md) ·
 [every fill](https://github.com/jcosta92/trading-agents/blob/bot-state/state/bots/fills.csv)
 
-## The bot test (from 12 Oct 2026, open-ended): 1,158 bots, 215 strategy families
+## The bot test (from 12 Oct 2026, open-ended): 2,106 bots, 423 strategy families
 
 **Benchmarks:** three buy-and-hold yardsticks, EUR 5,000 each bought at the start (12 Oct 17:05 UTC) and held, with
 the same costs: SPY (S&P 500), QQQ (Nasdaq-100) and VGK (European stocks). They are shown at the top of the dashboard's
@@ -28,8 +28,17 @@ all results cover the same window at the same size.)
   several markets (usually 8 coins or 10 ETFs). That is a robustness check, not parameter fishing: a family is judged
   by its median bot and by how many of its bots make money, never by its single best bot.
 - **The original 17 bots** (6 most-used bot strategies, 5 less common ones, 6 classic systems) are in
-  [`config/bots.yaml`](config/bots.yaml); the 198 other families, with source links and rules, in
-  [`config/families.yaml`](config/families.yaml).
+  [`config/bots.yaml`](config/bots.yaml); the other families, with source links and rules, in
+  [`config/families.yaml`](config/families.yaml) and [`config/families.d/`](config/families.d).
+- **Added 24 Nov 2026, replayed from the 12 Oct start** (203 families, 930 bots): Warren Buffett's strategies
+  (small-cap value, the 90/10 advice, BRK-B, Berkshire 13F clone, "greedy when others are fearful", the Buffett
+  indicator, Buffett's Alpha) and other famous investors (13F clones, lazy portfolios, Graham / Greenblatt /
+  Piotroski / Lynch screens, S&P 500 anomalies) in [`10_investors.yaml`](config/families.d/10_investors.yaml), with
+  point-in-time 13F and fundamentals data in [`config/investors/`](config/investors); 50 more open-source bot
+  strategies (Freqtrade, Gekko, Zenbot, Hummingbot, Jesse, Lean...) in [`20_oss2.yaml`](config/families.d/20_oss2.yaml);
+  50 TradingView and classic technical systems in [`30_ta2.yaml`](config/families.d/30_ta2.yaml); 44 asset-allocation
+  and research strategies in [`40_taa2.yaml`](config/families.d/40_taa2.yaml). These bots joined late, but their
+  replay uses only candles and data that were public at each moment, so they cover the same window as the others.
 - **Final GitHub sweep (13 Oct).** 23 more families, rules read from each project's source file: Freqtrade's
   sample strategy, Strategy002, UniversalMACD, MultiRSI, VolatilitySystem, NostalgiaForInfinity V1, ichiV1 and
   Obelisk Ichimoku Slow; Gekko's RSI Bull/Bear, TSI and Ultimate Oscillator; Zenbot's trend_ema; Hummingbot's

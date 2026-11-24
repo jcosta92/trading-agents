@@ -1,0 +1,514 @@
+# TECHNICAL SYSTEMS, SECOND BATCH (added 24 Nov 2026; replayed from the common start 12 Oct 17:00 UTC)
+# --------------------------------------------------------------------------------------------------
+# TradingView built-in strategies, John Ehlers' indicators and classic book systems, each with its
+# source's default parameters (nothing tuned). Long only: a short signal = exit to cash. Same costs
+# as every other family (Bitvavo for crypto, IBKR for US ETFs). Code: src/quantdesk/bots/families/ta2.py
+
+families:
+
+  # =========================================================================== TradingView built-ins
+  tv_inside_bar:
+    group: ta
+    name: "InSide Bar Strategy (TradingView built-in)"
+    source: "https://www.tradingview.com/support/folders/43000587406-built-in-strategies/ (InSide Bar Strategy)"
+    rules: "An inside bar (high below and low above the previous bar's) that closes up -> buy; an inside bar that closes down -> exit."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_inside_bar
+    variants: crypto8
+
+  tv_outside_bar:
+    group: ta
+    name: "OutSide Bar Strategy (TradingView built-in)"
+    source: "https://www.tradingview.com/support/folders/43000587406-built-in-strategies/ (OutSide Bar Strategy)"
+    rules: "An outside bar (higher high and lower low than the previous bar) that closes up -> buy; one that closes down -> exit."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_outside_bar
+    variants: crypto8
+
+  tv_pivot_reversal:
+    group: ta
+    name: "Pivot Reversal Strategy (TradingView built-in, 4/2 bars)"
+    source: "https://www.tradingview.com/support/folders/43000587406-built-in-strategies/ (Pivot Reversal Strategy)"
+    rules: "Buy stop one tick above the last pivot high (4 bars left, 2 right) until it trades; exit stop one tick below the last pivot low."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_pivot_reversal
+    variants: crypto8
+    risk: {entry: stop, stop_col: stop_level}
+
+  tv_pivot_extension:
+    group: ta
+    name: "Pivot Extension Strategy (TradingView built-in, 4/2 bars)"
+    source: "https://www.tradingview.com/support/folders/43000587406-built-in-strategies/ (Pivot Extension Strategy)"
+    rules: "Buy at market when a pivot low (4 bars left, 2 right) is confirmed; exit when a pivot high is confirmed."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_pivot_extension
+    variants: crypto8
+
+  tv_channel_breakout:
+    group: ta
+    name: "ChannelBreakOutStrategy (TradingView built-in, length 5)"
+    source: "https://www.tradingview.com/support/folders/43000587406-built-in-strategies/ (ChannelBreakOutStrategy)"
+    rules: "Buy stop above the 5-bar highest high; exit stop below the 5-bar lowest low (the short entry of the original)."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_channel_breakout
+    variants: crypto8
+    risk: {entry: stop, stop_col: stop_level}
+
+  tv_price_channel:
+    group: ta
+    name: "Price Channel Strategy (TradingView built-in, length 20)"
+    source: "https://www.tradingview.com/support/folders/43000587406-built-in-strategies/ (Price Channel Strategy)"
+    rules: "Buy stop at the 20-bar highest high; exit stop at the 20-bar lowest low."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_price_channel
+    variants: crypto8
+    risk: {entry: stop, stop_col: stop_level}
+
+  tv_ma2line_cross:
+    group: ta
+    name: "MovingAvg2Line Cross (TradingView built-in, SMA 9/18)"
+    source: "https://www.tradingview.com/support/folders/43000587406-built-in-strategies/ (MovingAvg2Line Cross)"
+    rules: "SMA(9) crossing above SMA(18) -> buy; crossing below -> exit."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_ma2line_cross
+    variants: crypto8
+
+  tv_ma_cross:
+    group: ta
+    name: "MovingAvg Cross (TradingView built-in, SMA 9, 1 confirm bar)"
+    source: "https://www.tradingview.com/support/folders/43000587406-built-in-strategies/ (MovingAvg Cross)"
+    rules: "First close above SMA(9) -> buy; first close below it -> exit."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_ma_cross
+    variants: crypto8
+
+  tv_bar_updn:
+    group: ta
+    name: "BarUpDn Strategy (TradingView built-in)"
+    source: "https://www.tradingview.com/support/folders/43000587406-built-in-strategies/ (BarUpDn Strategy)"
+    rules: "An up bar that opened above the previous close -> buy; a down bar that opened below the previous close -> exit. (The original's intraday loss limit is not used.)"
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_bar_updn
+    variants: crypto8
+
+  tv_volty_expan:
+    group: ta
+    name: "Volty Expan Close Strategy (TradingView built-in, 5 bars, 0.75 ATR)"
+    source: "https://www.tradingview.com/script/mPztR6gR-Volty-Expan-Close-Strategy/"
+    rules: "Every bar: buy stop at close + 0.75 x SMA(true range, 5); exit stop at close - 0.75 x SMA(true range, 5)."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_volty_expan
+    variants: crypto8
+    risk: {entry: stop, stop_col: stop_level}
+
+  tv_macd_strategy:
+    group: ta
+    name: "MACD Strategy (TradingView built-in, 12/26/9)"
+    source: "https://www.tradingview.com/support/folders/43000587406-built-in-strategies/ (MACD Strategy)"
+    rules: "MACD(12, 26) minus its 9-EMA signal crossing above zero -> buy; crossing below zero -> exit."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_macd_tv
+    variants: crypto8
+
+  # =========================================================================== John Ehlers
+  ehlers_fisher:
+    group: ta
+    name: "Fisher Transform cross (John Ehlers 2002)"
+    source: "https://mesasoftware.com/papers/UsingTheFisherTransform.pdf"
+    rules: "Fisher transform of the 10-bar normalised median price; buy when it crosses above its 1-bar trigger, exit when it crosses below."
+    class: SignalBot
+    timeframe: 4h
+    signal: ta2_fisher
+    variants: crypto8
+
+  ehlers_mama:
+    group: ta
+    name: "MESA Adaptive Moving Average, MAMA/FAMA cross (John Ehlers 2001)"
+    source: "https://mesasoftware.com/papers/MAMA.pdf"
+    rules: "MAMA (fast limit 0.5, slow limit 0.05) crossing above FAMA -> buy; crossing below -> exit."
+    class: SignalBot
+    timeframe: 4h
+    signal: ta2_mama
+    variants: crypto8
+
+  ehlers_laguerre_rsi:
+    group: ta
+    name: "Laguerre RSI (John Ehlers, 'Time Warp')"
+    source: "https://mesasoftware.com/papers/TimeWarp.pdf"
+    rules: "Laguerre RSI with gamma 0.5: buy when it crosses above 0.2, exit when it crosses below 0.8."
+    class: SignalBot
+    timeframe: 4h
+    signal: ta2_laguerre_rsi
+    variants: crypto8
+
+  ehlers_itrend:
+    group: ta
+    name: "Instantaneous Trendline (John Ehlers, Cybernetic Analysis 2004)"
+    source: "https://www.mesasoftware.com/papers/ (Ehlers, Cybernetic Analysis for Stocks and Futures, ch. 3)"
+    rules: "Instantaneous trendline (alpha 0.07) of the median price; buy when its trigger (2 x IT - IT 2 bars ago) crosses above it, exit when it crosses below."
+    class: SignalBot
+    timeframe: 4h
+    signal: ta2_itrend
+    variants: crypto8
+
+  ehlers_cyber_cycle:
+    group: ta
+    name: "Cyber Cycle (John Ehlers, Cybernetic Analysis 2004)"
+    source: "https://mesasoftware.com/TechnicalArticles.htm (Ehlers, Cybernetic Analysis for Stocks and Futures, ch. 4)"
+    rules: "Cyber Cycle (alpha 0.07) of the median price; buy when it crosses above its 1-bar-lagged trigger, exit when it crosses below."
+    class: SignalBot
+    timeframe: 4h
+    signal: ta2_cyber_cycle
+    variants: crypto8
+
+  ehlers_zero_lag:
+    group: ta
+    name: "Zero Lag (well, almost) error-correcting EMA (Ehlers & Way 2010)"
+    source: "https://mesasoftware.com/papers/ZeroLag.pdf"
+    rules: "EMA(20) and its error-correcting version (gain limit 50); buy when EC crosses above the EMA with the residual error above 1% of price, exit on the opposite cross."
+    class: SignalBot
+    timeframe: 4h
+    signal: ta2_zero_lag_ec
+    variants: crypto8
+
+  ehlers_sinewave:
+    group: ta
+    name: "Hilbert Sine Wave (John Ehlers, Rocket Science for Traders 2001)"
+    source: "https://mesasoftware.com/TechnicalArticles.htm (Ehlers, Rocket Science for Traders, ch. 9); TA-Lib HT_SINE"
+    rules: "Buy when the lead sine crosses above the sine wave, exit when it crosses below."
+    class: SignalBot
+    timeframe: 4h
+    signal: ta2_ht_sine
+    variants: crypto8
+
+  # =========================================================================== oscillators and averages
+  schaff_trend_cycle:
+    group: ta
+    name: "Schaff Trend Cycle (Doug Schaff 1999; TradingView 23/50/10)"
+    source: "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/schaff-trend-cycle"
+    rules: "Double-smoothed stochastic of MACD(23, 50) over 10 bars; buy when STC crosses above 25, exit when it crosses below 75."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_schaff
+    variants: crypto8
+
+  williams_r:
+    group: ta
+    name: "Williams %R(14) oversold/overbought (Larry Williams 1973)"
+    source: "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/williams-r"
+    rules: "Buy when %R(14) crosses back above -80; exit when it crosses below -20."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_williams_r
+    variants: crypto8
+
+  williams_alligator:
+    group: ta
+    name: "Alligator (Bill Williams, Trading Chaos 1995)"
+    source: "https://www.tradingview.com/support/solutions/43000592305-williams-alligator/"
+    rules: "SMMA 13/8/5 of the median price, shifted 8/5/3 bars; buy when lips > teeth > jaw first lines up, exit when the lips cross below the teeth."
+    class: SignalBot
+    timeframe: 4h
+    signal: ta2_alligator
+    variants: crypto8
+
+  williams_fractals:
+    group: ta
+    name: "Fractal breakout above the Alligator's teeth (Bill Williams 1995)"
+    source: "https://www.tradingview.com/support/solutions/43000591663-williams-fractal/"
+    rules: "Buy stop above the last up fractal (5-bar high) if it is above the Alligator's teeth; exit stop below the last down fractal."
+    class: SignalBot
+    timeframe: 4h
+    signal: ta2_fractals
+    variants: crypto8
+    risk: {entry: stop, stop_col: stop_level}
+
+  raschke_anti:
+    group: ta
+    name: "The Anti: stochastic hook in the direction of %D (Linda Raschke)"
+    source: "https://www.tradingview.com/script/Gf0dtyGW-Linda-Raschke-s-Anti/ ; Connors & Raschke, Street Smarts (1995)"
+    rules: "Stochastic %K(7, smoothed 4) and %D = SMA(10) of %K; with %D rising, buy when %K hooks up below %D; exit when %D falls and %K hooks down. Stop 5%."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_raschke_anti
+    variants: crypto8
+    risk: {stoploss: 0.05, time_stop: 12}
+
+  chande_cmo:
+    group: ta
+    name: "Chande Momentum Oscillator (Chande & Kroll 1994)"
+    source: "https://www.investopedia.com/terms/c/chandemomentumoscillator.asp"
+    rules: "CMO(20): buy when it crosses above -50 (out of oversold), exit when it crosses below +50."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_cmo
+    variants: crypto8
+
+  chande_vidya:
+    group: ta
+    name: "VIDYA, Variable Index Dynamic Average (Tushar Chande 1992)"
+    source: "https://www.tradingview.com/support/solutions/43000594682-variable-index-dynamic-average-vidya/"
+    rules: "VIDYA(9) scaled by |CMO(9)|; buy when the close crosses above it, exit when it crosses below."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_vidya
+    variants: crypto8
+
+  chande_qstick:
+    group: ta
+    name: "Qstick zero cross (Tushar Chande)"
+    source: "https://www.investopedia.com/terms/q/qstick.asp"
+    rules: "SMA(8) of close minus open; buy when it crosses above zero, exit when it crosses below."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_qstick
+    variants: crypto8
+
+  tillson_t3:
+    group: ta
+    name: "T3 moving average turn (Tim Tillson 1998)"
+    source: "https://www.technicalindicators.net/indicators-technical-analysis/150-t3-moving-average ; Tillson, 'Better Moving Averages', TASC Jan 1998"
+    rules: "T3(5, volume factor 0.7) turning up -> buy; turning down -> exit."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_t3
+    variants: crypto8
+
+  mcginley_dynamic:
+    group: ta
+    name: "McGinley Dynamic (John McGinley 1997)"
+    source: "https://www.investopedia.com/articles/forex/09/mcginley-dynamic-indicator.asp"
+    rules: "McGinley Dynamic(14); buy when the close crosses above it, exit when it crosses below."
+    class: SignalBot
+    timeframe: 4h
+    signal: ta2_mcginley
+    variants: crypto8
+
+  choppiness_breakout:
+    group: ta
+    name: "Choppiness Index trend start (E.W. Dreiss)"
+    source: "https://www.tradingview.com/support/solutions/43000501980-choppiness-index-chop/"
+    rules: "CHOP(14) falling below 38.2 (trend starting) with the close above SMA(20) -> buy; exit when CHOP rises above 61.8 or the close is below SMA(20)."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_chop
+    variants: crypto8
+
+  relative_vigor_index:
+    group: ta
+    name: "Relative Vigor Index (John Ehlers / Donald Dorsey; TradingView length 10)"
+    source: "https://www.tradingview.com/support/solutions/43000591593-relative-vigor-index/"
+    rules: "RVI(10) crossing above its 4-bar weighted signal below zero -> buy; crossing below it above zero -> exit."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_rvi
+    variants: crypto8
+
+  stochastic_momentum_index:
+    group: ta
+    name: "Stochastic Momentum Index (William Blau 1993)"
+    source: "https://www.tradingview.com/support/solutions/43000707882-stochastic-momentum-index-smi/"
+    rules: "SMI(10, 3, 3): buy when it crosses above its EMA(3) signal below -40; exit when it crosses below the signal above +40."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_smi
+    variants: crypto8
+
+  demarker:
+    group: ta
+    name: "DeMarker(14) (Tom DeMark)"
+    source: "https://www.investopedia.com/terms/d/demarkerindicator.asp"
+    rules: "Buy when DeMarker(14) crosses above 0.3, exit when it crosses below 0.7."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_demarker
+    variants: crypto8
+
+  klinger_oscillator:
+    group: ta
+    name: "Klinger Volume Oscillator (Stephen Klinger; TradingView 34/55/13)"
+    source: "https://www.tradingview.com/support/solutions/43000589157-klinger-oscillator/"
+    rules: "KVO = EMA34 - EMA55 of signed volume; buy when it crosses above its EMA(13) signal, exit when it crosses below."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_klinger
+    variants: crypto8
+
+  stochastic_pop:
+    group: ta
+    name: "Stochastic Pop (Jake Bernstein; ADX filter by David Steckler, TASC 2000)"
+    source: "https://www.tradingview.com/script/iUhFXXDI-Stochastic-Pop-Strategy/ ; Steckler, 'Stochastic Pop and Drop', TASC Aug 2000"
+    rules: "Slow stochastic %K(8, 3) crossing above 80 while ADX(14) < 20 -> buy; exit when %K falls back below 80."
+    class: SignalBot
+    timeframe: 1h
+    signal: ta2_stoch_pop
+    variants: crypto8
+
+  keltner_1960:
+    group: ta
+    name: "Keltner's original 10-day moving average rule (Chester Keltner 1960)"
+    source: "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-overlays/keltner-channels ; Keltner, How to Make Money in Commodities (1960)"
+    rules: "SMA(10) of the typical price +/- SMA(10) of the range; buy when the close crosses above the upper line, exit when it crosses below the lower line."
+    class: SignalBot
+    timeframe: 4h
+    signal: ta2_keltner_1960
+    variants: crypto8
+
+  donchian_4week:
+    group: ta
+    name: "Donchian 4-week rule (Richard Donchian 1960s)"
+    source: "https://www.investopedia.com/terms/d/donchianchannels.asp ; Donchian's 4-week rule"
+    rules: "Daily candles: buy stop at the 20-day high (4 weeks); exit stop at the 20-day low."
+    class: SignalBot
+    timeframe: 1d
+    signal: ta2_donchian_4week
+    variants: crypto8
+    risk: {entry: stop, stop_col: stop_level}
+
+  gann_hilo:
+    group: ta
+    name: "Gann HiLo Activator (Robert Krausz 1998; TradingView length 3)"
+    source: "https://www.tradingview.com/script/XNQSLIYb-Gann-HiLo-Activator-Strategy/ ; Krausz, 'The New Gann Swing Chartist', TASC 1998"
+    rules: "Trend turns up when the close is above the 3-bar SMA of highs (prior bar) -> buy; turns down when below the 3-bar SMA of lows -> exit."
+    class: SignalBot
+    timeframe: 4h
+    signal: ta2_gann_hilo
+    variants: crypto8
+
+  # =========================================================================== daily systems on US ETFs
+  coppock_curve:
+    group: ta
+    name: "Coppock Curve (Edwin Coppock 1962), daily"
+    source: "https://www.barchart.com/education/technical-indicators/coppock_curve"
+    rules: "WMA(10) of ROC(14) + ROC(11) on daily closes; buy when it turns up below zero, sell when it turns down above zero (at 15:55)."
+    class: EtfDailyBot
+    signal: ta2_coppock
+    variants: etf10
+
+  pring_kst:
+    group: ta
+    name: "Pring's Know Sure Thing, daily (Martin Pring)"
+    source: "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/prings-know-sure-thing-kst"
+    rules: "Daily KST = SMA10(ROC10) + 2 SMA10(ROC15) + 3 SMA10(ROC20) + 4 SMA15(ROC30); buy when it crosses above its SMA(9) signal, sell when it crosses below."
+    class: EtfDailyBot
+    signal: ta2_kst
+    variants: etf10
+
+  dorsey_mass_index:
+    group: ta
+    name: "Mass Index reversal bulge (Donald Dorsey 1992)"
+    source: "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/mass-index"
+    rules: "Mass Index (9, 25) rises above 27 then falls below 26.5; buy if EMA(9) is falling (a downtrend to reverse), sell on the next bulge with EMA(9) rising, or after 20 days."
+    class: EtfDailyBot
+    signal: ta2_mass_index
+    variants: etf10
+    risk: {time_stop: 20}
+
+  raschke_8020:
+    group: ta
+    name: "80-20's (Raschke & Connors, Street Smarts 1995)"
+    source: "https://www.mql5.com/en/articles/2785"
+    rules: "Yesterday opened in the top 20% of its range and closed in the bottom 20%; today trades below yesterday's low and is back above it at 15:55 -> buy; sell at the next day's 15:55. Stop 2%."
+    class: EtfDailyBot
+    signal: ta2_raschke_8020
+    variants: etf10
+    risk: {time_stop: 1, stoploss: 0.02}
+
+  williams_smash_day:
+    group: ta
+    name: "Smash Day, naked close (Larry Williams, Long-Term Secrets to Short-Term Trading 1999)"
+    source: "https://roboforex.com/blog/education/catch-your-smash-day-with-larry-williams/"
+    rules: "A close below the prior day's low (smash day); within 3 days, a close above the smash day's high -> buy at 15:55; exit at the first profitable close (bail-out), stop at the smash day's low, out after 5 days."
+    class: EtfDailyBot
+    signal: ta2_smash_day
+    variants: etf10
+    risk: {stop_col: stop_level, roi: {0: 0.0}, time_stop: 5}
+
+  elder_force_index:
+    group: ta
+    name: "Force Index pullback in an uptrend (Alexander Elder, Trading for a Living 1993)"
+    source: "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/force-index"
+    rules: "With EMA(22) rising, buy when the 2-day EMA of the Force Index is below zero; sell when it turns positive."
+    class: EtfDailyBot
+    signal: ta2_elder_force
+    variants: etf10
+
+  elder_ray:
+    group: ta
+    name: "Elder-Ray bull/bear power (Alexander Elder 1989)"
+    source: "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/elder-ray-index"
+    rules: "With EMA(13) rising, buy when Bear Power is negative but rising; sell when EMA(13) falls or Bull Power turns down from a positive peak."
+    class: EtfDailyBot
+    signal: ta2_elder_ray
+    variants: etf10
+
+  guppy_gmma:
+    group: ta
+    name: "Guppy Multiple Moving Average (Daryl Guppy)"
+    source: "https://www.investopedia.com/terms/g/guppy-multiple-moving-average.asp"
+    rules: "Short EMAs 3/5/8/10/12/15 and long EMAs 30/35/40/45/50/60 of daily closes; buy when the whole short group moves above the long group, sell when it is entirely below it."
+    class: EtfDailyBot
+    signal: ta2_gmma
+    variants: etf10
+
+  bullish_engulfing:
+    group: ta
+    name: "Bullish engulfing after a decline (Steve Nison; Bulkowski's candlestick statistics)"
+    source: "https://thepatternsite.com/BullEngulfing.html"
+    rules: "A bullish engulfing candle (TA-Lib) with the prior close below its 20-day average -> buy at 15:55; sell after 10 days (Bulkowski's measuring horizon). Stop 5%."
+    class: EtfDailyBot
+    signal: ta2_engulfing
+    variants: etf10
+    risk: {time_stop: 10, stoploss: 0.05}
+
+  hammer_candle:
+    group: ta
+    name: "Hammer after a decline (Steve Nison; Bulkowski)"
+    source: "https://thepatternsite.com/Hammer.html"
+    rules: "A hammer candle (TA-Lib) below the 20-day average -> buy at 15:55; sell after 10 days. Stop 5%."
+    class: EtfDailyBot
+    signal: ta2_hammer
+    variants: etf10
+    risk: {time_stop: 10, stoploss: 0.05}
+
+  morning_star:
+    group: ta
+    name: "Morning star (Steve Nison; Bulkowski)"
+    source: "https://thepatternsite.com/MorningStar.html"
+    rules: "A morning star (TA-Lib, penetration 0.3) -> buy at 15:55; sell after 10 days. Stop 5%."
+    class: EtfDailyBot
+    signal: ta2_morning_star
+    variants: etf10
+    risk: {time_stop: 10, stoploss: 0.05}
+
+  three_white_soldiers:
+    group: ta
+    name: "Three white soldiers (Steve Nison; Bulkowski)"
+    source: "https://thepatternsite.com/ThreeWhiteSoldiers.html"
+    rules: "Three white soldiers (TA-Lib) -> buy at 15:55; sell after 10 days. Stop 5%."
+    class: EtfDailyBot
+    signal: ta2_three_soldiers
+    variants: etf10
+    risk: {time_stop: 10, stoploss: 0.05}
+
+  williams_oops:
+    group: ta
+    name: "Oops! gap-down reversal (Larry Williams)"
+    source: "https://oxfordstrat.com/rd-blog/page/9/ ; Williams, The Definitive Guide to Futures Trading (1988)"
+    rules: "If the session opens below yesterday's low, buy stop at yesterday's low for the rest of the day; flat at the close. 5-minute candles."
+    class: IntradayEtfBot
+    signal: ta2_oops
+    variants: [SPY, QQQ, IWM]
+    intraday_days: 3
+    risk: {entry: stop, entry_valid: 77}

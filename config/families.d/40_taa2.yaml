@@ -1,0 +1,486 @@
+# TACTICAL ASSET ALLOCATION, RISK-BASED PORTFOLIOS, CALENDAR / MACRO ANOMALIES AND CRYPTO
+# CROSS-SECTION PAPERS (added 24 Nov 2026; replayed from the common start 12 Oct 17:00 UTC)
+# ---------------------------------------------------------------------------------------
+# Same conventions as config/families.yaml: published default rules, nothing tuned on data.
+# US ETF rules are decided 5 minutes before the close on the day's price so far and traded at
+# 15:55 New York time (IBKR costs); "monthly" = the month's last session. Crypto rules run on daily
+# Bitvavo candles (weekly = the candle closing Sunday 00:00 UTC). Code: quantdesk/bots/families/taa2.py
+
+universes:
+  countries20: [EWA, EWC, EWG, EWH, EWI, EWJ, EWL, EWP, EWQ, EWS, EWU, EWW, EWY, EWZ, EWT, EZA, EIDO, INDA, FXI, SPY]
+  commodities14: [USO, UNG, GLD, SLV, CPER, DBA, CORN, WEAT, SOYB, CANE, UGA, PALL, PPLT, BNO]
+  currencies6: [FXE, FXB, FXY, FXA, FXC, FXF]
+  styles6: [IWD, IWF, IWS, IWP, IWN, IWO]
+  sectors11: [XLB, XLE, XLF, XLI, XLK, XLP, XLU, XLV, XLY, XLRE, XLC]
+  sectors10: [XLB, XLE, XLF, XLI, XLK, XLP, XLU, XLV, XLY, XLRE]
+
+families:
+
+  # =========================================================================== Keller & co. / Allocate Smartly
+  faber_gtaa_aggressive:
+    group: equity_research
+    name: "GTAA Aggressive 3 / 6: top asset classes by momentum with a 10-month SMA filter (Faber 2010)"
+    source: "https://www.scribd.com/document/559580322/SSRN-id962461"
+    rules: "Month-end: rank 13 asset-class ETFs (US large/small value and momentum, developed and emerging stocks, US and foreign 10-year bonds, corporates, 30-year Treasuries, commodities, gold, REITs) by the average of their 1, 3, 6, 12-month returns; hold the top 3 (or 6) equally; a pick below its 10-month SMA goes to T-bills."
+    class: EtfWeightBot
+    weights: taa2_gtaa_agg
+    schedule: monthly
+    params: {universe: [IWD, MTUM, IWN, DWAS, EFA, EEM, IEF, BWX, LQD, TLT, DBC, GLD, VNQ, BIL]}
+    variants:
+      - {id: agg3, params: {top: 3}}
+      - {id: agg6, params: {top: 6}}
+
+  gpm:
+    group: equity_research
+    name: "Generalized Protective Momentum (Keller & Keuning 2016)"
+    source: "https://seekingalpha.com/article/3985525-generalized-protective-momentum"
+    rules: "Month-end: score = average 1/3/6/12-month return x (1 - 12-month correlation with the equal-weight universe); top 3 of 12 risky ETFs; bond share (12 - n)/6 (n = risky ETFs with a positive score, max 100%) in the better of IEF / BIL."
+    class: EtfWeightBot
+    weights: taa2_gpm
+    schedule: monthly
+    params: {universe: [SPY, QQQ, IWM, VGK, EWJ, EEM, VNQ, DBC, GLD, HYG, LQD, TLT, IEF, BIL]}
+
+  eaa:
+    group: equity_research
+    name: "Elastic Asset Allocation (Keller & Butler 2014, Kipnis defaults)"
+    source: "https://www.r-bloggers.com/lang/tag/for"
+    rules: "Month-end: z = (r^1 x (1-c)^0.5)^2 for assets with r > 0 (r = average 1/3/6/12-month return, c = 12-month correlation with the equal-weight universe); top 1 + ceil(sqrt 7) = 4 by z, weighted by z; the share of assets with r <= 0 goes to SHY. Universe: ETF versions of Kipnis's 7 funds (VTI, EFA, VWO, SHY, BND, DBC, VNQ)."
+    class: EtfWeightBot
+    weights: taa2_eaa
+    schedule: monthly
+    params: {universe: [VTI, EFA, VWO, SHY, BND, DBC, VNQ]}
+
+  raa_balanced:
+    group: equity_research
+    name: "Robust Asset Allocation, balanced (Alpha Architect, Gray & Vogel 2015)"
+    source: "https://alphaarchitect.com/asset-allocation-horserace-robust-asset-allocation-raa-vs-dual-momentum/"
+    rules: "20% US stocks, 20% international, 10% REITs, 10% commodities, 40% 10-year Treasuries; month-end, each sleeve is half held if above its 12-month average and half if its 12-month return beats T-bills; the rest in BIL. Plain index ETFs instead of the value/momentum funds."
+    class: EtfWeightBot
+    weights: taa2_raa
+    schedule: monthly
+    params: {universe: [VTI, EFA, VNQ, DBC, IEF, BIL]}
+
+  paired_switching:
+    group: equity_research
+    name: "Paired Switching SPY / TLT (Maewal & Bock 2011)"
+    source: "https://quantpedia.com/strategies/paired-switching"
+    rules: "First session of each quarter: hold whichever of SPY and TLT returned more over the previous quarter."
+    class: EtfWeightBot
+    weights: taa2_paired_switching
+    schedule: quarterly
+    params: {universe: [SPY, TLT]}
+
+  quint_switching:
+    group: equity_research
+    name: "Quint Switching, filtered (Logical Invest; CXO test)"
+    source: "https://www.cxoadvisory.com/momentum-investing/not-the-simplest-asset-class-etf-momentum-strategy"
+    rules: "Month-end: hold the one of QQQ, EEM, IWM, EFA, TLT with the best 3-month return; if that return is negative, hold SHY."
+    class: EtfWeightBot
+    weights: taa2_quint_switching
+    schedule: monthly
+    params: {universe: [QQQ, EEM, IWM, EFA, TLT, SHY]}
+
+  vaa_g12:
+    group: equity_research
+    name: "Vigilant Asset Allocation G12 (Keller & Keuning 2017)"
+    source: "https://indexswingtrader.blogspot.com/2017/07/breadth-momentum-and-vigilant-asset.html"
+    rules: "Month-end 13612W momentum; b = risky ETFs (of 12) with negative momentum; cash share min(1, b/4) in the best of SHY/IEF/LQD, the rest equally in the top 2 risky ETFs."
+    class: EtfWeightBot
+    weights: taa2_vaa_g12
+    schedule: monthly
+    params: {universe: [SPY, IWM, QQQ, VGK, EWJ, EEM, VNQ, DBC, GLD, TLT, LQD, HYG, SHY, IEF]}
+
+  baa_g12:
+    group: equity_research
+    name: "Bold Asset Allocation, balanced G12 (Keller 2022)"
+    source: "https://thechartist.com.au/wp-content/uploads/2024/12/5369/SSRN-id4166845.pdf"
+    rules: "Canaries SPY/VWO/VEA/BND (13612W): all positive -> top 6 of 12 offensive ETFs by SMA(12) momentum; any negative -> top 3 of TIP/DBC/BIL/IEF/TLT/LQD/BND, a pick worse than BIL replaced by BIL. Month-end."
+    class: EtfWeightBot
+    weights: taa2_baa_g12
+    schedule: monthly
+    params: {universe: [SPY, QQQ, IWM, VGK, EWJ, VWO, VNQ, DBC, GLD, TLT, HYG, LQD, TIP, BIL, IEF, BND, VEA]}
+
+  haa_simple:
+    group: equity_research
+    name: "Hybrid Asset Allocation, simple version (Keller & Keuning 2023)"
+    source: "https://www.quantconnect.com/forum/discussion/14842/hybrid-asset-allocation/"
+    rules: "Month-end 13612U momentum: if the TIP canary or SPY is <= 0 hold the better of BIL / IEF, otherwise SPY."
+    class: EtfWeightBot
+    weights: taa2_haa_simple
+    schedule: monthly
+    params: {universe: [SPY, BIL, IEF], signal_tickers: [TIP]}
+
+  uis_spy_tlt:
+    group: equity_research
+    name: "Universal Investment Strategy SPY / TLT (Logical Invest; Kipnis replication)"
+    source: "https://www.r-bloggers.com/2015/02/the-logical-invest-universal-investment-strategy-a-walk-forward-process-on-spy-and-tlt/"
+    rules: "Month-end: of the SPY/TLT mixes 0-100% in 10% steps, hold the one with the best modified Sharpe ratio (annualised return / volatility^2.5) over the last 72 trading days."
+    class: EtfWeightBot
+    weights: taa2_uis
+    schedule: monthly
+    params: {universe: [SPY, TLT]}
+
+  # =========================================================================== cross-sectional ETF rotations
+  country_momentum:
+    group: equity_research
+    name: "Momentum in country equity indexes (Quantpedia / QuantConnect library)"
+    source: "https://www.quantconnect.com/research/15361/momentum-effect-in-country-equity-indexes/"
+    rules: "Month-end: hold the top quintile (4 of 20 iShares country ETFs) by 12-month return, equal weight."
+    class: EtfWeightBot
+    weights: taa2_xs_top
+    schedule: monthly
+    params: {universe: countries20, days: 252, top: 4}
+
+  country_low_beta:
+    group: equity_research
+    name: "Beta factor in country equity indexes, low-beta leg (Quantpedia / QuantConnect library)"
+    source: "https://www.quantconnect.com/research/15341/beta-factor-in-country-equity-indexes/"
+    rules: "Month-end: hold the quintile (4 of 19 country ETFs) with the lowest 1-year daily beta to the world index (ACWI), equal weight."
+    class: EtfWeightBot
+    weights: taa2_country_low_beta
+    schedule: monthly
+    params: {universe: [EWA, EWC, EWG, EWH, EWI, EWJ, EWL, EWP, EWQ, EWS, EWU, EWW, EWY, EWZ, EWT, EZA, EIDO, INDA, FXI],
+             signal_tickers: [ACWI], top: 4}
+
+  country_reversal:
+    group: equity_research
+    name: "Mean reversion in country equity indexes, losers leg (Quantpedia / QuantConnect library)"
+    source: "https://www.quantconnect.com/research/15354/mean-reversion-effect-in-country-equity-indexes/"
+    rules: "Month-end: hold the 4 of 20 country ETFs with the worst 36-month return, equal weight (long-term reversal)."
+    class: EtfWeightBot
+    weights: taa2_xs_top
+    schedule: monthly
+    lookback: 800
+    params: {universe: countries20, days: 756, top: 4, lowest: true}
+
+  asset_class_momentum:
+    group: equity_research
+    name: "Asset class momentum rotational system (Quantpedia; Faber 2010)"
+    source: "https://quantpedia.com/strategies/asset-class-momentum-rotational-system"
+    rules: "Month-end: hold the 3 of SPY, EFA, IEF, VNQ, GSG with the strongest 12-month momentum, equal weight."
+    class: EtfWeightBot
+    weights: taa2_xs_top
+    schedule: monthly
+    params: {universe: [SPY, EFA, IEF, VNQ, GSG], days: 252, top: 3}
+
+  commodity_momentum:
+    group: equity_research
+    name: "Momentum in commodities via ETFs (Quantpedia; Erb & Harvey 2006, Miffre & Rallis 2007)"
+    source: "https://www.quantpedia.com/Screener/Details/21"
+    rules: "Month-end: hold the top quintile (3 of 14 single-commodity ETFs) by 12-month return, equal weight."
+    class: EtfWeightBot
+    weights: taa2_xs_top
+    schedule: monthly
+    params: {universe: commodities14, days: 252, top: 3}
+
+  currency_momentum:
+    group: equity_research
+    name: "Currency momentum factor via CurrencyShares ETFs (Quantpedia / QuantConnect forex momentum)"
+    source: "https://quantpedia.com/strategies/currency-momentum-factor"
+    rules: "Month-end: hold the 2 of 6 currency ETFs (EUR, GBP, JPY, AUD, CAD, CHF vs USD) with the best 12-month return; long side only."
+    class: EtfWeightBot
+    weights: taa2_xs_top
+    schedule: monthly
+    params: {universe: currencies6, days: 252, top: 2}
+
+  style_momentum:
+    group: equity_research
+    name: "Momentum and style rotation (Quantpedia / QuantConnect library; Chen & De Bondt 2004)"
+    source: "https://www.quantconnect.com/tutorials/strategy-library/momentum-and-style-rotation-effect"
+    rules: "Month-end: hold the best of 6 Russell style ETFs (large/mid/small x value/growth) by 12-month return; long side only."
+    class: EtfWeightBot
+    weights: taa2_xs_top
+    schedule: monthly
+    params: {universe: styles6, days: 252, top: 1}
+
+  # =========================================================================== trend following and risk-based
+  tsmom_assets:
+    group: equity_research
+    name: "Time-series momentum across asset classes, long only (Moskowitz, Ooi & Pedersen 2012)"
+    source: "https://papers.ssrn.com/abstract=2089463"
+    rules: "Month-end: hold each of 10 asset ETFs (stocks, bonds, gold, commodities, currencies) with a positive 12-month return, sized 40% / its ex-ante volatility / 10 (EWMA, centre of mass 60 days); total capped at 100%."
+    class: EtfWeightBot
+    weights: taa2_tsmom
+    schedule: monthly
+    params: {universe: [SPY, EFA, EEM, EWJ, TLT, IEF, GLD, DBC, FXE, FXY]}
+
+  trend_century:
+    group: equity_research
+    name: "A century of trend following: 1, 3 and 12-month signals (Hurst, Ooi & Pedersen 2017)"
+    source: "https://fairmodel.econ.yale.edu/ec439/hurst.pdf"
+    rules: "Month-end: signal = average sign of the 1, 3 and 12-month returns (long side only), sized 40% / ex-ante volatility / N as in time-series momentum; 10 asset ETFs; total capped at 100%."
+    class: EtfWeightBot
+    weights: taa2_tsmom
+    schedule: monthly
+    params: {universe: [SPY, EFA, EEM, EWJ, TLT, IEF, GLD, DBC, FXE, FXY], lookbacks: [21, 63, 252]}
+
+  risk_parity_afp:
+    group: equity_research
+    name: "Risk parity, unlevered inverse-volatility weights (Asness, Frazzini & Pedersen 2012)"
+    source: "https://www.aqr.com/insights/research/journal-article/leverage-aversion-and-risk-parity"
+    rules: "Month-end: weights proportional to 1 / 3-year volatility; US stocks/bonds (SPY, IEF) or 9 global asset classes; no leverage."
+    class: EtfWeightBot
+    weights: taa2_risk_based
+    schedule: monthly
+    lookback: 800
+    params: {method: inverse_vol, days: 756}
+    variants:
+      - {id: us2, params: {universe: [SPY, IEF], assets: [SPY, IEF]}}
+      - {id: global9, params: {universe: [SPY, EFA, EEM, IEF, TLT, LQD, DBC, GLD, VNQ], assets: [SPY, EFA, EEM, IEF, TLT, LQD, DBC, GLD, VNQ]}}
+
+  erc_assets:
+    group: equity_research
+    name: "Equal risk contribution portfolio (Maillard, Roncalli & Teiletche 2010)"
+    source: "https://www.msci.com/documents/10199/36c8ed57-cfad-4d77-8d40-6cbcc107a778"
+    rules: "Month-end: long-only weights where each of 9 asset-class ETFs contributes the same risk, from the 1-year daily covariance."
+    class: EtfWeightBot
+    weights: taa2_risk_based
+    schedule: monthly
+    params: {method: erc, universe: [SPY, EFA, EEM, IEF, TLT, LQD, DBC, GLD, VNQ], assets: [SPY, EFA, EEM, IEF, TLT, LQD, DBC, GLD, VNQ]}
+
+  max_diversification:
+    group: equity_research
+    name: "Most diversified portfolio (Choueifaty & Coignard 2008)"
+    source: "https://ideas.repec.org/a/rsk/journ6/2255764.html"
+    rules: "Month-end: long-only weights maximising the diversification ratio (weighted average volatility / portfolio volatility) of 9 asset-class ETFs, 1-year daily covariance."
+    class: EtfWeightBot
+    weights: taa2_risk_based
+    schedule: monthly
+    params: {method: max_div, universe: [SPY, EFA, EEM, IEF, TLT, LQD, DBC, GLD, VNQ], assets: [SPY, EFA, EEM, IEF, TLT, LQD, DBC, GLD, VNQ]}
+
+  min_variance_sectors:
+    group: equity_research
+    name: "Minimum-variance US equity portfolio on sector ETFs (Clarke, de Silva & Thorley 2006)"
+    source: "https://www.proquest.com/docview/1366018116"
+    rules: "Month-end: long-only global minimum-variance weights of the 11 SPDR sector ETFs from the 1-year daily covariance."
+    class: EtfWeightBot
+    weights: taa2_risk_based
+    schedule: monthly
+    params: {method: min_var, universe: sectors11, assets: [XLB, XLE, XLF, XLI, XLK, XLP, XLU, XLV, XLY, XLRE, XLC]}
+
+  min_correlation:
+    group: equity_research
+    name: "Minimum Correlation Algorithm (Varadi, Kapler, Bee & Rittenhouse 2012)"
+    source: "https://www.r-bloggers.com/2012/09/minimum-correlation-algorithm-paper/"
+    rules: "Weekly: MinCorr weights of 8 ETFs (SPY, QQQ, EEM, IWM, EFA, TLT, IYR, GLD) from 60-day correlations (normalised to 1 - N(rho), rank-weighted), scaled by inverse volatility."
+    class: EtfWeightBot
+    weights: taa2_risk_based
+    schedule: weekly
+    params: {method: min_corr, days: 60, universe: [SPY, QQQ, EEM, IWM, EFA, TLT, IYR, GLD], assets: [SPY, QQQ, EEM, IWM, EFA, TLT, IYR, GLD]}
+
+  trend_risk_parity:
+    group: equity_research
+    name: "Risk parity with trend following (Clare, Seaton, Smith & Thomas 2016)"
+    source: "https://openaccess.city.ac.uk/id/eprint/17841/8/TREND%20IS%20YOUR%20FRIEND%20%20%20SSRN-id2126478.pdf"
+    rules: "Month-end: inverse-volatility weights (1-year) of 8 asset-class ETFs; an asset below its 10-month SMA is replaced by T-bills (BIL)."
+    class: EtfWeightBot
+    weights: taa2_risk_based
+    schedule: monthly
+    params: {method: inverse_vol, trend: true, universe: [SPY, EFA, EEM, IEF, TLT, DBC, GLD, VNQ, BIL], assets: [SPY, EFA, EEM, IEF, TLT, DBC, GLD, VNQ]}
+
+  sixty_forty:
+    group: equity_research
+    name: "60/40 stocks/bonds, the allocation-research benchmark"
+    source: "https://blog.validea.com/?p=22785"
+    rules: "60% SPY, 40% AGG, rebalanced at month-end."
+    class: EtfWeightBot
+    weights: taa2_fixed
+    schedule: monthly
+    params: {universe: [SPY, AGG], weights: {SPY: 0.6, AGG: 0.4}}
+
+  one_over_n_sectors:
+    group: equity_research
+    name: "Naive 1/N diversification across 10 industries (DeMiguel, Garlappi & Uppal 2009)"
+    source: "https://ideas.repec.org/a/oup/rfinst/v22y2009i5p1915-1953.html"
+    rules: "Equal weight in 10 SPDR sector ETFs, rebalanced at month-end."
+    class: EtfWeightBot
+    weights: taa2_fixed
+    schedule: monthly
+    params: {universe: sectors10}
+
+  # =========================================================================== macro and calendar timing
+  crude_oil_predicts:
+    group: equity_research
+    name: "Crude oil predicts equity returns (Driesprong, Jacobsen & Maat 2008; QuantConnect library)"
+    source: "https://www.quantconnect.com/research/15344/can-crude-oil-predict-equity-returns/"
+    rules: "Month-end: regress the S&P 500's monthly excess return on the previous month's WTI crude return over all months so far; if next month's forecast (from this month's oil return) is positive hold SPY, else T-bills (BIL)."
+    class: EtfWeightBot
+    weights: taa2_crude_oil
+    schedule: monthly
+    lookback: 2600
+    params: {universe: [SPY, BIL], signal_tickers: ["CL=F", "^IRX"]}
+
+  yield_curve_timing:
+    group: equity_research
+    name: "Yield-curve timing: stocks unless the curve is inverted (Resnick & Shoesmith 2002; Quantpedia)"
+    source: "https://quantpedia.com/avoid-equity-bear-markets-with-a-market-timing-strategy-part-3/"
+    rules: "Month-end: hold SPY while the 10-year minus 3-month Treasury yield spread is positive, T-bills (BIL) when it is inverted."
+    class: EtfWeightBot
+    weights: taa2_yield_curve
+    schedule: monthly
+    params: {universe: [SPY, BIL], signal_tickers: ["^TNX", "^IRX"]}
+
+  ivy_portfolio_timing:
+    group: equity_research
+    name: "The Ivy Portfolio with 10-month SMA timing (Faber 2007; Faber & Richardson 2009)"
+    source: "https://www.advisorperspectives.com/dshort/updates/2026/09/30/ivy-portfolio-sp500-moving-averages-september-2026?topic=s-p-500"
+    rules: "Month-end: equal weight in 5 (VTI, VEU, IEF, VNQ, DBC) or 10 asset classes, each held only while its month-end price is above its 10-month SMA, else that share in T-bills (BIL)."
+    class: EtfWeightBot
+    weights: taa2_ivy_timing
+    schedule: monthly
+    variants:
+      - {id: ivy5, params: {assets: [VTI, VEU, IEF, VNQ, DBC], universe: [VTI, VEU, IEF, VNQ, DBC, BIL]}}
+      - {id: ivy10, params: {assets: [VTI, VB, VEU, VWO, BND, TIP, VNQ, RWX, DBC, GSG],
+                             universe: [VTI, VB, VEU, VWO, BND, TIP, VNQ, RWX, DBC, GSG, BIL]}}
+
+  weekend_effect:
+    group: equity_research
+    name: "Weekend effect: SPY except over the weekend (French 1980)"
+    source: "https://econbiz.de/Record/stock-returns-and-the-weekend-effect-french-kenneth/10002164190"
+    rules: "Sell SPY at the close of the week's last session, buy it back at the close of the next session (avoiding the weekend-to-Monday return); invested the rest of the week."
+    class: EtfWeightBot
+    weights: taa2_calendar
+    schedule: daily
+    params: {universe: [SPY], rule: weekend}
+
+  autumn_gold:
+    group: equity_research
+    name: "The autumn effect of gold: GLD in September and November (Baur 2013)"
+    source: "https://ideas.repec.org/a/eee/riibaf/v27y2013i1p1-11.html"
+    rules: "Hold GLD through September and November (bought at the close of the session before), cash the rest of the year."
+    class: EtfWeightBot
+    weights: taa2_calendar
+    schedule: daily
+    params: {universe: [GLD], rule: gold_autumn}
+
+  january_small_caps:
+    group: equity_research
+    name: "January effect: small caps in January, large caps otherwise (QuantConnect library)"
+    source: "https://www.quantconnect.com/research/15350/january-effect-in-stocks/"
+    rules: "Hold IWM (Russell 2000) through January and SPY the rest of the year, switching at the close of the session before."
+    class: EtfWeightBot
+    weights: taa2_calendar
+    schedule: daily
+    params: {universe: [IWM, SPY], rule: january_small}
+
+  january_barometer:
+    group: equity_research
+    name: "January barometer / the other January effect (Cooper, McConnell & Ovtchinnikov 2006)"
+    source: "https://ideas.repec.org/a/eee/jfinec/v82y2006i2p315-341.html"
+    rules: "Hold SPY in January; from February to December hold SPY if January's S&P 500 return was positive, otherwise T-bills (BIL)."
+    class: EtfWeightBot
+    weights: taa2_calendar
+    schedule: daily
+    params: {universe: [SPY, BIL], rule: january_barometer}
+
+  sy_harding_stms:
+    group: equity_research
+    name: "Sy Harding's Seasonal Timing Strategy: best six months with MACD (Harding 1999)"
+    source: "https://cxoadvisory.com/calendar-effects/simple-test-of-sy-hardings-seasonal-timing-strategy"
+    rules: "Buy SPY on the first close on or after 16 Oct with MACD(12,26,9) above its signal line; sell on the first close on or after 20 Apr with MACD below it; T-bills (BIL) in between."
+    class: EtfWeightBot
+    weights: taa2_sy_harding
+    schedule: daily
+    params: {universe: [SPY, BIL]}
+
+  siegel_200dma:
+    group: equity_research
+    name: "200-day average timing with a 1% band on the Dow (Siegel, Stocks for the Long Run)"
+    source: "https://blog.validea.com/the-moving-average-strategy-good-results-if-you-have-the-discipline/"
+    rules: "Buy DIA on a close 1% above its 200-day average, sell on a close 1% below; T-bills (BIL) while out."
+    class: EtfWeightBot
+    weights: taa2_ma_band
+    schedule: daily
+    params: {universe: [DIA, BIL], asset: DIA, band: 0.01}
+
+  lumber_gold:
+    group: equity_research
+    name: "Lumber / gold intermarket signal (Bilello & Gayed 2015, Wagner Award)"
+    source: "https://operators.macro-ops.com/wp-content/uploads/2016/12/LumberWorthItsWeightinGold2015WagnerAwardWinner.pdf"
+    rules: "Weekly: if lumber futures outperformed gold futures over the prior 13 weeks hold the S&P 500 (SPY), otherwise Treasuries (IEF)."
+    class: EtfWeightBot
+    weights: taa2_lumber_gold
+    schedule: weekly
+    params: {universe: [SPY, IEF], signal_tickers: ["LBR=F", "GC=F"]}
+
+  vrp_switch:
+    group: equity_research
+    name: "Volatility risk premium switch SVXY / VXX (Volatility Made Simple; Kipnis replication)"
+    source: "https://www.r-bloggers.com/volatility-risk-premium-sharpe-2-return-to-drawdown-3/"
+    rules: "Daily: VRP = VIX minus SPY's 10-day realised volatility; if its 5-day average is positive hold short-VIX SVXY, otherwise long-VIX VXX."
+    class: EtfWeightBot
+    weights: taa2_vrp
+    schedule: daily
+    params: {universe: [SVXY, VXX], signal_tickers: [SPY, "^VIX"]}
+
+  # =========================================================================== crypto cross-section papers
+  crypto_low_vol:
+    group: crypto_research
+    name: "Low-volatility anomaly in crypto (Burggraf & Rudolf 2021)"
+    source: "https://ideas.repec.org/a/eee/finlet/v40y2021ics154461232030667x.html"
+    rules: "Weekly: hold the quintile of 18 coins (4) with the lowest 30-day volatility of daily returns, equal weight."
+    class: WeightBot
+    timeframe: 1d
+    weights: taa2_crypto_xs
+    universe: crypto18
+    schedule: weekly
+    params: {score: low_vol, days: 30, top: 4}
+
+  crypto_illiquidity:
+    group: crypto_research
+    name: "Illiquidity premium in crypto, Amihud measure (Zhang & Li 2023)"
+    source: "https://ideas.repec.org/a/wly/ijfiec/v28y2023i1p472-492.html"
+    rules: "Weekly: hold the 4 of 18 coins with the highest 30-day Amihud illiquidity (|daily return| / EUR volume on Bitvavo), equal weight."
+    class: WeightBot
+    timeframe: 1d
+    weights: taa2_crypto_xs
+    universe: crypto18
+    schedule: weekly
+    params: {score: illiquidity, days: 30, top: 4}
+
+  crypto_downside_beta:
+    group: crypto_research
+    name: "Downside risk is priced in crypto: high downside beta (Dobrynskaya 2024)"
+    source: "https://wp.hse.ru/data/2020/09/16/1583081932/79FE2020.pdf"
+    rules: "Weekly: hold the 4 of 18 coins with the highest 1-year downside beta (beta to the equal-weight crypto market on days the market return is below its mean), equal weight."
+    class: WeightBot
+    timeframe: 1d
+    weights: taa2_crypto_xs
+    universe: crypto18
+    schedule: weekly
+    params: {score: downside_beta, days: 365, top: 4}
+
+  crypto_min_variance:
+    group: crypto_research
+    name: "Minimum-variance crypto portfolio (Brauneis & Mestel 2019)"
+    source: "https://ideas.repec.org/a/eee/finlet/v28y2019icp259-264.html"
+    rules: "Weekly: long-only global minimum-variance weights of 18 coins from the last 90 days of daily returns."
+    class: WeightBot
+    timeframe: 1d
+    weights: taa2_crypto_xs
+    universe: crypto18
+    schedule: weekly
+    params: {score: min_var, days: 90}
+
+  crypto_weekday_seasonality:
+    group: crypto_research
+    name: "Same-weekday seasonality in the crypto cross-section (Long, Zaremba, Demir et al. 2020)"
+    source: "https://ideas.repec.org/a/eee/finlet/v35y2020ics154461232030235x.html"
+    rules: "Daily: hold for one day the 4 of 18 coins with the highest average return on the same weekday over the previous 20 weeks, equal weight."
+    class: WeightBot
+    timeframe: 1d
+    weights: taa2_crypto_weekday
+    universe: crypto18
+    schedule: every
+    params: {weeks: 20, top: 4}
+
+  crypto_naive_diversification:
+    group: crypto_research
+    name: "Naive 1/N crypto portfolio (Platanakis, Sutcliffe & Urquhart 2018)"
+    source: "https://ideas.repec.org/a/eee/ecolet/v171y2018icp93-96.html"
+    rules: "Equal weight in 18 coins, rebalanced weekly."
+    class: WeightBot
+    timeframe: 1d
+    weights: taa2_crypto_equal
+    universe: crypto18
+    schedule: weekly

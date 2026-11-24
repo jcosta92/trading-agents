@@ -1,0 +1,550 @@
+# OPEN-SOURCE BOT STRATEGIES, SECOND BATCH (added 24 Nov 2026; replayed from the common start 12 Oct 17:00 UTC)
+# ---------------------------------------------------------------------------------------------------
+# Freqtrade (official freqtrade-strategies repo + two widely copied community files), Gekko and Zenbot
+# built-in strategies, Hummingbot V2 directional controllers, a Jesse example and the "hello world"
+# examples of backtesting.py, backtrader, vectorbt and QuantConnect Lean. Default parameters and the
+# file's own ROI / stoploss / trailing settings, nothing tuned; long only (a short signal = exit to cash);
+# Bitvavo fees. Code: src/quantdesk/bots/families/oss2.py. Where a source uses a candle size the data
+# feed does not have, the rules say what is used instead.
+
+families:
+
+  # ======================================================================== Freqtrade official repo
+  ft_bbandrsi:
+    group: repos
+    name: "BbandRsi: close under the lower Bollinger band with RSI < 30 (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/BbandRsi.py"
+    rules: "Buy RSI(14) < 30 and close below the lower Bollinger band (typical price, 20, 2); sell RSI > 70. ROI 10%, stop -25%. 1-hour."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_bbandrsi
+    variants: crypto8
+    risk: {roi: {0: 0.1}, stoploss: 0.25}
+
+  ft_combined_binh_cluc:
+    group: repos
+    name: "CombinedBinHAndCluc: BinHV45 or ClucMay72018 dip (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/CombinedBinHAndCluc.py"
+    rules: "Buy on either the BinHV45 Bollinger(40, 2) squeeze-break or the ClucMay72018 dip below 0.985 x the lower band under EMA50; sell above the BB(20) mid, only in profit. ROI 5%, stop -5%. 5-minute."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_combined_binh_cluc
+    variants: crypto8
+    risk: {roi: {0: 0.05}, stoploss: 0.05, exits: [{col: exit, min_profit: 0.0}]}
+
+  ft_reinforced_quickie:
+    group: repos
+    name: "ReinforcedQuickie: oversold dips only while the 1h SMA25 rises (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/ReinforcedQuickie.py"
+    rules: "Buy a new 12-bar low at the lower band under EMA5/12, or a 5-bar falling average that turns up with CCI < -100, RSI(7) < 30, MFI < 30; only while close > rising SMA25 of 1-hour candles. Sell at a 12-bar high above the upper band with MFI > 80, or 8 green candles with RSI > 70. ROI 1%, stop -5%. 5-minute (the 1h trend uses closed hourly candles, not the file's interpolated resample)."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_reinforced_quickie
+    informative: [1h]
+    variants: crypto8
+    risk: {roi: {0: 0.01}, stoploss: 0.05}
+
+  ft_average_strategy:
+    group: repos
+    name: "AverageStrategy: EMA 8/21 crossover (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/AverageStrategy.py"
+    rules: "Buy EMA8 crossing above EMA21; sell EMA21 crossing above EMA8. ROI 50%, stop -20%. 4-hour."
+    class: SignalBot
+    timeframe: 4h
+    signal: oss2_average_strategy
+    variants: crypto8
+    risk: {roi: {0: 0.5}, stoploss: 0.2}
+
+  ft_asdts_rockwell:
+    group: repos
+    name: "ASDTSRockwellTrading: MACD above zero and its signal (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/ASDTSRockwellTrading.py"
+    rules: "Buy MACD(12, 26, 9) > 0 and above its signal; sell MACD below its signal. ROI 5/4/3/1% after 0/20/30/60 min, stop -30%. 5-minute."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_asdts_rockwell
+    variants: crypto8
+    risk: {roi: {0: 0.05, 20: 0.04, 30: 0.03, 60: 0.01}, stoploss: 0.3}
+
+  ft_technical_example:
+    group: repos
+    name: "TechnicalExampleStrategy: Chaikin Money Flow sign (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/TechnicalExampleStrategy.py"
+    rules: "Buy CMF(21) < 0; sell CMF > 0. ROI 1%, stop -5%. 5-minute."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_technical_example
+    variants: crypto8
+    risk: {roi: {0: 0.01}, stoploss: 0.05}
+
+  ft_simple:
+    group: repos
+    name: "Simple: MACD + widening upper band + RSI(7) > 70 momentum (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/Simple.py"
+    rules: "Buy MACD > 0 and above signal, upper Bollinger(12, 2) band rising, RSI(7) > 70; sell RSI(7) > 80. ROI 1%, stop -25%. 5-minute."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_simple
+    variants: crypto8
+    risk: {roi: {0: 0.01}, stoploss: 0.25}
+
+  ft_macd_cci:
+    group: repos
+    name: "MACDStrategy: MACD above signal with CCI <= -48 (Freqtrade official, hyperopted defaults)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/MACDStrategy.py"
+    rules: "Buy MACD > signal and CCI(14) <= -48; sell MACD < signal and CCI >= 687 (the file's buy/sell_params). ROI 5/4/3/1% after 0/20/30/60 min, stop -30%. 5-minute."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_macd_cci
+    variants: crypto8
+    risk: {roi: {0: 0.05, 20: 0.04, 30: 0.03, 60: 0.01}, stoploss: 0.3}
+
+  ft_backtest_validation:
+    group: repos
+    name: "Freqtrade_backtest_validation_freqtrade1: SMA 14/28 regime (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/Freqtrade_backtest_validation_freqtrade1.py"
+    rules: "Long while SMA14 > SMA28, out when SMA14 < SMA28. ROI > 200% (never reached), stop -90%. 1-hour."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_backtest_validation
+    variants: crypto8
+    risk: {stoploss: 0.9}
+
+  ft_supertrend_triple:
+    group: repos
+    name: "Supertrend: three Supertrends up to buy, three down to sell (Freqtrade official, juankysoriano)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Supertrend.py"
+    rules: "Buy when Supertrend (mult/period) 4/8, 7/9 and 1/8 are all up; sell when 1/16, 3/18 and 6/18 are all down (hyperopted buy/sell_params). ROI 8.7/5.8/2.9/0% after 0/372/861/2221 min, stop -26.5%, trail 5% after +14.4%. 1-hour."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_supertrend_triple
+    variants: crypto8
+    risk: {roi: {0: 0.087, 372: 0.058, 861: 0.029, 2221: 0}, stoploss: 0.265,
+           trailing: {positive: 0.05, offset: 0.144, only_offset: false}}
+
+  ft_fsupertrend:
+    group: repos
+    name: "FSupertrendStrategy: triple Supertrend, futures folder, long side (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/futures/FSupertrendStrategy.py"
+    rules: "Buy when Supertrend 4/8, 7/9 and 1/8 are all up; exit the long when Supertrend 3/18 turns down. ROI table {0: 10%, 30: 75%, 60: 5%, 120: 2.5%}, stop -26.5%, trail 5% after +10%. 1-hour."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_fsupertrend
+    variants: crypto8
+    risk: {roi: {0: 0.1, 30: 0.75, 60: 0.05, 120: 0.025}, stoploss: 0.265,
+           trailing: {positive: 0.05, offset: 0.1, only_offset: false}}
+
+  ft_freinforced:
+    group: repos
+    name: "FReinforcedStrategy: EMA 8/21 cross above the 1h SMA50, ADX exit (Freqtrade futures folder, long side)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/futures/FReinforcedStrategy.py"
+    rules: "Buy EMA8 crossing above EMA21 while the close is above the SMA50 of 1-hour candles; exit when ADX(14) < 30. ROI {0: 5%, 30: 10%, 60: 7.5%}, stop -5%. 5-minute."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_freinforced
+    informative: [1h]
+    variants: crypto8
+    risk: {roi: {0: 0.05, 30: 0.1, 60: 0.075}, stoploss: 0.05}
+
+  ft_fadxsma:
+    group: repos
+    name: "FAdxSmaStrategy: SMA 12/48 cross with ADX > 30 (Freqtrade futures folder, long side)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/futures/FAdxSmaStrategy.py"
+    rules: "Buy SMA12 crossing above SMA48 with ADX(14) > 30; exit when ADX < 30. ROI {0: 5%, 30: 10%, 60: 7.5%}, stop -5%. 1-hour."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_fadxsma
+    variants: crypto8
+    risk: {roi: {0: 0.05, 30: 0.1, 60: 0.075}, stoploss: 0.05}
+
+  ft_multima:
+    group: repos
+    name: "MultiMa: falling TEMA ladder buys, rising long TEMAs sell (Freqtrade official, mablue)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/MultiMa.py"
+    rules: "Buy when TEMA30 < TEMA15 and TEMA45 < TEMA30 (buy_ma_count 4, gap 15); sell when any TEMA(68k) > TEMA(68(k-1)), k = 2..11 (sell_ma_count 12, gap 68). ROI 52.3/12.3/7.6/0% after 0/1553/2332/3169 min, stop -34.5%. 4-hour."
+    class: SignalBot
+    timeframe: 4h
+    signal: oss2_multima
+    variants: crypto8
+    risk: {roi: {0: 0.523, 1553: 0.123, 2332: 0.076, 3169: 0}, stoploss: 0.345}
+
+  ft_diamond:
+    group: repos
+    name: "Diamond: shifted-high vs volume 'vertical/horizontal push' cross (Freqtrade official, mablue)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Diamond.py"
+    rules: "As hyperopted in the file: buy when high shifted 7 candles crosses above 0.942 x volume; sell when high shifted 10 crosses below 1.184 x low. ROI 24.2/4.4/2/0% after 0/13/51/170 min, stop -27.1%, trail 1.1% after +5.4%. 5-minute."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_diamond
+    variants: crypto8
+    risk: {roi: {0: 0.242, 13: 0.044, 51: 0.02, 170: 0}, stoploss: 0.271,
+           trailing: {positive: 0.011, offset: 0.054, only_offset: false}}
+
+  ft_heracles:
+    group: repos
+    name: "Heracles: Donchian %B over Keltner width ratio (Freqtrade official, mablue)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/Heracles.py"
+    rules: "Buy when Donchian(10) %B shifted 15 divided by Keltner(20) width shifted 9 is between 0.16 and 0.75; no sell signal. ROI 59.8/16.6/11.5/0% after 0/644/3269/7289 min, stop -25.6%. 4-hour."
+    class: SignalBot
+    timeframe: 4h
+    signal: oss2_heracles
+    variants: crypto8
+    risk: {roi: {0: 0.598, 644: 0.166, 3269: 0.115, 7289: 0}, stoploss: 0.256}
+
+  ft_mabstra:
+    group: repos
+    name: "mabStra: SMA 7/14/28 ratio bands (Freqtrade official, mablue)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/mabStra.py"
+    rules: "Buy when SMA7/SMA14 and SMA14/SMA28 are both between 0.295 and 2.254; the hyperopted sell band (min 2.814 > max 1.546) never fires, so exits are ROI 59.8/16.6/11.5/0% after 0/644/3269/7289 min and stop -12.8%. 4-hour."
+    class: SignalBot
+    timeframe: 4h
+    signal: oss2_mabstra
+    variants: crypto8
+    risk: {roi: {0: 0.598, 644: 0.166, 3269: 0.115, 7289: 0}, stoploss: 0.128}
+
+  ft_pattern_recognition:
+    group: repos
+    name: "PatternRecognition: bearish high-wave candle (TA-Lib CDLHIGHWAVE) (Freqtrade official, mablue)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/PatternRecognition.py"
+    rules: "Buy when TA-Lib CDLHIGHWAVE = -100 (hyperopted buy_params); no sell signal. ROI 93.6/33.2/8.6/0% after 0/5271/18147/48152 min, stop -28.8%, trail 3.2% after +8.4%. Daily."
+    class: SignalBot
+    timeframe: 1d
+    signal: oss2_pattern_recognition
+    variants: crypto8
+    risk: {roi: {0: 0.936, 5271: 0.332, 18147: 0.086, 48152: 0}, stoploss: 0.288,
+           trailing: {positive: 0.032, offset: 0.084, only_offset: true}}
+
+  ft_informative_sample:
+    group: repos
+    name: "InformativeSample: EMA 20/50 with a 15-minute SMA20 filter (Freqtrade official example)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/InformativeSample.py"
+    rules: "Buy EMA20 > EMA50 and the last closed 15-minute close above its SMA20; sell when both turn, only in profit. ROI 5/4/3/1% after 0/20/30/60 min, stop -10%. 5-minute. The file filters on BTC/USDT 15m; here each bot uses its own coin's 15-minute candles."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_informative_sample
+    informative: [15m]
+    variants: crypto8
+    risk: {roi: {0: 0.05, 20: 0.04, 30: 0.03, 60: 0.01}, stoploss: 0.1, exits: [{col: exit, min_profit: 0.0}]}
+
+  ft_smooth_operator:
+    group: repos
+    name: "SmoothOperator: CCI/RSI/MFI capitulation, smoothed-oscillator top exit (Freqtrade official)"
+    source: "https://github.com/freqtrade/freqtrade-strategies/blob/main/user_data/strategies/berlinguyinca/SmoothOperator.py"
+    rules: "Buy on one of three oversold patterns (falling average turning up with CCI < -100 and RSI < 30; CCI < -200, RSI < 30, MFI < 30 under the BB mid; MFI < 10, CCI < -150, RSI < MFI) on an up-close; sell on a top of the TEMA-smoothed RSI/MFI/CCI blend above 100, eight green candles, or CCI > 200 with RSI > 70. ROI 10%, stop -5%. 5-minute."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_smooth_operator
+    variants: crypto8
+    risk: {roi: {0: 0.1}, stoploss: 0.05}
+
+  ft_notanother_smaoffset:
+    group: repos
+    name: "NotAnotherSMAOffsetStrategy: EMA-offset dip with EWO (Freqtrade community, Rallipanos)"
+    source: "https://raw.githubusercontent.com/remiotore/ccxt-freqtrade/44beaeb6a420cd8e9f2e4ea93e11d6cfa192ee03/strategies/NotAnotherSMAOffsetStrategy.py"
+    rules: "Buy RSI(4) < 35, close < EMA14 x 0.975 and < EMA24 x 0.991 with EWO(50/200) > 2.327 and RSI < 69, or EWO < -20.988. Sell above SMA9 and EMA24 x 0.997 with RSI > 50 and RSI(4) > RSI(20), or under HMA50 above EMA24 x 0.991; a sell is refused deep under EMA100 (confirm_trade_exit). ROI 21.5/3.2/1.6/0% after 0/40/87/201 min, stop -35%, trail 0.5% after +3%. 5-minute."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_notanother_smaoffset
+    variants: crypto8
+    risk: {roi: {0: 0.215, 40: 0.032, 87: 0.016, 201: 0}, stoploss: 0.35,
+           trailing: {positive: 0.005, offset: 0.03, only_offset: true}}
+
+  ft_smaoffset_protect_v1:
+    group: repos
+    name: "SMAOffsetProtectOptV1: EMA16 offset dip with EWO protection (Freqtrade community)"
+    source: "https://raw.githubusercontent.com/remiotore/ccxt-freqtrade/44beaeb6a420cd8e9f2e4ea93e11d6cfa192ee03/strategies/SMAOffsetProtectOptV1.py"
+    rules: "Buy close < EMA16 x 0.978 with EWO(50/200) > 5.638 and RSI < 61, or EWO < -19.993; sell close > EMA49 x 1.006 once at least 1% in profit. ROI 2% then 1% after 30 min, stop -50%. 5-minute."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_smaoffset_protect_v1
+    variants: crypto8
+    risk: {roi: {0: 0.02, 30: 0.01}, stoploss: 0.5, exits: [{col: exit, min_profit: 0.01}]}
+
+  # ======================================================================== Gekko (askmike/gekko)
+  gekko_dema:
+    group: repos
+    name: "DEMA: SMA vs double EMA difference (Gekko built-in strategy)"
+    source: "https://github.com/askmike/gekko/blob/develop/strategies/DEMA.js"
+    rules: "Default config (weight 21, thresholds +-0.025): long when SMA21 - DEMA21 > 0.025, short (sell) when < -0.025, once per trend. 1-hour candles (Gekko sample config candleSize 60). No stops."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_gekko_dema
+    variants: crypto8
+
+  gekko_macd:
+    group: repos
+    name: "MACD: histogram beyond +-0.025 for 1 candle (Gekko built-in strategy)"
+    source: "https://github.com/askmike/gekko/blob/develop/strategies/MACD.js"
+    rules: "Default config: MACD 10/21/9, buy when the histogram is above +0.025 (persistence 1), sell when below -0.025, one advice per trend. 1-hour. No stops."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_gekko_macd
+    variants: crypto8
+
+  gekko_ppo:
+    group: repos
+    name: "PPO: percentage price oscillator histogram (Gekko built-in strategy)"
+    source: "https://github.com/askmike/gekko/blob/develop/strategies/PPO.js"
+    rules: "Default config: PPO 12/26/9, buy when the PPO histogram stays above +0.025 for 2 candles, sell below -0.025 for 2. 1-hour. No stops."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_gekko_ppo
+    variants: crypto8
+
+  gekko_varppo:
+    group: repos
+    name: "varPPO: TSI thresholds shifted by the PPO histogram (Gekko built-in strategy)"
+    source: "https://github.com/askmike/gekko/blob/develop/strategies/varPPO.js"
+    rules: "Default config: momentum TSI(25, 13) with thresholds -25 / +25 moved by 120 x the PPO(12/26/9) histogram; buy when TSI is below the low threshold, sell above the high one. 1-hour. No stops."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_gekko_varppo
+    variants: crypto8
+
+  gekko_cci:
+    group: repos
+    name: "CCI: oversold / overbought at -100 / +100 (Gekko built-in strategy)"
+    source: "https://github.com/askmike/gekko/blob/develop/strategies/CCI.js"
+    rules: "Default config: CCI over 90 candles (constant 0.015); buy on entering CCI <= -100, sell on entering CCI >= +100 (persistence 0). 1-hour. No stops."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_gekko_cci
+    variants: crypto8
+
+  gekko_stochrsi:
+    group: repos
+    name: "StochRSI: 3-period stochastic RSI 20/80 (Gekko built-in strategy)"
+    source: "https://github.com/askmike/gekko/blob/develop/strategies/StochRSI.js"
+    rules: "Default config: RSI(3) and its 3-value stochastic; buy after 3 candles below 20, sell after 3 above 80. 1-hour. No stops."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_gekko_stochrsi
+    variants: crypto8
+
+  # ======================================================================== Zenbot (DeviaVir/zenbot)
+  zenbot_bollinger:
+    group: repos
+    name: "bollinger: buy under the lower band, sell over the upper (Zenbot built-in strategy)"
+    source: "https://github.com/DeviaVir/zenbot/blob/master/extensions/strategies/bollinger/strategy.js"
+    rules: "Defaults: 1-hour periods, Bollinger(20, 2); buy close < lower band, sell close > upper band. No stops."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_zenbot_bollinger
+    variants: crypto8
+
+  zenbot_macd:
+    group: repos
+    name: "macd: histogram zero cross with RSI(25) > 70 sell (Zenbot built-in strategy)"
+    source: "https://github.com/DeviaVir/zenbot/blob/master/extensions/strategies/macd/strategy.js"
+    rules: "Defaults: 1-hour periods, MACD 12/26/9; buy when the histogram crosses above 0, sell when it crosses below 0 or RSI(25) reaches 70. No stops."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_zenbot_macd
+    variants: crypto8
+
+  zenbot_dema:
+    group: repos
+    name: "dema: EMA 10/21 difference zero cross (Zenbot built-in strategy)"
+    source: "https://github.com/DeviaVir/zenbot/blob/master/extensions/strategies/dema/strategy.js"
+    rules: "Defaults: 1-hour periods; buy when EMA10 - EMA21 crosses above 0, sell when it crosses below. (Its RSI(9) > 80 branch emits the signal 'sold', which Zenbot ignores.) No stops."
+    class: SignalBot
+    timeframe: 1h
+    signal: oss2_zenbot_dema
+    variants: crypto8
+
+  zenbot_ta_trix:
+    group: repos
+    name: "ta_trix: TRIX(30) sign with RSI(25) > 70 sell (Zenbot built-in strategy)"
+    source: "https://github.com/DeviaVir/zenbot/blob/master/extensions/strategies/ta_trix/strategy.js"
+    rules: "Defaults: 5-minute periods; buy once when TA-Lib TRIX(30) turns >= 0, sell when it turns < 0 or RSI(25) reaches 70. No stops."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_zenbot_ta_trix
+    variants: crypto8
+
+  zenbot_ta_ultosc:
+    group: repos
+    name: "ta_ultosc: Ultimate Oscillator 65/50 'simple' signal (Zenbot built-in strategy)"
+    source: "https://github.com/DeviaVir/zenbot/blob/master/extensions/strategies/ta_ultosc/strategy.js"
+    rules: "Defaults: 5-minute periods, ULTOSC(7, 14, 28), signal 'simple': trend up above 65 (buy once), down below 50 (sell); also sell when RSI(25) reaches 90. No stops."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_zenbot_ta_ultosc
+    variants: crypto8
+
+  zenbot_ti_hma:
+    group: repos
+    name: "ti_hma: Hull moving average(36) slope (Zenbot built-in strategy)"
+    source: "https://github.com/DeviaVir/zenbot/blob/master/extensions/strategies/ti_hma/strategy.js"
+    rules: "Defaults: 15-minute periods; buy once when HMA(36) turns up, sell when it turns down or RSI(25) reaches 70. No stops."
+    class: SignalBot
+    timeframe: 15m
+    signal: oss2_zenbot_ti_hma
+    variants: crypto8
+
+  zenbot_ta_ppo:
+    group: repos
+    name: "ta_ppo: PPO(12, 26, SMA) sign on 10-minute periods (Zenbot built-in strategy)"
+    source: "https://github.com/DeviaVir/zenbot/blob/master/extensions/strategies/ta_ppo/strategy.js"
+    rules: "Defaults: 10-minute periods (built from 5-minute candles), TA-Lib PPO 12/26 with SMA; buy once when PPO turns >= 0, sell when it turns < 0 or RSI(25) reaches 70. No stops."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_zenbot_ta_ppo
+    variants: crypto8
+
+  zenbot_srsi_macd:
+    group: repos
+    name: "srsi_macd: stochastic RSI turn with MACD histogram filter (Zenbot built-in strategy)"
+    source: "https://github.com/DeviaVir/zenbot/blob/master/extensions/strategies/srsi_macd/strategy.js"
+    rules: "Defaults: 30-minute periods (built from 15-minute candles), StochRSI(14, K 5, D 3), MACD EMA 24/200 signal 9; buy when the histogram >= 0 and %K < 20 turns up above %D; sell when the histogram < 0 and %K > 80 turns down below %D. No stops."
+    class: SignalBot
+    timeframe: 15m
+    signal: oss2_zenbot_srsi_macd
+    variants: crypto8
+
+  zenbot_ehlers_ft:
+    group: repos
+    name: "ehlers_ft: Ehlers Fisher transform direction (Zenbot built-in strategy)"
+    source: "https://github.com/DeviaVir/zenbot/blob/master/extensions/strategies/ehlers_ft/strategy.js"
+    rules: "Defaults: 30-minute periods (built from 15-minute candles), length 10 on hl2, pos_length 1; buy while the Fisher transform rises, sell while it falls. No stops."
+    class: SignalBot
+    timeframe: 15m
+    signal: oss2_zenbot_ehlers_ft
+    variants: crypto8
+
+  zenbot_cci_srsi:
+    group: repos
+    name: "cci_srsi: CCI and stochastic RSI extremes turning, EMA-trend filter (Zenbot built-in strategy)"
+    source: "https://github.com/DeviaVir/zenbot/blob/master/extensions/strategies/cci_srsi/strategy.js"
+    rules: "Defaults: 20-minute periods (built from 5-minute candles), trend EMA(30), CCI(14), StochRSI(14, K 5, D 3); buy when CCI <= -90 and %K <= 18 are no longer falling, in an up-trend or sideways (EMA change < 0.03%); sell when CCI >= 140 and %K >= 85 start falling, in a down-trend or sideways. No stops."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_zenbot_cci_srsi
+    variants: crypto8
+
+  zenbot_sar:
+    group: repos
+    name: "sar: Zenbot's parabolic SAR with close confirmation (Zenbot built-in strategy)"
+    source: "https://github.com/DeviaVir/zenbot/blob/master/extensions/strategies/sar/strategy.js"
+    rules: "Defaults: acceleration 0.015, max 0.3; buy when the high reaches the SAR with a higher close, sell when the low reaches it with a lower close. Zenbot's default 2-minute period is not available: 5-minute candles. No stops."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_zenbot_sar
+    variants: crypto8
+
+  # ======================================================================== Hummingbot V2 controllers
+  hb_bollinger_v1:
+    group: repos
+    name: "bollinger_v1 directional controller: %B < 0 with triple barrier (Hummingbot V2)"
+    source: "https://github.com/hummingbot/hummingbot/blob/master/controllers/directional_trading/bollinger_v1.py"
+    rules: "Defaults: BB(100, 2), long when %B < 0; executor barriers from the controller base: stop -3%, take-profit +2%, time limit 45 min, 5-min cooldown. Hummingbot's 3-minute candles are not available: 5-minute."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_hb_bollinger_v1
+    variants: crypto8
+    risk: {bracket: true, time_stop: 9, cooldown: 1}
+
+  hb_supertrend_v1:
+    group: repos
+    name: "supertrend_v1 directional controller: up-trend within 1% of the line (Hummingbot V2)"
+    source: "https://github.com/hummingbot/hummingbot/blob/master/controllers/directional_trading/supertrend_v1.py"
+    rules: "Defaults: Supertrend(20, 4), long when the direction is up and the close is within 1% of the Supertrend line; barriers: stop -3%, take-profit +2%, time limit 45 min, 5-min cooldown. 5-minute candles (source default 3-minute)."
+    class: SignalBot
+    timeframe: 5m
+    signal: oss2_hb_supertrend_v1
+    variants: crypto8
+    risk: {bracket: true, time_stop: 9, cooldown: 1}
+
+  # ======================================================================== Jesse and backtesting libraries
+  jesse_donchian:
+    group: repos
+    name: "Donchian channel breakout above SMA200 (Jesse example-strategies, gabrielweich)"
+    source: "https://github.com/jesse-ai/example-strategies/blob/master/Donchian/__init__.py"
+    rules: "Buy when the close is above the previous 20-candle high and above SMA200; sell when it closes below the previous 20-candle low. 4-hour candles (the example names no timeframe). No stop."
+    class: SignalBot
+    timeframe: 4h
+    signal: oss2_jesse_donchian
+    variants: crypto8
+
+  backtestingpy_smacross:
+    group: repos
+    name: "SmaCross 10/20: the backtesting.py README example"
+    source: "https://github.com/kernc/backtesting.py#usage"
+    rules: "Buy when SMA10 crosses above SMA20, sell when it crosses below (long only here). Daily candles, as in the example."
+    class: SignalBot
+    timeframe: 1d
+    signal: oss2_backtestingpy_smacross
+    variants: crypto8
+
+  backtrader_sma15:
+    group: repos
+    name: "Close vs SMA15: the backtrader Quickstart strategy"
+    source: "https://www.backtrader.com/docu/quickstart/quickstart/"
+    rules: "Buy when the close is above SMA(15), sell when it is below. Daily candles, as in the guide."
+    class: SignalBot
+    timeframe: 1d
+    signal: oss2_backtrader_sma15
+    variants: crypto8
+
+  vectorbt_ma_10_50:
+    group: repos
+    name: "Dual SMA 10/50 crossover: the vectorbt README example (BTC-USD)"
+    source: "https://github.com/polakowo/vectorbt#trade-a-dual-sma-crossover-strategy"
+    rules: "Buy when SMA10 crosses above SMA50, sell when it crosses below. Daily candles."
+    class: SignalBot
+    timeframe: 1d
+    signal: oss2_vectorbt_ma_10_50
+    variants: crypto8
+
+  lean_macd_trend:
+    group: repos
+    name: "MACDTrendAlgorithm: MACD-signal gap beyond 0.25% (QuantConnect Lean example)"
+    source: "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/MACDTrendAlgorithm.py"
+    rules: "MACD(12, 26, 9) daily; buy when (MACD - signal) / fast EMA > 0.0025, liquidate when < -0.0025."
+    class: SignalBot
+    timeframe: 1d
+    signal: oss2_lean_macd_trend
+    variants: crypto8
+
+  lean_ma_cross:
+    group: repos
+    name: "MovingAverageCrossAlgorithm: EMA 15/30 (QuantConnect Lean example)"
+    source: "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/MovingAverageCrossAlgorithm.py"
+    rules: "Daily EMA15 and EMA30; buy when EMA15 > EMA30 x 1.00015, liquidate when EMA15 < EMA30."
+    class: SignalBot
+    timeframe: 1d
+    signal: oss2_lean_ma_cross
+    variants: crypto8
+
+  lean_rsi_alpha:
+    group: repos
+    name: "RsiAlphaModel: RSI 30/70 trips with 14-day insights (QuantConnect Lean framework)"
+    source: "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Alphas/RsiAlphaModel.py"
+    rules: "Daily RSI(14): an Up insight when it trips below 30 (re-armed above 35), Down when it trips above 70 (re-armed below 65); insights last 14 days. Long on Up, out on Down or when the insight expires."
+    class: SignalBot
+    timeframe: 1d
+    signal: oss2_lean_rsi_alpha
+    variants: crypto8
+    risk: {time_stop: 14}
+
+  lean_ema_cross_alpha:
+    group: repos
+    name: "EmaCrossAlphaModel: EMA 12/26 cross with 12-day insights (QuantConnect Lean framework)"
+    source: "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Alphas/EmaCrossAlphaModel.py"
+    rules: "Daily EMA12 / EMA26: Up insight when the fast crosses above the slow, Down when below; insights last 12 days. Long on Up, out on Down or expiry."
+    class: SignalBot
+    timeframe: 1d
+    signal: oss2_lean_ema_cross_alpha
+    variants: crypto8
+    risk: {time_stop: 12}
+
+  lean_macd_alpha:
+    group: repos
+    name: "MacdAlphaModel: MACD signal / price beyond 1% (QuantConnect Lean framework)"
+    source: "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Alphas/MacdAlphaModel.py"
+    rules: "Daily MACD(12, 26, 9): direction Up when signal / price > 1%, Down below -1%, else Flat (insights cancelled); insights last 12 days. Long on Up, out on Down, Flat or expiry."
+    class: SignalBot
+    timeframe: 1d
+    signal: oss2_lean_macd_alpha
+    variants: crypto8
+    risk: {time_stop: 12}
