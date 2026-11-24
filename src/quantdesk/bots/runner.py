@@ -17,6 +17,8 @@ from .data import TF, CandleSource
 from .engine import BotEngine, Market, append_csv, load_ledger, save_ledger
 from .strategies import ORBBot, UsEtfBot, build_bot
 
+OPEN_END = pd.Timestamp("2100-01-01T00:00:00Z")      # `end: null` in bots.yaml = the test never ends
+
 log = logging.getLogger(__name__)
 DEFAULT_UNIVERSE = ["NVDA", "AAPL", "MSFT", "AMZN", "META", "GOOGL", "AVGO", "TSLA", "AMD", "MU", "PLTR", "NFLX",
                     "ORCL", "JPM", "LLY", "COST", "WMT", "XOM", "INTC", "CRM"]
@@ -186,13 +188,13 @@ def run_cycle(state_dir: str | Path, now: pd.Timestamp | None = None, source=Non
     now = pd.Timestamp(now) if now is not None else pd.Timestamp.now(tz="UTC")
     now = now.tz_localize("UTC") if now.tzinfo is None else now.tz_convert("UTC")
     t0 = pd.Timestamp(start or cfg["start"])
-    t1 = pd.Timestamp(end or cfg["end"])
+    t1 = pd.Timestamp(end or cfg.get("end") or OPEN_END)
     t0 = t0.tz_localize("UTC") if t0.tzinfo is None else t0
     t1 = t1.tz_localize("UTC") if t1.tzinfo is None else t1
     source = source or CandleSource()
     instruments = load_instruments()
     cm = CostModel(load_venues(), 1.0)
-    summary = {"ts": now.isoformat(), "start": t0.isoformat(), "end": t1.isoformat(), "bots": {}, "errors": []}
+    summary = {"ts": now.isoformat(), "start": t0.isoformat(), "end": None if t1 >= OPEN_END else t1.isoformat(), "bots": {}, "errors": []}
     tic = time.time()
 
     fx_path = state / "fx.json"

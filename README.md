@@ -9,14 +9,15 @@ The live dashboard, updated every 15 minutes. Also:
 [status table](https://github.com/jcosta92/trading-agents/blob/bot-state/reports/BOTS.md) ·
 [every fill](https://github.com/jcosta92/trading-agents/blob/bot-state/state/bots/fills.csv)
 
-## The bot test (12 Oct - 31 Dec 2026): 1,158 bots, 215 strategy families
+## The bot test (from 12 Oct 2026, open-ended): 1,158 bots, 215 strategy families
 
 **Benchmarks:** three buy-and-hold yardsticks, EUR 5,000 each bought at the start (12 Oct 17:05 UTC) and held, with
 the same costs: SPY (S&P 500), QQQ (Nasdaq-100) and VGK (European stocks). They are shown at the top of the dashboard's
 family table and on its chart, and left out of every strategy statistic (averages, bots in profit, luck yardstick).
 
-Every bot trades its own simulated **EUR 5,000** on real candles, buying and selling throughout the test; on
-31 Dec every bot sells what it holds. A mid-point review runs on 12 Nov, the final review on 31 Dec. (Until
+Every bot trades its own simulated **EUR 5,000** on real candles, buying and selling throughout the test. The test
+was planned to end on 31 Dec 2026; since 24 Nov 2026 it has **no end date** (`end: null` in `config/bots.yaml`), so the
+bots keep trading and the loop keeps restarting itself. A mid-point review ran on 12 Nov. (Until
 13 Oct the bots had EUR 1,000 each; that day every bot was restarted from the 12 Oct start with EUR 5,000, so
 all results cover the same window at the same size.)
 

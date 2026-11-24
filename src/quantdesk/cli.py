@@ -236,7 +236,7 @@ def cmd_bots(args) -> int:
 def _bots_report(cfg, args) -> None:
     from .bots import report
     if args.start:                                    # preview replay of a past period
-        cfg = {**cfg, "start": args.start, "end": args.end or cfg["end"]}
+        cfg = {**cfg, "start": args.start, "end": args.end or cfg.get("end")}
         report.write(Path(args.state), cfg, Path(args.docs), Path(args.reports), "preview.html",
                      "BOTS_PREVIEW.md", preview=True)
     else:

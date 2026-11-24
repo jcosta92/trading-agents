@@ -15,7 +15,21 @@ def short(market: str) -> str:
 
 
 def load_families(path=None) -> dict:
-    return load_yaml(path or CONFIG_DIR / "families.yaml")
+    """config/families.yaml plus every config/families.d/*.yaml (families added later, one file per
+    batch). Later files add families, groups, universes and variant sets; an id may not repeat."""
+    cfg = load_yaml(path or CONFIG_DIR / "families.yaml")
+    if path is not None:
+        return cfg
+    for extra in sorted((CONFIG_DIR / "families.d").glob("*.yaml")):
+        add = load_yaml(extra) or {}
+        for key in ("families", "groups", "universes", "variant_sets"):
+            cur = cfg.setdefault(key, {}) or {}
+            cfg[key] = cur
+            for k, v in (add.get(key) or {}).items():
+                if key == "families" and k in cur:
+                    raise ValueError(f"family {k!r} in {extra.name} already exists")
+                cur[k] = v
+    return cfg
 
 
 def expand(fam_cfg: dict) -> tuple[dict, dict]:

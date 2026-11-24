@@ -160,7 +160,8 @@ def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "i
     table = table_all[~is_bench] if len(table_all) else table_all          # the strategies
     sfam = fam[fam["group"] != BENCH] if len(fam) else fam
     st = data["status"]
-    start, end = pd.Timestamp(cfg["start"]), pd.Timestamp(cfg["end"])
+    start = pd.Timestamp(cfg["start"])
+    end = pd.Timestamp(cfg["end"]) if cfg.get("end") else None          # None: open-ended test
     now = pd.Timestamp(st.get("ts")) if st.get("ts") else None
     cap = float(cfg.get("initial_capital", 1000.0))
     gnames = cfg.get("group_names", {})
@@ -193,9 +194,10 @@ def write(state: Path, cfg: dict, docs: Path, reports: Path, page_name: str = "i
     fees = float(table["fees"].sum()) if n else 0.0
     big = sfam[sfam["bots"] >= 3] if len(sfam) else sfam
     best_f = (big if len(big) else sfam).sort_values("median", ascending=False).iloc[0] if len(sfam) else None
-    days = (min(now, end) - start).days if now is not None and now > start else 0
-    total_days = (end - start).days
-    finished = now is not None and now >= end
+    days = (min(now, end) if end is not None else now) - start if now is not None and now > start else None
+    days = days.days if days is not None else 0
+    total_days = (end - start).days if end is not None else None
+    finished = end is not None and now is not None and now >= end
     errs = st.get("errors", [])
     err_html = (f"<div class='warn'>{len(errs)} bot error(s) in the last cycle: " +
                 _esc("; ".join(errs[:5])) + ("…" if len(errs) > 5 else "") + "</div>") if errs else ""
@@ -285,14 +287,14 @@ average bot {_eur(r['avg_net'])} after fees ({_pct(r['pl_pct'], 2)}) · median {
 <button class='toggle' onclick='toggleTheme()'>Light / dark</button>
 <h1>{'Preview: what the bots would have done in the month before the test' if preview else 'Trading bots: live demo'}</h1>
 {"<div class='warn'>Replay of the month <b>before</b> the live test, same code, data and costs. It shows behaviour; it is not the test.</div>" if preview else ''}
-<p class='sub'>{n} bots in {len(sfam)} strategy families, each trading its own simulated €{float(cfg.get('initial_capital', 1000.0)):,.0f} from {start:%d %b %Y %H:%M} to
-{end:%d %b %Y %H:%M} UTC. A family is one published strategy (open-source bot, research paper or classic system), run with
+<p class='sub'>{n} bots in {len(sfam)} strategy families, each trading its own simulated €{float(cfg.get('initial_capital', 1000.0)):,.0f} from {start:%d %b %Y %H:%M} UTC
+{f"to {end:%d %b %Y %H:%M} UTC" if end is not None else "with no end date (the test keeps running)"}. A family is one published strategy (open-source bot, research paper or classic system), run with
 its default rules on several markets: judge a family by its median and by how many of its bots made money, not by its best
 bot. Real candles, Bitvavo / IBKR fees, spread and slippage on every fill. Last update:
 {f"{now:%d %b %Y %H:%M} UTC" if now is not None else 'never'}.</p>
 {err_html}
 <div class='tiles'>
- <div class='tile'><div class='label'>{'Test finished' if finished else 'Day'}</div><div class='value'>{min(days, total_days)} / {total_days}</div><div class='note'>{'results are final' if finished else 'results are provisional'}</div></div>
+ <div class='tile'><div class='label'>{'Test finished' if finished else 'Day'}</div><div class='value'>{f"{min(days, total_days)} / {total_days}" if total_days is not None else days}</div><div class='note'>{'results are final' if finished else 'results are provisional'}</div></div>
  <div class='tile'><div class='label'>Bots in profit</div><div class='value'>{up} / {n}</div><div class='note'>{beat} ahead of BTC buy-and-hold</div></div>
  <div class='tile'><div class='label'>Average bot: P/L after fees</div><div class='value {_cls(tot['net']).replace('num', '').strip()}'>{_eur(tot['net'])}</div><div class='note'>{_pct(tot['pct'], 2)} of €{cap:,.0f}. Before fees {_eur(tot['gross'])}; fees {_eur(-tot['fees'])}</div></div>
  <div class='tile'><div class='label'>Trades / fees</div><div class='value'>{trades:,}</div><div class='note'>{_eur(fees)} paid in fees ({_eur(fees / n if n else 0)} per bot)</div></div>
@@ -340,7 +342,8 @@ def markdown(table: pd.DataFrame, fam: pd.DataFrame, cfg: dict, st: dict, ref_no
     gn = cfg.get("group_names", {})
     cap = float(cfg.get("initial_capital", 1000.0))
     tot = money(table, cap)
-    lines = [f"# Trading bots: {pd.Timestamp(cfg['start']):%d %b} - {pd.Timestamp(cfg['end']):%d %b %Y}", "",
+    till = f"{pd.Timestamp(cfg['end']):%d %b %Y}" if cfg.get("end") else "ongoing"
+    lines = [f"# Trading bots: {pd.Timestamp(cfg['start']):%d %b %Y} - {till}", "",
              f"Last update: {str(st.get('ts', '–'))[:16].replace('T', ' ')} UTC. {len(table)} bots in {len(fam)} families, "
              f"each started with EUR {cap:,.0f}.", "",
              f"- Average bot since the start: {_eur(tot['gross'])} before fees, {_eur(-tot['fees'])} fees, "

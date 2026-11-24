@@ -82,8 +82,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          end=$(python -c "import yaml;print(yaml.safe_load(open('config/bots.yaml'))['end'])")
-          if [ "$(date -u +%s)" -lt "$(( $(date -u -d "$end" +%s) + 7200 ))" ]; then
+          # `end: null` in config/bots.yaml = open-ended test: always restart
+          end=$(python -c "import yaml;print(yaml.safe_load(open('config/bots.yaml')).get('end') or '')")
+          if [ -z "$end" ] || [ "$(date -u +%s)" -lt "$(( $(date -u -d "$end" +%s) + 7200 ))" ]; then
             gh workflow run bots.yml --repo "$GITHUB_REPOSITORY" --ref main
           else
             echo "test period over - not restarting"

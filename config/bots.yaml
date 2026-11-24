@@ -15,10 +15,11 @@
 #   gold futures (IBKR Tiered, COMEX Micro Gold): USD 0.96 per contract per side (commission 0.25,
 #     exchange 0.70, NFA 0.01) + half the spread + slippage on market and stop orders; margin
 #     positions (long or short), P&L in USD
-# At the end of the month every bot sells what it holds at market, so the result is realised.
+# The test is open-ended (no end date since 24 Nov 2026): bots keep trading until `end` is set again.
+# If an end date is set, every bot sells what it holds at market at that time, so the result is realised.
 
 start: "2026-10-12T17:00:00Z"
-end: "2026-12-31T17:00:00Z"
+end: null                             # open-ended: was 2026-12-31T17:00:00Z until 24 Nov 2026
 review: "2026-11-12T17:00:00Z"        # mid-point review (one month)
 initial_capital: 5000.0
 
